@@ -1,121 +1,77 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [currentPage, setCurrentPage] = useState('home')
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <div className="app">
+      <nav className="app-nav">
+        <div className="nav-brand">⚔ RavenLore</div>
+        <div className="nav-links">
+          <button 
+            className={currentPage === 'home' ? 'active' : ''}
+            onClick={() => setCurrentPage('home')}
+          >Home</button>
+          <button 
+            className={currentPage === 'compendium' ? 'active' : ''}
+            onClick={() => setCurrentPage('compendium')}
+          >Arcane Compendium</button>
+          <button 
+            className={currentPage === 'create' ? 'active' : ''}
+            onClick={() => setCurrentPage('create')}
+          >New Character</button>
+          <button 
+            className={currentPage === 'characters' ? 'active' : ''}
+            onClick={() => setCurrentPage('characters')}
+          >Characters</button>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      </nav>
 
-      <div className="ticks"></div>
+      <main className="app-main">
+        {currentPage === 'home' && <HomePage setCurrentPage={setCurrentPage} />}
+        {currentPage === 'compendium' && <ComingSoon title="Arcane Compendium" />}
+        {currentPage === 'create' && <ComingSoon title="Character Creation" />}
+        {currentPage === 'characters' && <ComingSoon title="Characters" />}
+      </main>
+    </div>
+  )
+}
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+function HomePage({ setCurrentPage }) {
+  return (
+    <div className="home-page">
+      <div className="home-hero">
+        <h1>RavenLore</h1>
+        <p className="home-subtitle">Character Management System</p>
+      </div>
+      <div className="home-cards">
+        <div className="home-card" onClick={() => setCurrentPage('create')}>
+          <div className="card-icon">✦</div>
+          <h2>New Character</h2>
+          <p>Create a new character from scratch</p>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
+        <div className="home-card" onClick={() => setCurrentPage('characters')}>
+          <div className="card-icon">⚔</div>
+          <h2>Characters</h2>
+          <p>View and manage your characters</p>
         </div>
-      </section>
+        <div className="home-card" onClick={() => setCurrentPage('compendium')}>
+          <div className="card-icon">✦</div>
+          <h2>Arcane Compendium</h2>
+          <p>Browse and search all 518 spells</p>
+        </div>
+      </div>
+    </div>
+  )
+}
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+function ComingSoon({ title }) {
+  return (
+    <div className="coming-soon">
+      <h2>{title}</h2>
+      <p>Coming soon...</p>
+    </div>
   )
 }
 
