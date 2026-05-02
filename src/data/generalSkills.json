@@ -1,0 +1,794 @@
+[
+  {
+    "name": "Acting",
+    "prereq": "none",
+    "description": "Base chance to pose as an invented persona or three.",
+    "freeBase": "2Chr",
+    "costMultiplier": 4,
+    "maximum": "6Chr",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Animal Bond",
+    "prereq": "75+ Animal Training",
+    "description": "Develop your bond with one specific animal and teach them to do remarkable things. In other words develop a familiar. Points effectively lost if the animal dies.",
+    "freeBase": "Chr+Aw",
+    "costMultiplier": 1,
+    "maximum": "2SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Animal Handling",
+    "prereq": "none",
+    "description": "Skill with domesticated animals and knowledge of their needs.",
+    "freeBase": "Chr+Aw",
+    "costMultiplier": 4,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Animal Training",
+    "prereq": "< Animal Handling",
+    "description": "Base roll to train an animal to do a specific thing. Modified by the GM.",
+    "freeBase": "Chr",
+    "costMultiplier": 2,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Appraising Art&Artifacts",
+    "prereq": "none",
+    "description": "Base chance to accurately assess the value of Art, Antiques and other artifacts.",
+    "freeBase": "Aw",
+    "costMultiplier": 4,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Appraising Gems&Jewelry",
+    "prereq": "none",
+    "description": "Base chance to accurately assess the value of Gems and Jewelry.",
+    "freeBase": "Aw",
+    "costMultiplier": 3,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Appraising Livestock",
+    "prereq": "none",
+    "description": "Base chance to accurately assess the value of Horses and other livestock.",
+    "freeBase": "Aw",
+    "costMultiplier": 5,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Bartering",
+    "prereq": "none",
+    "description": "Skill at haggling prices, making trades.",
+    "freeBase": "Chr+Aw",
+    "costMultiplier": 4,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Beekeeping",
+    "prereq": "none",
+    "description": "The real liquid gold.",
+    "freeBase": "Chr+AW",
+    "costMultiplier": 6,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Blacksmith",
+    "prereq": "none",
+    "description": "Base chance to make an iron item at a forge.",
+    "freeBase": "Str+Aw",
+    "costMultiplier": 2,
+    "maximum": "6Str",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Bower",
+    "prereq": "none",
+    "description": "Quality of the bow you can make.",
+    "freeBase": "Dex+Aw",
+    "costMultiplier": 4,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Boxing",
+    "prereq": "none",
+    "description": "Skill at formal fisticuffs following strict rules. In informal combat it reduces the -5 untrained penalty from unarmed combat by 1 per 10 points. In addition on a successful skill check deal your full damage bonus instead of half.",
+    "freeBase": "Str+Dex",
+    "costMultiplier": 2,
+    "maximum": "6Dex",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Brewing",
+    "prereq": "none",
+    "description": "Base chance to make beer.",
+    "freeBase": "2Aw",
+    "costMultiplier": 8,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Calligraphy",
+    "prereq": "Reading & Writing",
+    "description": "Skill at writing beautifully.",
+    "freeBase": "2Dex",
+    "costMultiplier": 6,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Carcass Dressing",
+    "prereq": "< Hunting  or\n< Leatherworking",
+    "description": "Skinning, dressing and otherwise harvesting the useful parts of a carcass.",
+    "freeBase": "Dex+Aw",
+    "costMultiplier": 4,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Carpentry",
+    "prereq": "none",
+    "description": "Base chance to build a wooden item.",
+    "freeBase": "Dex+Aw",
+    "costMultiplier": 4,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Charming",
+    "prereq": "none",
+    "description": "Win friends and influence people.",
+    "freeBase": "2Chr",
+    "costMultiplier": 3,
+    "maximum": "6Chr",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Climb Walls",
+    "prereq": "none",
+    "description": "Base chance to scale a stone wall.",
+    "freeBase": "2Str+Dex",
+    "costMultiplier": 2,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Cooking",
+    "prereq": "none",
+    "description": "Base chance to surprise and delight, depending on ingredients available.",
+    "freeBase": "none",
+    "costMultiplier": 8,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Dancing",
+    "prereq": "none",
+    "description": "Such a simple name for body control, timing and grace.",
+    "freeBase": "Dex+Chr",
+    "costMultiplier": 6,
+    "maximum": "6Dex",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Disarm Traps",
+    "prereq": "none",
+    "description": "Base chance to disarm a trap.",
+    "freeBase": "Dex+Aw",
+    "costMultiplier": 2,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Disguise",
+    "prereq": "Etiquette for some.",
+    "description": "Base chance to disguise yourself or others.",
+    "freeBase": "Chr+Aw",
+    "costMultiplier": 3,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Drawing",
+    "prereq": "none",
+    "description": "Skill with drawing.",
+    "freeBase": "Dex+Aw",
+    "costMultiplier": 4,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Drinking",
+    "prereq": "A broken home?",
+    "description": "Reports very widely. Your mother told you it would be the death of you. Your uncle told you it would save your life, or did he say something about savoring life? Whatever.",
+    "freeBase": "2Con",
+    "costMultiplier": 10,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Embroidery",
+    "prereq": "< Sewing",
+    "description": "A very Ladylike pastime.",
+    "freeBase": "none",
+    "costMultiplier": 6,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Engineering",
+    "prereq": "< Carpentry\nand\n< Blacksmith",
+    "description": "This very powerful skill allows you to invent and construct or have constructed many things. Involves negotiation with the GM.",
+    "freeBase": "2Aw",
+    "costMultiplier": 1,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Etiquette",
+    "prereq": "Read at least 1 language\n or exposure",
+    "description": "Base roll to know the proper behavior, honorific, colours etc. for a given situation.",
+    "freeBase": "2Aw",
+    "costMultiplier": 4,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Farming",
+    "prereq": "none",
+    "description": "Plant, grow, and harvest a crop.",
+    "freeBase": "none",
+    "costMultiplier": 6,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Find Traps",
+    "prereq": "none",
+    "description": "base chance to find a trap.",
+    "freeBase": "2Aw",
+    "costMultiplier": 3,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "First Aid",
+    "prereq": "< Sewing",
+    "description": "Base chance to bandage difficult wounds effectively, stopping further damage.",
+    "freeBase": "Dex+Aw",
+    "costMultiplier": 8,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Fishing",
+    "prereq": "none",
+    "description": "Base chance to catch a fish with gear",
+    "freeBase": "Aw+WP",
+    "costMultiplier": 6,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Fletching",
+    "prereq": "30+ Bower",
+    "description": "Base chance to make perfect (no penalty) shortbow arrows. perfect longbow arrows require  130 points below your skill. Perfect Greatbow arrows require 160",
+    "freeBase": "none",
+    "costMultiplier": 5,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Forgery",
+    "prereq": "< Drawing\nand\n< Calligraphy",
+    "description": "Base chance for documents you forge to pass inspection.",
+    "freeBase": "Dex+Aw",
+    "costMultiplier": 2,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Gambling",
+    "prereq": "none",
+    "description": "Base chance to win.",
+    "freeBase": "Chr+Aw",
+    "costMultiplier": 1,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Gardening",
+    "prereq": "none",
+    "description": "It's nice to have a hobby.",
+    "freeBase": "Aw+WP",
+    "costMultiplier": 8,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Herb Lore",
+    "prereq": "50+ Cooking\n\nOR\n\n50+ Woodlore",
+    "description": "Base chance to: Forage effectively for edible plants and spices (+30).  Make an ointment which reduces the chance of infection by 50% (+10). Neutralize a poison. (-15) Make penicillin (cures 75% of diseases.) (-30). With skill and access to materials you can make most things that could be found over the counter in a modern pharmacy, as well as natural drugs such as mushrooms, cocaine, and marijuana. A successful Herblore check doubles the effect of Medic healing.",
+    "freeBase": "none",
+    "costMultiplier": 3,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Inner Focus",
+    "prereq": "none",
+    "description": "Base chance to raise 1 attribute of your choice by 2 (max 20) and lowering 2 other attributes by 2 for the same duration. This can be triggered with one action, with a duration of twelve seconds, or after one minute of meditation with a duration of ten minutes.",
+    "freeBase": "Aw+WP",
+    "costMultiplier": 3,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Inspire",
+    "prereq": "< Singing\nOr\n< Musical Instrument",
+    "description": "Base chance to inspire your audience with music or song. Grants +1d4 on one roll taken within 10 minutes",
+    "freeBase": "Chr",
+    "costMultiplier": 2,
+    "maximum": "6Chr",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Intimidation",
+    "prereq": "Level 5",
+    "description": "Base chance to intimidate someone with your power or importance.",
+    "freeBase": "Chr+WP",
+    "costMultiplier": 2,
+    "maximum": "6Chr",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Juggling",
+    "prereq": "none",
+    "description": "Base chance to Juggle. Large penalties for desperate moves such as catching a dagger thrown at you.",
+    "freeBase": "2Dex",
+    "costMultiplier": 4,
+    "maximum": "6Dex",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Latticework",
+    "prereq": "Identify 25+",
+    "description": "A secret skill known only to the Magi guild, somehow crucial to the creation of magical items.",
+    "freeBase": "Dex",
+    "costMultiplier": 2,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Lawyer",
+    "prereq": "Read/Write",
+    "description": "Your knowledge of the Law. Penalties apply to foreign cultures.",
+    "freeBase": "none",
+    "costMultiplier": 3,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Leadership",
+    "prereq": "none",
+    "description": "Base chance to affect the actions of an audience. You can inspire troops, shame a mob or incite a riot.",
+    "freeBase": "2Chr",
+    "costMultiplier": 3,
+    "maximum": "6Chr",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Leatherworking",
+    "prereq": "none",
+    "description": "Base chance to make or field repair leather armor, shields, backpacks harness etc.",
+    "freeBase": "Dex+Aw",
+    "costMultiplier": 3,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Linguist",
+    "prereq": "Must speak 4 languages",
+    "description": "Base chance to speak any language encountered.",
+    "freeBase": "none",
+    "costMultiplier": 3,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Logistics",
+    "prereq": "Training",
+    "description": "Formal military training in command and supply.",
+    "freeBase": "none",
+    "costMultiplier": 4,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Magic Lore",
+    "prereq": "Training",
+    "description": "Base chance to be familiar with a given magical spell, item, creature etc.",
+    "freeBase": "none",
+    "costMultiplier": 1,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Mapmaking",
+    "prereq": "< Drawing",
+    "description": "Base chance to make accurate maps. Successful skill checks will sometimes cause the DM to correct your player drawn maps.",
+    "freeBase": "2Aw",
+    "costMultiplier": 4,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Masonry",
+    "prereq": "none",
+    "description": "Building with stone and or bricks, including making bricks.",
+    "freeBase": "Str+Aw",
+    "costMultiplier": 4,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Mathematics",
+    "prereq": "Read & Write",
+    "description": "Find a use if you can!",
+    "freeBase": "none",
+    "costMultiplier": 2,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Medic",
+    "prereq": "< First Aid",
+    "description": "Know how and when unguided magical healing can be safely used on critical injuries, and improve natural healing times. A check can be made on first examining a new wound, and again after each 8 hours or more of rest by the patient. A skill check of 100+ heals 1 hit point in the most severe body section. 150+ heals heals 1 hit point in each of  the three most severe body sections. 180+ Heals heals 2 hit points in the most severe body section, and 1 hit point is all others.",
+    "freeBase": "Aw",
+    "costMultiplier": 2,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Monster Lore",
+    "prereq": "Read 1 language\n or exposure",
+    "description": "Base chance for a species to be known, rolled when first encountered. Know attacks/defences/weaknesses and approximate power level of the species.",
+    "freeBase": "none",
+    "costMultiplier": 2,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Musical Instrument",
+    "prereq": "none",
+    "description": "Skill with a specific musical instrument.",
+    "freeBase": "none",
+    "costMultiplier": 6,
+    "maximum": "6Dex",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Navigation",
+    "prereq": "none",
+    "description": "Base chance to find one\u2019s way at sea.",
+    "freeBase": "Aw",
+    "costMultiplier": 4,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Open Locks",
+    "prereq": "none",
+    "description": "Base chance to pick a lock.",
+    "freeBase": "Dex+Aw",
+    "costMultiplier": 3,
+    "maximum": "6Dex",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Orienteering",
+    "prereq": "none",
+    "description": "Base chance to find one\u2019s way on land.",
+    "freeBase": "2Aw",
+    "costMultiplier": 6,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Pick Pockets",
+    "prereq": "none",
+    "description": "Base chance to pick someone\u2019s pocket.",
+    "freeBase": "Dex+Aw",
+    "costMultiplier": 2,
+    "maximum": "6Dex",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Poisons",
+    "prereq": "Herblore 75 or \nMonster Lore 50",
+    "description": "Base chance to produce effective poisons.",
+    "freeBase": "none",
+    "costMultiplier": 3,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Pottery",
+    "prereq": "none",
+    "description": "You are expert at going potty. Just checking if you're paying attention.",
+    "freeBase": "Dex+Aw",
+    "costMultiplier": 4,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Read Faces",
+    "prereq": "< Gambling",
+    "description": "Base chance to tell if someone is holding something back, or trying to convince you of something they don't believe. A successful gambling check by the target will defeat this skill. Modified by GM.",
+    "freeBase": "2Aw",
+    "costMultiplier": 3,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Read Lips",
+    "prereq": "none",
+    "description": "Base chance to know what someone is saying whom you cannot hear. You must have a clear view of their mouth and must speak the language.",
+    "freeBase": "2Aw",
+    "costMultiplier": 4,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Realm Lore",
+    "prereq": "Read & Write",
+    "description": "Base chance to know about a given place. Know the main language, famous landmarks, history, government, ruler, famous foods or goods etc.",
+    "freeBase": "none",
+    "costMultiplier": 4,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Redsmith",
+    "prereq": "none",
+    "description": "Base chance to make an item from copper, tin or pewter.",
+    "freeBase": "Str+Aw",
+    "costMultiplier": 4,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Riding",
+    "prereq": "none",
+    "description": "Skill at riding horses.",
+    "freeBase": "Chr+Aw",
+    "costMultiplier": 3,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Rope Use",
+    "prereq": "none",
+    "description": "Base roll to tie someone up or hoist heavy things, escape bonds, etc. Heavily modified by GM.",
+    "freeBase": "Dex",
+    "costMultiplier": 3,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Sailing",
+    "prereq": "none",
+    "description": "Ability with boats of all sizes.",
+    "freeBase": "Con+Aw",
+    "costMultiplier": 4,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Sculpting",
+    "prereq": "< Wood Carving\nor\n< Masonry",
+    "description": "Your skill as a sculptor.",
+    "freeBase": "Con+Aw",
+    "costMultiplier": 4,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Sewing",
+    "prereq": "none",
+    "description": "A very useful skill.",
+    "freeBase": "Dex+Aw",
+    "costMultiplier": 8,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Shipwright",
+    "prereq": "< Carpentry",
+    "description": "Skill at building  boats of all sizes",
+    "freeBase": "Aw",
+    "costMultiplier": 4,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Silversmith",
+    "prereq": "none",
+    "description": "Base chance to make or enhance an item with silver, gold or platinum.",
+    "freeBase": "Dex+Aw",
+    "costMultiplier": 4,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Singing",
+    "prereq": "none",
+    "description": "Bring the hills to life with the sound of music.",
+    "freeBase": "2Chr",
+    "costMultiplier": 8,
+    "maximum": "6Chr",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Skiing",
+    "prereq": "none",
+    "description": "Cross country style.",
+    "freeBase": "2Con",
+    "costMultiplier": 6,
+    "maximum": "6Con",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Sleight of Hand",
+    "prereq": "none",
+    "description": "Base chance to fool someone with a move you have practised a great deal.",
+    "freeBase": "Dex+Aw",
+    "costMultiplier": 3,
+    "maximum": "6Dex",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Spelunking",
+    "prereq": "none",
+    "description": "Know the do\u2019s and don\u2019t of cave exploring. Includes a chance to know about slimes, fungus and other cave dwelling monsters.",
+    "freeBase": "2Aw",
+    "costMultiplier": 4,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Stealth",
+    "prereq": "none",
+    "description": "Base chance to avoid detection.",
+    "freeBase": "Dex+Aw",
+    "costMultiplier": 1,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Swimming",
+    "prereq": "none",
+    "description": "When it matters it really matters.",
+    "freeBase": "Str+Con",
+    "costMultiplier": 5,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Tactical Appraisal",
+    "prereq": "Well Trained 2",
+    "description": "Base chance to know the approximate Expertise, Evasion and Damage of a humanoid.",
+    "freeBase": "2Aw",
+    "costMultiplier": 3,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Thatcher",
+    "prereq": "none",
+    "description": "Skill at thatching and mending thatched roofs.",
+    "freeBase": "Dex+Aw",
+    "costMultiplier": 6,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Tightrope Walking",
+    "prereq": "none",
+    "description": "Base chance to walk a 1\u201d tightrope without falling.",
+    "freeBase": "2Dex",
+    "costMultiplier": 4,
+    "maximum": "6Dex",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Tracking",
+    "prereq": "< Wood lore",
+    "description": "Base chance to track and follow through wilderness. Greatly improves ability to cover your own tracks, (and to a lesser extent your party\u2019s).",
+    "freeBase": "2Aw",
+    "costMultiplier": 3,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Tumbling",
+    "prereq": "none",
+    "description": "Must be unfettered. Dive, roll, back flip etc.",
+    "freeBase": "2Dex",
+    "costMultiplier": 3,
+    "maximum": "6Dex",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Ventriloquism",
+    "prereq": "none",
+    "description": "Base chance to get away with whatever dirty trick you are trying to pull, uh, involving ventriloquism anyway.",
+    "freeBase": "Chr+Aw",
+    "costMultiplier": 5,
+    "maximum": "6Chr",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Weaving",
+    "prereq": "< Sewing",
+    "description": "Skill at weaving by hand.",
+    "freeBase": "Dex+Aw",
+    "costMultiplier": 4,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Wood Carving",
+    "prereq": "none",
+    "description": "From whittling a small toy to a ship's prow.",
+    "freeBase": "Dex+Aw",
+    "costMultiplier": 6,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Wood Lore",
+    "prereq": "none",
+    "description": "Skill in a wilderness setting: travel smoothly, forage, find good campsites etc.",
+    "freeBase": "Aw",
+    "costMultiplier": 4,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Wrestling",
+    "prereq": "none",
+    "description": "Skill at unarmed grappling.",
+    "freeBase": "none",
+    "costMultiplier": 1,
+    "maximum": "6Str",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "Distilation",
+    "prereq": "special",
+    "description": "Making alchohol in myriad ways.",
+    "freeBase": "2Aw",
+    "costMultiplier": 3,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  },
+  {
+    "name": "transformed acrobatics",
+    "prereq": "special",
+    "description": "",
+    "freeBase": "none",
+    "costMultiplier": 1,
+    "maximum": "SC",
+    "maintenanceCost": 0
+  }
+]
