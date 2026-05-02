@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import ArcaneCompendium from './components/ArcaneCompendium'
 import './App.css'
 
 function App() {
@@ -30,7 +31,7 @@ function App() {
 
       <main className="app-main">
         {currentPage === 'home' && <HomePage setCurrentPage={setCurrentPage} />}
-        {currentPage === 'compendium' && <ComingSoon title="Arcane Compendium" />}
+        {currentPage === 'compendium' && <ArcaneCompendium />}
         {currentPage === 'create' && <ComingSoon title="Character Creation" />}
         {currentPage === 'characters' && <ComingSoon title="Characters" />}
       </main>

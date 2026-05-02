@@ -1,0 +1,82 @@
+{
+  "colors": {
+    "chaos":     { "name": "Chaos",     "also": "White" },
+    "chi":       { "name": "Chi",       "also": "Green" },
+    "elemental": { "name": "Elemental", "also": "Red"   },
+    "order":     { "name": "Order",     "also": "Black" },
+    "will":      { "name": "Will",      "also": "Blue"  }
+  },
+  "masteryRankToDie": {
+    "0": null,
+    "1": "d3",
+    "2": "d4",
+    "3": "d4",
+    "4": "d6",
+    "5": "d6",
+    "6": "d8",
+    "7": "d8",
+    "8": "d10",
+    "9": "d10",
+    "masterWeaver": "d12"
+  },
+  "dieMeanByMasteryRank": {
+    "d3":  { "0": 2.0, "1": 2.0, "2": 2.0, "3": 2.0, "4": 2.0 },
+    "d4":  { "0": 2.5, "1": 3.0, "2": 3.0, "3": 3.0, "4": 3.0 },
+    "d6":  { "0": 3.5, "1": 4.0, "2": 4.5, "3": 4.5, "4": 4.5 },
+    "d8":  { "0": 4.5, "1": 5.0, "2": 5.5, "3": 6.0, "4": 6.0 },
+    "d10": { "0": 5.5, "1": 6.0, "2": 6.5, "3": 7.0, "4": 7.5 },
+    "d12": { "0": 6.5, "1": 7.0, "2": 7.5, "3": 8.0, "4": 8.5 }
+  },
+  "schools": {
+    "alteration":   { "name": "Alteration",   "colors": ["chaos", "order"]     },
+    "augmentation": { "name": "Augmentation", "colors": ["elemental", "chi"]   },
+    "charm":        { "name": "Charm",         "colors": ["will", "chi"]        },
+    "conjuration":  { "name": "Conjuration",   "colors": ["chaos", "will"]      },
+    "divination":   { "name": "Divination",    "colors": ["order", "elemental"] },
+    "enchantment":  { "name": "Enchantment",   "colors": ["order", "will"]      },
+    "evocation":    { "name": "Evocation",     "colors": ["chaos", "elemental"] },
+    "nature":       { "name": "Nature",        "colors": ["order", "chi"]       },
+    "necromancy":   { "name": "Necromancy",    "colors": ["chaos", "chi"]       },
+    "summoning":    { "name": "Summoning",     "colors": ["will", "elemental"]  }
+  },
+  "guilds": {
+    "magi":        { "name": "Magi",         "colors": ["chaos", "will", "order"],     "schools": ["conjuration", "alteration", "enchantment"] },
+    "warlock":     { "name": "Warlock",      "colors": ["chaos", "will", "elemental"], "schools": ["evocation", "conjuration", "summoning"]    },
+    "sorcerer":    { "name": "Sorcerer",     "colors": ["chaos", "will", "chi"],       "schools": ["necromancy", "charm", "conjuration"]       },
+    "wizard":      { "name": "Wizard",       "colors": ["chaos", "order", "elemental"],"schools": ["evocation", "alteration", "divination"]    },
+    "witchDoctor": { "name": "Witch Doctor", "colors": ["chaos", "order", "chi"],      "schools": ["necromancy", "alteration", "nature"]       },
+    "incantor":    { "name": "Incantor",     "colors": ["chaos", "elemental", "chi"],  "schools": ["necromancy", "evocation", "augmentation"]  },
+    "mystic":      { "name": "Mystic",       "colors": ["will", "order", "elemental"], "schools": ["divination", "summoning", "enchantment"]   },
+    "shaman":      { "name": "Shaman",       "colors": ["will", "order", "chi"],       "schools": ["nature", "charm", "enchantment"]           },
+    "witch":       { "name": "Witch",        "colors": ["will", "elemental", "chi"],   "schools": ["charm", "augmentation", "summoning"]       },
+    "druid":       { "name": "Druid",        "colors": ["order", "elemental", "chi"],  "schools": ["nature", "divination", "augmentation"]     }
+  },
+  "arsMortis": {
+    "rule": "Locked if character has any Elemental rank greater than 0",
+    "lockedBy": "elemental"
+  },
+  "spellCost": {
+    "default": "1 mana per spell level",
+    "formSpells": 3
+  },
+  "castingMethods": {
+    "wordOfPower": {
+      "name": "Word of Power",
+      "actions": 1,
+      "roll": false,
+      "note": "Specified in spell description"
+    },
+    "hangingSpell": {
+      "name": "Hanging Spell",
+      "actions": 2,
+      "roll": false,
+      "note": "Spell previously woven and stored on a hook"
+    },
+    "weaving": {
+      "name": "Weaving",
+      "actions": "variable",
+      "roll": true,
+      "note": "Roll 1 die per 2 actions for each color involved, keep best per color, both must exceed spell level"
+    }
+  }
+}
