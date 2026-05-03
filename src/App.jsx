@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import ArcaneCompendium from './components/ArcaneCompendium'
+import CharacterList from './components/CharacterList'
 import './App.css'
 
 function App() {
@@ -10,19 +11,19 @@ function App() {
       <nav className="app-nav">
         <div className="nav-brand">⚔ RavenLore</div>
         <div className="nav-links">
-          <button 
+          <button
             className={currentPage === 'home' ? 'active' : ''}
             onClick={() => setCurrentPage('home')}
           >Home</button>
-          <button 
+          <button
             className={currentPage === 'compendium' ? 'active' : ''}
             onClick={() => setCurrentPage('compendium')}
           >Arcane Compendium</button>
-          <button 
+          <button
             className={currentPage === 'create' ? 'active' : ''}
             onClick={() => setCurrentPage('create')}
           >New Character</button>
-          <button 
+          <button
             className={currentPage === 'characters' ? 'active' : ''}
             onClick={() => setCurrentPage('characters')}
           >Characters</button>
@@ -33,7 +34,7 @@ function App() {
         {currentPage === 'home' && <HomePage setCurrentPage={setCurrentPage} />}
         {currentPage === 'compendium' && <ArcaneCompendium />}
         {currentPage === 'create' && <ComingSoon title="Character Creation" />}
-        {currentPage === 'characters' && <ComingSoon title="Characters" />}
+        {currentPage === 'characters' && <CharacterList onSelectCharacter={(char) => setCurrentPage('sheet')} />}
       </main>
     </div>
   )
@@ -55,7 +56,7 @@ function HomePage({ setCurrentPage }) {
         <div className="home-card" onClick={() => setCurrentPage('characters')}>
           <div className="card-icon">⚔</div>
           <h2>Characters</h2>
-          <p>View and manage your characters</p>
+          <p>Import or view your characters</p>
         </div>
         <div className="home-card" onClick={() => setCurrentPage('compendium')}>
           <div className="card-icon">✦</div>
