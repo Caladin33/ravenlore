@@ -5,6 +5,8 @@ import arcaneSkillsData from '../data/arcaneSkills.json'
 import attributeData from '../data/attributes.json'
 import racesData from '../data/races.json'
 import { GeneralSkillCard } from './GeneralSkillCard'
+import { RankedSkillCard, THEMES } from './RankedSkillCard'
+import selfImprovementData from '../data/selfImprovementSkills.json'
 // ─────────────────────────────────────────────
 // HELPERS
 // ─────────────────────────────────────────────
@@ -470,28 +472,66 @@ const effectiveAttrs = useMemo(() => getEffectiveAttributes(char), [char])
         background: 'var(--bg2)', border: '1px solid var(--border)',
         borderRadius: 8, overflow: 'hidden',
       }}>
-        {activeTab === 'General' && (
-  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 10, padding: 14 }}>
-    {filterSkills(generalSkillsData).map(skill => {
-      const pts = parseInt(char.generalSkills?.[skill.name]?.pointsInvested) || 0
-      const score = effectiveAttrs ? calcSkillScore(skill, char, effectiveAttrs) : 0
-      const getSkillScore = (name) => {
-        const s = generalSkillsData.find(x => x.name === name)
-        if (!s) return 0
-        return calcSkillScore(s, char, effectiveAttrs || {})
-      }
-      return (
-        <GeneralSkillCard
-          key={skill.name}
-          skill={skill}
-          score={score}
-          pointsInvested={pts}
-          getSkillScore={getSkillScore}
-          onAdd={() => handleUpdate(skill.name, pts + 1, true)}
-onRemove={() => handleUpdate(skill.name, Math.max(0, pts - 1), true)}
-        />
-      )
-    })}
+{activeTab === 'General' && (
+  <div>
+    {/* Self Improvement section */}
+    <div style={{
+      padding: '6px 14px', background: 'var(--bg)',
+      borderBottom: '1px solid var(--border)',
+      fontSize: '.6rem', letterSpacing: '.2em',
+      color: '#d4847a', textTransform: 'uppercase',
+    }}>
+      Self Improvement
+    </div>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 10, padding: 14 }}>
+ {filterSkills(selfImprovementData).map(skill => {
+  const pts = parseInt(char.martialSkills?.[skill.name]?.pointsInvested) || 0
+  const rank = parseInt(char.martialSkills?.[skill.name]?.rank) || 0
+  return (
+    <RankedSkillCard
+      key={skill.name}
+      skill={skill}
+      rank={rank}
+      pointsInvested={pts}
+      theme={THEMES.selfImprovement}
+      onAdd={() => handleUpdate(skill.name, pts + skill.costPerRank, false)}
+      onRemove={() => handleUpdate(skill.name, Math.max(0, pts - skill.costPerRank), false)}
+    />
+  )
+})}
+    </div>
+
+    {/* Trades & Talents section */}
+    <div style={{
+      padding: '6px 14px', background: 'var(--bg)',
+      borderBottom: '1px solid var(--border)',
+      fontSize: '.6rem', letterSpacing: '.2em',
+      color: '#2d6b2d', textTransform: 'uppercase',
+    }}>
+      Trades &amp; Talents
+    </div>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 10, padding: 14 }}>
+      {filterSkills(generalSkillsData).map(skill => {
+        const pts = parseInt(char.generalSkills?.[skill.name]?.pointsInvested) || 0
+        const score = effectiveAttrs ? calcSkillScore(skill, char, effectiveAttrs) : 0
+        const getSkillScore = (name) => {
+          const s = generalSkillsData.find(x => x.name === name)
+          if (!s) return 0
+          return calcSkillScore(s, char, effectiveAttrs || {})
+        }
+        return (
+          <GeneralSkillCard
+            key={skill.name}
+            skill={skill}
+            score={score}
+            pointsInvested={pts}
+            getSkillScore={getSkillScore}
+            onAdd={() => handleUpdate(skill.name, pts + 1, true)}
+            onRemove={() => handleUpdate(skill.name, Math.max(0, pts - 1), true)}
+          />
+        )
+      })}
+    </div>
   </div>
 )}
 
