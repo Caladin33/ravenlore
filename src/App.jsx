@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import ArcaneCompendium from './components/ArcaneCompendium'
 import CharacterList from './components/CharacterList'
+import CharacterSheet from './components/CharacterSheet'
+import SkillEditor from './components/SkillEditor'
 import './App.css'
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home')
-
+  const [selectedCharacter, setSelectedCharacter] = useState(null)
   return (
     <div className="app">
       <nav className="app-nav">
@@ -34,7 +36,28 @@ function App() {
         {currentPage === 'home' && <HomePage setCurrentPage={setCurrentPage} />}
         {currentPage === 'compendium' && <ArcaneCompendium />}
         {currentPage === 'create' && <ComingSoon title="Character Creation" />}
-        {currentPage === 'characters' && <CharacterList onSelectCharacter={(char) => setCurrentPage('sheet')} />}
+        {currentPage === 'characters' && <CharacterList onSelectCharacter={(char) => { setSelectedCharacter(char); setCurrentPage('sheet') }} />}
+        {currentPage === 'sheet' && selectedCharacter && (
+ <CharacterSheet
+  character={selectedCharacter}
+  onBack={() => setCurrentPage('characters')}
+  onEditSkills={() => setCurrentPage('skillEditor')}
+/>
+)}
+{currentPage === 'skillEditor' && selectedCharacter && (
+  <SkillEditor
+    character={selectedCharacter}
+    onBack={() => setCurrentPage('sheet')}
+    onSave={(updated) => {
+      setSelectedCharacter(updated)
+      const chars = JSON.parse(localStorage.getItem('ravenlore_characters') || '[]')
+      const idx = chars.findIndex(c => c.name === updated.name)
+      if (idx >= 0) chars[idx] = updated
+      localStorage.setItem('ravenlore_characters', JSON.stringify(chars))
+      setCurrentPage('sheet')
+    }}
+  />
+)}
       </main>
     </div>
   )

@@ -1,0 +1,1073 @@
+[
+  {
+    "name": "Long Sword",
+    "combatDie": "d10",
+    "damage": "1d8",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": 0,
+    "evasionMod": 0,
+    "specialRules": "none",
+    "weaponClass": "Melee",
+    "breaches": 2,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": false,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "Short Sword",
+    "combatDie": "d10",
+    "damage": "1d6",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": 1,
+    "evasionMod": 0,
+    "specialRules": "none",
+    "weaponClass": "Light",
+    "breaches": 1,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": false,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "Dagger",
+    "combatDie": "d10",
+    "damage": "1d4",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": 2,
+    "evasionMod": 0,
+    "specialRules": "piercing, 1/2 Damage Bonus, HB.",
+    "weaponClass": "Quick",
+    "breaches": 1,
+    "flags": {
+      "piercing": true,
+      "blunt": false,
+      "twoHanded": false,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": true,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "Throw Daggers",
+    "combatDie": "d10",
+    "damage": "1d4",
+    "range": {
+      "type": "ranged",
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "precisionMod": 6,
+    "evasionMod": 0,
+    "specialRules": "1/2 Damage Bonus, HB.",
+    "weaponClass": "Thrown",
+    "breaches": 1,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": false,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": true,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": true
+  },
+  {
+    "name": "Rapier",
+    "combatDie": "d12",
+    "damage": "1d4",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": 5,
+    "evasionMod": 1,
+    "specialRules": "piercing, No Damage Bonus, NB",
+    "weaponClass": "Quick",
+    "breaches": 0,
+    "flags": {
+      "piercing": true,
+      "blunt": false,
+      "twoHanded": false,
+      "rounding": false,
+      "noDamageBonus": true,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "Great Sword",
+    "combatDie": "d8",
+    "damage": "1d12",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": -3,
+    "evasionMod": 0,
+    "specialRules": "Requires 2-Hands, CS.",
+    "weaponClass": "Long",
+    "breaches": 3,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": true,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": true,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "1-H Bastard Sw",
+    "combatDie": "d8",
+    "damage": "1d10",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": -2,
+    "evasionMod": -1,
+    "specialRules": "Requires Str17+ to use one handed.",
+    "weaponClass": "Awkward",
+    "breaches": 2,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": false,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "2-H Bastard Sw",
+    "combatDie": "d10",
+    "damage": "1d10",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": -1,
+    "evasionMod": 0,
+    "specialRules": "Requires 2-Hands, CS.",
+    "weaponClass": "Melee",
+    "breaches": 2,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": true,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": true,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "Hatchet",
+    "combatDie": "d8",
+    "damage": "1d8",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": 0,
+    "evasionMod": 0,
+    "specialRules": "none",
+    "weaponClass": "Light",
+    "breaches": 2,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": false,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "Throw Hatchet",
+    "combatDie": "d8",
+    "damage": "1d8",
+    "range": {
+      "type": "ranged",
+      "short": 10,
+      "medium": 20,
+      "long": 30
+    },
+    "precisionMod": 0,
+    "evasionMod": 0,
+    "specialRules": "none",
+    "weaponClass": "Thrown",
+    "breaches": 2,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": false,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": true
+  },
+  {
+    "name": "Great Axe",
+    "combatDie": "d6",
+    "damage": "2d8",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": -4,
+    "evasionMod": -1,
+    "specialRules": "Requires 2-Hands, CS.",
+    "weaponClass": "Awkward",
+    "breaches": 3,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": true,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": true,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "1-H Battle Axe",
+    "combatDie": "d8",
+    "damage": "1d10",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": -2,
+    "evasionMod": -1,
+    "specialRules": "Requires Str16+ to use one handed.",
+    "weaponClass": "Awkward",
+    "breaches": 2,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": false,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "2-H Battle Axe",
+    "combatDie": "d8",
+    "damage": "1d10",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": -1,
+    "evasionMod": 0,
+    "specialRules": "Requires 2-Hands, CS.",
+    "weaponClass": "Melee",
+    "breaches": 2,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": true,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": true,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "1-H Spear",
+    "combatDie": "d10",
+    "damage": "1d8",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": 0,
+    "evasionMod": 0,
+    "specialRules": "piercing",
+    "weaponClass": "Long",
+    "breaches": 1,
+    "flags": {
+      "piercing": true,
+      "blunt": false,
+      "twoHanded": false,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "2-H Spear",
+    "combatDie": "d10",
+    "damage": "1d8",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": 1,
+    "evasionMod": 0,
+    "specialRules": "piercing, Requires 2-Hands, CS.",
+    "weaponClass": "Long",
+    "breaches": 1,
+    "flags": {
+      "piercing": true,
+      "blunt": false,
+      "twoHanded": true,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": true,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "Throw Spears",
+    "combatDie": "d10",
+    "damage": "1d8",
+    "range": {
+      "type": "ranged",
+      "short": 12,
+      "medium": 24,
+      "long": 36
+    },
+    "precisionMod": 2,
+    "evasionMod": 0,
+    "specialRules": "none",
+    "weaponClass": "Thrown",
+    "breaches": 1,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": false,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": true
+  },
+  {
+    "name": "Throw Javelins",
+    "combatDie": "d10",
+    "damage": "1d6",
+    "range": {
+      "type": "ranged",
+      "short": 15,
+      "medium": 30,
+      "long": 45
+    },
+    "precisionMod": 4,
+    "evasionMod": 0,
+    "specialRules": "1/2 Dam bonus, HB.",
+    "weaponClass": "Thrown",
+    "breaches": 1,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": false,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": true,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": true
+  },
+  {
+    "name": "Pike",
+    "combatDie": "d8",
+    "damage": "1d8",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": -2,
+    "evasionMod": -3,
+    "specialRules": "Requires 2-Hands",
+    "weaponClass": "Awkward, Long",
+    "breaches": 2,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": true,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "Polearm",
+    "combatDie": "d6",
+    "damage": "1d10",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": -4,
+    "evasionMod": -2,
+    "specialRules": "Requires 2-Hands",
+    "weaponClass": "Long",
+    "breaches": 3,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": true,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "Club",
+    "combatDie": "d8",
+    "damage": "1d4",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": -1,
+    "evasionMod": 0,
+    "specialRules": "Blunt,",
+    "weaponClass": "Melee",
+    "breaches": 0,
+    "flags": {
+      "piercing": false,
+      "blunt": true,
+      "twoHanded": false,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "Mace",
+    "combatDie": "d8",
+    "damage": "1d6",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": -1,
+    "evasionMod": 0,
+    "specialRules": "Blunt,",
+    "weaponClass": "Melee",
+    "breaches": 0,
+    "flags": {
+      "piercing": false,
+      "blunt": true,
+      "twoHanded": false,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "1-H Warhammer",
+    "combatDie": "d8",
+    "damage": "1d8",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": -1,
+    "evasionMod": 0,
+    "specialRules": "Blunt, 16+ to use 1-H",
+    "weaponClass": "Melee",
+    "breaches": 1,
+    "flags": {
+      "piercing": false,
+      "blunt": true,
+      "twoHanded": false,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "2-H Warhammer",
+    "combatDie": "d8",
+    "damage": "1d8",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": -1,
+    "evasionMod": 0,
+    "specialRules": "Blunt, Requires 2-Hands, CS.",
+    "weaponClass": "Melee",
+    "breaches": 1,
+    "flags": {
+      "piercing": false,
+      "blunt": true,
+      "twoHanded": true,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": true,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "Maul",
+    "combatDie": "d6",
+    "damage": "1d10",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": -4,
+    "evasionMod": -1,
+    "specialRules": "Blunt, Requires 2-Hands, CS.",
+    "weaponClass": "Awkward",
+    "breaches": 2,
+    "flags": {
+      "piercing": false,
+      "blunt": true,
+      "twoHanded": true,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": true,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "Flail",
+    "combatDie": "d8",
+    "damage": "1d10",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": -3,
+    "evasionMod": 2,
+    "specialRules": "Blunt, Rounding",
+    "weaponClass": "Awkward",
+    "breaches": 1,
+    "flags": {
+      "piercing": false,
+      "blunt": true,
+      "twoHanded": false,
+      "rounding": true,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "MorningStar",
+    "combatDie": "d6",
+    "damage": "1d12",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": -4,
+    "evasionMod": 3,
+    "specialRules": "Blunt, Rounding, Requires 2-Hands, CS.",
+    "weaponClass": "Awkward, Long",
+    "breaches": 1,
+    "flags": {
+      "piercing": false,
+      "blunt": true,
+      "twoHanded": true,
+      "rounding": true,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": true,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "Staff",
+    "combatDie": "d12",
+    "damage": "1d4",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": 3,
+    "evasionMod": 3,
+    "specialRules": "Requires 2-Hands, 1/2 damage bonus, HB.",
+    "weaponClass": "Long",
+    "breaches": 0,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": true,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": true,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "Lance",
+    "combatDie": "d10",
+    "damage": "3d6",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": 0,
+    "evasionMod": 0,
+    "specialRules": "Single use. Charging only.Requires Riding 75+",
+    "weaponClass": "Lance",
+    "breaches": 1,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": false,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": true
+    },
+    "isRanged": false
+  },
+  {
+    "name": "Unarmed",
+    "combatDie": "d10",
+    "damage": "1d3",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": 3,
+    "evasionMod": 2,
+    "specialRules": "1/2 Damage Bonus, HB.",
+    "weaponClass": "Quick",
+    "breaches": 0,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": false,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": true,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "Small Shield",
+    "combatDie": "d3",
+    "damage": "1d1",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": -1,
+    "evasionMod": 3,
+    "specialRules": "none",
+    "weaponClass": "Shield",
+    "breaches": 0,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": false,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "Medium Shield",
+    "combatDie": "d4",
+    "damage": "1d2",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": -2,
+    "evasionMod": 6,
+    "specialRules": "none",
+    "weaponClass": "Shield",
+    "breaches": 0,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": false,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "Large Shield",
+    "combatDie": "d5",
+    "damage": "1d3",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": -3,
+    "evasionMod": 9,
+    "specialRules": "none",
+    "weaponClass": "Shield",
+    "breaches": 0,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": false,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "Tower Shield",
+    "combatDie": "d6",
+    "damage": "1d4",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": -4,
+    "evasionMod": 12,
+    "specialRules": "none",
+    "weaponClass": "Shield",
+    "breaches": 0,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": false,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": false
+  },
+  {
+    "name": "Short Bow",
+    "combatDie": "d10",
+    "damage": "1d6",
+    "range": {
+      "type": "ranged",
+      "short": 40,
+      "medium": 80,
+      "long": 120
+    },
+    "precisionMod": 6,
+    "evasionMod": 0,
+    "specialRules": "Requires 2-Hands, NB",
+    "weaponClass": "Bow",
+    "breaches": 0,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": true,
+      "rounding": false,
+      "noDamageBonus": true,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": true
+  },
+  {
+    "name": "C.Short Bow",
+    "combatDie": "d10",
+    "damage": "1d6",
+    "range": {
+      "type": "ranged",
+      "short": 50,
+      "medium": 100,
+      "long": 150
+    },
+    "precisionMod": 6,
+    "evasionMod": 0,
+    "specialRules": "Requires 2-Hands & Archery 1, NB.",
+    "weaponClass": "Bow",
+    "breaches": 0,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": true,
+      "rounding": false,
+      "noDamageBonus": true,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": true
+  },
+  {
+    "name": "Long Bow",
+    "combatDie": "d10",
+    "damage": "1d8",
+    "range": {
+      "type": "ranged",
+      "short": 50,
+      "medium": 100,
+      "long": 150
+    },
+    "precisionMod": 5,
+    "evasionMod": 0,
+    "specialRules": "Requires 2-Hands & Archery 1, NB.",
+    "weaponClass": "Bow",
+    "breaches": 0,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": true,
+      "rounding": false,
+      "noDamageBonus": true,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": true
+  },
+  {
+    "name": "C.Long Bow",
+    "combatDie": "d10",
+    "damage": "1d8",
+    "range": {
+      "type": "ranged",
+      "short": 60,
+      "medium": 120,
+      "long": 180
+    },
+    "precisionMod": 5,
+    "evasionMod": 0,
+    "specialRules": "Requires 2-Hands & Archery 2, NB.",
+    "weaponClass": "Bow",
+    "breaches": 0,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": true,
+      "rounding": false,
+      "noDamageBonus": true,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": true
+  },
+  {
+    "name": "Great Bow",
+    "combatDie": "d10",
+    "damage": "1d10",
+    "range": {
+      "type": "ranged",
+      "short": 60,
+      "medium": 120,
+      "long": 180
+    },
+    "precisionMod": 4,
+    "evasionMod": 0,
+    "specialRules": "Requires 2-Hands & Archery 2, NB.",
+    "weaponClass": "Bow",
+    "breaches": 0,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": true,
+      "rounding": false,
+      "noDamageBonus": true,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": true
+  },
+  {
+    "name": "C.Great Bow",
+    "combatDie": "d10",
+    "damage": "1d10",
+    "range": {
+      "type": "ranged",
+      "short": 70,
+      "medium": 140,
+      "long": 210
+    },
+    "precisionMod": 4,
+    "evasionMod": 0,
+    "specialRules": "Requires 2-Hands & Archery 3, NB.",
+    "weaponClass": "Bow",
+    "breaches": 0,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": true,
+      "rounding": false,
+      "noDamageBonus": true,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": true
+  },
+  {
+    "name": "L. CrossBow",
+    "combatDie": "d10",
+    "damage": "1d8",
+    "range": {
+      "type": "ranged",
+      "short": 40,
+      "medium": 80,
+      "long": 120
+    },
+    "precisionMod": 4,
+    "evasionMod": 0,
+    "specialRules": "Requires 2-Hands NB. 1 action to reload",
+    "weaponClass": "Crossbow",
+    "breaches": 0,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": true,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": true
+  },
+  {
+    "name": "H. CrossBow",
+    "combatDie": "d10",
+    "damage": "2d6",
+    "range": {
+      "type": "ranged",
+      "short": 50,
+      "medium": 100,
+      "long": 150
+    },
+    "precisionMod": 4,
+    "evasionMod": 0,
+    "specialRules": "Requires 2-Hands NB. 2 actions to reload",
+    "weaponClass": "Crossbow",
+    "breaches": 0,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": true,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": true
+  },
+  {
+    "name": "Throw Stone",
+    "combatDie": "d12",
+    "damage": "*",
+    "range": {
+      "type": "ranged",
+      "short": 30,
+      "medium": 60,
+      "long": 90
+    },
+    "precisionMod": 5,
+    "evasionMod": 0,
+    "specialRules": "Stones, balls, etc.",
+    "weaponClass": "Thrown",
+    "breaches": 0,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": false,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": true
+  },
+  {
+    "name": "None",
+    "combatDie": "-",
+    "damage": "-",
+    "range": {
+      "type": "melee"
+    },
+    "precisionMod": 0,
+    "evasionMod": 0,
+    "specialRules": "-",
+    "weaponClass": "-",
+    "breaches": 0,
+    "flags": {
+      "piercing": false,
+      "blunt": false,
+      "twoHanded": false,
+      "rounding": false,
+      "noDamageBonus": false,
+      "halfDamageBonus": false,
+      "commitedStrikes": false,
+      "lance": false
+    },
+    "isRanged": false
+  }
+]
