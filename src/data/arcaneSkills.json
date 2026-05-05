@@ -1,110 +1,1574 @@
 {
   "spellcaster": [
-    { "name": "Arcane Mentality",    "category": "Spellcaster", "prereq": "none",                    "description": "Gain 1 free action /round that can only be used to maintain concentration.",           "costPerRank": 25,  "maxRank": 1, "mcl": "any", "maintenancePerRank": 1.0  },
-    { "name": "Arcane Mindset",      "category": "Spellcaster", "prereq": "none",                    "description": "You can maintain concentration on one spell without paying the action cost.",          "costPerRank": 25,  "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0  },
-    { "name": "Augmented Mentality", "category": "Spellcaster", "prereq": "Arcane Mentality",        "description": "Gain a second free action /round that can only be used to maintain concentration.",    "costPerRank": 25,  "maxRank": 1, "mcl": "any", "maintenancePerRank": 1.0  },
-    { "name": "Careful Casting",     "category": "Spellcaster", "prereq": "none",                    "description": "Add +1 to both weaving dice for every 3 actions spent casting.",                     "costPerRank": 40,  "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0  },
-    { "name": "Chaos Mastery",       "category": "Spellcaster", "prereq": "none",                    "description": "Mastery of Chaos (White) magic. Each rank improves your weaving die and max spell level.", "costPerRank": 20, "maxRank": 9, "mcl": "any", "maintenancePerRank": 0.5  },
-    { "name": "Chi Mastery",         "category": "Spellcaster", "prereq": "none",                    "description": "Mastery of Chi (Green) magic. Each rank improves your weaving die and max spell level. +1 Torso HP/rank.", "costPerRank": 20, "maxRank": 9, "mcl": "any", "maintenancePerRank": 0.5 },
-    { "name": "Draw Mana",           "category": "Spellcaster", "prereq": "none",                    "description": "10-minute ritual, 4-hour cooldown. Roll all weaving dice, sum = new mana total.",      "costPerRank": 15,  "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.5  },
-    { "name": "Elemental Mastery",   "category": "Spellcaster", "prereq": "none",                    "description": "Mastery of Elemental (Red) magic. Each rank improves your weaving die and max spell level.", "costPerRank": 20, "maxRank": 9, "mcl": "any", "maintenancePerRank": 0.5 },
-    { "name": "Enduring Inscriptions","category": "Spellcaster","prereq": "none",                    "description": "Your enchantments on items last twice as long.",                                      "costPerRank": 25,  "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0  },
-    { "name": "Expanded Horizons",   "category": "Spellcaster", "prereq": "none",                    "description": "+1 to maximum spells known /rank.",                                                   "costPerRank": 10,  "maxRank": 20,"mcl": "any", "maintenancePerRank": 0.0  },
-    { "name": "Focused Will",        "category": "Spellcaster", "prereq": "none",                    "description": "Your weaving dice cannot be reduced below their base value by any effect.",            "costPerRank": 20,  "maxRank": 1, "mcl": "any", "maintenancePerRank": 1.0  },
-    { "name": "Hedge Wizard",        "category": "Spellcaster", "prereq": "none",                    "description": "Gain access to one spell school without mastery, using a single d4 weaving die. Choose school on purchase.", "costPerRank": 20, "maxRank": 3, "mcl": "any", "maintenancePerRank": 2.0, "requiresChoice": "school" },
-    { "name": "Mana Font",           "category": "Spellcaster", "prereq": "Draw Mana",               "description": "+1 to mana recovery total /rank (Mana Mean bonus).",                                 "costPerRank": 20,  "maxRank": 10,"mcl": "any", "maintenancePerRank": 0.0  },
-    { "name": "Mana Mastery",        "category": "Spellcaster", "prereq": "Draw Mana",               "description": "Rank 1: Reroll 1s. Rank 2: Also reroll 2s on d6+. Rank 3: Also reroll 3s on d8+. Rank 4: Also reroll 4s on d10+.", "costPerRank": 25, "maxRank": 4, "mcl": "any", "maintenancePerRank": 0.2 },
-    { "name": "Master Weaver",       "category": "Spellcaster", "prereq": "All masteries at rank 5+","description": "All your weaving dice improve by one size (e.g. d8 becomes d10, d10 becomes d12).",   "costPerRank": 40,  "maxRank": 1, "mcl": "any", "maintenancePerRank": 1.0  },
-    { "name": "Order Mastery",       "category": "Spellcaster", "prereq": "none",                    "description": "Mastery of Order (Black) magic. Each rank improves your weaving die and max spell level. +1 extra spell known/rank.", "costPerRank": 20, "maxRank": 9, "mcl": "any", "maintenancePerRank": 0.5 },
-    { "name": "Quick Counter",       "category": "Spellcaster", "prereq": "none",                    "description": "You may attempt a Spell Spotting check as a free action once per round.",             "costPerRank": 20,  "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0  },
-    { "name": "Re-Weaving",          "category": "Spellcaster", "prereq": "none",                    "description": "Once per round, if your weaving fails you may immediately attempt again at -5 to both dice.", "costPerRank": 25, "maxRank": 1, "mcl": "any", "maintenancePerRank": 1.0 },
-    { "name": "Somatic Casting",     "category": "Spellcaster", "prereq": "none",                    "description": "You can weave spells while bound or restrained, using only body movement.",           "costPerRank": 15,  "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0  },
-    { "name": "Source Seizing",      "category": "Spellcaster", "prereq": "Draw Mana",               "description": "Fast mana recovery — 3 consecutive WP checks 25, takes Torso damage each action. Dangerous.", "costPerRank": 5, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Spell Thrower",       "category": "Spellcaster", "prereq": "none",                    "description": "Touch spells can be thrown up to 20 feet.",                                           "costPerRank": 20,  "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0  },
-    { "name": "Spellcrafting",       "category": "Spellcaster", "prereq": "none",                    "description": "+1 Spell Hook /rank.",                                                               "costPerRank": 10,  "maxRank": 6, "mcl": "any", "maintenancePerRank": 0.5  },
-    { "name": "Summoner's Silence",  "category": "Spellcaster", "prereq": "none",                    "description": "You can communicate with summoned creatures telepathically within 100 feet.",         "costPerRank": 20,  "maxRank": 1, "mcl": "any", "maintenancePerRank": 1.0  },
-    { "name": "Touch Master",        "category": "Spellcaster", "prereq": "none",                    "description": "+10 feet to the range of all touch spells /rank.",                                    "costPerRank": 20,  "maxRank": 5, "mcl": "any", "maintenancePerRank": 0.2  },
-    { "name": "Verbal Casting",      "category": "Spellcaster", "prereq": "none",                    "description": "You can weave spells using only verbal components — no hands required.",             "costPerRank": 15,  "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0  },
-    { "name": "Will Mastery",        "category": "Spellcaster", "prereq": "none",                    "description": "Mastery of Will (Blue) magic. Each rank improves your weaving die and max spell level. +1 Spell Hook per 3 ranks.", "costPerRank": 20, "maxRank": 9, "mcl": "any", "maintenancePerRank": 0.5 },
-    { "name": "Arcane Aim",          "category": "Spellcaster", "prereq": "none",                    "description": "+1 Precision with all touch spells /rank. Total Precision can never exceed 25.",      "costPerRank": 6,   "maxRank": 10,"mcl": "any", "maintenancePerRank": 0.0  }
+    {
+      "name": "Arcane Aim",
+      "category": "spellcaster",
+      "prereq": "none",
+      "description": "+1 Precision on all spells that roll location /rank.",
+      "costPerRank": 5,
+      "maxRank": "10",
+      "mcl": "any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Draw Mana",
+      "category": "spellcaster",
+      "prereq": "none",
+      "description": "Clear your mind of all thought and open yourself, drawing Mana from the local Mana Pool.  The ritual takes 10 minutes to perform, after which you roll all of your weaving dice. The total sum is your new Mana total. This mana does not stack with any mana you were previously holding. The ritual breaks concentration. 4 hour cooldown.",
+      "costPerRank": 15,
+      "maxRank": "1",
+      "mcl": "any",
+      "maintenancePerRank": 0.5
+    },
+    {
+      "name": "Arcane Mentality",
+      "category": "spellcaster",
+      "prereq": "none",
+      "description": "Learn to permanently alter your mental state, allowing you to multitask the first phase of spell weaving. Grants 1 free action towards the weaving of any spell.  Passive skill.",
+      "costPerRank": 50,
+      "maxRank": "1",
+      "mcl": "any",
+      "maintenancePerRank": 1.0
+    },
+    {
+      "name": "Arcane Mindset",
+      "category": "spellcaster",
+      "prereq": "14+ Awareness",
+      "description": "You can relearn any spell you have previously known in one minute of study with your notes.",
+      "costPerRank": 15,
+      "maxRank": "1",
+      "mcl": "any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Augmented Mentality",
+      "category": "spellcaster",
+      "prereq": "none",
+      "description": "Learn to permanently alter your mental state, granting you one free action each round to use for concentration costs. Passive skill.",
+      "costPerRank": 30,
+      "maxRank": "1",
+      "mcl": "any",
+      "maintenancePerRank": 1.0
+    },
+    {
+      "name": "Careful Casting",
+      "category": "spellcaster",
+      "prereq": "none",
+      "description": "You gain +1 on both weaving dice for every 3 actions spent on that attempt.",
+      "costPerRank": 40,
+      "maxRank": "1",
+      "mcl": "any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Chaos Mastery",
+      "category": "spellcaster",
+      "prereq": "none",
+      "description": "Determines the quality of your dice and maximum spell level when channeling the power of Chaos.\n                 White Die Quality                               Maximum Spell Level    \nRank 1:             1d3                                                                    1\nRank 2:             1d4                                                                    2\nRank 3:             1d4                                                                    3 \nRank 4:             1d6                                                                    4\nRank 5:             1d6                                                                    5\nRank 6:             1d8                                                                    6\nRank 7:             1d8                                                                    7\nRank 8:             1d10                                                                  8\nRank 9:             1d10                                                                  9\n                          1d12 *only possible with Chaos Weaver",
+      "costPerRank": 22,
+      "maxRank": "9",
+      "mcl": "11",
+      "maintenancePerRank": 0.5
+    },
+    {
+      "name": "Chi Mastery",
+      "category": "spellcaster",
+      "prereq": "none",
+      "description": "Determines the quality of your dice and maximum spell level when channeling the power of Chi. Also provides extra Torso Hit points, which improve other locations in turn as normal.\n                 Green Die Quality        Maximum Spell Level     Bonus Torso HP\nRank 1:             1d3                                    1                                  1\nRank 2:             1d4                                    2                                  2\nRank 3:             1d4                                    3                                  3 \nRank 4:             1d6                                    4                                  4\nRank 5:             1d6                                    5                                  5\nRank 6:             1d8                                    6                                  6\nRank 7:             1d8                                    7                                  7\nRank 8:             1d10                                  8                                  8\nRank 9:             1d10                                  9                                  9\n                          1d12 *only possible with Master Weaver",
+      "costPerRank": 18,
+      "maxRank": "9",
+      "mcl": "9",
+      "maintenancePerRank": 0.5
+    },
+    {
+      "name": "Elemental Mastery",
+      "category": "spellcaster",
+      "prereq": "none",
+      "description": "Determines the quality of your dice and maximum spell level when channeling Elemental powers.\n                 Red Die Quality                                Maximum Spell Level    \nRank 1:             1d3                                                                    1\nRank 2:             1d4                                                                    2\nRank 3:             1d4                                                                    3 \nRank 4:             1d6                                                                    4\nRank 5:             1d6                                                                    5\nRank 6:             1d8                                                                    6\nRank 7:             1d8                                                                    7\nRank 8:             1d10                                                                  8\nRank 9:             1d10                                                                  9\n                          1d12 *only possible with Master Weaver",
+      "costPerRank": 20,
+      "maxRank": "9",
+      "mcl": "10",
+      "maintenancePerRank": 0.5
+    },
+    {
+      "name": "Enduring Inscriptions",
+      "category": "spellcaster",
+      "prereq": "none",
+      "description": "The duration of all your Runes and Sigils is Quadrupled. (This stacks with other effects.)",
+      "costPerRank": 15,
+      "maxRank": "1",
+      "mcl": "any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Expanded Horizons",
+      "category": "spellcaster",
+      "prereq": "none",
+      "description": "You may know 1 more spell/rank",
+      "costPerRank": 4,
+      "maxRank": "20",
+      "mcl": "any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Focused Will",
+      "category": "spellcaster",
+      "prereq": "14+ Willpower",
+      "description": "Add half your Arcane Power to the difficulty of any attribute checks to resist your spells.",
+      "costPerRank": 30,
+      "maxRank": "1",
+      "mcl": "any",
+      "maintenancePerRank": 1.0
+    },
+    {
+      "name": "Hedge Wizard",
+      "category": "spellcaster",
+      "prereq": "12+ Willpower",
+      "description": "You gain access to one school of magic without a proper understanding or control of the underlying powers. You can learn, weave (and hang) spells of the chosen school only, and of a spell level no higher than your rank in this skill. When weaving a single d4 is rolled.",
+      "costPerRank": 20,
+      "maxRank": "3",
+      "mcl": "8",
+      "maintenancePerRank": 2.0
+    },
+    {
+      "name": "Mana Mastery",
+      "category": "spellcaster",
+      "prereq": "none",
+      "description": "Rank 1: Reroll all 1s when generating mana.\nRank 2: Also reroll all 2s on d6s or larger when generating mana.\nRank 3: Also reroll all 3s on d8s or larger when generating mana.\nRank 4: Also reroll all 4s on d10s when generating mana.",
+      "costPerRank": 25,
+      "maxRank": "4",
+      "mcl": "any",
+      "maintenancePerRank": 0.2
+    },
+    {
+      "name": "Master Weaver",
+      "category": "spellcaster",
+      "prereq": "none",
+      "description": "Your Weaving Dice are increased in Quality by 1. (d3 becomes d4, d4 becomes d6, etc until d10 becomes d12)",
+      "costPerRank": 50,
+      "maxRank": "1",
+      "mcl": "any",
+      "maintenancePerRank": 1.0
+    },
+    {
+      "name": "Order Mastery",
+      "category": "spellcaster",
+      "prereq": "none",
+      "description": "Determines the quality of your dice and maximum spell level when channeling the power of Order.  \n                Black Die Quality   Total Extra Spells Known    Maximum Spell Level    \nRank 1:             1d3                               1                                        1\nRank 2:             1d4                               2                                        2\nRank 3:             1d4                               3                                        3 \nRank 4:             1d6                               4                                        4\nRank 5:             1d6                               5                                        5\nRank 6:             1d8                               6                                        6\nRank 7:             1d8                               7                                        7\nRank 8:             1d10                             8                                        8\nRank 9:             1d10                             9                                        9\n                          1d12 *only possible with Master Weaver",
+      "costPerRank": 18,
+      "maxRank": "9",
+      "mcl": "9",
+      "maintenancePerRank": 0.5
+    },
+    {
+      "name": "Quick Counter",
+      "category": "spellcaster",
+      "prereq": "Will Mastery 4",
+      "description": "You may Weave Counterspells that are not hung using borrowed actions.",
+      "costPerRank": 25,
+      "maxRank": "1",
+      "mcl": "any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Re-Weaving",
+      "category": "spellcaster",
+      "prereq": "Sewing 70+",
+      "description": "You gain +1 on both weaving dice if you are attempting a spell you failed to cast in the last minute.",
+      "costPerRank": 20,
+      "maxRank": "1",
+      "mcl": "any",
+      "maintenancePerRank": 1.0
+    },
+    {
+      "name": "Somatic Casting",
+      "category": "spellcaster",
+      "prereq": "none",
+      "description": "You can hang spells leaving out only gestures, so that you can cast them without sound. Cannot be combined with Verbal Casting on any given spell.",
+      "costPerRank": 15,
+      "maxRank": "1",
+      "mcl": "any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Source Seizing",
+      "category": "spellcaster",
+      "prereq": "none",
+      "description": "You can attempt to regain mana at any time by seizing the source directly. this is a dangerous and painfull process, but can be accomplished quickly. When the caster first seizes the source, concentration is broken and any mana held is lost. The caster takes 1 Torso damage every action that she continues the process. Each action the caster may attempt a Willpower check 25. If the caster passes three consecutive checks they regain mana in the same way as a successful meditation, and need not hold the source any longer. The caster may choose to let go of the source at any time.",
+      "costPerRank": 5,
+      "maxRank": "1",
+      "mcl": "any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Spell Thrower",
+      "category": "spellcaster",
+      "prereq": "none",
+      "description": "Your throw stone ranges are increased by 20/40/60 when throwing Evoked or conjured balls. Stacks with Hurling.",
+      "costPerRank": 10,
+      "maxRank": "1",
+      "mcl": "any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Spellcrafting",
+      "category": "spellcaster",
+      "prereq": "none",
+      "description": "+1 Spell Hook/rank",
+      "costPerRank": 15,
+      "maxRank": "6",
+      "mcl": "any",
+      "maintenancePerRank": 0.5
+    },
+    {
+      "name": "Summoner's Silence",
+      "category": "spellcaster",
+      "prereq": "none",
+      "description": "Commands to your summoned creatures are given mentally, not verbally. This removes issues of range, and allows simple images to accompany commands for greater clarity.",
+      "costPerRank": 25,
+      "maxRank": "1",
+      "mcl": "any",
+      "maintenancePerRank": 1.0
+    },
+    {
+      "name": "Touch Master",
+      "category": "spellcaster",
+      "prereq": "none",
+      "description": "Touch spells become ranged attacks with a 5 foot range. Add your Arcane Power to your Ranged Bonus.",
+      "costPerRank": 20,
+      "maxRank": "5",
+      "mcl": "any",
+      "maintenancePerRank": 0.2
+    },
+    {
+      "name": "Verbal Casting",
+      "category": "spellcaster",
+      "prereq": "none",
+      "description": "You can hang spells leaving out only words, so that you can cast them without gestures. Cannot be combined with Somatic Casting on any given spell.",
+      "costPerRank": 15,
+      "maxRank": "1",
+      "mcl": "any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Will Mastery",
+      "category": "spellcaster",
+      "prereq": "none",
+      "description": "Determines the quality of your dice and maximum spell level when channeling the power of Will.\n                BLue Die Quality   Total Extra Spell Hooks     Maximum Spell Level    \nRank 1:             1d3                               0                                        1\nRank 2:             1d4                               0                                        2\nRank 3:             1d4                               1                                        3 \nRank 4:             1d6                               1                                        4\nRank 5:             1d6                               1                                        5\nRank 6:             1d8                               2                                        6\nRank 7:             1d8                               2                                        7\nRank 8:             1d10                             2                                        8\nRank 9:             1d10                             3                                        9\n                          1d12 *only possible with Master Weaver",
+      "costPerRank": 20,
+      "maxRank": "9",
+      "mcl": "10",
+      "maintenancePerRank": 0.5
+    },
+    {
+      "name": "Mana Font",
+      "category": "spellcaster",
+      "prereq": "none",
+      "description": "Gain 1 extra mana /rank when generating mana.",
+      "costPerRank": 15,
+      "maxRank": "10",
+      "mcl": "8",
+      "maintenancePerRank": 0.0
+    }
   ],
-
   "guild": [
-    { "name": "Formic Casting",    "category": "Guild", "guild": "Druid",       "prereq": "Druid guild level",       "description": "You can cast Druid form spells while in animal form.",                              "costPerRank": 25,  "maxRank": 1, "mcl": "any", "maintenancePerRank": 1.0 },
-    { "name": "Enduring Ghost",    "category": "Guild", "guild": "Sorcerer",    "prereq": "Sorcerer guild level",    "description": "Your Ghost Armor spells have double the number of hits before failing.",           "costPerRank": 25,  "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Smart Spells",      "category": "Guild", "guild": "Wizard",      "prereq": "Wizard guild level",      "description": "Your AOE spells can exclude targets of your choice.",                            "costPerRank": 25,  "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Totem Lag",         "category": "Guild", "guild": "Shaman",      "prereq": "Shaman guild level",      "description": "Your totem effects persist for 1 round after concentration ends.",                 "costPerRank": 25,  "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Speedy Summon",     "category": "Guild", "guild": "Witch",       "prereq": "Witch guild level",       "description": "Summoning soulbound creatures costs 1 fewer action.",                           "costPerRank": 25,  "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Guided Wrath",      "category": "Guild", "guild": "Warlock",     "prereq": "Warlock guild level",     "description": "Your evocation AOE spells can be shaped to exclude a 5-foot path.",              "costPerRank": 25,  "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Blade of Shadow",   "category": "Guild", "guild": "Mystic",      "prereq": "Mystic guild level",      "description": "Your summoned creatures gain Shadow Step — can teleport up to 10 feet /action.", "costPerRank": 25,  "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Source Seizure",    "category": "Guild", "guild": "Incantor",    "prereq": "Incantor guild level",    "description": "Source Seizing costs 0 actions instead of 1.",                                  "costPerRank": 25,  "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Careful Conjuring", "category": "Guild", "guild": "Witch Doctor","prereq": "Witch Doctor guild level","description": "Augment and Grow creature spells have their Constitution check reduced by 5.",  "costPerRank": 25,  "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Arcane Lore",       "category": "Guild", "guild": "Magi",        "prereq": "Magi guild level",        "description": "+25 on all Magic Lore and Identify checks.",                                  "costPerRank": 25,  "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 }
+    {
+      "name": "Formic Casting",
+      "category": "guild",
+      "prereq": "Druid Level 1",
+      "description": "When transformed you may weave Red, Green and Black with sounds and gestures suited to your form. (Augmentation, Divination and Nature)",
+      "costPerRank": 25,
+      "maxRank": "1",
+      "mcl": "any",
+      "maintenancePerRank": 1.0
+    },
+    {
+      "name": "Enduring Ghost",
+      "category": "guild",
+      "prereq": "Sorcerer level 1",
+      "description": "Your Ghost Armor lasts one more hit.",
+      "costPerRank": 25,
+      "maxRank": "1",
+      "mcl": "any",
+      "maintenancePerRank": 1.0
+    },
+    {
+      "name": "Smart Spells",
+      "category": "guild",
+      "prereq": "Wizard level 6",
+      "description": "Your Discerning spells do not draw arcs. Instead they fail to materialize in circles or spheres just large enough to spare your allies.",
+      "costPerRank": 25,
+      "maxRank": "1",
+      "mcl": "any",
+      "maintenancePerRank": 1.0
+    },
+    {
+      "name": "Totem Lag",
+      "category": "guild",
+      "prereq": "Shaman level 4",
+      "description": "When you activate a second totem of the same size, the first does not turn off until your next turn.  The effects can overlap.",
+      "costPerRank": 25,
+      "maxRank": "1",
+      "mcl": "any",
+      "maintenancePerRank": 1.0
+    },
+    {
+      "name": "Speedy Summon",
+      "category": "guild",
+      "prereq": "Witch level 6",
+      "description": "When you Summon Soulbound there is no delay.",
+      "costPerRank": 20,
+      "maxRank": "1",
+      "mcl": "any",
+      "maintenancePerRank": 1.0
+    }
   ],
-
   "divine": [
-    { "name": "Patron's Mark",      "category": "Divine", "prereq": "none",                    "description": "Receive the Mark of a Divine Patron. Choose a patron: Blood, Death, Iron, Life, Light, Mischief, Passion, Storms, War, or Wisdom. Gates all other Divine skills.", "costPerRank": 1,  "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0, "requiresChoice": "patron" },
-    { "name": "Divine Resilience",  "category": "Divine", "prereq": "Patron's Mark",           "description": "Reduce all damage taken by 1 /rank while your patron's aura is active.",           "costPerRank": 15, "maxRank": 3, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Divine Auras",       "category": "Divine", "prereq": "Patron's Mark",           "description": "Unlock one Divine Aura of your patron /rank. Max 4 auras (5 with Mark of Wisdom or Mark of Favour).", "costPerRank": 20, "maxRank": 5, "mcl": "any", "maintenancePerRank": 0.0, "requiresChoice": "aura" },
-    { "name": "Exalted Auras",      "category": "Divine", "prereq": "Divine Auras rank 2",    "description": "Your auras affect all allies within range, not just yourself.",                    "costPerRank": 15, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Divine Defence",     "category": "Divine", "prereq": "Patron's Mark",           "description": "Choose one Divine Defence available to your patron.",                              "costPerRank": 20, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0, "requiresChoice": "defence" },
-    { "name": "Divine Healing",     "category": "Divine", "prereq": "Patron's Mark",           "description": "Choose one Divine Healing ability available to your patron.",                     "costPerRank": 25, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0, "requiresChoice": "healing" },
-    { "name": "Divine Offence",     "category": "Divine", "prereq": "Patron's Mark",           "description": "Choose one Divine Offence ability available to your patron.",                     "costPerRank": 25, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0, "requiresChoice": "offence" },
-    { "name": "Benediction",        "category": "Divine", "prereq": "Patron's Mark",           "description": "Choose one Benediction available to your patron.",                                "costPerRank": 20, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0, "requiresChoice": "benediction" },
-    { "name": "Champion's Choice",  "category": "Divine", "prereq": "Divine Offence",          "description": "Gain a second Divine Offence ability.",                                           "costPerRank": 25, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0, "requiresChoice": "offence" },
-    { "name": "Mark of Favour",     "category": "Divine", "prereq": "Patron's Mark, Level 15+, GM granted", "description": "Your patron has elevated you to a higher standing. +1 Divine Aura slot (max 5). GM granted only.", "costPerRank": 0, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 }
+    {
+      "name": "Divine Affinity",
+      "category": "divine",
+      "prereq": "Mark of Life, Light or Mischief",
+      "description": "Your Charisma is increased to match your highest attribute. Cannot be shared.",
+      "costPerRank": 15,
+      "maxRank": "Passive",
+      "mcl": "Self",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Divine Armor",
+      "category": "divine",
+      "prereq": "Mark of Iron, War or Wisdom",
+      "description": "Your armor cannot be bypassed. This includes skills like armor piercing and spells like lightning bolt. Permanent passive",
+      "costPerRank": 20,
+      "maxRank": "Passive",
+      "mcl": "Self",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Divine Guard",
+      "category": "divine",
+      "prereq": "Mark of Death, Iron, Life, Passion, Storms or War",
+      "description": "You are protected, increasing your Natural Armor by 5. Cannot Be Shared",
+      "costPerRank": 15,
+      "maxRank": "Passive",
+      "mcl": "Self",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Divine Protection",
+      "category": "divine",
+      "prereq": "Mark of Death, Light, Mischief, Storms, War or Wisdom",
+      "description": "As a chosen favorite you are granted Immunity from Magical Fear, Mind Control, Charm, Sleep, and Paralysis. Chemical or other non magical versions of these affect you normally.",
+      "costPerRank": 15,
+      "maxRank": "Passive",
+      "mcl": "Self",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Divine resilience",
+      "category": "divine",
+      "prereq": "Mark of Blood, Life, Light, Storms or Wisdom",
+      "description": "As a chosen favorite you are granted Immunity from mind control and charm. You can also be safely magically healed even when critical.",
+      "costPerRank": 15,
+      "maxRank": "Passive",
+      "mcl": "Self",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Divine Transfer",
+      "category": "divine",
+      "prereq": "Mark of Blood, Death or Life",
+      "description": "You may move 2 Hit Points from your Torso to another body section for every action spent.",
+      "costPerRank": 15,
+      "maxRank": "1",
+      "mcl": "Self",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Divine Repose",
+      "category": "divine",
+      "prereq": "Mark of Death, Iron or Wisdom",
+      "description": "You are immune to slowing effects and cold damage.",
+      "costPerRank": 10,
+      "maxRank": "Passive",
+      "mcl": "Self",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Divine Appeal",
+      "category": "divine",
+      "prereq": "Mark of Mischief or Passion",
+      "description": "Any creature targeting you must pass a Willpower check equal to double your Charisma. (If shared through aura each affected ally's charisma is used for them.)",
+      "costPerRank": 10,
+      "maxRank": "Passive",
+      "mcl": "Self",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Divine Auras",
+      "category": "divine",
+      "prereq": "Any Mark",
+      "description": "You learn to emanate power from your person.  The specific Aura determines the effects. The Aura extends for 30 Feet and costs 1 action to call and to maintain.  If two actions per turn are used the radius increases to 100 Feet.  If three actions per turn are used the radius is increased to 300 Feet. You may only learn 4 Auras, unless you receive a Mark of Favour at high level.",
+      "costPerRank": 20,
+      "maxRank": "1,2 or 3 each round",
+      "mcl": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Aura of Alacrity",
+      "category": "divine",
+      "prereq": "Divine Auras\nMark or Shaman Symbol of Iron, Mischief, Passion, Storms or Wisdom.",
+      "description": "+10 Initiative for all affected allies",
+      "costPerRank": 10,
+      "maxRank": "1,2 or 3 each round",
+      "mcl": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Aura of Ardour",
+      "category": "divine",
+      "prereq": "Divine Auras\nMark of Mischief or Passion",
+      "description": "An invisible, subtle effect that enhances any and all emotions present in affected creatures. This effect tends to accumulate.",
+      "costPerRank": 10,
+      "maxRank": "1,2 or 3 each round",
+      "mcl": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Aura of Blood",
+      "category": "divine",
+      "prereq": "Divine Auras\nMark or Shaman Symbol of Blood",
+      "description": "A pulsating, scarlet light. All wounded allies (less than full HP), gain +1 Crit on all melee attacks.",
+      "costPerRank": 10,
+      "maxRank": "1,2 or 3 each round",
+      "mcl": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Aura of Crafting",
+      "category": "divine",
+      "prereq": "Divine Auras\nMark of Iron, Mischief, Passion or Wisdom",
+      "description": "An invisible, subtle effect granting +10 to all skill checks made by affected creatures.",
+      "costPerRank": 10,
+      "maxRank": "1,2 or 3 each round",
+      "mcl": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Aura of Damping",
+      "category": "divine",
+      "prereq": "Divine Auras\nMark or Shaman Symbol of Iron, Life, or Wisdom",
+      "description": "An invisible, subtle effect. All concentration costs by affected creatures are increased by (1).",
+      "costPerRank": 10,
+      "maxRank": "1,2 or 3 each round",
+      "mcl": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Aura of Death",
+      "category": "divine",
+      "prereq": "Divine Auras\nMark or Shaman Symbol of Death or War",
+      "description": "No healing can occur within the Aura.",
+      "costPerRank": 10,
+      "maxRank": "1,2 or 3 each round",
+      "mcl": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Aura of Despair",
+      "category": "divine",
+      "prereq": "Divine Auras\nMark or Shaman Symbol of Death, Iron, Life or Mischief",
+      "description": "An invisible, subtle effect that adds disadvantage to all Willpower, Awareness and Charisma  checks made by non allies within the aura.",
+      "costPerRank": 10,
+      "maxRank": "1,2 or 3 each round",
+      "mcl": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Aura of Empathy",
+      "category": "divine",
+      "prereq": "Divine Auras\nMark of Life, Passion or Wisdom",
+      "description": "A warm, orange tinted light emanates from you. You become aware of the the strongest emotion in every affected person, and how strong it is.",
+      "costPerRank": 10,
+      "maxRank": "1,2 or 3 each round",
+      "mcl": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Aura of Scattering",
+      "category": "divine",
+      "prereq": "Divine Auras\nMark of or Shaman Symbol  Iron, Storms or War",
+      "description": "All ranged attacks into, within or out of the Aura suffer an extra -4 penalty to hit.",
+      "costPerRank": 10,
+      "maxRank": "1,2 or 3 each round",
+      "mcl": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Aura of Focus",
+      "category": "divine",
+      "prereq": "Divine Auras\nMark of Iron, Light, Passion, Storms War or Wisdom",
+      "description": "An invisible, subtle effect that is strangely invigorating to you and your allies. +1 to the final combat or to hit roll. This can cause a melee critical or prevent a fumble, and increase Hit Surplus.",
+      "costPerRank": 10,
+      "maxRank": "1,2 or 3 each round",
+      "mcl": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Aura of Fortune",
+      "category": "divine",
+      "prereq": "Divine Auras\nMark of Blood, Mischief, Passion or War",
+      "description": "Anyone moving into combat gains +1 crit on their damage rolls that turn. (Friend and Foe)",
+      "costPerRank": 10,
+      "maxRank": "1,2 or 3 each round",
+      "mcl": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Aura of Fury",
+      "category": "divine",
+      "prereq": "Divine Auras\nMark or Shaman Symbol of Blood, Mischief, Passion, Storms or War",
+      "description": "An invisible, subtle effect that adds +5 to all Margins of Victory within the aura.",
+      "costPerRank": 10,
+      "maxRank": "1,2 or 3 each round",
+      "mcl": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Aura of Glory",
+      "category": "divine",
+      "prereq": "Divine Auras\nMark of Light, Mischief, Passion War or Wisdom",
+      "description": "An subtle, audible effect. To all affected creatures your voice is richer, your tone pure, and is almost audible music underscoring your actions and speech. You gain +3 Charisma in the view of all affected sentient creatures.",
+      "costPerRank": 10,
+      "maxRank": "1,2 or 3 each round",
+      "mcl": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Aura of Growth",
+      "category": "divine",
+      "prereq": "Divine Auras\nMark of Life",
+      "description": "One random affected ally gains 1 hit point each melee round and all (other) healing is increased by 1.",
+      "costPerRank": 10,
+      "maxRank": "1,2 or 3 each round",
+      "mcl": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Aura of Health",
+      "category": "divine",
+      "prereq": "Divine Auras\nMark or Shaman Symbol of Blood, Life, Light or Passion",
+      "description": "Adds advantage to all Strength, Constitution and Charisma  checks made by allies within the aura.",
+      "costPerRank": 10,
+      "maxRank": "1,2 or 3 each round",
+      "mcl": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Aura of Holy Wrath",
+      "category": "divine",
+      "prereq": "Divine Auras\nMark or Shaman Symbol of Light",
+      "description": "A harsh white light shines forth, excruciating the unholy. All affected Undead, Demonic and Evil creatures lose 1 action/round and take 1 Torso damage/round.",
+      "costPerRank": 10,
+      "maxRank": "1,2 or 3 each round",
+      "mcl": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Aura of Light",
+      "category": "divine",
+      "prereq": "Divine Auras\nMark of Iron, Life, Light, Passion, Storms or Wisdom",
+      "description": "A bright warm white light shines forth all around you. All affected allies share the benefits of your Divine Defence.",
+      "costPerRank": 10,
+      "maxRank": "1,2 or 3 each round",
+      "mcl": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Aura of Pride",
+      "category": "divine",
+      "prereq": "Divine Auras\nMark of Mischief or Wisdom",
+      "description": "An invisible, subtle effect causes all Holy, Righteous and morally superior creatures lose 1 action/round. Any creature proud of itself, it's actions or it's endeavor will be affected.",
+      "costPerRank": 10,
+      "maxRank": "1,2 or 3 each round",
+      "mcl": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Aura of Rest",
+      "category": "divine",
+      "prereq": "Divine Auras\nMark of Blood,Death, Life Mischief or Wisdom",
+      "description": "An invisible, subtle effect that completes erases all fatigue from all effected creatures. Fatigue will begin to accrue normally when leaving the effect. Note that going without sleep will eventually have consequences other than fatigue.",
+      "costPerRank": 10,
+      "maxRank": "1,2 or 3 each round",
+      "mcl": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Aura of Shadows",
+      "category": "divine",
+      "prereq": "Divine Auras\nMark of Blood, Death, Iron, Life, Mischief, Passion, War or Wisdom",
+      "description": "Light dims and shadows deepen around you. Advantage on all sneaking checks made within the aura and grants your Divine Defence to all affected allies",
+      "costPerRank": 10,
+      "maxRank": "1,2 or 3 each round",
+      "mcl": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Aura of Silence",
+      "category": "divine",
+      "prereq": "Divine Auras\nMark or Shaman Symbol of Iron, Light, Mischief, Shadow or Wisdom",
+      "description": "All sound is prevented within the aura.",
+      "costPerRank": 10,
+      "maxRank": "1,2 or 3 each round",
+      "mcl": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Aura of Spirit",
+      "category": "divine",
+      "prereq": "Divine Auras\nMark of Death, Iron, Light, Mischief, War or Wisdom",
+      "description": "An invisible, subtle effect that grants  a clarity of focus to you and your allies. Any Spells cast by affected allies gain +50% range or duration. (caster's choice.)",
+      "costPerRank": 10,
+      "maxRank": "1,2 or 3 each round",
+      "mcl": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Aura of Truth",
+      "category": "divine",
+      "prereq": "Divine Auras\nMark of or Shaman Symbol Death, Light, Mischief, Storms or Wisdom",
+      "description": "A pale light that dispels all illusions only so long as they are affected by the aura. Any Awarneess checks gain advantage.",
+      "costPerRank": 10,
+      "maxRank": "1,2 or 3 each round",
+      "mcl": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Aura of Vigilance",
+      "category": "divine",
+      "prereq": "Divine Auras\nMark of Death, War or Wisdom",
+      "description": "An invisible, subtle effect. All affected allies cannot be surprised or flanked.",
+      "costPerRank": 10,
+      "maxRank": "1,2 or 3 each round",
+      "mcl": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Aura of Winds",
+      "category": "divine",
+      "prereq": "Divine Auras\nMark or Shaman Symbol of Storms",
+      "description": "Wind is created or increased gradually over time, adding 1 mph every melee round, up to a maximum of one hundred mph. The size of aura chosen determines the type of effect. 1 action version moves air around the perimeter of the aura. The 2 action version moves air in the direction you are facing across the width of the aura. The three action version moves air at a steady 10mph upward in the whole area. Outdoors this will affect the weather for miles around. It takes 1 minute to change each category above the aura: Clear, some clouds,overcast,dark clouds, rain,rainstorm,thunderstorm. The surrounding area will be slower depending on distance. How quickly the new weather dissipates is situational and hard to predict.",
+      "costPerRank": 10,
+      "maxRank": "1,2 or 3 each round",
+      "mcl": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Exalted Auras",
+      "category": "divine",
+      "prereq": "Divine Auras",
+      "description": "Your Auras require 1 fewer action/round to maintain, but it still costs 1 action to change auras.",
+      "costPerRank": 15,
+      "maxRank": "Passive",
+      "mcl": "Self",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Extended Auras",
+      "category": "divine",
+      "prereq": "Divine Auras",
+      "description": "Your Auras extend 50% farther. (usually 45 Feet, 150 Feet, 450 Feet.)",
+      "costPerRank": 15,
+      "maxRank": "Passive",
+      "mcl": "Self",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Exalted Focus",
+      "category": "divine",
+      "prereq": "Aura of Focus",
+      "description": "Your Aura of Focus is improved. +2 to the final combat or to hit roll instead of +1.",
+      "costPerRank": 10,
+      "maxRank": "Passive",
+      "mcl": "Self",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Bless",
+      "category": "divine",
+      "prereq": "Mark of Iron, Life, Light, Storms, War or Wisdom",
+      "description": "Target willing creature gains +1 on any die roll of their choice within 10 minutes. No creature can receive more than 1 blessing each day.  Costs 1 action per target.",
+      "costPerRank": 15,
+      "maxRank": "1/target",
+      "mcl": "50",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Curse",
+      "category": "divine",
+      "prereq": "Mark of Blood, Death, Iron, Passion or Wisdom",
+      "description": "Target creature suffers -2 on it's next die roll. No creature can be cursed more than once per day.",
+      "costPerRank": 15,
+      "maxRank": "1/target",
+      "mcl": "50",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Exhort",
+      "category": "divine",
+      "prereq": "Mark of Blood, Iron, Life, Mischief, Passion, Storms or Wisdom",
+      "description": "Target creature gains 1 action. No creature can be Exhorted more than once per day.",
+      "costPerRank": 10,
+      "maxRank": "0",
+      "mcl": "50",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Hallow",
+      "category": "divine",
+      "prereq": "Mark of Death, Life, Light, Mischief or Passion",
+      "description": "The next damage taken by target creature today will almost certainly (95%) be prevented by a twist of fate. You may only bestow this on a single creature, once a day. You may use it on yourself.",
+      "costPerRank": 25,
+      "maxRank": "2",
+      "mcl": "30",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Becalm",
+      "category": "divine",
+      "prereq": "Mark of Death, Light, War or Wisdom",
+      "description": "Target creature will pass their next Willpower check within 1 hour. No given creature can be Becalmed more than once/day.",
+      "costPerRank": 20,
+      "maxRank": "2",
+      "mcl": "30",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Exalted Benedictions",
+      "category": "divine",
+      "prereq": "Bless, Exhort or Hallow",
+      "description": "Your benedictions now also grants 1 point of healing.",
+      "costPerRank": 10,
+      "maxRank": "Passive",
+      "mcl": "Self",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Prayer",
+      "category": "divine",
+      "prereq": "Level 5 and\nBless, Exhort or Becalm",
+      "description": "Grants your Benediction to all Allies within 30 Feet who can hear it, even if they have already received it today. Costs 2 actions. Can only be used once per day.",
+      "costPerRank": 20,
+      "maxRank": "2",
+      "mcl": "30",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Exalted Prayer",
+      "category": "divine",
+      "prereq": "Prayer",
+      "description": "Your Prayer affects allies within 75 Feet",
+      "costPerRank": 10,
+      "maxRank": "Passive",
+      "mcl": "Self",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Amplify curse",
+      "category": "divine",
+      "prereq": "Curse",
+      "description": "Your curses cause -4 instead of -2.",
+      "costPerRank": 10,
+      "maxRank": "Passive",
+      "mcl": "Self",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Commune",
+      "category": "divine",
+      "prereq": "Level 5",
+      "description": "Meditate for 1-100 min, (you never know how long it will take). Ask your Deity a yes or no question. The GM will roll d20: On a roll of 3-20 the GM will tell you the real answer. On a roll of 2 the GM will always say No, and on a roll of 1 the GM will always say yes. (This gives the right answer 95% of the time) Repeated or excessive questions may anger your god.",
+      "costPerRank": 10,
+      "maxRank": "1-100 min",
+      "mcl": "Self",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Dispel Evil",
+      "category": "divine",
+      "prereq": "Mark of Light or Passion or Wisdom",
+      "description": "Instigate a test of wills with target item or spellcaster using an unholy power. Roll a Willpower check and add your Arcane Power once for each action you spend focusing on this attempt in the turn. The Target does as well, if able. If successful an item is cleansed of all unholy power. An evil priest or spellcaster  is cut off from their unholy powers for a duration of 1 action per point they lost the contest by. Failure has no consequences for the caster. Curses are removed on a roll of 40 or higher.",
+      "costPerRank": 20,
+      "maxRank": "Special",
+      "mcl": "50",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Dispel Magic",
+      "category": "divine",
+      "prereq": "Mark of Death, Iron, Light, or Wisdom",
+      "description": "Instigate a test of wills with target magical item or spellcaster. Roll a Willpower check and add your Arcane Power once for each action you spend focusing on this attempt in the turn. The Target does as well, if able. Success ends the effect or removes all magic from the item. Very powerful items will only be temporarily suppressed.",
+      "costPerRank": 20,
+      "maxRank": "Special",
+      "mcl": "51",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Banish",
+      "category": "divine",
+      "prereq": "Marks Death, Storms, War or Wisdom",
+      "description": "Instigate a test of wills with a creature native to the following Planes: Astral,  Elemental, Outer or any Divine. Roll a Willpower check and add your Arcane Power once for each action you spend focusing on this attempt in the turn. The Target does as well, if able. The difference accrues as expulsion points. If the total expulsion points ever drops below zero the Banishment has failed. If they exceed the current total hit points from all body sections the Banishment suceeds and the target is returned instantly to their native plane. The contest continues until resolved, or the range is exceeded. Both paties choose each round how many actions to devote to the contest. A banished creature cannot return to the Prime Material Plane until 3 full moons have passed.",
+      "costPerRank": 10,
+      "maxRank": "2 or 3",
+      "mcl": "Special",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Guided Wrath",
+      "category": "divine",
+      "prereq": "Mark or Shaman Symbol of Death, Iron, Light, Mischief, Passion, Storms, War or Wisdom",
+      "description": "Open yourself to Divine guidance in battle. Replace your Dexterity based Expertise bonus with your Willpower based Arcane Power in all combat situations. Also replace your Strength damage bonus with half of your Arcane Power.",
+      "costPerRank": 15,
+      "maxRank": "Passive",
+      "mcl": "Self",
+      "maintenancePerRank": 1.0
+    },
+    {
+      "name": "Prayer of Renewal",
+      "category": "divine",
+      "prereq": "Any Mark",
+      "description": "Meditate for 15 minutes. Restore all your daily divine ability uses. 1/week.",
+      "costPerRank": 10,
+      "maxRank": "15 minutes",
+      "mcl": "Self",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Blood Rune",
+      "category": "divine",
+      "prereq": "Mark of Blood, Passion, War or Wisdom",
+      "description": "Tracing this glyph with the fresh blood of a living creature will heal 1 HP/round to the affected body section, and deal 2 Torso damage/round to the source of the blood.",
+      "costPerRank": 30,
+      "maxRank": "1",
+      "mcl": "Touch",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Grafting Glyph",
+      "category": "divine",
+      "prereq": "Mark of Iron, Mischief or Wisdom",
+      "description": "Tracing the Glyph on the skin of a creature with devotion will cause that Body section to Heal 1 HP/hour until it is fully healed. You lose 1d4 Torso HP when drawing the glyph. No creature can have more than one such Glyph at a time.",
+      "costPerRank": 30,
+      "maxRank": "1",
+      "mcl": "Touch",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Rain of Renewal",
+      "category": "divine",
+      "prereq": "Mark of Life, Light, Passion,Storms or Wisdom",
+      "description": "Gentle Rain falls in a 10 Foot radius circle around the caster, healing 1 hit point to all body section. Critical injuries are not affected. Can be used twice per day, at least two hours apart.",
+      "costPerRank": 30,
+      "maxRank": "2",
+      "mcl": "10",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Blade of shadow",
+      "category": "divine",
+      "prereq": "Mark of Death, Iron,Mischief, War or Wisdom",
+      "description": "A smoky melee weapon of whatever type the caster chooses appears and strikes a chosen target. Ranged Attack, roll to hit (2d10+your Dex based Expertise bonus). No penalties of any kind apply. Damage is 1d6+Dex based Ranged bonus.",
+      "costPerRank": 30,
+      "maxRank": "2",
+      "mcl": "50",
+      "maintenancePerRank": 1.0
+    },
+    {
+      "name": "Blight/Smite",
+      "category": "divine",
+      "prereq": "Mark of Blood, Death, Life, Light or Passion",
+      "description": "Target Creature suffers 1d10 Torso Damage, bypassing artificial armor and shields. No bonuses apply, ever.",
+      "costPerRank": 30,
+      "maxRank": "2",
+      "mcl": "50",
+      "maintenancePerRank": 1.0
+    },
+    {
+      "name": "Project",
+      "category": "divine",
+      "prereq": "Mark or Shaman Symbol of Mischief or Wisdom",
+      "description": "You appear to be two feet to the left, right, forward or rear of your actual position. The illusion is potent and will defeat most methods of detection, but not physical contact. Small differences such as footing on unlevel terrain are seamlessly corrected. Once established the direction does not change until concentration is released.",
+      "costPerRank": 25,
+      "maxRank": "1",
+      "mcl": "2",
+      "maintenancePerRank": 1.0
+    },
+    {
+      "name": "Glyph of Union",
+      "category": "divine",
+      "prereq": "Mark of Iron, Mischief, Passion or Wisdom.",
+      "description": "You and target creature within 40 feet each roll a strength check, modified by relative size, elevation and anchorage. The loser is pulled to the winner provided there is a reasonably clear path.",
+      "costPerRank": 30,
+      "maxRank": "2",
+      "mcl": "40",
+      "maintenancePerRank": 1.0
+    },
+    {
+      "name": "Kettle Vine",
+      "category": "divine",
+      "prereq": "Mark of Life or Mischief",
+      "description": "A nettlevine grows out of the ground and attempts to ensnare a chosen target. The creature must pass an awareness check 25 or be ensnared. Once ensnared a creature that attempts to move more than 3 feet must pass a Strength check 25 to break free.",
+      "costPerRank": 30,
+      "maxRank": "2",
+      "mcl": "50",
+      "maintenancePerRank": 1.0
+    },
+    {
+      "name": "Spiritual Hammer",
+      "category": "divine",
+      "prereq": "Mark of Iron, Light, Storms, War or Wisdom",
+      "description": "Creates a translucent melee weapon of whatever type the caster chooses streaks towards the chosen target. Ranged Attack, roll do hit (2d10+your Arcane Power). No penalties of any kind apply and your Ranged Precision is 20. Damage is 1d6+your Arcane Power /2.",
+      "costPerRank": 30,
+      "maxRank": "2",
+      "mcl": "50",
+      "maintenancePerRank": 1.0
+    },
+    {
+      "name": "Flash",
+      "category": "divine",
+      "prereq": "Mark of Light, Mischief or Storms",
+      "description": "You and your gear transform into a bolt of lightning and , move to a visible location with a direct open path at least 1 foot diameter, within 200 feet. The actual arrival location will scatter 10% of distance moved. If you would appear in solid matter the effect may fail, or scatter again.",
+      "costPerRank": 30,
+      "maxRank": "2",
+      "mcl": "200",
+      "maintenancePerRank": 1.0
+    },
+    {
+      "name": "Consuming Kiss",
+      "category": "divine",
+      "prereq": "Mark of Mischief or Passion",
+      "description": "Place a 3 word compulsion upon a creature whose lips you touch with your own, such as \"you love me\", which colours all of their thinking for the duration unless they pass a Willpower check equal to double your charisma. Receptive or tempted creatures have disadvantage on the check",
+      "costPerRank": 30,
+      "maxRank": "2",
+      "mcl": "1 sentient creature",
+      "maintenancePerRank": 1.0
+    },
+    {
+      "name": "Highlight",
+      "category": "divine",
+      "prereq": "Mark of War",
+      "description": "A pillar of bright light appears around target creature. All ranged attacks against that creature ignore all penalties. Cooldown: 4 hours.",
+      "costPerRank": 30,
+      "maxRank": "1 each round",
+      "mcl": "Self",
+      "maintenancePerRank": 1.0
+    },
+    {
+      "name": "Exalted Offence",
+      "category": "divine",
+      "prereq": "Blade of Shadow, Blight/Smite, Glyph of Union, Kettle Vine or Spiritual Hammer",
+      "description": "Your Divine Offense gains 50% more range and +3 To Hit, Damage, and Ability checks, as applicable.",
+      "costPerRank": 20,
+      "maxRank": "Passive",
+      "mcl": "75",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Undertake Affliction",
+      "category": "divine",
+      "prereq": "Mark of Blood, Death, Life, Light, Passion, Storms or War.",
+      "description": "Cure disease, curse, blindness or even some corruption by taking it upon yourself.",
+      "costPerRank": 5,
+      "maxRank": "2",
+      "mcl": "Touch",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Enhanced Projection",
+      "category": "divine",
+      "prereq": "Project",
+      "description": "Your Projection range is increased to 15 feet, and you may stop it's movement while you move, at the cost of increased concentration. i.e: (2). Once you reduce back to cencentration (1) the project will maintain its distance and direction from you. If you exceed the range the projection will move with you, at max range.",
+      "costPerRank": 15,
+      "maxRank": "2",
+      "mcl": "50",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Mark of Favour",
+      "category": "divine",
+      "prereq": "Level 15. \nDivine approval",
+      "description": "Must be granted by your Patron, usually after a vision quest. This unlocks skills below and also allows you to learn one more Aura.",
+      "costPerRank": 1,
+      "maxRank": "1",
+      "mcl": "Self",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Aura of Purity.",
+      "category": "divine",
+      "prereq": "Mark of Favour\nExalted Auras\nMark of Death, Iron, Light, War or Wisdom",
+      "description": "Prevents all active magic within range. The range is 50% of other auras and costs 1 more action /round than other auras.",
+      "costPerRank": 10,
+      "maxRank": "2,3 or 4 each round",
+      "mcl": "15, 50 or 150",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Ordination",
+      "category": "divine",
+      "prereq": "Mark of Favour",
+      "description": "Gain the power to bestow your Patron's Mark. You and the willing target must pray for at least 3 hours in a place of importance to you Deity. Both You and the target must pass a Willpower Check 25 or the ritual fails. That target may not attempt the ritual again for one year.",
+      "costPerRank": 1,
+      "maxRank": "Special",
+      "mcl": "Special",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Favoured Aura",
+      "category": "divine",
+      "prereq": "Mark of Favour Exalted Auras Extended Auras",
+      "description": "Choose one of the Auras you already know to designate as Favoured. That Aura no longer costs any actions. You may combine it with any other Aura you know. This does not alter the action cost of the other Aura.",
+      "costPerRank": 10,
+      "maxRank": "1,2 or 3 each round",
+      "mcl": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Glorious Hammer",
+      "category": "divine",
+      "prereq": "Mark of Favour. Exalted Hammer",
+      "description": "Your Spiritual Hammer range is increased to 125 Feet and the damage increased to 1d8+ your Arcane Power.",
+      "costPerRank": 25,
+      "maxRank": "3",
+      "mcl": "150",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Glorious Blessings",
+      "category": "divine",
+      "prereq": "Mark of favour Exalted blessings",
+      "description": "Your blessings now grant +1d4 instead of +1, and heals them for 3 hit points instead of 1.",
+      "costPerRank": 25,
+      "maxRank": "Passive",
+      "mcl": "Self",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Champion's Choice",
+      "category": "divine",
+      "prereq": "Mark of Favour",
+      "description": "You may learn a second Divine Offence, or Divine Benediction, or Divine Defence.",
+      "costPerRank": 25,
+      "maxRank": "Passive",
+      "mcl": "Self",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Champion's Charge",
+      "category": "divine",
+      "prereq": "Mark of Favour",
+      "description": "Your melee is resolved first in the combat round. If you end that melee out of combat you may move to join another within half of your maximum movement. You may participate in the second melee, with 2 free actions as well as any saved. Under no circumstances can you join a third melee.",
+      "costPerRank": 25,
+      "maxRank": "Passive",
+      "mcl": "Self",
+      "maintenancePerRank": 0.0
+    }
   ],
-
   "balance": [
-    { "name": "Studious Dedication","category": "Balance", "prereq": "none",                   "description": "Commit to the path of inner mastery. Gates all Balance skills. While in combat you must be unarmed and unarmored to maintain your discipline.", "costPerRank": 25, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Chi Shield",         "category": "Balance", "prereq": "Studious Dedication",    "description": "Build an emergency reserve of Chi HP. Passively: 1 HP /point applied before critical damage. Actively: spend points to reduce magic damage by 1d6/point to all affected locations.", "costPerRank": 10, "maxRank": 10, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Wind Stance",        "category": "Balance", "prereq": "Studious Dedication",    "description": "While in Wind Stance: +1 foot/action movement and +1 Evasion /rank. -1 to all ranged attacks against you per 2 ranks (round down). Rank 3: Wall jump at double normal height. Rank 6: Run along walls briefly. Rank 9: Run on water briefly. Switching stances costs 1 action (0 with Stance Dancing).", "costPerRank": 5, "maxRank": 9, "mcl": 2, "maintenancePerRank": 0.0 },
-    { "name": "Wave Stance",        "category": "Balance", "prereq": "Studious Dedication",    "description": "While in Wave Stance: +1 Expertise, +1 Precision and +1 on all Dexterity checks /rank. Switching stances costs 1 action (0 with Stance Dancing).", "costPerRank": 5, "maxRank": 5, "mcl": 2, "maintenancePerRank": 0.0 },
-    { "name": "Stone Stance",       "category": "Balance", "prereq": "Studious Dedication",    "description": "While in Stone Stance: +1 Damage and +1 on all Strength checks /rank. Switching stances costs 1 action (0 with Stance Dancing).", "costPerRank": 6, "maxRank": 4, "mcl": 2, "maintenancePerRank": 0.0 },
-    { "name": "Flame Stance",       "category": "Balance", "prereq": "Studious Dedication, Chi Shield rank 1", "description": "While in Flame Stance: Your Chi Shield has double effect (2 HP or 2d6 /point). Gain advantage on all Constitution and Willpower checks. Switching stances costs 1 action (0 with Stance Dancing).", "costPerRank": 10, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Stance Dancing",     "category": "Balance", "prereq": "Studious Dedication",    "description": "Switching stances now costs 0 actions instead of 1. You cannot switch stances twice in the same melee round.", "costPerRank": 25, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Martial Artist",     "category": "Balance", "prereq": "Studious Dedication",    "description": "When fighting unarmed you use d12 instead of d10 for combat and d4 instead of d3 for damage.", "costPerRank": 15, "maxRank": 1, "mcl": "any", "maintenancePerRank": 1.0 },
-    { "name": "Awakened Focus",     "category": "Balance", "prereq": "Inner Focus 50+",        "description": "You can cure yourself of fear and paralysis by passing an instant Inner Focus check (1 action).", "costPerRank": 10, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Enlightened Focus",  "category": "Balance", "prereq": "Inner Focus 90+",        "description": "Cure fear, paralysis, disease, poison, charm and curse effects via Inner Focus check. Each requires a successful skill roll.", "costPerRank": 15, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "The Search for Enlightenment", "category": "Balance", "prereq": "Inner Focus 90+", "description": "+1 to all attribute check bonuses /rank. Does not raise attributes.", "costPerRank": 25, "maxRank": 3, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Zen in Motion",      "category": "Balance", "prereq": "Inner Focus 80+",        "description": "Once per round, roll a WP or AW check 25. If passed, gain 1 extra action this turn. No penalty for failure.", "costPerRank": 50, "maxRank": 1, "mcl": 10, "maintenancePerRank": 0.0, "strictMCL": true }
+    {
+      "name": "Studious Dedication",
+      "category": "balance",
+      "prereq": "none",
+      "description": "Dedication to the monastic creed of humility, self improvement, and diligence. You may not use any weapons or wear any armor in combat. Every level you must spend at least 5 points on the Inner Focus general skill until it reaches the limit. This is the source of your mystical power. Only through the hard work of self improvement can it be fully realized. As long as this discipline is maintained you gain 1 action every round for every 6 full levels.",
+      "costPerRank": 1,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 4.0
+    },
+    {
+      "name": "Concussive Blow",
+      "category": "balance",
+      "prereq": "Studious Dedication",
+      "description": "Special Attack. The attack bypasses 3 armor /rank. The damage is delayed until the start of next round's combat phase.",
+      "costPerRank": 10,
+      "maxRank": "4",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Numbing Blow",
+      "category": "balance",
+      "prereq": "Studious Dedication",
+      "description": "Special Attack:  Drive your essence into the target's pressure points, numbing the area instead of dealing damage. This penetrates most armor but not shields. The effect of the blow depends on the location hit. Limbs are disabled for 2 rounds with no save. Blows to the Torso stun the target for 1 round unless they pass a Constitution Check 25. Blows to the head  stun the target for 1 round unless they pass a Willpower Check 25.",
+      "costPerRank": 15,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Chi Shield",
+      "category": "balance",
+      "prereq": "Studious Dedication",
+      "description": "You have a Chi Shield of 1 HP/rank, which is applied before any critical damage. It regenerates 1 HP/hour. Alternatively, The Chi Shield can be used to counter magical damage before any Hit Points are lost, absorbing 1d6/point per point of Chi Shield used.",
+      "costPerRank": 5,
+      "maxRank": "15",
+      "mcl": "10",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Wind's Whisper",
+      "category": "balance",
+      "prereq": "Studious Dedication",
+      "description": "Recieve the guidance of the wind, increasing your Precision and Evasion by 1/rank.    Total Precision can never exceed 25. Total Evasion can never exceed 20.",
+      "costPerRank": 10,
+      "maxRank": "8",
+      "mcl": "15",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Enlightened Focus",
+      "category": "balance",
+      "prereq": "Studious Dedication\nInner Focus 90+",
+      "description": "You can cure yourself of fear and paralysis by passing an instant Inner focus check (1 action) .\nYou can cure yourself of disease and poison by raising your Constitution with Inner Focus. You can rid yourself of Charm and Curse effects by raising your WP with Inner Focus, even if the effect would normally stop you from attempting to remove it.\nAll of these require a successful skill roll.",
+      "costPerRank": 10,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Mystic Strikes",
+      "category": "balance",
+      "prereq": "Studious Dedication",
+      "description": "Your unarmed strikes count as magical.",
+      "costPerRank": 5,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Wind Stance",
+      "category": "balance",
+      "prereq": "Studious Dedication",
+      "description": "+1 foot/ action and +1 Evasion /rank, -1 Penalty to all ranged attacks aginst you /2ranks, as well as the abilities shown below, while using this stance. \nRank 3: You can wall jump double the height of your normal jump. \nRank 6: You can run along walls for short distances. \nRank 9: You can now run on water for short distances.",
+      "costPerRank": 6,
+      "maxRank": "9",
+      "mcl": "4",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Wave Stance",
+      "category": "balance",
+      "prereq": "Studious Dedication",
+      "description": "+1 Expertise, +1 Precision and +1 on all Dexterity checks /rank while using this stance.",
+      "costPerRank": 5,
+      "maxRank": "5",
+      "mcl": "2",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Stone Stance",
+      "category": "balance",
+      "prereq": "Studious Dedication",
+      "description": "+1 Damage and +1 on all Strength checks /rank while using this stance.",
+      "costPerRank": 6,
+      "maxRank": "4",
+      "mcl": "2",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Flame Stance",
+      "category": "balance",
+      "prereq": "Studious Dedication",
+      "description": "Your Chi Shield has double the effect (2HP or 2d6 /point), and you gain advantage on all Constitution and Willpower checks while using this stance.",
+      "costPerRank": 10,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Stance Dancing",
+      "category": "balance",
+      "prereq": "Studious Dedication",
+      "description": "reduces the action cost of switching stances from1 to 0. You cannot change stances twice in the same melee round.",
+      "costPerRank": 25,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    }
   ],
-
   "infernal": [
-    { "name": "Demonic Contract",   "category": "Infernal", "prereq": "none",                  "description": "Sign a contract with a demon. Gates all Infernal skills. The terms are between you and the demon.", "costPerRank": 1, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Corruption",         "category": "Infernal", "prereq": "Demonic Contract",      "description": "Tracked resource. Increases through use of infernal skills. High corruption has consequences.", "costPerRank": 0, "maxRank": 0, "mcl": "any", "maintenancePerRank": 0.0, "isTrackedResource": true },
-    { "name": "Cursed Blade",       "category": "Infernal", "prereq": "Demonic Contract",      "description": "One weapon of yours becomes cursed. Choose Blade or Bow — mutually exclusive. The weapon gains infernal properties.", "costPerRank": 30, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0, "requiresChoice": "cursedWeapon" },
-    { "name": "Cursed Bow",         "category": "Infernal", "prereq": "Demonic Contract",      "description": "One ranged weapon of yours becomes cursed. Mutually exclusive with Cursed Blade.", "costPerRank": 30, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Blight/Smite",       "category": "Infernal", "prereq": "Demonic Contract",      "description": "Channel infernal energy through your cursed weapon for a devastating strike.",    "costPerRank": 20, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Glyph of Union",     "category": "Infernal", "prereq": "Demonic Contract",      "description": "Create a binding glyph that links you to a target creature.",                    "costPerRank": 20, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Consuming Kiss",     "category": "Infernal", "prereq": "Demonic Contract",      "description": "Drain life force through physical contact.",                                    "costPerRank": 25, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Flash",              "category": "Infernal", "prereq": "Demonic Contract",      "description": "Teleport instantly up to 30 feet. Costs corruption.",                           "costPerRank": 30, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Highlight",          "category": "Infernal", "prereq": "Demonic Contract",      "description": "Mark a target so all your attacks against them gain +5 Precision for the round.", "costPerRank": 15, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Project",            "category": "Infernal", "prereq": "Demonic Contract",      "description": "Project your senses to a location you have visited within the last week.",      "costPerRank": 20, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Kettle Vine",        "category": "Infernal", "prereq": "Demonic Contract",      "description": "Conjure writhing infernal vines that restrain targets in an area.",             "costPerRank": 20, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Spiritual Hammer",   "category": "Infernal", "prereq": "Demonic Contract",      "description": "Conjure a spectral weapon that attacks independently.",                         "costPerRank": 25, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 }
+    {
+      "name": "Demonic Contract",
+      "category": "infernal",
+      "prereq": "Better read the fine print.",
+      "description": "Form an unholy pact with a Demon, trusting in your strength of will to resist corruption.",
+      "costPerRank": 1,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Demonic Control",
+      "category": "infernal",
+      "prereq": "Demonic Contract",
+      "description": "Automatically pass any Willpower Check at the cost of 1 Corruption.",
+      "costPerRank": 20,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Demonic servant",
+      "category": "infernal",
+      "prereq": "Membership Privileges",
+      "description": "An imp one quarter of your level appears within 10 feet. It will follow your commands, mostly, for one minute. After that it is free of all control and loose upon the Material Plane.  1/week for each rank.",
+      "costPerRank": 15,
+      "maxRank": "7",
+      "mcl": "30",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Red Haze",
+      "category": "infernal",
+      "prereq": "none",
+      "description": "Gain 1 Action and 1 Corruption in the round following every kill you make with reckless attacks.",
+      "costPerRank": 15,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Blue Haze",
+      "category": "infernal",
+      "prereq": "Red Haze",
+      "description": "Jump up 10 Initiative in the round following every kill you make with reckless attacks.",
+      "costPerRank": 15,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Blood Haze",
+      "category": "infernal",
+      "prereq": "Level 11",
+      "description": "Heal 2 HP  in the round following every kill you make with reckless attacks.",
+      "costPerRank": 25,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Cursed Bow",
+      "category": "infernal",
+      "prereq": "Demonic Contract\nCannot have \nCursed Blade",
+      "description": "Target Bow or Crossbow becomes cursed, and linked to the caster, granting increasing benefits with rank.\nRank   To Hit bonus   RangedPR        Other Effects\n  1                0                 1                 Self Repairing.\n  2                1                 2                 Always know it's direction.\n  3                1                 3                 Summon the weapon 1/week (9 actions)\n  4                2                 4                 HSAP increased by 0.25\n  5                2                 5                 Causes Breeches (1)\n  6                3                 6                Self Reloading with Shadow Bolts\nShadow Bolts are magical projectiles that do the same damage as a normal physical arrow. This removes the action cost of reloading crossbows.",
+      "costPerRank": 11,
+      "maxRank": "6",
+      "mcl": "5",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Cursed Blade",
+      "category": "infernal",
+      "prereq": "Demonic Contract\nCannot have \nCursed Bow",
+      "description": "Target Melee Weapon becomes cursed, and linked to the caster, granting increasing benefits with rank.\nRank           AP           PR        Other Effects\n  1                1              1           1 damage/r to anyone else grasping it.\n  2                2              2           Always know it's direction.\n  3                3              3           Summon the weapon 1/week (9 actions)\n  4                4              4           Melee Crit number reduced by 1\n  5                5              5           Every wound caused heals you 1HP\n  6                6              6           You can hear what it hears.\nAll of these Benefits apply if the weapon is Thrown.",
+      "costPerRank": 11,
+      "maxRank": "6",
+      "mcl": "6",
+      "maintenancePerRank": 0.5
+    },
+    {
+      "name": "Cursed Touch",
+      "category": "infernal",
+      "prereq": "Cursed Blade",
+      "description": "touch spells you cast affect your cursed weapon instead of your hand, and are triggered on pierce. Does not combine with cursed bow or crossbow.",
+      "costPerRank": 10,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Chill",
+      "category": "infernal",
+      "prereq": "Cursed Blade 2",
+      "description": "Costs 1 action which does not count towards combat. Pierce. Victim feels an icy chill spreading from the wound.They can feel their strength draining\u2026\nThey must pass a Willpower Check 25 or be Feared. Willpower 21 or 1 Corruption",
+      "costPerRank": 10,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Gasp",
+      "category": "infernal",
+      "prereq": "Cursed Blade 4",
+      "description": "Costs 1 action which does not count towards combat. Pierce. Victim feels they cannot breathe, fights for air. They must pass a Willpower Check 25 or lose their next 3 actions. \nWillpower 21 or 1 Corruption",
+      "costPerRank": 10,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Taste",
+      "category": "infernal",
+      "prereq": "Cursed Blade 6",
+      "description": "Costs 1 action which does not count towards combat. Pierce. You allow the cursed weapon to taste the life force of the target, and drink. Deals 1 necrotic damage/rank of Cursed Blade on this weapon. \nWillpower 21 or 1 Corruption",
+      "costPerRank": 15,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "A Stronger You",
+      "category": "infernal",
+      "prereq": "Level 5",
+      "description": "Gain 1 point of Strength at the cost of 1 point of Constitution and 1 point of Willpower. (Juicing works! We promise.)",
+      "costPerRank": 5,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "A Cooler You",
+      "category": "infernal",
+      "prereq": "Level 5",
+      "description": "Gain 1 point of Charisma at the cost of 1 point of Dexterity and 1 point of Willpower. (Yeah it's uncomfortable, but you look amazing! We promise.)",
+      "costPerRank": 5,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "A Faster You",
+      "category": "infernal",
+      "prereq": "Level 5",
+      "description": "Gain 1 point of Dexterity at the cost of 1 point of Constitution and 1 point of Willpower. (This stuff feels awesome AND helps you perform. We promise.)",
+      "costPerRank": 5,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "A Brighter You",
+      "category": "infernal",
+      "prereq": "Level 5",
+      "description": "Gain 1 point of Awareness at the cost of 1 point of Constitution and 1 point of Willpower. (It's a lot like snuff, you'll love it! We promise.)",
+      "costPerRank": 5,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "A Better You",
+      "category": "infernal",
+      "prereq": "none",
+      "description": "Gain 50 Skill Points at the cost of 1 point of Willpower, which can only be spent on this page              (No Backsies!)",
+      "costPerRank": 1,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Demonic Hex",
+      "category": "infernal",
+      "prereq": "Demonic Contract",
+      "description": "Gain the ability to Hex a target within 30 feet. The particular Hex determines the effect. Hexes are done using borrowed actions, as an interruption of an activity. All hexes cost 1 action to cast, which must be repaid before any other actions. Willpower 25 Check to avoid 1 Corruption",
+      "costPerRank": 15,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Hextastic.",
+      "category": "infernal",
+      "prereq": "Demonic Hex",
+      "description": "Increase the range of your Hexes to 90 Feet.",
+      "costPerRank": 15,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Stumble",
+      "category": "infernal",
+      "prereq": "Demonic Hex",
+      "description": "Hex, target who is running or sprinting must pass. Dexterity Check 25 or fall down.",
+      "costPerRank": 3,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Mumble",
+      "category": "infernal",
+      "prereq": "Demonic Hex",
+      "description": "Hex. Target who is speaking must pass a Charisma Check 25 or use exactly the wrong word.",
+      "costPerRank": 3,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Fumble",
+      "category": "infernal",
+      "prereq": "Demonic Hex",
+      "description": "Hex, target who is in combat Fumbles on a roll 2 higher than normal.",
+      "costPerRank": 3,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Nudge",
+      "category": "infernal",
+      "prereq": "Demonic Hex",
+      "description": "Hex,the target's current ranged to hit roll is reduced by 2",
+      "costPerRank": 3,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Wince",
+      "category": "infernal",
+      "prereq": "Demonic Hex",
+      "description": "A sharp twinge distracts the target momentarily unless they pass a WP Check 25.",
+      "costPerRank": 3,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Wither",
+      "category": "infernal",
+      "prereq": "Demonic Hex",
+      "description": "Sickens plants or seeds over 1d10 days",
+      "costPerRank": 3,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Bicker",
+      "category": "infernal",
+      "prereq": "Demonic Hex",
+      "description": "Target angry person has disadvantage on all restraint checks.",
+      "costPerRank": 3,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Beckon",
+      "category": "infernal",
+      "prereq": "Demonic Hex",
+      "description": "Target person feeling strong lust has disadvantage on all restraint checks.",
+      "costPerRank": 3,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Demonic Surge",
+      "category": "infernal",
+      "prereq": "40+ points spent on this page",
+      "description": "Gain 3 actions right now, and lose one action each of the next three turns. These can be delayed by passing a constitution check 25 each round. If the check is fumbled or is less than 15 all owed actions must be paid immediately.  Willpower 21 or 1 Corruption",
+      "costPerRank": 20,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Summon Nightmare",
+      "category": "infernal",
+      "prereq": "Membership Privileges",
+      "description": "A Flaming Nightmare  appears in a clear space at least 15 Feet diameter. It is saddled, bridled and has 2 empty saddlebags. It will only suffer the caster to ride. The caster gains +20 riding and immunity to fire while riding.",
+      "costPerRank": 15,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Surgical",
+      "category": "infernal",
+      "prereq": "Demonic Surge",
+      "description": "Your Demonic surge grants one extra action which does not need to be repaid.",
+      "costPerRank": 10,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "HellStep",
+      "category": "infernal",
+      "prereq": "Cursed Blade 6",
+      "description": "Step into the abyss and back, arriving wherever your weapon is. Costs one action and adds 1 Corruption.",
+      "costPerRank": 15,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    }
   ],
-
   "lycanthropy": [
-    { "name": "Lycanthropy",        "category": "Lycanthropy", "prereq": "Infected",            "description": "You have been infected with lycanthropy. Gates all Lycanthropy skills. Lunar phase affects your abilities.", "costPerRank": 0, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0, "isInfection": true },
-    { "name": "Control the Beast",  "category": "Lycanthropy", "prereq": "Lycanthropy",         "description": "Resist involuntary transformation. Pass a WP check (difficulty varies with lunar phase).", "costPerRank": 20, "maxRank": 5, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Partial Shift",      "category": "Lycanthropy", "prereq": "Lycanthropy",         "description": "Shift specific body parts without full transformation. Costs 1 action.",       "costPerRank": 25, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Studied Shift",      "category": "Lycanthropy", "prereq": "Lycanthropy",         "description": "Voluntary transformation costs 1 fewer action /rank.",                         "costPerRank": 20, "maxRank": 2, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Ferocity",           "category": "Lycanthropy", "prereq": "Lycanthropy",         "description": "+1 damage /rank while transformed. Scales with lunar phase.",                  "costPerRank": 10, "maxRank": 9, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Regeneration",       "category": "Lycanthropy", "prereq": "Lycanthropy",         "description": "Recover 1 HP /round while transformed. Enhanced near full moon.",              "costPerRank": 25, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 },
-    { "name": "Pack Bond",          "category": "Lycanthropy", "prereq": "Lycanthropy",         "description": "Communicate telepathically with other lycanthropes within 1 mile.",            "costPerRank": 20, "maxRank": 1, "mcl": "any", "maintenancePerRank": 0.0 }
-  ],
-
-  "stanceNotes": {
-    "switchingCost": "1 action without Stance Dancing, 0 actions with Stance Dancing",
-    "switchingLimit": "Cannot switch stances twice in the same melee round",
-    "activeStance": "Only one stance can be active at a time",
-    "prerequisite": "Studious Dedication required for all stance skills"
-  },
-
-  "lunarPhases": {
-    "1": "Normal — base lycanthrope stats",
-    "2": "Near Full Moon — enhanced abilities, harder to control",
-    "3": "Full Moon Night — maximum power, hardest to control"
-  }
+    {
+      "name": "Werewolf",
+      "category": "lycanthropy",
+      "prereq": "none",
+      "description": "The effects depend on the phase of the Lunar cycle.\nMost of the time (phase 1) you heal +1hp /day, without any other effects. \nWithin 3 days of the Full moon, including the full moon night itself, (phase 2, 7 days total) you heal +1hp in every location every 8 hours. You also gain +1 Strength, a natural armor rating of 1, and suffer a -2 penalty to all Willpower checks.\nWhen the moon rises on the night of the Full Moon, (phase 3) you must pass a Willpower Check 30 (after penalty) or lose control and transform. While transformed you gain a further + 2 strength and 2 more natural armor rating, and heal 1 hp/minute. You also become immune to weapons unless they are silver or magical.",
+      "costPerRank": 1,
+      "maxRank": "1",
+      "mcl": "any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Contain the Wolf",
+      "category": "lycanthropy",
+      "prereq": "cannot have Embrace the Wolf.",
+      "description": "Reduce the difficulty of the Willpower Check to maintain control of full moon nights by 5/rank.",
+      "costPerRank": 3,
+      "maxRank": "3",
+      "mcl": "3",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "The Wolf Within",
+      "category": "lycanthropy",
+      "prereq": "none",
+      "description": "Rank 1: Phase 2 starts 6 days before the full moon and ends 6 days afterwards instead of 3. (13 days instead of 7)\nRank 2: Phase 2 starts 10 days before the full moon and ends 10 days afterwards. (21 days)\nRank 3: Phase 2 effects apply all the time.",
+      "costPerRank": 10,
+      "maxRank": "3",
+      "mcl": "10",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Embrace the Wolf",
+      "category": "lycanthropy",
+      "prereq": "cannot have Contain the Wolf.",
+      "description": "Rank 1: The Willpower Check on full moon nights does not prevent transformation. Instead, if passed, you remain aware of yourself and may attempt to resist any specific action, with a Willpower Check 25. You may undertake an action not natural to the wolf on a similar check.\nRank 2: You will transform when provoked enough any time in phase 2. (rage or pain)\nRank 3: When transformed you are in complete control of your actions, subject to Willpower Checks when the GM feels an action is very tempting to the wolf.\nRank 4: You may transform at will anytime in phase 2.",
+      "costPerRank": 10,
+      "maxRank": "4",
+      "mcl": "10",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "BeastForm",
+      "category": "lycanthropy",
+      "prereq": "none",
+      "description": "When you transform for any reason you retain your gross shape and size. Your teeth, claws and hair lengthen, and your irises become red. Your clothing, armor, helm and equipment still fit, and you can still wield weapons. You do not gain the special movement or attacks of the wolf form, and you do not become immune to normal weapons. You regenerate 1 hp /hour.  You gain a total +2 Strength and Natural Armor, instead of +3.",
+      "costPerRank": 15,
+      "maxRank": "1",
+      "mcl": "any",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Rabid run down",
+      "category": "lycanthropy",
+      "prereq": "Must be in beast form or wolf form.",
+      "description": "You allow the beast within complete control to pursue a chosen target. You will move up to 75 Feet per round, including leaping gaps of no more than 30 Feet until you reach the target or lose sight of it. Upon reaching the target you must perform a reckless attack immediately and continue until it is dead or you pass a WP Check 30",
+      "costPerRank": 15,
+      "maxRank": "1",
+      "mcl": "Any",
+      "maintenancePerRank": 0.0
+    }
+  ]
 }

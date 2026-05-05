@@ -5,7 +5,8 @@ import arcaneSkillsData from '../data/arcaneSkills.json'
 import attributeData from '../data/attributes.json'
 import racesData from '../data/races.json'
 import { GeneralSkillCard } from './GeneralSkillCard'
-import { RankedSkillCard, THEMES } from './RankedSkillCard'
+import { RankedSkillCard } from './RankedSkillCard'
+import { RankedSkillTable, THEMES } from './RankedSkillTable'
 import selfImprovementData from '../data/selfImprovementSkills.json'
 // ─────────────────────────────────────────────
 // HELPERS
@@ -262,6 +263,18 @@ function SkillRow({ skill, char, onUpdate, isGeneral, attrs }) {
 export default function SkillEditor({ character, onSave, onBack }) {
   const [activeTab, setActiveTab] = useState('Martial')
   const [char, setChar] = useState(() => JSON.parse(JSON.stringify(character)))
+ const [gmMode, setGmMode] = useState(false)
+const [lockedPoints, setLockedPoints] = useState(() => {
+  const locked = {}
+  const allSkills = {
+    ...character.martialSkills,
+    ...character.arcaneSkills,
+  }
+  Object.entries(allSkills).forEach(([name, data]) => {
+    locked[name] = parseInt(data.pointsInvested) || 0
+  })
+  return locked
+})
   const [search, setSearch] = useState('')
   const [showActiveOnly, setShowActiveOnly] = useState(false)
 
@@ -361,9 +374,14 @@ const effectiveAttrs = useMemo(() => getEffectiveAttributes(char), [char])
     })
   }
 
-  const handleSave = () => {
-    onSave(char)
-  }
+ const handleSave = () => {
+  const newLocked = {}
+  Object.entries({...char.martialSkills, ...char.arcaneSkills}).forEach(([name, data]) => {
+    newLocked[name] = parseInt(data.pointsInvested) || 0
+  })
+  setLockedPoints(newLocked)
+  onSave(char)
+}
 
   const tabBtn = (tab) => ({
     padding: '7px 18px',
@@ -395,17 +413,32 @@ const effectiveAttrs = useMemo(() => getEffectiveAttributes(char), [char])
             Level {char.level} {char.race}
           </div>
         </div>
-        <button
-          onClick={handleSave}
-          style={{
-            marginLeft: 'auto', padding: '8px 20px',
-            background: 'rgba(74,158,74,.15)', border: '1px solid #4a9e4a',
-            color: '#4a9e4a', borderRadius: 5, cursor: 'pointer',
-            fontFamily: 'Georgia, serif', fontSize: '.9rem',
-          }}
-        >
-          Save Changes
-        </button>
+       <div style={{ marginLeft: 'auto', display: 'flex', gap: 8 }}>
+          <button
+            onClick={() => setGmMode(!gmMode)}
+            style={{
+              padding: '8px 16px',
+              background: gmMode ? 'rgba(201,42,42,.2)' : 'var(--surface)',
+              border: `1px solid ${gmMode ? '#c94a4a' : 'var(--border)'}`,
+              color: gmMode ? '#c94a4a' : 'var(--text3)',
+              borderRadius: 5, cursor: 'pointer',
+              fontFamily: 'Georgia, serif', fontSize: '.85rem',
+            }}
+          >
+            {gmMode ? '⚠ GM Mode ON' : 'GM Mode'}
+          </button>
+          <button
+            onClick={handleSave}
+            style={{
+              padding: '8px 20px',
+              background: 'rgba(74,158,74,.15)', border: '1px solid #4a9e4a',
+              color: '#4a9e4a', borderRadius: 5, cursor: 'pointer',
+              fontFamily: 'Georgia, serif', fontSize: '.9rem',
+            }}
+          >
+            Save Changes
+          </button>
+        </div>
       </div>
 
       {/* Point totals */}
@@ -479,7 +512,7 @@ const effectiveAttrs = useMemo(() => getEffectiveAttributes(char), [char])
       padding: '6px 14px', background: 'var(--bg)',
       borderBottom: '1px solid var(--border)',
       fontSize: '.6rem', letterSpacing: '.2em',
-      color: '#d4847a', textTransform: 'uppercase',
+      color: 'var(--gold)', textTransform: 'uppercase',
     }}>
       Self Improvement
     </div>
@@ -493,7 +526,7 @@ const effectiveAttrs = useMemo(() => getEffectiveAttributes(char), [char])
       skill={skill}
       rank={rank}
       pointsInvested={pts}
-      theme={THEMES.selfImprovement}
+      theme={THEMES.melee}
       onAdd={() => handleUpdate(skill.name, pts + skill.costPerRank, false)}
       onRemove={() => handleUpdate(skill.name, Math.max(0, pts - skill.costPerRank), false)}
     />
@@ -545,35 +578,36 @@ const effectiveAttrs = useMemo(() => getEffectiveAttributes(char), [char])
           />
         ))}
 
-        {(activeTab === 'Spiritual' || activeTab === 'Obscure') && (() => {
+{(activeTab === 'Spiritual' || activeTab === 'Obscure') && (() => {
   const categories = activeTab === 'Spiritual' ? SPIRITUAL_CATEGORIES : OBSCURE_CATEGORIES
   const labels = activeTab === 'Spiritual' ? SPIRITUAL_LABELS : OBSCURE_LABELS
+  const themeMap = {
+    spellcaster: THEMES.arcane,
+    guild: THEMES.guild,
+    divine: THEMES.divine,
+    balance: THEMES.balance,
+    infernal: THEMES.infernal,
+    lycanthropy: THEMES.lycanthropy,
+    animal: THEMES.animal,
+  }
   return categories.map(category => {
     const categorySkills = filterSkills(
       (arcaneSkillsData[category] || []).map(s => ({ ...s, category }))
     )
     if (categorySkills.length === 0) return null
     return (
-      <div key={category}>
-        <div style={{
-          padding: '6px 14px',
-          background: 'var(--bg)',
-          borderBottom: '1px solid var(--border)',
-          fontSize: '.6rem', letterSpacing: '.2em',
-          color: 'var(--gold)', textTransform: 'uppercase',
-        }}>
-          {labels[category]}
-        </div>
-        {categorySkills.map(skill => (
-          <SkillRow
-            key={skill.name}
-            skill={skill}
-            char={char}
-            onUpdate={handleUpdate}
-            isGeneral={false}
-          />
-        ))}
-      </div>
+      <RankedSkillTable
+        key={category}
+        skills={categorySkills}
+        char={char}
+        sectionLabel={labels[category]}
+        theme={themeMap[category]}
+        level={char.level || 1}
+        skillSource="arcane"
+        gmMode={gmMode}
+        lockedPoints={lockedPoints}
+        onUpdate={(name, newPts, source) => handleUpdate(name, newPts, false)}
+      />
     )
   })
 })()}
