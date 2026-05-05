@@ -28,6 +28,13 @@ export const THEMES = {
 const GRID = '1fr 70px 70px 70px 60px 120px'
 
 // ─────────────────────────────────────────────
+// QUICK ADD BUTTON — long press for bulk add
+// ─────────────────────────────────────────────
+
+// Increment toggle — shared via ref passed down
+// increment is 1 or 5, toggled by long press on either +/- button
+
+// ─────────────────────────────────────────────
 // DISPLAY TAGS — not real prereqs
 // ─────────────────────────────────────────────
 
@@ -113,11 +120,9 @@ function checkUnfettered(char) {
   const penaltyOk = Math.floor(totalPenalty) <= 1
   const plateOk = plateCount <= 1
 
- if (!penaltyOk) return { met: false, reason: 'Armor evasion penalty too high for Unfettered' }
-if (!plateOk) return { met: false, reason: 'Too many plate armor locations for Unfettered' }
-const offHand = char.offHand || 'Empty'
-if (offHand === 'Shield') return { met: false, reason: 'Cannot be Unfettered with a shield' }
-return { met: true, partial: offHand === 'Empty' ? false : false }
+  if (!penaltyOk) return { met: false, reason: 'Armor evasion penalty too high for Unfettered' }
+  if (!plateOk) return { met: false, reason: 'Too many plate armor locations for Unfettered' }
+  return { met: true, partial: true }
 }
 
 // ─────────────────────────────────────────────
@@ -239,8 +244,10 @@ function checkPrereq(prereqStr, char) {
 // SINGLE SKILL ROW
 // ─────────────────────────────────────────────
 
-function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onAdd, onRemove, theme, level, char, gmMode }) {
+function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onAdd, onRemove, onUpdate, skillSource, theme, level, char, gmMode }) {
   const [expanded, setExpanded] = useState(false)
+  const [increment, setIncrement] = useState(1)
+  const timerRef = useState(null)
 
   const T = theme || THEMES.selfImprovement
   const costPerRank = parseInt(skill.costPerRank) || 1
@@ -320,14 +327,14 @@ function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onAdd, onRem
             </div>
           )}
 
+          {/* Prereq — dim if met and real */}
           {prereqResult.met && skill.prereq && skill.prereq !== 'none'
-  && (prereqResult.tags?.length === 0 || !prereqResult.tags)
-  && !prereqResult.partial
-  && !/^unfettered/i.test(skill.prereq.trim()) && (
-  <div style={{ fontSize: '.63rem', color: 'var(--text3)', marginTop: 1, fontStyle: 'italic' }}>
-    Req: {skill.prereq.replace(/\n/g, ' ')}
-  </div>
-)}
+            && (prereqResult.tags?.length === 0 || !prereqResult.tags)
+            && !prereqResult.partial && (
+            <div style={{ fontSize: '.63rem', color: 'var(--text3)', marginTop: 1, fontStyle: 'italic' }}>
+              Req: {skill.prereq.replace(/\n/g, ' ')}
+            </div>
+          )}
 
           {/* Partial unfettered note */}
           {prereqResult.partial && prereqResult.met && (
@@ -380,46 +387,58 @@ function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onAdd, onRem
           style={{ display: 'flex', gap: 4, alignItems: 'center', justifyContent: 'center', padding: '9px 8px' }}
           onClick={e => e.stopPropagation()}
         >
-          <button
-            onClick={onRemove}
-            disabled={removeBlocked}
-            style={{
-              width: 24, height: 24, background: 'var(--bg2)',
+          {(() => {
+            const handleLongPress = () => {
+              timerRef[0] = setTimeout(() => setIncrement(prev => prev === 1 ? 5 : 1), 500)
+            }
+            const cancelLongPress = () => clearTimeout(timerRef[0])
+            const actualRemove = Math.max(
+              gmMode ? 0 : (lockedPoints?.[skill.name] || 0),
+              pointsInvested - increment
+            )
+            const canRemove = gmMode ? pointsInvested > 0 : pointsInvested > (lockedPoints?.[skill.name] || 0)
+            const addAmount = mclLimit !== null
+              ? Math.min(increment, Math.max(0, mclLimit - pointsInvested))
+              : increment
+            const canAdd = !addBlocked && addAmount > 0
+            const btnBase = {
+              height: 26, background: 'var(--bg2)',
               border: '1px solid var(--border)', borderRadius: 3,
-              color: removeBlocked ? 'var(--text3)' : 'var(--text2)',
-              fontSize: 15, cursor: removeBlocked ? 'not-allowed' : 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              opacity: removeBlocked ? 0.3 : 1, flexShrink: 0,
-            }}
-          >−</button>
-
-          <div style={{
-            minWidth: 36, textAlign: 'center',
-            background: 'var(--bg)', border: `1px solid ${T.border}`,
-            borderRadius: 3, padding: '3px 4px',
-          }}>
-            <div style={{
-              fontSize: '1rem', color: isActive ? T.primary2 : 'var(--text3)',
-              fontWeight: 700, fontFamily: 'Georgia, serif', lineHeight: 1.1,
-            }}>
-              {pointsInvested}
-            </div>
-          </div>
-
-          <button
-            onClick={() => !addBlocked && onAdd()}
-            disabled={addBlocked}
-            title={blockReason || ''}
-            style={{
-              width: 24, height: 24,
-              background: addBlocked ? 'var(--bg2)' : T.dim,
-              border: `1px solid ${addBlocked ? 'var(--border)' : T.primary}`,
-              borderRadius: 3, color: addBlocked ? 'var(--text3)' : T.primary,
-              fontSize: 15, cursor: addBlocked ? 'not-allowed' : 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              opacity: addBlocked ? 0.3 : 1, flexShrink: 0,
-            }}
-          >+</button>
+              fontSize: 13, display: 'flex', alignItems: 'center',
+              justifyContent: 'center', flexShrink: 0, fontFamily: 'Georgia, serif',
+              padding: '0 5px', minWidth: 32, cursor: 'pointer',
+              userSelect: 'none', WebkitUserSelect: 'none',
+            }
+            return (
+              <>
+                <button
+                  onMouseDown={handleLongPress} onMouseUp={cancelLongPress}
+                  onMouseLeave={cancelLongPress} onTouchStart={handleLongPress} onTouchEnd={cancelLongPress}
+                  onClick={() => canRemove && onUpdate && onUpdate(skill.name, actualRemove, skillSource || 'martial')}
+                  disabled={!canRemove}
+                  style={{ ...btnBase, color: !canRemove ? 'var(--text3)' : 'var(--text2)', opacity: !canRemove ? 0.3 : 1 }}
+                >
+                  −{increment > 1 ? increment : ''}
+                </button>
+                <div style={{ minWidth: 36, textAlign: 'center', background: 'var(--bg)', border: `1px solid ${T.border}`, borderRadius: 3, padding: '3px 4px' }}>
+                  <div style={{ fontSize: '1rem', color: isActive ? T.primary2 : 'var(--text3)', fontWeight: 700, fontFamily: 'Georgia, serif', lineHeight: 1.1 }}>
+                    {pointsInvested}
+                  </div>
+                </div>
+                <button
+                  onMouseDown={handleLongPress} onMouseUp={cancelLongPress}
+                  onMouseLeave={cancelLongPress} onTouchStart={handleLongPress} onTouchEnd={cancelLongPress}
+                  onClick={() => canAdd && onUpdate && onUpdate(skill.name, pointsInvested + addAmount, skillSource || 'martial')}
+                  disabled={!canAdd}
+                  title={blockReason || 'Hold to toggle ×5 mode'}
+                  style={{ ...btnBase, background: !canAdd ? 'var(--bg2)' : T.dim, border: `1px solid ${!canAdd ? 'var(--border)' : T.primary}`, color: !canAdd ? 'var(--text3)' : T.primary, opacity: !canAdd ? 0.3 : 1, fontWeight: increment > 1 ? 700 : 400 }}
+                >
+                  +{increment > 1 ? increment : ''}
+                </button>
+                
+              </>
+            )
+          })()}
         </div>
       </div>
 
@@ -504,6 +523,8 @@ export function RankedSkillTable({ skills, char, onUpdate, theme, sectionLabel, 
             level={level || 1}
             char={char}
             gmMode={gmMode}
+            onUpdate={onUpdate}
+            skillSource={skillSource || 'martial'}
             onAdd={() => onUpdate(skill.name, pointsInvested + 1, skillSource || 'martial')}
             onRemove={() => onUpdate(skill.name, Math.max(gmMode ? 0 : (lockedPoints?.[skill.name] || 0), pointsInvested - 1), skillSource || 'martial')}
           />
