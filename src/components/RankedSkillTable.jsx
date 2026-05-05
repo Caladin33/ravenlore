@@ -113,9 +113,11 @@ function checkUnfettered(char) {
   const penaltyOk = Math.floor(totalPenalty) <= 1
   const plateOk = plateCount <= 1
 
-  if (!penaltyOk) return { met: false, reason: 'Armor evasion penalty too high for Unfettered' }
-  if (!plateOk) return { met: false, reason: 'Too many plate armor locations for Unfettered' }
-  return { met: true, partial: true }
+ if (!penaltyOk) return { met: false, reason: 'Armor evasion penalty too high for Unfettered' }
+if (!plateOk) return { met: false, reason: 'Too many plate armor locations for Unfettered' }
+const offHand = char.offHand || 'Empty'
+if (offHand === 'Shield') return { met: false, reason: 'Cannot be Unfettered with a shield' }
+return { met: true, partial: offHand === 'Empty' ? false : false }
 }
 
 // ─────────────────────────────────────────────
@@ -318,14 +320,14 @@ function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onAdd, onRem
             </div>
           )}
 
-          {/* Prereq — dim if met and real */}
           {prereqResult.met && skill.prereq && skill.prereq !== 'none'
-            && (prereqResult.tags?.length === 0 || !prereqResult.tags)
-            && !prereqResult.partial && (
-            <div style={{ fontSize: '.63rem', color: 'var(--text3)', marginTop: 1, fontStyle: 'italic' }}>
-              Req: {skill.prereq.replace(/\n/g, ' ')}
-            </div>
-          )}
+  && (prereqResult.tags?.length === 0 || !prereqResult.tags)
+  && !prereqResult.partial
+  && !/^unfettered/i.test(skill.prereq.trim()) && (
+  <div style={{ fontSize: '.63rem', color: 'var(--text3)', marginTop: 1, fontStyle: 'italic' }}>
+    Req: {skill.prereq.replace(/\n/g, ' ')}
+  </div>
+)}
 
           {/* Partial unfettered note */}
           {prereqResult.partial && prereqResult.met && (

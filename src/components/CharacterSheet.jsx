@@ -180,13 +180,19 @@ function RangedRow({ slot }) {
 // MAIN COMPONENT
 // ─────────────────────────────────────────────
 
-export default function CharacterSheet({ character, onBack, onEditSkills }) {
+export default function CharacterSheet({ character, onBack, onEditSkills, onUpdateCharacter }) {
   console.log('CharacterSheet props:', { character: !!character, onBack: !!onBack, onEditSkills: !!onEditSkills })
-  const [offHand, setOffHand] = useState('Empty')
+  const [offHand, setOffHand] = useState(character.offHand || 'Empty')
   const [stance, setStance] = useState('None')
   const [unfettered, setUnfettered] = useState(false)
 
+  const handleOffHandChange = (val) => {
+    setOffHand(val)
+    onUpdateCharacter({ ...character, offHand: val })
+  }
+
   const stats = useMemo(() => {
+
     try {
       return calculate(character, { offHand, stance, unfettered })
     } catch (e) {
@@ -244,10 +250,11 @@ onClick={onEditSkills}
       {/* Session state dropdowns */}
       <Section title="Combat State">
         <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'flex-end' }}>
-          <Dropdown
+
+            <Dropdown
             label="Off-hand"
             value={offHand}
-            onChange={setOffHand}
+            onChange={handleOffHandChange}
             options={['Empty', '2-Handed', 'Dual Wield', 'Shield']}
           />
           <Dropdown

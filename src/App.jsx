@@ -42,6 +42,13 @@ function App() {
   character={selectedCharacter}
   onBack={() => setCurrentPage('characters')}
   onEditSkills={() => setCurrentPage('skillEditor')}
+  onUpdateCharacter={(updated) => {
+  setSelectedCharacter(updated)
+  const chars = JSON.parse(localStorage.getItem('ravenlore_characters') || '[]')
+  const idx = chars.findIndex(c => c.name === updated.name)
+  if (idx >= 0) chars[idx] = updated
+  localStorage.setItem('ravenlore_characters', JSON.stringify(chars))
+}}
 />
 )}
 {currentPage === 'skillEditor' && selectedCharacter && (
