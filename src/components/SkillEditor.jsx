@@ -5,7 +5,6 @@ import arcaneSkillsData from '../data/arcaneSkills.json'
 import attributeData from '../data/attributes.json'
 import racesData from '../data/races.json'
 import { GeneralSkillCard } from './GeneralSkillCard'
-import { RankedSkillCard } from './RankedSkillCard'
 import { RankedSkillTable, THEMES } from './RankedSkillTable'
 import selfImprovementData from '../data/selfImprovementSkills.json'
 // ─────────────────────────────────────────────
@@ -508,31 +507,18 @@ const effectiveAttrs = useMemo(() => getEffectiveAttributes(char), [char])
 {activeTab === 'General' && (
   <div>
     {/* Self Improvement section */}
-    <div style={{
-      padding: '6px 14px', background: 'var(--bg)',
-      borderBottom: '1px solid var(--border)',
-      fontSize: '.6rem', letterSpacing: '.2em',
-      color: 'var(--gold)', textTransform: 'uppercase',
-    }}>
-      Self Improvement
-    </div>
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 10, padding: 14 }}>
- {filterSkills(selfImprovementData).map(skill => {
-  const pts = parseInt(char.martialSkills?.[skill.name]?.pointsInvested) || 0
-  const rank = parseInt(char.martialSkills?.[skill.name]?.rank) || 0
-  return (
-    <RankedSkillCard
-      key={skill.name}
-      skill={skill}
-      rank={rank}
-      pointsInvested={pts}
-      theme={THEMES.melee}
-      onAdd={() => handleUpdate(skill.name, pts + skill.costPerRank, false)}
-      onRemove={() => handleUpdate(skill.name, Math.max(0, pts - skill.costPerRank), false)}
+  
+   <RankedSkillTable
+      skills={filterSkills(selfImprovementData)}
+      char={char}
+      sectionLabel="Self Improvement"
+      theme={THEMES.selfImprovement}
+      level={char.level || 1}
+      skillSource="martial"
+      gmMode={gmMode}
+      lockedPoints={lockedPoints}
+      onUpdate={(name, newPts, source) => handleUpdate(name, newPts, false)}
     />
-  )
-})}
-    </div>
 
     {/* Trades & Talents section */}
     <div style={{
@@ -567,16 +553,34 @@ const effectiveAttrs = useMemo(() => getEffectiveAttributes(char), [char])
     </div>
   </div>
 )}
-
-        {activeTab === 'Martial' && filterSkills(martialSkillsData).map(skill => (
-          <SkillRow
-            key={skill.name}
-            skill={skill}
-            char={char}
-            onUpdate={handleUpdate}
-            isGeneral={false}
-          />
-        ))}
+{activeTab === 'Martial' && (() => {
+  const martialSections = [
+    { key: 'Melee',       label: 'Melee',        theme: THEMES.melee       },
+    { key: 'Unfettered',  label: 'Unfettered',   theme: THEMES.unfettered  },
+    { key: 'Ranged',      label: 'Ranged',        theme: THEMES.ranged      },
+    { key: 'Leadership',  label: 'Leadership',    theme: THEMES.leadership  },
+  ]
+  return martialSections.map(section => {
+    const sectionSkills = filterSkills(
+      martialSkillsData.filter(s => s.category === section.key)
+    )
+    if (sectionSkills.length === 0) return null
+    return (
+      <RankedSkillTable
+        key={section.key}
+        skills={sectionSkills}
+        char={char}
+        sectionLabel={section.label}
+        theme={section.theme}
+        level={char.level || 1}
+        skillSource="martial"
+        gmMode={gmMode}
+        lockedPoints={lockedPoints}
+        onUpdate={(name, newPts, source) => handleUpdate(name, newPts, false)}
+      />
+    )
+  })
+})()}
 
 {(activeTab === 'Spiritual' || activeTab === 'Obscure') && (() => {
   const categories = activeTab === 'Spiritual' ? SPIRITUAL_CATEGORIES : OBSCURE_CATEGORIES
