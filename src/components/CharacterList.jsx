@@ -1,27 +1,18 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import CharacterImport from './CharacterImport'
 
-export default function CharacterList({ onSelectCharacter }) {
-  const [characters, setCharacters] = useState([])
+export default function CharacterList({ onSelectCharacter, characters = [], user, onImport, onDelete }) {
   const [showImport, setShowImport] = useState(false)
 
-  useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem('ravenlore_characters') || '[]')
-    setCharacters(saved)
-  }, [])
+const handleImport = (character) => {
+  onImport && onImport(character)
+  setShowImport(false)
+}
 
-  const handleImport = (character) => {
-    const saved = JSON.parse(localStorage.getItem('ravenlore_characters') || '[]')
-    setCharacters(saved)
-    setShowImport(false)
-  }
-
-  const handleDelete = (name) => {
-    if (!confirm(`Remove ${name} from this device?`)) return
-    const updated = characters.filter(c => c.name !== name)
-    localStorage.setItem('ravenlore_characters', JSON.stringify(updated))
-    setCharacters(updated)
-  }
+const handleDelete = (name) => {
+  if (!confirm(`Remove ${name} from your account?`)) return
+  onDelete && onDelete(name)
+}
 
   if (showImport) {
     return (

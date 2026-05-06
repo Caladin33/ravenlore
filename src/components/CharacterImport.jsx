@@ -20,18 +20,10 @@ export default function CharacterImport({ onImport }) {
     }
   }
 
-  const handleImport = () => {
-    if (!preview) return
-    const characters = JSON.parse(localStorage.getItem('ravenlore_characters') || '[]')
-    const existing = characters.findIndex(c => c.name === preview.name)
-    if (existing >= 0) {
-      characters[existing] = preview
-    } else {
-      characters.push(preview)
-    }
-    localStorage.setItem('ravenlore_characters', JSON.stringify(characters))
-    onImport(preview)
-  }
+const handleImport = () => {
+  if (!preview) return
+  onImport(preview)
+}
 
   const box = {
     background: 'var(--surface)',

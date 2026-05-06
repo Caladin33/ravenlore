@@ -55,6 +55,12 @@ if (authLoading) return <div style={{ minHeight: '100vh', background: 'var(--bg)
             className={currentPage === 'characters' ? 'active' : ''}
             onClick={() => setCurrentPage('characters')}
           >Characters</button>
+          <button
+             onClick={() => supabase.auth.signOut()}
+             style={{ marginLeft: 8 }}
+          >
+            Log Out
+          </button>
         </div>
       </nav>
 
@@ -82,12 +88,11 @@ if (authLoading) return <div style={{ minHeight: '100vh', background: 'var(--bg)
   character={selectedCharacter}
   onBack={() => setCurrentPage('characters')}
   onEditSkills={() => setCurrentPage('skillEditor')}
-  onUpdateCharacter={(updated) => {
+ onUpdateCharacter={(updated) => {
   setSelectedCharacter(updated)
-  const chars = JSON.parse(localStorage.getItem('ravenlore_characters') || '[]')
-  const idx = chars.findIndex(c => c.name === updated.name)
-  if (idx >= 0) chars[idx] = updated
-  localStorage.setItem('ravenlore_characters', JSON.stringify(chars))
+  saveCharacter(updated, user.id).then(() => {
+    loadCharacters(user.id).then(({ characters }) => setCharacters(characters || []))
+  })
 }}
 />
 )}
