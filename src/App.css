@@ -209,3 +209,53 @@ input:focus, select:focus, textarea:focus {
 select option {
   background: var(--surface);
 }
+/* Hamburger menu */
+.nav-hamburger {
+  display: block;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--gold);
+  font-size: 1.3rem;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.nav-mobile-menu {
+ flex-direction: column;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border2);
+  padding: 8px 12px;
+  gap: 6px;
+  position: sticky;
+  top: 53px;
+  z-index: 99;
+}
+
+.nav-mobile-menu button {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text2);
+  padding: 10px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Georgia', serif;
+  font-size: 1rem;
+  text-align: left;
+}
+
+.nav-mobile-menu button.active {
+  border-color: var(--gold2);
+  color: var(--gold2);
+}
+
+@media (max-width: 1024px) {
+  .nav-desktop {
+    display: none;
+  }
+
+  }
+  .nav-mobile-menu {
+    display: flex;
+  }
+}
