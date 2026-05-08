@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import { calculate } from '../utils/calculator'
+import { AttributeBlock, ArmorHPTable } from './SheetTopSections'
 
 // ─────────────────────────────────────────────
 // STYLE HELPERS
@@ -39,13 +40,6 @@ const statVal = {
   lineHeight: 1,
 }
 
-const statSub = {
-  fontSize: '.6rem',
-  color: 'var(--text3)',
-  marginTop: 3,
-  fontFamily: 'Georgia, serif',
-}
-
 function Section({ title, children, style }) {
   return (
     <div style={{ ...surface, ...style }}>
@@ -57,57 +51,17 @@ function Section({ title, children, style }) {
   )
 }
 
-function StatBox({ label: lbl, value, sub, color }) {
+function StatBox({ label: lbl, value, color }) {
   return (
     <div style={statBox}>
       <div style={{ ...label, marginBottom: 4 }}>{lbl}</div>
       <div style={{ ...statVal, color: color || 'var(--gold2)' }}>{value ?? '—'}</div>
-      {sub && <div style={statSub}>{sub}</div>}
-    </div>
-  )
-}
-
-function Dropdown({ label: lbl, value, onChange, options }) {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-      <span style={label}>{lbl}</span>
-      <select
-        value={value}
-        onChange={e => onChange(e.target.value)}
-        style={{
-          background: 'var(--surface2)', border: '1px solid var(--border2)',
-          color: 'var(--text)', borderRadius: 4, padding: '5px 8px',
-          fontFamily: 'Georgia, serif', fontSize: '.85rem', cursor: 'pointer',
-        }}
-      >
-        {options.map(o => <option key={o} value={o}>{o}</option>)}
-      </select>
     </div>
   )
 }
 
 // ─────────────────────────────────────────────
-// HP BAR
-// ─────────────────────────────────────────────
-
-function HPSection({ label: lbl, current, max }) {
-  const pct = max > 0 ? Math.max(0, Math.min(1, current / max)) : 0
-  const color = pct > 0.5 ? '#4a9e4a' : pct > 0.25 ? '#c9a84c' : '#c94a4a'
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 3, minWidth: 70 }}>
-      <div style={{ ...label, marginBottom: 0 }}>{lbl}</div>
-      <div style={{ fontSize: '.95rem', color, fontWeight: 600, fontFamily: 'Georgia, serif' }}>
-        {current}/{max}
-      </div>
-      <div style={{ height: 4, background: 'var(--bg2)', borderRadius: 2, overflow: 'hidden' }}>
-        <div style={{ height: '100%', width: `${pct * 100}%`, background: color, borderRadius: 2, transition: 'width .3s' }} />
-      </div>
-    </div>
-  )
-}
-
-// ─────────────────────────────────────────────
-// WEAPON ROW
+// WEAPON ROWS
 // ─────────────────────────────────────────────
 
 function MeleeRow({ slot }) {
@@ -181,9 +135,8 @@ function RangedRow({ slot }) {
 // ─────────────────────────────────────────────
 
 export default function CharacterSheet({ character, onBack, onEditSkills, onUpdateCharacter }) {
-  console.log('CharacterSheet props:', { character: !!character, onBack: !!onBack, onEditSkills: !!onEditSkills })
   const [offHand, setOffHand] = useState(character.offHand || 'Empty')
-  const [stance, setStance] = useState('None')
+  const [stance, setStance] = useState(character.stance || 'None')
   const [unfettered, setUnfettered] = useState(false)
 
   const handleOffHandChange = (val) => {
@@ -191,8 +144,12 @@ export default function CharacterSheet({ character, onBack, onEditSkills, onUpda
     onUpdateCharacter({ ...character, offHand: val })
   }
 
-  const stats = useMemo(() => {
+  const handleStanceChange = (val) => {
+    setStance(val)
+    onUpdateCharacter({ ...character, stance: val })
+  }
 
+  const stats = useMemo(() => {
     try {
       return calculate(character, { offHand, stance, unfettered })
     } catch (e) {
@@ -207,162 +164,26 @@ export default function CharacterSheet({ character, onBack, onEditSkills, onUpda
     </div>
   )
 
-  const hp = character.hp || {}
-  const currentHP = hp.current || {}
-  const maxHP = stats.hp
-
-  const attrs = stats.attributes
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16, maxWidth: 1100 }}>
 
-      {/* Back button + header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
-        <button
-          onClick={onBack}
-          style={{
-            background: 'none', border: '1px solid var(--border)',
-            color: 'var(--text3)', borderRadius: 4, padding: '6px 14px',
-            cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.85rem',
-          }}
-        >
-          ← Characters
-        </button>
-        <button
-onClick={onEditSkills} 
-  style={{
-    background: 'none', border: '1px solid var(--border)',
-    color: 'var(--text3)', borderRadius: 4, padding: '6px 14px',
-    cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.85rem',
-  }}
->
-  Edit Skills
-</button>
-        <div>
-          <h2 style={{ color: 'var(--gold2)', margin: 0, fontSize: '1.5rem' }}>{character.name}</h2>
-          <div style={{ fontSize: '.75rem', color: 'var(--text3)' }}>
-            Level {character.level} {character.race} {character.profession && `· ${character.profession}`}
-            {character.player && ` · Player: ${character.player}`}
-          </div>
-        </div>
-      </div>
+      <AttributeBlock
+        stats={stats}
+        character={character}
+        onUpdateCharacter={onUpdateCharacter}
+        offHand={offHand}
+        stance={stance}
+        unfettered={unfettered}
+        onOffHandChange={handleOffHandChange}
+        onStanceChange={handleStanceChange}
+        onUnfetteredChange={setUnfettered}
+      />
 
-      {/* Session state dropdowns */}
-      <Section title="Combat State">
-        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'flex-end' }}>
-
-            <Dropdown
-            label="Off-hand"
-            value={offHand}
-            onChange={handleOffHandChange}
-            options={['Empty', '2-Handed', 'Dual Wield', 'Shield']}
-          />
-          <Dropdown
-            label="Stance"
-            value={stance}
-            onChange={setStance}
-            options={['None', 'Wind', 'Wave', 'Stone', 'Flame']}
-          />
-          {stats.session.canBeUnfettered && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              <span style={label}>Unfettered</span>
-              <button
-                onClick={() => setUnfettered(!unfettered)}
-                style={{
-                  padding: '5px 14px',
-                  background: unfettered ? 'rgba(74,158,74,.15)' : 'var(--surface2)',
-                  border: `1px solid ${unfettered ? '#4a9e4a' : 'var(--border2)'}`,
-                  color: unfettered ? '#4a9e4a' : 'var(--text3)',
-                  borderRadius: 4, cursor: 'pointer',
-                  fontFamily: 'Georgia, serif', fontSize: '.85rem',
-                }}
-              >
-                {unfettered ? 'Yes' : 'No'}
-              </button>
-            </div>
-          )}
-          <div style={{ display: 'flex', gap: 16, marginLeft: 'auto', flexWrap: 'wrap' }}>
-            <StatBox label="Evasion" value={stats.evasion} sub={`Rear: ${stats.rearEvasion}`} />
-            <StatBox label="Initiative" value={`+${stats.initiative}`} />
-            <StatBox label="Movement" value={stats.movement} sub="ft/action" />
-            <StatBox label="Skill Cap" value={stats.skillCap} />
-            <StatBox label="Carry" value={stats.weightAllowance} sub="lbs max" />
-          </div>
-        </div>
-      </Section>
-
-      {/* Attributes */}
-      <Section title="Attributes">
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          {Object.entries(attrs).map(([key, val]) => (
-            <div key={key} style={{ ...statBox, flex: '1 1 80px' }}>
-              <div style={label}>{key.toUpperCase()}</div>
-              <div style={statVal}>{val.effective}</div>
-              <div style={{ ...statSub, color: val.checkMod >= 0 ? 'var(--text3)' : '#c94a4a' }}>
-                ({val.checkMod >= 0 ? '+' : ''}{val.checkMod})
-              </div>
-              {val.advantage && <div style={{ fontSize: '.55rem', color: '#4a9e4a', marginTop: 2 }}>ADV</div>}
-              {val.disadvantage && <div style={{ fontSize: '.55rem', color: '#c94a4a', marginTop: 2 }}>DIS</div>}
-            </div>
-          ))}
-        </div>
-      </Section>
-
-      {/* Hit Points */}
-      <Section title="Hit Points">
-        <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
-          {[
-            ['R. Arm', currentHP.rArm, maxHP.arm],
-            ['Head', currentHP.head, maxHP.head],
-            ['L. Arm', currentHP.lArm, maxHP.arm],
-            ['Torso', currentHP.torso, maxHP.torso],
-            ['L. Leg', currentHP.lLeg, maxHP.leg],
-            ['R. Leg', currentHP.rLeg, maxHP.leg],
-          ].map(([loc, cur, max]) => (
-            <HPSection key={loc} label={loc} current={cur ?? max} max={max} />
-          ))}
-        </div>
-        {character.hp?.barrierHP > 0 && (
-          <div style={{ marginTop: 10, fontSize: '.8rem', color: 'var(--text2)' }}>
-            Barrier HP: {character.hp.barrierHP}
-          </div>
-        )}
-      </Section>
-
-      {/* Damage Bonus + Magic Summary */}
-      <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-        <Section title="Combat" style={{ flex: 1 }}>
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            <StatBox label="Dmg Bonus" value={stats.damageBonus >= 0 ? `+${stats.damageBonus}` : stats.damageBonus} />
-            <StatBox label="MoV Dmg" value={stats.movDamageRate > 0 ? `+${stats.movDamageRate}/MoV` : '—'} />
-            <StatBox label="MoV Prec" value={stats.movPrecisionRate > 0 ? `+${stats.movPrecisionRate}/MoV` : '—'} />
-            <StatBox label="HS AP" value={stats.hsArmorBypassRate > 0 ? `+${stats.hsArmorBypassRate}/HS` : '—'} />
-            <StatBox label="Spell Prec" value={stats.spellPrecision > 0 ? `+${stats.spellPrecision}` : '—'} />
-          </div>
-        </Section>
-
-        <Section title="Magic" style={{ flex: 1 }}>
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            <StatBox label="Arc. Power" value={stats.arcanePower} />
-            <StatBox label="Spell Hooks" value={stats.spellHooks} />
-            <StatBox label="Max Spells" value={stats.maxSpellsKnown} />
-            <StatBox label="Mana Mean" value={stats.manaMean} />
-          </div>
-          {Object.keys(stats.weavingDice).length > 0 && (
-            <div style={{ marginTop: 10, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              {Object.entries(stats.weavingDice).map(([color, die]) => (
-                <div key={color} style={{
-                  background: 'var(--bg2)', border: '1px solid var(--border)',
-                  borderRadius: 4, padding: '3px 8px', fontSize: '.75rem',
-                  color: 'var(--text2)', fontFamily: 'Georgia, serif',
-                }}>
-                  {color.charAt(0).toUpperCase() + color.slice(1)}: {die}
-                </div>
-              ))}
-            </div>
-          )}
-        </Section>
-      </div>
+      <ArmorHPTable
+        stats={stats}
+        character={character}
+        onUpdateCharacter={onUpdateCharacter}
+      />
 
       {/* Melee Weapons */}
       {stats.meleeSlots.some(Boolean) && (
@@ -393,41 +214,6 @@ onClick={onEditSkills}
           {stats.rangedSlots.map((slot, i) => slot && <RangedRow key={i} slot={slot} />)}
         </Section>
       )}
-
-      {/* Armor */}
-      <Section title="Armor">
-        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-          {[
-            ['R. Arm', character.armor?.rArm],
-            ['Head', character.armor?.head],
-            ['L. Arm', character.armor?.lArm],
-            ['Torso', character.armor?.torso],
-            ['L. Leg', character.armor?.lLeg],
-            ['R. Leg', character.armor?.rLeg],
-            ['Shield', character.armor?.shield],
-          ].map(([loc, a]) => (
-            <div key={loc} style={{ ...statBox, minWidth: 80 }}>
-              <div style={label}>{loc}</div>
-              <div style={{ fontSize: '.85rem', color: 'var(--text2)', fontFamily: 'Georgia, serif' }}>
-                {a?.type || 'None'}
-              </div>
-              <div style={{ fontSize: '.75rem', color: 'var(--gold2)', marginTop: 2 }}>
-                AR {a?.ar ?? 0}
-              </div>
-              {(a?.breaches || 0) > 0 && (
-                <div style={{ fontSize: '.65rem', color: '#c94a4a', marginTop: 1 }}>
-                  {a.breaches} breach{a.breaches > 1 ? 'es' : ''}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-        {stats.session.unfettered && (
-          <div style={{ marginTop: 8, fontSize: '.78rem', color: '#4a9e4a', fontStyle: 'italic' }}>
-            ✓ Unfettered
-          </div>
-        )}
-      </Section>
 
       {/* Skill Points */}
       <Section title="Skill Points">
@@ -478,7 +264,7 @@ onClick={onEditSkills}
           </div>
         </Section>
       )}
-      
+
     </div>
   )
 }

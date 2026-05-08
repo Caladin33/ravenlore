@@ -31,140 +31,12 @@ body {
   min-height: 100vh;
 }
 
-/* NAV */
-.app-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 28px;
-  background: linear-gradient(180deg, #0a0805 0%, var(--bg2) 100%);
-  border-bottom: 1px solid var(--border2);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: 0 4px 24px rgba(0,0,0,.6);
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.nav-brand {
-  font-family: 'Georgia', serif;
-  font-size: 1.3rem;
-  color: var(--gold2);
-  letter-spacing: .08em;
-  text-shadow: 0 0 30px rgba(201,168,76,.4);
-  font-weight: bold;
-}
-
-.nav-links {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.nav-links button {
-  background: none;
-  border: 1px solid var(--border);
-  color: var(--text2);
-  padding: 7px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-family: 'Georgia', serif;
-  font-size: .85rem;
-  letter-spacing: .05em;
-  transition: all .2s;
-}
-
-.nav-links button:hover {
-  border-color: var(--gold);
-  color: var(--gold);
-}
-
-.nav-links button.active {
-  border-color: var(--gold2);
-  color: var(--gold2);
-  background: rgba(201,168,76,.08);
-}
-
-/* MAIN */
 .app-main {
   flex: 1;
-  padding: 32px 28px;
+  padding: 24px 28px;
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
-}
-
-/* HOME PAGE */
-.home-page {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 48px;
-  padding: 40px 0;
-}
-
-.home-hero {
-  text-align: center;
-}
-
-.home-hero h1 {
-  font-size: 3rem;
-  color: var(--gold2);
-  letter-spacing: .12em;
-  text-shadow: 0 0 40px rgba(201,168,76,.4);
-  margin-bottom: 10px;
-}
-
-.home-subtitle {
-  font-size: 1rem;
-  color: var(--text3);
-  letter-spacing: .2em;
-  text-transform: uppercase;
-}
-
-.home-cards {
-  display: flex;
-  gap: 24px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.home-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 32px 28px;
-  width: 220px;
-  text-align: center;
-  cursor: pointer;
-  transition: all .2s;
-}
-
-.home-card:hover {
-  border-color: var(--gold);
-  background: var(--surface2);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0,0,0,.4);
-}
-
-.card-icon {
-  font-size: 2rem;
-  color: var(--gold);
-  margin-bottom: 16px;
-}
-
-.home-card h2 {
-  font-size: 1.1rem;
-  color: var(--gold2);
-  margin-bottom: 8px;
-  letter-spacing: .04em;
-}
-
-.home-card p {
-  font-size: .85rem;
-  color: var(--text3);
-  line-height: 1.5;
 }
 
 /* COMING SOON */
@@ -187,9 +59,7 @@ body {
 /* SHARED UI ELEMENTS */
 h1, h2, h3 { color: var(--gold2); }
 
-button {
-  cursor: pointer;
-}
+button { cursor: pointer; }
 
 input, select, textarea {
   background: var(--surface);
@@ -209,52 +79,9 @@ input:focus, select:focus, textarea:focus {
 select option {
   background: var(--surface);
 }
-/* Hamburger menu */
-.nav-hamburger {
-  display: block;
-  background: none;
-  border: 1px solid var(--border);
-  color: var(--gold);
-  font-size: 1.3rem;
-  padding: 4px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-}
 
-.nav-mobile-menu {
- flex-direction: column;
-  background: var(--bg2);
-  border-bottom: 1px solid var(--border2);
-  padding: 8px 12px;
-  gap: 6px;
-  position: sticky;
-  top: 53px;
-  z-index: 99;
-}
-
-.nav-mobile-menu button {
-  background: none;
-  border: 1px solid var(--border);
-  color: var(--text2);
-  padding: 10px 14px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-family: 'Georgia', serif;
-  font-size: 1rem;
-  text-align: left;
-}
-
-.nav-mobile-menu button.active {
-  border-color: var(--gold2);
-  color: var(--gold2);
-}
-
-@media (max-width: 1024px) {
-  .nav-desktop {
-    display: none;
-  }
-
-  .nav-mobile-menu {
-    display: flex;
+@media (max-width: 600px) {
+  .app-main {
+    padding: 16px 12px;
   }
 }
