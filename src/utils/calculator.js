@@ -244,7 +244,8 @@ const race = racesData[raceKey] || racesData.human || {}
 
   // ── UNFETTERED AUTO-CONDITIONS ─────────────
   const shieldEquipped = offHand === 'Shield'
-  const weightAllowance = conWeight(CON) + STR
+ const tirelessKnown = skillKnown(char, 'Tireless')
+const weightAllowance = Math.floor(conWeight(CON) * (tirelessKnown ? 1.5 : 1)) + STR
   const carryingWeight = char.carryingWeight || 0
   const unfetteredConditions = {
     weightOk: carryingWeight < (weightAllowance / 2),

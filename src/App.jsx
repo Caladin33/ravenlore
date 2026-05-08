@@ -4,9 +4,12 @@ import Auth from './components/Auth'
 import ArcaneCompendium from './components/ArcaneCompendium'
 import CharacterSheet from './components/CharacterSheet'
 import SkillEditor from './components/SkillEditor'
+import StuffPage from './components/StuffPage'
+import { calculate } from './utils/calculator'
 import { loadCharacters, saveCharacter, deleteCharacter } from './characterDB'
 import './App.css'
 
+// ── RAVEN LOGO ────────────────────────────────────────────────────────────────
 function RavenLogo({ size = 48 }) {
   return (
     <img src="/raven.png" alt="RavenLore" style={{ width: size, height: size, borderRadius: '50%', display: 'block' }} />
@@ -46,7 +49,7 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
       gap: 12,
       flexWrap: 'wrap',
     }}>
-      {/* Left tabs + Home */}
+      {/* Left: home button + Sheet + Skills */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
         <button
           onClick={onHome}
@@ -77,7 +80,7 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
         </div>
       </div>
 
-      {/* Right tabs */}
+      {/* Right: Spells + Stuff */}
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
         {tabBtn('spells', 'Spells')}
         {tabBtn('stuff', 'Stuff')}
@@ -87,13 +90,13 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
 }
 
 // ── HOME PAGE ─────────────────────────────────────────────────────────────────
-function HomePage({ characters, user, onSelectCharacter, onImport, onDelete, onLogout }) {
+function HomePage({ characters, onSelectCharacter, onDelete, onLogout }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 40, padding: '40px 0' }}>
 
       {/* Hero */}
       <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-        <RavenLogo size={100} glow />
+        <RavenLogo size={100} />
         <h1 style={{
           fontSize: '2.8rem', color: 'var(--gold2)', letterSpacing: '.14em',
           textShadow: '0 0 40px rgba(201,168,76,.4)', fontFamily: 'Georgia, serif',
@@ -156,8 +159,6 @@ function HomePage({ characters, user, onSelectCharacter, onImport, onDelete, onL
             ))}
           </div>
         )}
-
-        
       </div>
 
       {/* Log out */}
@@ -217,12 +218,6 @@ function App() {
     })
   }
 
-  const handleImport = (char) => {
-    saveCharacter(char, user.id).then(() => {
-      loadCharacters(user.id).then(({ characters }) => setCharacters(characters || []))
-    })
-  }
-
   const handleDelete = (name) => {
     deleteCharacter(name, user.id).then(() => {
       loadCharacters(user.id).then(({ characters }) => setCharacters(characters || []))
@@ -234,6 +229,19 @@ function App() {
     setSelectedCharacter(null)
     setCurrentPage('home')
   }
+
+  // Calculate stats for selected character (needed by StuffPage for weight allowance)
+  const selectedCharacterStats = selectedCharacter
+    ? (() => {
+        try {
+          return calculate(selectedCharacter, {
+            offHand: selectedCharacter.offHand || 'Empty',
+            stance: selectedCharacter.stance || 'None',
+            unfettered: false,
+          })
+        } catch (e) { return null }
+      })()
+    : null
 
   const isCharacterPage = selectedCharacter && ['sheet', 'skillEditor', 'spells', 'stuff'].includes(currentPage)
 
@@ -251,13 +259,10 @@ function App() {
           />
         )}
 
-        {/* Pages */}
         {currentPage === 'home' && (
           <HomePage
             characters={characters}
-            user={user}
             onSelectCharacter={handleSelectCharacter}
-            onImport={handleImport}
             onDelete={handleDelete}
             onLogout={handleLogout}
           />
@@ -288,10 +293,11 @@ function App() {
         )}
 
         {currentPage === 'stuff' && selectedCharacter && (
-          <div style={{ textAlign: 'center', padding: '80px 20px' }}>
-            <h2 style={{ color: 'var(--gold2)', marginBottom: 16 }}>Stuff</h2>
-            <p style={{ color: 'var(--text3)' }}>Inventory coming soon...</p>
-          </div>
+          <StuffPage
+            character={selectedCharacter}
+            onUpdateCharacter={handleUpdateCharacter}
+            stats={selectedCharacterStats}
+          />
         )}
 
       </main>
