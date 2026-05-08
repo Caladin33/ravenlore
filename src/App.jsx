@@ -16,7 +16,7 @@ function RavenLogo({ size = 48 }) {
   )
 }
 
-// ── CHARACTER HEADER (scrolls with page) ──────────────────────────────────────
+// ── CHARACTER HEADER ──────────────────────────────────────────────────────────
 function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
   const tabBtn = (key, label) => (
     <button
@@ -34,57 +34,73 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
         letterSpacing: '.05em',
         transition: 'all .2s',
         whiteSpace: 'nowrap',
+        flex: '1 1 auto',
+        textAlign: 'center',
       }}
     >{label}</button>
   )
 
+  const homeBtn = (
+    <button
+      onClick={onHome}
+      style={{
+        background: 'none', border: 'none', cursor: 'pointer',
+        padding: '0 8px 0 0', borderRight: '1px solid var(--border)',
+        marginRight: 4, display: 'flex', alignItems: 'center', gap: 6,
+        flexShrink: 0,
+      }}
+      title="Home"
+    >
+      <RavenLogo size={28} />
+      <span style={{ color: 'var(--gold)', fontSize: '.8rem', fontFamily: 'Georgia, serif', letterSpacing: '.12em' }}>
+        RavenLore
+      </span>
+    </button>
+  )
+
+  const charInfo = (
+    <div style={{ textAlign: 'center', flex: 1 }}>
+      <div style={{ fontSize: '1.3rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 'bold', letterSpacing: '.04em' }}>
+        {character.name}
+      </div>
+      <div style={{ fontSize: '.72rem', color: 'var(--text3)', letterSpacing: '.12em', textTransform: 'uppercase', marginTop: 2 }}>
+        Level {character.level} {character.race}{character.profession ? ` · ${character.profession}` : ''}
+        {character.player ? ` · ${character.player}` : ''}
+      </div>
+    </div>
+  )
+
   return (
-    <div style={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      padding: '14px 0 18px 0',
-      borderBottom: '1px solid var(--border)',
-      marginBottom: 20,
-      gap: 12,
-      flexWrap: 'wrap',
-    }}>
-      {/* Left: home button + Sheet + Skills */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-        <button
-          onClick={onHome}
-          style={{
-            background: 'none', border: 'none', cursor: 'pointer',
-            padding: '0 8px 0 0', borderRight: '1px solid var(--border)',
-            marginRight: 4, display: 'flex', alignItems: 'center', gap: 6,
-          }}
-          title="Home"
-        >
-          <RavenLogo size={28} />
-          <span style={{ color: 'var(--gold)', fontSize: '.8rem', fontFamily: 'Georgia, serif', letterSpacing: '.12em' }}>
-            RavenLore
-          </span>
-        </button>
-        {tabBtn('sheet', 'Sheet')}
-        {tabBtn('skillEditor', 'Skills')}
-      </div>
+    <div style={{ borderBottom: '1px solid var(--border)', marginBottom: 20, paddingBottom: 14, paddingTop: 14 }}>
 
-      {/* Center: character info */}
-      <div style={{ textAlign: 'center', flex: 1, minWidth: 160 }}>
-        <div style={{ fontSize: '1.3rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 'bold', letterSpacing: '.04em' }}>
-          {character.name}
+      {/* Desktop: [home+Sheet+Skills] [name] [Spells+Stuff] */}
+      <div className="header-desktop" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          {homeBtn}
+          {tabBtn('sheet', 'Sheet')}
+          {tabBtn('skillEditor', 'Skills')}
         </div>
-        <div style={{ fontSize: '.72rem', color: 'var(--text3)', letterSpacing: '.12em', textTransform: 'uppercase', marginTop: 2 }}>
-          Level {character.level} {character.race}{character.profession ? ` · ${character.profession}` : ''}
-          {character.player ? ` · ${character.player}` : ''}
+        {charInfo}
+        <div style={{ display: 'flex', gap: 8 }}>
+          {tabBtn('spells', 'Spells')}
+          {tabBtn('stuff', 'Stuff')}
         </div>
       </div>
 
-      {/* Right: Spells + Stuff */}
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-        {tabBtn('spells', 'Spells')}
-        {tabBtn('stuff', 'Stuff')}
+      {/* Mobile: [home+name] / [Sheet|Skills|Spells|Stuff] */}
+      <div className="header-mobile" style={{ display: 'none', flexDirection: 'column', gap: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          {homeBtn}
+          {charInfo}
+        </div>
+        <div style={{ display: 'flex', gap: 6 }}>
+          {tabBtn('sheet', 'Sheet')}
+          {tabBtn('skillEditor', 'Skills')}
+          {tabBtn('spells', 'Spells')}
+          {tabBtn('stuff', 'Stuff')}
+        </div>
       </div>
+
     </div>
   )
 }
@@ -94,7 +110,6 @@ function HomePage({ characters, onSelectCharacter, onDelete, onLogout }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 40, padding: '40px 0' }}>
 
-      {/* Hero */}
       <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
         <RavenLogo size={100} />
         <h1 style={{
@@ -106,7 +121,6 @@ function HomePage({ characters, onSelectCharacter, onDelete, onLogout }) {
         </p>
       </div>
 
-      {/* Character list */}
       <div style={{ width: '100%', maxWidth: 600 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
           <h2 style={{ fontSize: '1rem', color: 'var(--gold)', letterSpacing: '.14em', textTransform: 'uppercase' }}>
@@ -161,7 +175,6 @@ function HomePage({ characters, onSelectCharacter, onDelete, onLogout }) {
         )}
       </div>
 
-      {/* Log out */}
       <button
         onClick={onLogout}
         style={{
@@ -230,7 +243,6 @@ function App() {
     setCurrentPage('home')
   }
 
-  // Calculate stats for selected character (needed by StuffPage for weight allowance)
   const selectedCharacterStats = selectedCharacter
     ? (() => {
         try {
@@ -249,7 +261,6 @@ function App() {
     <div className="app">
       <main className="app-main">
 
-        {/* Character header — only when a character is open */}
         {isCharacterPage && (
           <CharacterHeader
             character={selectedCharacter}

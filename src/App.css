@@ -84,4 +84,10 @@ select option {
   .app-main {
     padding: 16px 12px;
   }
+  .header-desktop {
+    display: none !important;
+  }
+  .header-mobile {
+    display: flex !important;
+  }
 }

@@ -3,10 +3,10 @@ import spells from '../data/spells.json'
 import magicData from '../data/magic.json'
 
 const COLORS = {
-  chaos:     { name: 'Chaos',     also: 'White', dot: '#e8c96a' },
+  chaos:     { name: 'Chaos',     also: 'White', dot: '#ffffff' },
   chi:       { name: 'Chi',       also: 'Green', dot: '#4a9e4a' },
   elemental: { name: 'Elemental', also: 'Red',   dot: '#c94a4a' },
-  order:     { name: 'Order',     also: 'Black', dot: '#9e9e9e' },
+  order:     { name: 'Order',     also: 'Black', dot: '#555555' },
   will:      { name: 'Will',      also: 'Blue',  dot: '#4a7ec9' },
 }
 
@@ -112,7 +112,7 @@ function SpellHooksSection({ hookCount, hooks, knownSpells, onChange }) {
       </div>
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         {Array.from({ length: hookCount }).map((_, i) => (
-          <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: 3, flex: '1 1 160px', minWidth: 140 }}>
+          <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: 3, flex: '1 1 120px', maxWidth: 'calc(25% - 6px)', minWidth: 120 }}>
             <span style={{
               fontSize: '.55rem', color: '#7a6a50', letterSpacing: '.12em',
               textTransform: 'uppercase', fontFamily: 'Georgia, serif',
@@ -237,6 +237,25 @@ export default function ArcaneCompendium({ character, onUpdateCharacter, stats }
             Arcane Compendium
           </div>
         </div>
+
+        {/* Mastery ranks — colored numbers */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '.6rem', color: '#7a6a50', letterSpacing: '.14em', textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>
+            Masteries:
+          </span>
+          {Object.entries(COLORS).map(([key, col]) => (
+            <span key={key} style={{
+              fontSize: '1.1rem', fontWeight: 600,
+              color: ranks[key] > 0 ? col.dot : '#3a2e1e',
+              fontFamily: 'Georgia, serif',
+              textShadow: ranks[key] > 0 ? `0 0 8px ${col.dot}66` : 'none',
+              minWidth: 16, textAlign: 'center',
+            }}>
+              {ranks[key]}
+            </span>
+          ))}
+        </div>
+
         <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
           {[
             [unlockedCount, 'Unlocked'],
@@ -459,7 +478,7 @@ export default function ArcaneCompendium({ character, onUpdateCharacter, stats }
 
             {isWordOfPower(selected) && (
               <div style={{ fontSize: '.72rem', color: '#4a7ec9', fontStyle: 'italic', marginBottom: 10, fontFamily: 'Georgia, serif' }}>
-                Word of Power — cannot be hung on a spell hook
+                1 action to cast, no roll required
               </div>
             )}
 
