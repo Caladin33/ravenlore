@@ -64,9 +64,8 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
         {character.name}
       </div>
       <div style={{ fontSize: '.72rem', color: 'var(--text3)', letterSpacing: '.12em', textTransform: 'uppercase', marginTop: 2 }}>
-        Level {character.level} {character.race}{character.profession ? ` · ${character.profession}` : ''}
-        {character.player ? ` · ${character.player}` : ''}
-      </div>
+        Level {character.level} {character.race}
+              </div>
     </div>
   )
 

@@ -233,19 +233,17 @@ export default function ArcaneCompendium({ character, onUpdateCharacter, stats }
           <h2 style={{ color: '#e8c96a', letterSpacing: '.08em', margin: 0, fontSize: '1.5rem' }}>
             Spells
           </h2>
-          <div style={{ fontSize: '.6rem', color: '#7a6a50', letterSpacing: '.2em', textTransform: 'uppercase', marginTop: 2 }}>
-            Arcane Compendium
-          </div>
+          
         </div>
 
         {/* Mastery ranks — colored numbers */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '.6rem', color: '#7a6a50', letterSpacing: '.14em', textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>
+          <span style={{ fontSize: '.85rem', color: '#7a6a50', letterSpacing: '.14em', textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>
             Masteries:
           </span>
           {Object.entries(COLORS).map(([key, col]) => (
             <span key={key} style={{
-              fontSize: '1.1rem', fontWeight: 600,
+              fontSize: '1.5rem', fontWeight: 600,
               color: ranks[key] > 0 ? col.dot : '#3a2e1e',
               fontFamily: 'Georgia, serif',
               textShadow: ranks[key] > 0 ? `0 0 8px ${col.dot}66` : 'none',
