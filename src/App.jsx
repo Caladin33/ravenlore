@@ -289,7 +289,7 @@ function App() {
         )}
 
         {currentPage === 'spells' && selectedCharacter && (
-          <ArcaneCompendium character={selectedCharacter} onUpdateCharacter={handleUpdateCharacter} />
+          <ArcaneCompendium character={selectedCharacter} onUpdateCharacter={handleUpdateCharacter} stats={selectedCharacterStats} />
         )}
 
         {currentPage === 'stuff' && selectedCharacter && (

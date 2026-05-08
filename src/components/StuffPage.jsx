@@ -63,8 +63,9 @@ const removeBtn = {
   flexShrink: 0,
 }
 
-// Cols: [×] | Item | # | Loc | Lbs
-// Item is narrower to allow side-by-side layout
+const selectAll = e => e.target.select()
+
+// ── INVENTORY ─────────────────────────────────────────────────────────────────
 const INV_COLS = '16px 1fr 32px 46px 42px'
 
 function InventoryHeader() {
@@ -84,10 +85,35 @@ function InventoryRow({ row, onChange, onRemove }) {
   return (
     <div style={{ display: 'grid', gridTemplateColumns: INV_COLS, gap: 4, marginBottom: 3, alignItems: 'center' }}>
       <button style={removeBtn} onClick={onRemove}>×</button>
-      <input style={inputStyle} value={row.item || ''} onChange={e => update('item', e.target.value)} placeholder="—" />
-      <input style={{ ...inputStyle, textAlign: 'center' }} value={row.qty || ''} onChange={e => update('qty', e.target.value)} placeholder="1" maxLength={3} />
-      <input style={{ ...inputStyle, textAlign: 'center' }} value={row.loc || ''} onChange={e => update('loc', e.target.value)} placeholder="—" maxLength={8} />
-      <input style={{ ...inputStyle, textAlign: 'center' }} value={row.lbs || ''} onChange={e => update('lbs', e.target.value)} placeholder="0" maxLength={6} />
+      <input
+        style={inputStyle}
+        value={row.item || ''}
+        onChange={e => update('item', e.target.value)}
+        placeholder="—"
+      />
+      <input
+        style={{ ...inputStyle, textAlign: 'center' }}
+        value={row.qty || ''}
+        onChange={e => update('qty', e.target.value)}
+        onFocus={selectAll}
+        placeholder="1"
+        maxLength={3}
+      />
+      <input
+        style={{ ...inputStyle, textAlign: 'center' }}
+        value={row.loc || ''}
+        onChange={e => update('loc', e.target.value)}
+        placeholder="—"
+        maxLength={8}
+      />
+      <input
+        style={{ ...inputStyle, textAlign: 'center' }}
+        value={row.lbs || ''}
+        onChange={e => update('lbs', e.target.value)}
+        onFocus={selectAll}
+        placeholder="0"
+        maxLength={6}
+      />
     </div>
   )
 }
@@ -109,105 +135,6 @@ function InventorySection({ title, rows, onChange }) {
   )
 }
 
-// ── MONEY ─────────────────────────────────────────────────────────────────────
-const COIN_TYPES = ['P.P', 'G.P', 'S.P', 'C.P']
-
-function CoinsSection({ money, onChange }) {
-  const update = (type, field, val) =>
-    onChange({ ...money, [type]: { ...(money[type] || {}), [field]: val } })
-
-  const totalCoins = COIN_TYPES.reduce((sum, t) =>
-    sum + (parseInt(money[t]?.party || 0) + parseInt(money[t]?.mine || 0)), 0)
-  const coinLbs = (totalCoins / 50).toFixed(1)
-
-  const coinInput = (val, onCh) => (
-    <input
-      style={{ ...inputStyle, textAlign: 'center', padding: '3px 4px' }}
-      value={val || ''}
-      onChange={e => onCh(e.target.value)}
-      placeholder="0"
-      maxLength={5}
-    />
-  )
-
-  return (
-    <div style={{ ...surface, flex: '1 1 180px', minWidth: 0 }}>
-      <div style={sectionTitle}>Coins</div>
-      {/* Header */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 44px 1fr', gap: 4, marginBottom: 4 }}>
-        <div style={{ ...lbl, textAlign: 'center' }}>Party</div>
-        <div />
-        <div style={{ ...lbl, textAlign: 'center' }}>Mine</div>
-      </div>
-      {COIN_TYPES.map(type => (
-        <div key={type} style={{ display: 'grid', gridTemplateColumns: '1fr 44px 1fr', gap: 4, marginBottom: 3, alignItems: 'center' }}>
-          {coinInput(money[type]?.party, v => update(type, 'party', v))}
-          <div style={{
-            background: '#1a1060',
-            borderRadius: 3,
-            padding: '4px 2px',
-            textAlign: 'center',
-            fontSize: '.78rem',
-            color: 'var(--gold2)',
-            fontFamily: 'Georgia, serif',
-            letterSpacing: '.04em',
-          }}>{type}</div>
-          {coinInput(money[type]?.mine, v => update(type, 'mine', v))}
-        </div>
-      ))}
-      <div style={{ marginTop: 8, fontSize: '.7rem', color: 'var(--text3)', fontFamily: 'Georgia, serif' }}>
-        {coinLbs} lbs ({totalCoins} coins)
-      </div>
-    </div>
-  )
-}
-
-function GemsSection({ money, onChange }) {
-  const DEFAULT_GEMS = 5
-  const gems = money.gems || Array(DEFAULT_GEMS).fill(null).map(() => ({ name: '', party: '', mine: '' }))
-
-  const updateGem = (i, field, val) => {
-    const g = [...gems]
-    g[i] = { ...g[i], [field]: val }
-    onChange({ ...money, gems: g })
-  }
-
-  const gemInput = (val, onCh, placeholder = '0') => (
-    <input
-      style={{ ...inputStyle, textAlign: 'center', padding: '3px 4px' }}
-      value={val || ''}
-      onChange={e => onCh(e.target.value)}
-      placeholder={placeholder}
-      maxLength={8}
-    />
-  )
-
-  return (
-    <div style={{ ...surface, flex: '1 1 200px', minWidth: 0 }}>
-      <div style={sectionTitle}>Gems</div>
-      {/* Header */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 48px 1fr', gap: 4, marginBottom: 4 }}>
-        <div style={{ ...lbl, textAlign: 'center' }}>Party</div>
-        <div />
-        <div style={{ ...lbl, textAlign: 'center' }}>Mine</div>
-      </div>
-      {gems.map((gem, i) => (
-        <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 48px 1fr', gap: 4, marginBottom: 3, alignItems: 'center' }}>
-          {gemInput(gem.party, v => updateGem(i, 'party', v))}
-          <input
-            style={{ ...inputStyle, textAlign: 'center', padding: '3px 2px', fontSize: '.72rem' }}
-            value={gem.name || ''}
-            onChange={e => updateGem(i, 'name', e.target.value)}
-            placeholder="type"
-            maxLength={12}
-          />
-          {gemInput(gem.mine, v => updateGem(i, 'mine', v))}
-        </div>
-      ))}
-    </div>
-  )
-}
-
 // ── SPECIAL ITEMS ─────────────────────────────────────────────────────────────
 const SPEC_COLS = '16px 1fr 46px 42px'
 
@@ -217,7 +144,7 @@ function SpecialItemsSection({ items, onChange }) {
   const removeRow = (i) => { const r = [...items]; r.splice(i, 1); onChange(r) }
 
   return (
-    <div style={surface}>
+    <div style={{ ...surface }}>
       <div style={sectionTitle}>Special Items</div>
       <div style={{ display: 'grid', gridTemplateColumns: SPEC_COLS, gap: 4, marginBottom: 4 }}>
         <div />
@@ -228,12 +155,133 @@ function SpecialItemsSection({ items, onChange }) {
       {items.map((row, i) => (
         <div key={i} style={{ display: 'grid', gridTemplateColumns: SPEC_COLS, gap: 4, marginBottom: 3, alignItems: 'center' }}>
           <button style={removeBtn} onClick={() => removeRow(i)}>×</button>
-          <input style={inputStyle} value={row.item || ''} onChange={e => updateRow(i, { ...row, item: e.target.value })} placeholder="—" />
-          <input style={{ ...inputStyle, textAlign: 'center' }} value={row.loc || ''} onChange={e => updateRow(i, { ...row, loc: e.target.value })} placeholder="—" maxLength={8} />
-          <input style={{ ...inputStyle, textAlign: 'center' }} value={row.lbs || ''} onChange={e => updateRow(i, { ...row, lbs: e.target.value })} placeholder="0" maxLength={6} />
+          <input
+            style={inputStyle}
+            value={row.item || ''}
+            onChange={e => updateRow(i, { ...row, item: e.target.value })}
+            placeholder="—"
+          />
+          <input
+            style={{ ...inputStyle, textAlign: 'center' }}
+            value={row.loc || ''}
+            onChange={e => updateRow(i, { ...row, loc: e.target.value })}
+            placeholder="—"
+            maxLength={8}
+          />
+          <input
+            style={{ ...inputStyle, textAlign: 'center' }}
+            value={row.lbs || ''}
+            onChange={e => updateRow(i, { ...row, lbs: e.target.value })}
+            onFocus={selectAll}
+            placeholder="0"
+            maxLength={6}
+          />
         </div>
       ))}
       <button style={addBtn} onClick={addRow}>+ Add Row</button>
+    </div>
+  )
+}
+
+// ── COINS ─────────────────────────────────────────────────────────────────────
+const COIN_TYPES = ['P.P', 'G.P', 'S.P', 'C.P']
+
+function CoinsSection({ money, onChange }) {
+  const update = (type, field, val) =>
+    onChange({ ...money, [type]: { ...(money[type] || {}), [field]: val } })
+
+  const totalCoins = COIN_TYPES.reduce((sum, t) =>
+    sum + (parseInt(money[t]?.party || 0) + parseInt(money[t]?.mine || 0)), 0)
+  const coinLbs = (totalCoins / 50).toFixed(1)
+
+  return (
+    <div style={{ ...surface, flex: '1 1 180px', minWidth: 0 }}>
+      <div style={sectionTitle}>Coins</div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 44px 1fr', gap: 4, marginBottom: 4 }}>
+        <div style={{ ...lbl, textAlign: 'center' }}>Party</div>
+        <div />
+        <div style={{ ...lbl, textAlign: 'center' }}>Mine</div>
+      </div>
+      {COIN_TYPES.map(type => (
+        <div key={type} style={{ display: 'grid', gridTemplateColumns: '1fr 44px 1fr', gap: 4, marginBottom: 3, alignItems: 'center' }}>
+          <input
+            style={{ ...inputStyle, textAlign: 'center', padding: '3px 4px' }}
+            value={money[type]?.party || ''}
+            onChange={e => update(type, 'party', e.target.value)}
+            onFocus={selectAll}
+            placeholder="0"
+            maxLength={5}
+          />
+          <div style={{
+            background: '#1a1060',
+            borderRadius: 3,
+            padding: '4px 2px',
+            textAlign: 'center',
+            fontSize: '.78rem',
+            color: 'var(--gold2)',
+            fontFamily: 'Georgia, serif',
+            letterSpacing: '.04em',
+          }}>{type}</div>
+          <input
+            style={{ ...inputStyle, textAlign: 'center', padding: '3px 4px' }}
+            value={money[type]?.mine || ''}
+            onChange={e => update(type, 'mine', e.target.value)}
+            onFocus={selectAll}
+            placeholder="0"
+            maxLength={5}
+          />
+        </div>
+      ))}
+      <div style={{ marginTop: 8, fontSize: '.7rem', color: 'var(--text3)', fontFamily: 'Georgia, serif' }}>
+        {coinLbs} lbs ({totalCoins} coins)
+      </div>
+    </div>
+  )
+}
+
+// ── GEMS ──────────────────────────────────────────────────────────────────────
+function GemsSection({ money, onChange }) {
+  const gems = money.gems || Array(5).fill(null).map(() => ({ name: '', party: '', mine: '' }))
+
+  const updateGem = (i, field, val) => {
+    const g = [...gems]
+    g[i] = { ...g[i], [field]: val }
+    onChange({ ...money, gems: g })
+  }
+
+  return (
+    <div style={{ ...surface, flex: '1 1 200px', minWidth: 0 }}>
+      <div style={sectionTitle}>Gems</div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 72px 1fr', gap: 4, marginBottom: 4 }}>
+        <div style={{ ...lbl, textAlign: 'center' }}>Party</div>
+        <div />
+        <div style={{ ...lbl, textAlign: 'center' }}>Mine</div>
+      </div>
+      {gems.map((gem, i) => (
+        <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 72px 1fr', gap: 4, marginBottom: 3, alignItems: 'center' }}>
+          <input
+            style={{ ...inputStyle, textAlign: 'center', padding: '3px 4px' }}
+            value={gem.party || ''}
+            onChange={e => updateGem(i, 'party', e.target.value)}
+            onFocus={selectAll}
+            placeholder="0"
+          />
+          <input
+            style={{ ...inputStyle, textAlign: 'center', padding: '3px 2px', fontSize: '.72rem' }}
+            value={gem.name || ''}
+            onChange={e => updateGem(i, 'name', e.target.value)}
+            placeholder="type"
+            maxLength={12}
+          />
+          <input
+            style={{ ...inputStyle, textAlign: 'center', padding: '3px 4px' }}
+            value={gem.mine || ''}
+            onChange={e => updateGem(i, 'mine', e.target.value)}
+            onFocus={selectAll}
+            placeholder="0"
+          />
+        </div>
+      ))}
     </div>
   )
 }
@@ -257,11 +305,7 @@ function MagicBonusesSection({ bonuses, onChange }) {
   return (
     <div style={surface}>
       <div style={sectionTitle}>Magic Item Bonuses</div>
-      <div style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: 8,
-      }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
         {BONUS_FIELDS.map(({ key, label }) => (
           <div key={key} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, minWidth: 52, flex: '1 1 52px', maxWidth: 80 }}>
             <span style={lbl}>{label}</span>
@@ -269,6 +313,7 @@ function MagicBonusesSection({ bonuses, onChange }) {
               style={{ ...inputStyle, textAlign: 'center', padding: '4px 6px' }}
               value={bonuses[key] ?? 0}
               onChange={e => update(key, e.target.value)}
+              onFocus={selectAll}
             />
           </div>
         ))}
@@ -313,7 +358,7 @@ export default function StuffPage({ character, onUpdateCharacter, stats }) {
   const update = (field, val) =>
     onUpdateCharacter({ ...character, stuff: { ...stuff, [field]: val } })
 
-  const carried    = stuff.carried    || Array(20).fill(null).map(() => ({ item: '', qty: '', loc: '', lbs: '' }))
+  const carried    = stuff.carried    || Array(15).fill(null).map(() => ({ item: '', qty: '', loc: '', lbs: '' }))
   const notCarried = stuff.notCarried || Array(5).fill(null).map(() => ({ item: '', qty: '', loc: '', lbs: '' }))
   const special    = stuff.special    || Array(5).fill(null).map(() => ({ item: '', loc: '', lbs: '' }))
   const money      = stuff.money      || {}
@@ -329,7 +374,7 @@ export default function StuffPage({ character, onUpdateCharacter, stats }) {
         <InventorySection title="Carried" rows={carried} onChange={v => update('carried', v)} />
         <div style={{ flex: '1 1 260px', minWidth: 0, display: 'flex', flexDirection: 'column', gap: 14 }}>
           <InventorySection title="Not Carried" rows={notCarried} onChange={v => update('notCarried', v)} />
-       <SpecialItemsSection items={special} onChange={v => update('special', v)} />
+          <SpecialItemsSection items={special} onChange={v => update('special', v)} />
         </div>
       </div>
 
