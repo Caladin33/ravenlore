@@ -16,6 +16,35 @@ function RavenLogo({ size = 48 }) {
   )
 }
 
+// ── CHARACTER TOKEN ───────────────────────────────────────────────────────────
+function CharacterToken({ imageUrl, name, size = 36, onClick, isActive }) {
+  return (
+    <button
+      onClick={onClick}
+      title="Bio"
+      style={{
+        width: size, height: size, borderRadius: '50%',
+        border: `2px solid ${isActive ? 'var(--gold2)' : 'var(--border2)'}`,
+        background: 'var(--bg2)', overflow: 'hidden',
+        cursor: 'pointer', padding: 0, flexShrink: 0,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        transition: 'border-color .2s',
+      }}
+    >
+      {imageUrl ? (
+        <img src={imageUrl} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+      ) : (
+        // Placeholder silhouette SVG
+        <svg viewBox="0 0 36 36" width={size} height={size} xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="13" r="7" fill="var(--text3)" opacity="0.5" />
+          <ellipse cx="18" cy="32" rx="11" ry="8" fill="var(--text3)" opacity="0.5" />
+        </svg>
+      )}
+    </button>
+  )
+}
+
+// ── CHARACTER HEADER ──────────────────────────────────────────────────────────
 function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
   const tabBtn = (key, label) => (
     <button
@@ -51,19 +80,28 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
   )
 
   const charInfo = (
-    <div style={{ textAlign: 'center', flex: 1 }}>
-      <div style={{ fontSize: '1.3rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 'bold', letterSpacing: '.04em' }}>
-        {character.name}
-      </div>
-      <div style={{ fontSize: '.72rem', color: 'var(--text3)', letterSpacing: '.12em', textTransform: 'uppercase', marginTop: 2 }}>
-        Level {character.level} {character.race}
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, justifyContent: 'center' }}>
+      <CharacterToken
+        imageUrl={character.imageUrl}
+        name={character.name}
+        size={36}
+        onClick={() => onNavigate('bio')}
+        isActive={currentTab === 'bio'}
+      />
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ fontSize: '1.3rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 'bold', letterSpacing: '.04em', lineHeight: 1.1 }}>
+          {character.name}
+        </div>
+        <div style={{ fontSize: '.72rem', color: 'var(--text3)', letterSpacing: '.12em', textTransform: 'uppercase', marginTop: 2 }}>
+          Level {character.level} {character.race}
+        </div>
       </div>
     </div>
   )
 
   return (
     <div style={{ borderBottom: '1px solid var(--border)', marginBottom: 20, paddingBottom: 14, paddingTop: 14 }}>
-      {/* Desktop: [home+Sheet+Skills] [name] [Spells+Stuff+Bio] */}
+      {/* Desktop: [home+Sheet+Skills] [token+name] [Spells+Stuff] */}
       <div className="header-desktop" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {homeBtn}
@@ -74,28 +112,41 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
         <div style={{ display: 'flex', gap: 8 }}>
           {tabBtn('spells', 'Spells')}
           {tabBtn('stuff', 'Stuff')}
-          {tabBtn('bio', 'Bio')}
         </div>
       </div>
 
-      {/* Mobile: [home+name] / [Sheet|Skills|Spells|Stuff|Bio] */}
+      {/* Mobile: [home+token+name] / [Sheet|Skills|Spells|Stuff] */}
       <div className="header-mobile" style={{ display: 'none', flexDirection: 'column', gap: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {homeBtn}
-          {charInfo}
+          <CharacterToken
+            imageUrl={character.imageUrl}
+            name={character.name}
+            size={32}
+            onClick={() => onNavigate('bio')}
+            isActive={currentTab === 'bio'}
+          />
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: '1.1rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 'bold', letterSpacing: '.04em', lineHeight: 1.1 }}>
+              {character.name}
+            </div>
+            <div style={{ fontSize: '.65rem', color: 'var(--text3)', letterSpacing: '.1em', textTransform: 'uppercase' }}>
+              Level {character.level} {character.race}
+            </div>
+          </div>
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {tabBtn('sheet', 'Sheet')}
           {tabBtn('skillEditor', 'Skills')}
           {tabBtn('spells', 'Spells')}
           {tabBtn('stuff', 'Stuff')}
-          {tabBtn('bio', 'Bio')}
         </div>
       </div>
     </div>
   )
 }
 
+// ── HOME PAGE ─────────────────────────────────────────────────────────────────
 function HomePage({ characters, onSelectCharacter, onDelete, onLogout }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 40, padding: '40px 0' }}>
@@ -123,10 +174,13 @@ function HomePage({ characters, onSelectCharacter, onDelete, onLogout }) {
                 onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--gold)'; e.currentTarget.style.background = 'var(--surface2)' }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.background = 'var(--surface)' }}
               >
-                <div>
-                  <div style={{ fontSize: '1.05rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif' }}>{char.name}</div>
-                  <div style={{ fontSize: '.72rem', color: 'var(--text3)', marginTop: 3, letterSpacing: '.08em' }}>
-                    Level {char.level} {char.race}{char.profession ? ` · ${char.profession}` : ''}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <CharacterToken imageUrl={char.imageUrl} name={char.name} size={40} onClick={() => onSelectCharacter(char)} />
+                  <div>
+                    <div style={{ fontSize: '1.05rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif' }}>{char.name}</div>
+                    <div style={{ fontSize: '.72rem', color: 'var(--text3)', marginTop: 3, letterSpacing: '.08em' }}>
+                      Level {char.level} {char.race}{char.profession ? ` · ${char.profession}` : ''}
+                    </div>
                   </div>
                 </div>
                 <button onClick={e => { e.stopPropagation(); onDelete(char.name) }}
@@ -146,6 +200,7 @@ function HomePage({ characters, onSelectCharacter, onDelete, onLogout }) {
   )
 }
 
+// ── APP ───────────────────────────────────────────────────────────────────────
 function App() {
   const [user, setUser] = useState(null)
   const [authLoading, setAuthLoading] = useState(true)
@@ -173,22 +228,18 @@ function App() {
   if (!user) return <Auth onAuth={setUser} />
 
   const navigate = (page) => setCurrentPage(page)
-
   const handleSelectCharacter = (char) => { setSelectedCharacter(char); setCurrentPage('sheet') }
-
   const handleUpdateCharacter = (updated) => {
     setSelectedCharacter(updated)
     saveCharacter(updated, user.id).then(() => {
       loadCharacters(user.id).then(({ characters }) => setCharacters(characters || []))
     })
   }
-
   const handleDelete = (name) => {
     deleteCharacter(name, user.id).then(() => {
       loadCharacters(user.id).then(({ characters }) => setCharacters(characters || []))
     })
   }
-
   const handleLogout = () => { supabase.auth.signOut(); setSelectedCharacter(null); setCurrentPage('home') }
 
   const selectedCharacterStats = selectedCharacter
@@ -212,23 +263,18 @@ function App() {
         {currentPage === 'home' && (
           <HomePage characters={characters} onSelectCharacter={handleSelectCharacter} onDelete={handleDelete} onLogout={handleLogout} />
         )}
-
         {currentPage === 'sheet' && selectedCharacter && (
           <CharacterSheet character={selectedCharacter} onBack={() => { setSelectedCharacter(null); navigate('home') }} onEditSkills={() => navigate('skillEditor')} onUpdateCharacter={handleUpdateCharacter} />
         )}
-
         {currentPage === 'skillEditor' && selectedCharacter && (
           <SkillEditor character={selectedCharacter} onBack={() => navigate('sheet')} onSave={(updated) => { handleUpdateCharacter(updated); navigate('sheet') }} />
         )}
-
         {currentPage === 'spells' && selectedCharacter && (
           <ArcaneCompendium character={selectedCharacter} onUpdateCharacter={handleUpdateCharacter} stats={selectedCharacterStats} />
         )}
-
         {currentPage === 'stuff' && selectedCharacter && (
           <StuffPage character={selectedCharacter} onUpdateCharacter={handleUpdateCharacter} stats={selectedCharacterStats} />
         )}
-
         {currentPage === 'bio' && selectedCharacter && (
           <BioPage character={selectedCharacter} onUpdateCharacter={handleUpdateCharacter} stats={selectedCharacterStats} />
         )}

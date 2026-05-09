@@ -329,25 +329,27 @@ export default function BioPage({ character, onUpdateCharacter, stats, gmMode: g
             )}
             <div style={{ gridColumn: '1 / -1' }}>
               {field('Race',
-                raceLocked && !gmMode
-                  ? <div style={{ fontSize: '1rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600, padding: '6px 0' }}>{character.race}</div>
-                  : <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                      <select
-                        value={character.race || ''}
-                        onChange={e => updateChar('race', e.target.value)}
-                        style={selectStyle}
-                      >
-                        <option value="">— Choose Race —</option>
-                        {RACE_OPTIONS.map(r => <option key={r.key} value={r.name}>{r.name}</option>)}
-                      </select>
-                      {!raceLocked && (
-                        <button
-                          onClick={() => { if (window.confirm(`Lock race as ${character.race}? This cannot be changed without GM mode.`)) { setRaceLocked(true); onUpdateCharacter({ ...character, raceLocked: true }) } }}
-                          style={{ padding: '5px 10px', background: 'rgba(201,168,76,.12)', border: '1px solid var(--gold)', color: 'var(--gold2)', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.8rem', whiteSpace: 'nowrap' }}
-                        >Lock</button>
-                      )}
-                    </div>
-              )}
+  raceLocked && !gmMode
+    ? <div style={{ fontSize: '1rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600, padding: '6px 0' }}>{character.race}</div>
+    : <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+        <select value={character.race || ''} onChange={e => updateChar('race', e.target.value)} style={selectStyle}>
+          <option value="">— Choose Race —</option>
+          {RACE_OPTIONS.map(r => <option key={r.key} value={r.name}>{r.name}</option>)}
+        </select>
+        {gmMode && raceLocked && (
+          <button
+            onClick={() => { if (window.confirm('Unlock race selection for the player?')) { setRaceLocked(false); onUpdateCharacter({ ...character, raceLocked: false }) } }}
+            style={{ padding: '5px 10px', background: 'none', border: '1px solid #c94a4a', color: '#c94a4a', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.8rem', whiteSpace: 'nowrap' }}
+          >Unlock</button>
+        )}
+        {!raceLocked && (
+          <button
+            onClick={() => { if (window.confirm(`Lock race as ${character.race}? This cannot be changed without GM mode.`)) { setRaceLocked(true); onUpdateCharacter({ ...character, raceLocked: true }) } }}
+            style={{ padding: '5px 10px', background: 'rgba(201,168,76,.12)', border: '1px solid var(--gold)', color: 'var(--gold2)', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.8rem', whiteSpace: 'nowrap' }}
+          >Lock</button>
+        )}
+      </div>
+)}
             </div>
           </div>
         </div>
