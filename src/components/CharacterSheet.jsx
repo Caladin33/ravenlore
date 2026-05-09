@@ -228,22 +228,7 @@ export default function CharacterSheet({ character, onBack, onEditSkills, onUpda
         </div>
       </Section>
 
-      {/* Known Spells */}
-      {character.knownSpells?.length > 0 && (
-        <Section title={`Spells Known (${character.knownSpells.length}/${stats.maxSpellsKnown})`}>
-          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            {character.knownSpells.map((spell, i) => (
-              <div key={i} style={{
-                background: 'var(--bg2)', border: '1px solid var(--border)',
-                borderRadius: 4, padding: '3px 10px', fontSize: '.78rem',
-                color: 'var(--text2)', fontFamily: 'Georgia, serif',
-              }}>
-                {spell.name} {spell.level && <span style={{ color: 'var(--text3)' }}>Lv{spell.level}</span>}
-              </div>
-            ))}
-          </div>
-        </Section>
-      )}
+      
 
       {/* Biography */}
       {(character.bio?.personalHistory || character.bio?.goals || character.bio?.fears) && (
