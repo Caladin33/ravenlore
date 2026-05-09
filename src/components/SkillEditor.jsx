@@ -5,6 +5,7 @@ import arcaneSkillsData from '../data/arcaneSkills.json'
 import racesData from '../data/races.json'
 import { GeneralSkillCard } from './GeneralSkillCard'
 import { RankedSkillTable, THEMES } from './RankedSkillTable'
+import SaveConfirmModal from './SaveConfirmModal'
 import selfImprovementData from '../data/selfImprovementSkills.json'
 
 const OBSCURE_CATEGORIES = ['infernal', 'lycanthropy', 'animal']
@@ -83,7 +84,9 @@ function PatronMarkPanel({ char, onUpdate, gmMode }) {
 
   const handleSave = () => {
     if (!mark || !vow) return
-    onUpdate({ ...pm, mark, vow, locked: true })
+    if (window.confirm(`Lock Mark of ${mark} with vow: ${vow}? This cannot be changed without GM mode.`)) {
+      onUpdate({ ...pm, mark, vow, locked: true })
+    }
   }
 
   return (
@@ -146,10 +149,12 @@ function ShamanSymbolsPanel({ char, onUpdate, gmMode }) {
   const availableVows = SHAMAN_VOWS.filter(v => v.refusedBy !== newSymbol)
 
   const addSymbol = () => {
-    if (!newSymbol || !newVow) return
+  if (!newSymbol || !newVow) return
+  if (window.confirm(`Add Symbol of ${newSymbol} with vow: ${newVow}? This cannot be undone without GM mode.`)) {
     onUpdate([...symbols, { symbol: newSymbol, vow: newVow, locked: true }])
     setNewSymbol(''); setNewVow('')
   }
+}
 
   const removeSymbol = (i) => {
     const next = [...symbols]; next.splice(i, 1); onUpdate(next)
@@ -264,6 +269,7 @@ export default function SkillEditor({ character, onSave, onBack }) {
   const [activeTab, setActiveTab] = useState('Martial')
   const [char, setChar] = useState(() => JSON.parse(JSON.stringify(character)))
   const [gmMode, setGmMode] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
   const [lockedPoints, setLockedPoints] = useState(() => {
     const locked = {}
     const allSkills = { ...character.martialSkills, ...character.arcaneSkills, ...character.selfImprovementSkills }
@@ -350,14 +356,14 @@ export default function SkillEditor({ character, onSave, onBack }) {
       return true
     })
   }
-
-  const handleSave = () => {
+ const handleSave = () => {
     const newLocked = {}
     Object.entries({ ...char.martialSkills, ...char.arcaneSkills, ...char.selfImprovementSkills }).forEach(([name, data]) => {
       newLocked[name] = parseInt(data.pointsInvested) || 0
     })
     setLockedPoints(newLocked)
     onSave(char)
+    setShowConfirm(false)
   }
 
   const tabBtn = (tab) => ({
@@ -407,7 +413,7 @@ export default function SkillEditor({ character, onSave, onBack }) {
           <button onClick={() => setGmMode(!gmMode)} style={{ padding: '8px 16px', background: gmMode ? 'rgba(201,42,42,.2)' : 'var(--surface2)', border: `1px solid ${gmMode ? '#c94a4a' : 'var(--border)'}`, color: gmMode ? '#c94a4a' : 'var(--text3)', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.85rem' }}>
             {gmMode ? '⚠ GM Mode ON' : 'GM Mode'}
           </button>
-          <button onClick={handleSave} style={{ padding: '8px 20px', background: 'rgba(74,158,74,.15)', border: '1px solid #4a9e4a', color: '#4a9e4a', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.9rem' }}>
+          <button onClick={() => setShowConfirm(true)} style={{ padding: '8px 20px', background: 'rgba(74,158,74,.15)', border: '1px solid #4a9e4a', color: '#4a9e4a', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.9rem' }}>
             Save Changes
           </button>
         </div>
@@ -505,6 +511,14 @@ export default function SkillEditor({ character, onSave, onBack }) {
           })
         })()}
 
+      {showConfirm && (
+          <SaveConfirmModal
+            original={character}
+            updated={char}
+            onConfirm={handleSave}
+            onCancel={() => setShowConfirm(false)}
+          />
+        )}
       </div>
     </div>
   )

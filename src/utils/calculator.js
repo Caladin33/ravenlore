@@ -371,14 +371,29 @@ const weightAllowance = Math.floor(conWeight(CON) * (tirelessKnown ? 1.5 : 1)) +
   const mischief = hasSymbol(char, 'Mischief') ? 3 : 0
   const spellPrecision = arcaneAimRank + mischief + windsWhisperRank
 
-  // ── SKILL POINTS ──────────────────────────
-  const basePointsPerLevel = 65 + (race.skillPointsPerLevelModifier || 0)
-  const firstLevelBonus = race.firstLevelBonus !== false ? 65 : 0
-  const markIronBonus = hasMarkOrSymbol(char, 'Iron') ? 2 * (char.level || 1) : 0
-  const gmBonus = char.skillPoints?.bonusGiven || 0
-  const totalPointsEarned = (basePointsPerLevel * (char.level || 1)) + firstLevelBonus + markIronBonus + gmBonus
-  const totalPointsSpent = char.skillPoints?.totalSpent || 0
-  const unspentPoints = totalPointsEarned - totalPointsSpent
+// ── SKILL POINTS ──────────────────────────
+  const totalSpent = [
+    ...Object.values(char.martialSkills || {}),
+    ...Object.values(char.arcaneSkills || {}),
+    ...Object.values(char.selfImprovementSkills || {}),
+    ...Object.values(char.generalSkills || {}),
+  ].reduce((sum, s) => sum + (parseInt(s.pointsInvested) || 0), 0)
+
+  const totalEarned = char.skillPoints?.totalEarned ?? 0
+  const bonusGiven = char.skillPoints?.bonusGiven ?? 0
+  const maintenancePaid = char.skillPoints?.maintenancePaid ?? 0
+const currentMaintenance = [
+  ...Object.values(char.martialSkills || {}),
+  ...Object.values(char.arcaneSkills || {}),
+  ...Object.values(char.selfImprovementSkills || {}),
+].reduce((sum, data) => {
+  const pts = parseInt(data.pointsInvested) || 0
+  const maint = pts > 0 ? Math.floor(parseFloat(data.maintenanceCost) || 0) : 0
+  return sum + maint
+}, 0)
+  const totalPointsEarned = totalEarned + bonusGiven
+  const totalPointsSpent = totalSpent
+  const unspentPoints = totalEarned + bonusGiven - totalSpent - maintenancePaid
 
   // ── GENERAL SKILLS ────────────────────────
   // Calculate score for each known general skill
@@ -612,11 +627,14 @@ const weightAllowance = Math.floor(conWeight(CON) * (tirelessKnown ? 1.5 : 1)) +
     rangedSlots,
 
     // Skill points
-    skillPoints: {
-      totalEarned: totalPointsEarned,
-      totalSpent: totalPointsSpent,
-      unspent: unspentPoints,
-    },
+   skillPoints: {
+  totalEarned,
+  bonusGiven,
+  totalSpent,
+  maintenancePaid,
+  currentMaintenance,
+  unspent: unspentPoints,
+},
 
     // Session state echoed back
     session: { offHand, stance, unfettered: isUnfettered, canBeUnfettered },

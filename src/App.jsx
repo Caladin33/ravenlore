@@ -5,18 +5,17 @@ import ArcaneCompendium from './components/ArcaneCompendium'
 import CharacterSheet from './components/CharacterSheet'
 import SkillEditor from './components/SkillEditor'
 import StuffPage from './components/StuffPage'
+import BioPage from './components/BioPage'
 import { calculate } from './utils/calculator'
 import { loadCharacters, saveCharacter, deleteCharacter } from './characterDB'
 import './App.css'
 
-// ── RAVEN LOGO ────────────────────────────────────────────────────────────────
 function RavenLogo({ size = 48 }) {
   return (
     <img src="/raven.png" alt="RavenLore" style={{ width: size, height: size, borderRadius: '50%', display: 'block' }} />
   )
 }
 
-// ── CHARACTER HEADER ──────────────────────────────────────────────────────────
 function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
   const tabBtn = (key, label) => (
     <button
@@ -26,16 +25,10 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
         background: currentTab === key ? 'rgba(201,168,76,.12)' : 'none',
         border: `1px solid ${currentTab === key ? 'var(--gold2)' : 'var(--border)'}`,
         color: currentTab === key ? 'var(--gold2)' : 'var(--text2)',
-        padding: '6px 14px',
-        borderRadius: 4,
-        cursor: 'pointer',
-        fontFamily: 'Georgia, serif',
-        fontSize: '.85rem',
-        letterSpacing: '.05em',
-        transition: 'all .2s',
-        whiteSpace: 'nowrap',
-        flex: '1 1 auto',
-        textAlign: 'center',
+        padding: '6px 14px', borderRadius: 4, cursor: 'pointer',
+        fontFamily: 'Georgia, serif', fontSize: '.85rem',
+        letterSpacing: '.05em', transition: 'all .2s',
+        whiteSpace: 'nowrap', flex: '1 1 auto', textAlign: 'center',
       }}
     >{label}</button>
   )
@@ -46,8 +39,7 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
       style={{
         background: 'none', border: 'none', cursor: 'pointer',
         padding: '0 8px 0 0', borderRight: '1px solid var(--border)',
-        marginRight: 4, display: 'flex', alignItems: 'center', gap: 6,
-        flexShrink: 0,
+        marginRight: 4, display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0,
       }}
       title="Home"
     >
@@ -65,14 +57,13 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
       </div>
       <div style={{ fontSize: '.72rem', color: 'var(--text3)', letterSpacing: '.12em', textTransform: 'uppercase', marginTop: 2 }}>
         Level {character.level} {character.race}
-              </div>
+      </div>
     </div>
   )
 
   return (
     <div style={{ borderBottom: '1px solid var(--border)', marginBottom: 20, paddingBottom: 14, paddingTop: 14 }}>
-
-      {/* Desktop: [home+Sheet+Skills] [name] [Spells+Stuff] */}
+      {/* Desktop: [home+Sheet+Skills] [name] [Spells+Stuff+Bio] */}
       <div className="header-desktop" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {homeBtn}
@@ -83,73 +74,52 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
         <div style={{ display: 'flex', gap: 8 }}>
           {tabBtn('spells', 'Spells')}
           {tabBtn('stuff', 'Stuff')}
+          {tabBtn('bio', 'Bio')}
         </div>
       </div>
 
-      {/* Mobile: [home+name] / [Sheet|Skills|Spells|Stuff] */}
+      {/* Mobile: [home+name] / [Sheet|Skills|Spells|Stuff|Bio] */}
       <div className="header-mobile" style={{ display: 'none', flexDirection: 'column', gap: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {homeBtn}
           {charInfo}
         </div>
-        <div style={{ display: 'flex', gap: 6 }}>
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {tabBtn('sheet', 'Sheet')}
           {tabBtn('skillEditor', 'Skills')}
           {tabBtn('spells', 'Spells')}
           {tabBtn('stuff', 'Stuff')}
+          {tabBtn('bio', 'Bio')}
         </div>
       </div>
-
     </div>
   )
 }
 
-// ── HOME PAGE ─────────────────────────────────────────────────────────────────
 function HomePage({ characters, onSelectCharacter, onDelete, onLogout }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 40, padding: '40px 0' }}>
-
       <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
         <RavenLogo size={100} />
-        <h1 style={{
-          fontSize: '2.8rem', color: 'var(--gold2)', letterSpacing: '.14em',
-          textShadow: '0 0 40px rgba(201,168,76,.4)', fontFamily: 'Georgia, serif',
-        }}>RavenLore</h1>
-        <p style={{ fontSize: '.9rem', color: 'var(--text3)', letterSpacing: '.22em', textTransform: 'uppercase' }}>
-          Character Management System
-        </p>
+        <h1 style={{ fontSize: '2.8rem', color: 'var(--gold2)', letterSpacing: '.14em', textShadow: '0 0 40px rgba(201,168,76,.4)', fontFamily: 'Georgia, serif' }}>RavenLore</h1>
+        <p style={{ fontSize: '.9rem', color: 'var(--text3)', letterSpacing: '.22em', textTransform: 'uppercase' }}>Character Management System</p>
       </div>
 
       <div style={{ width: '100%', maxWidth: 600 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-          <h2 style={{ fontSize: '1rem', color: 'var(--gold)', letterSpacing: '.14em', textTransform: 'uppercase' }}>
-            Your Characters
-          </h2>
-          <button style={{
-            background: 'none', border: '1px solid var(--border)',
-            color: 'var(--text3)', borderRadius: 4, padding: '5px 12px',
-            fontFamily: 'Georgia, serif', fontSize: '.8rem', cursor: 'pointer',
-          }}>
+          <h2 style={{ fontSize: '1rem', color: 'var(--gold)', letterSpacing: '.14em', textTransform: 'uppercase' }}>Your Characters</h2>
+          <button style={{ background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 4, padding: '5px 12px', fontFamily: 'Georgia, serif', fontSize: '.8rem', cursor: 'pointer' }}>
             + New Character
           </button>
         </div>
 
         {characters.length === 0 ? (
-          <div style={{ textAlign: 'center', color: 'var(--text3)', padding: '40px 0', fontSize: '.9rem' }}>
-            No characters yet. Import one or create new.
-          </div>
+          <div style={{ textAlign: 'center', color: 'var(--text3)', padding: '40px 0', fontSize: '.9rem' }}>No characters yet.</div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {characters.map(char => (
-              <div
-                key={char.id || char.name}
-                onClick={() => onSelectCharacter(char)}
-                style={{
-                  background: 'var(--surface)', border: '1px solid var(--border)',
-                  borderRadius: 8, padding: '14px 18px', cursor: 'pointer',
-                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                  transition: 'all .2s',
-                }}
+              <div key={char.id || char.name} onClick={() => onSelectCharacter(char)}
+                style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '14px 18px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'all .2s' }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--gold)'; e.currentTarget.style.background = 'var(--surface2)' }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.background = 'var(--surface)' }}
               >
@@ -157,37 +127,25 @@ function HomePage({ characters, onSelectCharacter, onDelete, onLogout }) {
                   <div style={{ fontSize: '1.05rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif' }}>{char.name}</div>
                   <div style={{ fontSize: '.72rem', color: 'var(--text3)', marginTop: 3, letterSpacing: '.08em' }}>
                     Level {char.level} {char.race}{char.profession ? ` · ${char.profession}` : ''}
-                    {char.player ? ` · ${char.player}` : ''}
                   </div>
                 </div>
-                <button
-                  onClick={e => { e.stopPropagation(); onDelete(char.name) }}
-                  style={{
-                    background: 'none', border: '1px solid var(--border)',
-                    color: 'var(--text3)', borderRadius: 4, padding: '4px 10px',
-                    fontSize: '.75rem', fontFamily: 'Georgia, serif', cursor: 'pointer',
-                  }}
-                >Delete</button>
+                <button onClick={e => { e.stopPropagation(); onDelete(char.name) }}
+                  style={{ background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 4, padding: '4px 10px', fontSize: '.75rem', fontFamily: 'Georgia, serif', cursor: 'pointer' }}>
+                  Delete
+                </button>
               </div>
             ))}
           </div>
         )}
       </div>
 
-      <button
-        onClick={onLogout}
-        style={{
-          background: 'none', border: '1px solid var(--border)',
-          color: 'var(--text3)', borderRadius: 4, padding: '7px 20px',
-          fontFamily: 'Georgia, serif', fontSize: '.85rem', cursor: 'pointer',
-          marginTop: 20, letterSpacing: '.06em',
-        }}
-      >Log Out</button>
+      <button onClick={onLogout} style={{ background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 4, padding: '7px 20px', fontFamily: 'Georgia, serif', fontSize: '.85rem', cursor: 'pointer', marginTop: 20, letterSpacing: '.06em' }}>
+        Log Out
+      </button>
     </div>
   )
 }
 
-// ── APP ───────────────────────────────────────────────────────────────────────
 function App() {
   const [user, setUser] = useState(null)
   const [authLoading, setAuthLoading] = useState(true)
@@ -208,9 +166,7 @@ function App() {
 
   useEffect(() => {
     if (!user) return
-    loadCharacters(user.id).then(({ characters }) => {
-      setCharacters(characters || [])
-    })
+    loadCharacters(user.id).then(({ characters }) => setCharacters(characters || []))
   }, [user])
 
   if (authLoading) return <div style={{ minHeight: '100vh', background: 'var(--bg)' }} />
@@ -218,10 +174,7 @@ function App() {
 
   const navigate = (page) => setCurrentPage(page)
 
-  const handleSelectCharacter = (char) => {
-    setSelectedCharacter(char)
-    setCurrentPage('sheet')
-  }
+  const handleSelectCharacter = (char) => { setSelectedCharacter(char); setCurrentPage('sheet') }
 
   const handleUpdateCharacter = (updated) => {
     setSelectedCharacter(updated)
@@ -236,30 +189,17 @@ function App() {
     })
   }
 
-  const handleLogout = () => {
-    supabase.auth.signOut()
-    setSelectedCharacter(null)
-    setCurrentPage('home')
-  }
+  const handleLogout = () => { supabase.auth.signOut(); setSelectedCharacter(null); setCurrentPage('home') }
 
   const selectedCharacterStats = selectedCharacter
-    ? (() => {
-        try {
-          return calculate(selectedCharacter, {
-            offHand: selectedCharacter.offHand || 'Empty',
-            stance: selectedCharacter.stance || 'None',
-            unfettered: false,
-          })
-        } catch (e) { return null }
-      })()
+    ? (() => { try { return calculate(selectedCharacter, { offHand: selectedCharacter.offHand || 'Empty', stance: selectedCharacter.stance || 'None', unfettered: false }) } catch (e) { return null } })()
     : null
 
-  const isCharacterPage = selectedCharacter && ['sheet', 'skillEditor', 'spells', 'stuff'].includes(currentPage)
+  const isCharacterPage = selectedCharacter && ['sheet', 'skillEditor', 'spells', 'stuff', 'bio'].includes(currentPage)
 
   return (
     <div className="app">
       <main className="app-main">
-
         {isCharacterPage && (
           <CharacterHeader
             character={selectedCharacter}
@@ -270,32 +210,15 @@ function App() {
         )}
 
         {currentPage === 'home' && (
-          <HomePage
-            characters={characters}
-            onSelectCharacter={handleSelectCharacter}
-            onDelete={handleDelete}
-            onLogout={handleLogout}
-          />
+          <HomePage characters={characters} onSelectCharacter={handleSelectCharacter} onDelete={handleDelete} onLogout={handleLogout} />
         )}
 
         {currentPage === 'sheet' && selectedCharacter && (
-          <CharacterSheet
-            character={selectedCharacter}
-            onBack={() => { setSelectedCharacter(null); navigate('home') }}
-            onEditSkills={() => navigate('skillEditor')}
-            onUpdateCharacter={handleUpdateCharacter}
-          />
+          <CharacterSheet character={selectedCharacter} onBack={() => { setSelectedCharacter(null); navigate('home') }} onEditSkills={() => navigate('skillEditor')} onUpdateCharacter={handleUpdateCharacter} />
         )}
 
         {currentPage === 'skillEditor' && selectedCharacter && (
-          <SkillEditor
-            character={selectedCharacter}
-            onBack={() => navigate('sheet')}
-            onSave={(updated) => {
-              handleUpdateCharacter(updated)
-              navigate('sheet')
-            }}
-          />
+          <SkillEditor character={selectedCharacter} onBack={() => navigate('sheet')} onSave={(updated) => { handleUpdateCharacter(updated); navigate('sheet') }} />
         )}
 
         {currentPage === 'spells' && selectedCharacter && (
@@ -303,13 +226,12 @@ function App() {
         )}
 
         {currentPage === 'stuff' && selectedCharacter && (
-          <StuffPage
-            character={selectedCharacter}
-            onUpdateCharacter={handleUpdateCharacter}
-            stats={selectedCharacterStats}
-          />
+          <StuffPage character={selectedCharacter} onUpdateCharacter={handleUpdateCharacter} stats={selectedCharacterStats} />
         )}
 
+        {currentPage === 'bio' && selectedCharacter && (
+          <BioPage character={selectedCharacter} onUpdateCharacter={handleUpdateCharacter} stats={selectedCharacterStats} />
+        )}
       </main>
     </div>
   )

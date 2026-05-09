@@ -237,7 +237,7 @@ export default function ArcaneCompendium({ character, onUpdateCharacter, stats }
         </div>
 
         {/* Mastery ranks — colored numbers */}
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
           <span style={{ fontSize: '.75rem', color: '#7a6a50', letterSpacing: '.14em', textTransform: 'uppercase', fontFamily: 'Georgia, serif', lineHeight: 1, }}>
             Mastery Ranks:
           </span>
@@ -388,7 +388,7 @@ export default function ArcaneCompendium({ character, onUpdateCharacter, stats }
                     <input
                       type="checkbox"
                       checked={isKnown}
-                      disabled={!actuallyUnlocked}
+                      disabled={!actuallyUnlocked && !isKnown}
                       onClick={e => e.stopPropagation()}
                       onChange={() => toggleKnown(spell)}
                       style={{ accentColor: '#c9a84c', flexShrink: 0, width: 15, height: 15 }}
@@ -536,7 +536,7 @@ export default function ArcaneCompendium({ character, onUpdateCharacter, stats }
             </div>
 
             <button
-              disabled={!isUnlocked(selected, ranks)}
+              disabled={!isUnlocked(selected, ranks) && !knownIds.has(selected.id)}
               onClick={() => toggleKnown(selected)}
               style={{
                 width: '100%', padding: '9px 0',
@@ -545,7 +545,7 @@ export default function ArcaneCompendium({ character, onUpdateCharacter, stats }
                 color: knownIds.has(selected.id) ? '#7a6a50' : '#e8c96a',
                 borderRadius: 5, fontSize: '.9rem', letterSpacing: '.04em',
                 cursor: isUnlocked(selected, ranks) ? 'pointer' : 'not-allowed',
-                opacity: isUnlocked(selected, ranks) ? 1 : 0.4,
+               opacity: (isUnlocked(selected, ranks) || knownIds.has(selected.id)) ? 1 : 0.4,
                 fontFamily: 'Georgia, serif',
               }}
             >
