@@ -104,10 +104,10 @@ const MASTERY_TO_DIE = [null, 'd3', 'd4', 'd4', 'd6', 'd6', 'd8', 'd8', 'd10', '
 // ─────────────────────────────────────────────
 
 function skillRank(char, skillName) {
-  // Check martial skills
+  const si = char.selfImprovementSkills || {}
+  if (si[skillName]) return parseInt(si[skillName].rank) || 0
   const ms = char.martialSkills || {}
   if (ms[skillName]) return parseInt(ms[skillName].rank) || 0
-  // Check arcane skills
   const as = char.arcaneSkills || {}
   if (as[skillName]) return parseInt(as[skillName].rank) || 0
   return 0

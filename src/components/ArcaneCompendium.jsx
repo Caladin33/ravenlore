@@ -237,13 +237,13 @@ export default function ArcaneCompendium({ character, onUpdateCharacter, stats }
         </div>
 
         {/* Mastery ranks — colored numbers */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '.85rem', color: '#7a6a50', letterSpacing: '.14em', textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>
-            Masteries:
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '.75rem', color: '#7a6a50', letterSpacing: '.14em', textTransform: 'uppercase', fontFamily: 'Georgia, serif', lineHeight: 1, }}>
+            Mastery Ranks:
           </span>
           {Object.entries(COLORS).map(([key, col]) => (
             <span key={key} style={{
-              fontSize: '1.5rem', fontWeight: 600,
+              fontSize: '1.5rem', fontWeight: 600, lineHeight: 1,
               color: ranks[key] > 0 ? col.dot : '#3a2e1e',
               fontFamily: 'Georgia, serif',
               textShadow: ranks[key] > 0 ? `0 0 8px ${col.dot}66` : 'none',
