@@ -21,11 +21,39 @@ export const THEMES = {
 
 const GRID = '1fr 72px 52px'
 
-const DISPLAY_TAG_PATTERNS = [
-  /^special attack/i, /^melee only/i, /^ranged only/i, /^blunt/i,
-  /^piercing weapon/i, /^2-handed only/i, /^passive/i, /^active/i,
-  /^opportunity/i, /^exposure/i,
+// ── PATTERN LISTS ─────────────────────────────────────────────────────────────
+
+// Show as chips, not enforced
+const FLAG_PATTERNS = [
+  /^special attack/i,
+  /^melee only/i,
+  /^2-handed only/i,
+  /^2-handed slashing only/i,
+  /^blunt$/i,
+  /^piercing weapon$/i,
+  /^passive$/i,
+  /^active$/i,
+  /^opportunity$/i,  // flag version only — "opportunity attack" type
+  /^no awkward weapons/i,
+  /^can not be a quick or light weapon/i,
+  /^quick and light weapons only/i,
 ]
+
+// Silently ignored — no chip, no enforcement
+const IGNORE_PATTERNS = [
+  /^trainer/i,
+  /^exposure/i,
+  /^opportunity$/i,  // unenforceable prereq
+  /^access/i,
+  /^ranged only/i,
+  /^self$/i,
+]
+
+// Martial marks — enforced as rank >= 1, no chip
+const MARTIAL_MARKS = ['Fox Mark', 'Serpent Mark', 'Tiger Mark', 'Heron Mark']
+
+// Divine marks full list
+const DIVINE_MARKS = ['Blood', 'Death', 'Iron', 'Life', 'Light', 'Mischief', 'Passion', 'Storms', 'War', 'Wisdom']
 
 // ── ATTRIBUTE HELPERS ─────────────────────────────────────────────────────────
 function getEffectiveAttrs(char) {
@@ -94,10 +122,45 @@ function getRankAcrossAllSkills(char, skillName) {
     || 0
 }
 
+// ── MARK HELPERS ──────────────────────────────────────────────────────────────
+function charHasPatronMark(char, markName) {
+  const m = char.patronMark?.mark || ''
+  return m.toLowerCase() === markName.toLowerCase()
+}
+
+function charHasShamanSymbol(char, symbolName) {
+  return (char.shamanSymbols || []).some(s =>
+    (s.symbol || '').toLowerCase() === symbolName.toLowerCase()
+  )
+}
+
+function charHasMarkOrShaman(char, markName) {
+  return charHasPatronMark(char, markName) || charHasShamanSymbol(char, markName)
+}
+
+// Parse "Mark of X, Y or Z" → array of mark names
+function parseMarkList(str) {
+  // Remove "Mark of", "Shaman Symbol of", "Mark or Shaman Symbol of" prefix
+  const cleaned = str
+    .replace(/mark\s+or\s+shaman\s+symbol\s+of\s*/i, '')
+    .replace(/mark\s+of\s*/i, '')
+    .replace(/shaman\s+symbol\s+of\s*/i, '')
+  // Split by comma and "or"
+  return cleaned.split(/,|\bor\b/i).map(s => s.trim()).filter(Boolean)
+}
+
+// ── PREREQ CHECKER ────────────────────────────────────────────────────────────
 function checkSinglePrereq(token, char) {
   const str = token.trim()
-  if (!str || str === 'none' || str === 'None') return { met: true }
-  if (DISPLAY_TAG_PATTERNS.some(p => p.test(str))) return { met: true, tag: str }
+  if (!str || str.toLowerCase() === 'none') return { met: true }
+
+  // Silently ignore unenforceable prereqs
+  if (IGNORE_PATTERNS.some(p => p.test(str))) return { met: true, ignore: true }
+
+  // Flags — show as chip, don't enforce
+  if (FLAG_PATTERNS.some(p => p.test(str))) return { met: true, tag: str }
+
+  // Unfettered
   if (/^unfettered/i.test(str)) {
     const result = checkUnfettered(char)
     if (!result.met) return result
@@ -105,6 +168,55 @@ function checkSinglePrereq(token, char) {
     if (rest) return checkSinglePrereq(rest, char)
     return { met: true, partial: result.partial }
   }
+
+  // Martial marks — enforce rank >= 1, no chip
+  const martialMark = MARTIAL_MARKS.find(m => str.toLowerCase().includes(m.toLowerCase()))
+  if (martialMark) {
+    const rank = getRankAcrossAllSkills(char, martialMark)
+    if (rank < 1) return { met: false, reason: `${martialMark} rank 1 required` }
+    return { met: true }
+  }
+
+  // "Mark or Shaman Symbol of X, Y or Z"
+  if (/mark\s+or\s+shaman\s+symbol\s+of/i.test(str)) {
+    const marks = parseMarkList(str)
+    const anyMet = marks.some(m => charHasMarkOrShaman(char, m))
+    if (!anyMet) return {
+      met: false,
+      reason: `Requires Mark or Shaman Symbol of: ${marks.join(', ')}`,
+      markList: marks,
+      markType: 'markOrShaman',
+    }
+    return { met: true, markList: marks, markType: 'markOrShaman' }
+  }
+
+  // "Mark of X, Y or Z" (patron mark only)
+  if (/mark\s+of\s/i.test(str) && !/shaman/i.test(str)) {
+    const marks = parseMarkList(str)
+    const anyMet = marks.some(m => charHasPatronMark(char, m))
+    if (!anyMet) return {
+      met: false,
+      reason: `Requires Patron's Mark of: ${marks.join(', ')}`,
+      markList: marks,
+      markType: 'patronOnly',
+    }
+    return { met: true, markList: marks, markType: 'patronOnly' }
+  }
+
+  // "Shaman Symbol of X" only
+  if (/shaman\s+symbol\s+of/i.test(str)) {
+    const marks = parseMarkList(str)
+    const anyMet = marks.some(m => charHasShamanSymbol(char, m))
+    if (!anyMet) return {
+      met: false,
+      reason: `Requires Shaman Symbol of: ${marks.join(', ')}`,
+      markList: marks,
+      markType: 'shamanOnly',
+    }
+    return { met: true, markList: marks, markType: 'shamanOnly' }
+  }
+
+  // Attribute check: "Awareness 14+" or "14+ Chr"
   const attrMatch = str.match(/^(\w+)\s+(\d+)\+$/) || str.match(/^(\d+)\+\s*(\w+)$/)
   if (attrMatch) {
     const attrNames = ['str','dex','con','aw','awareness','chr','wp','willpower','strength','dexterity','constitution','charisma']
@@ -117,6 +229,8 @@ function checkSinglePrereq(token, char) {
       return { met: true }
     }
   }
+
+  // Skill score threshold: "Inner Focus 90+"
   const skillThresholdMatch = str.match(/^(.+?)\s+(\d+)\+?$/)
   if (skillThresholdMatch) {
     const skillName = skillThresholdMatch[1].trim()
@@ -132,8 +246,11 @@ function checkSinglePrereq(token, char) {
     if (rank < threshold) return { met: false, reason: `${skillName} rank ${threshold} required (currently ${rank})` }
     return { met: true }
   }
-  const skipPatterns = [/mark/i, /weapon/i, /sword/i, /axe/i, /spear/i, /unarmed/i, /dagger/i, /staff/i, /long/i, /short/i, /quick/i]
+
+  // Plain skill name — requires rank > 0
+  const skipPatterns = [/sword/i, /axe/i, /spear/i, /unarmed/i, /dagger/i, /staff/i, /^long$/i, /^short$/i, /^quick$/i, /^light$/i]
   if (skipPatterns.some(p => p.test(str))) return { met: true, tag: str }
+
   const rank = getRankAcrossAllSkills(char, str)
   if (rank === 0) {
     const genPts = parseInt(char.generalSkills?.[str]?.pointsInvested) || 0
@@ -143,25 +260,32 @@ function checkSinglePrereq(token, char) {
 }
 
 function checkPrereq(prereqStr, char) {
-  if (!prereqStr || prereqStr === 'none' || prereqStr === 'None') return { met: true, tags: [] }
-  const tokens = prereqStr.split(/\n|,|\band\b/i).map(s => s.trim()).filter(Boolean)
-  const tags = [], failures = []
+  if (!prereqStr || prereqStr.toLowerCase() === 'none') return { met: true, tags: [], markRequirements: [] }
+  const tokens = prereqStr.split(/\n|,(?!\s*\d)|\band\b/i).map(s => s.trim()).filter(Boolean)
+  const tags = [], failures = [], markRequirements = []
   let partial = false
+
   for (const token of tokens) {
-    if (token.toLowerCase().includes(' or ')) {
+    if (token.toLowerCase().includes(' or ') && !/mark.*or.*shaman/i.test(token) && !/mark\s+of.*or/i.test(token)) {
       const orParts = token.split(/ or /i).map(s => s.trim())
       const orResults = orParts.map(p => checkSinglePrereq(p, char))
-      if (!orResults.some(r => r.met)) failures.push(orParts.map((p, i) => orResults[i].reason || p).join(' or '))
-      orResults.forEach(r => r.tag && tags.push(r.tag))
+      if (!orResults.some(r => r.met)) {
+        failures.push(orParts.map((p, i) => orResults[i].reason || p).join(' or '))
+      }
+      orResults.forEach(r => { if (r.tag) tags.push(r.tag) })
       continue
     }
+
     const result = checkSinglePrereq(token, char)
+    if (result.ignore) continue
     if (result.tag) tags.push(result.tag)
     if (result.partial) partial = true
+    if (result.markList) markRequirements.push({ list: result.markList, type: result.markType, met: result.met })
     if (!result.met) failures.push(result.reason || token)
   }
-  if (failures.length > 0) return { met: false, reason: failures.join(' · '), tags }
-  return { met: true, tags, partial }
+
+  if (failures.length > 0) return { met: false, reason: failures.join(' · '), tags, markRequirements }
+  return { met: true, tags, partial, markRequirements }
 }
 
 // ── EDITABLE POINTS CELL ──────────────────────────────────────────────────────
@@ -172,79 +296,40 @@ function EditablePoints({ value, onCommit, theme, isActive, locked }) {
   const T = theme
 
   if (locked) {
-    // Prereqs not met and no points — greyed out, not clickable
     return (
-      <div style={{
-        fontSize: '1rem', fontWeight: 700, fontFamily: 'Georgia, serif',
-        color: 'var(--text3)', textAlign: 'center', opacity: 0.35,
-        cursor: 'not-allowed',
-      }}>
+      <div style={{ fontSize: '1rem', fontWeight: 700, fontFamily: 'Georgia, serif', color: 'var(--text3)', textAlign: 'center', opacity: 0.35, cursor: 'not-allowed' }}>
         {value}
       </div>
     )
   }
 
-  const startEdit = () => {
-    setDraft(String(value))
-    setError(null)
-    setEditing(true)
-  }
-
+  const startEdit = () => { setDraft(String(value)); setError(null); setEditing(true) }
   const commit = () => {
     const num = parseInt(draft)
-    if (isNaN(num) || num < 0) {
-      setError('Must be ≥ 0')
-      return
-    }
+    if (isNaN(num) || num < 0) { setError('Must be ≥ 0'); return }
     const result = onCommit(num)
-    if (result?.error) {
-      setError(result.error)
-    } else {
-      setError(null)
-      setEditing(false)
-    }
+    if (result?.error) { setError(result.error) }
+    else { setError(null); setEditing(false) }
   }
-
   const cancel = () => { setEditing(false); setError(null) }
 
   if (editing) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
         <input
-          autoFocus
-          value={draft}
+          autoFocus value={draft}
           onChange={e => { setDraft(e.target.value); setError(null) }}
           onKeyDown={e => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') cancel() }}
-          onBlur={commit}
-          onFocus={e => e.target.select()}
-          style={{
-            width: 48, textAlign: 'center',
-            background: 'var(--bg)', border: `1px solid ${error ? '#c94a4a' : T.primary}`,
-            color: 'var(--text)', borderRadius: 3, padding: '2px 4px',
-            fontFamily: 'Georgia, serif', fontSize: '1rem', fontWeight: 700,
-          }}
+          onBlur={commit} onFocus={e => e.target.select()}
+          style={{ width: 48, textAlign: 'center', background: 'var(--bg)', border: `1px solid ${error ? '#c94a4a' : T.primary}`, color: 'var(--text)', borderRadius: 3, padding: '2px 4px', fontFamily: 'Georgia, serif', fontSize: '1rem', fontWeight: 700 }}
         />
-        {error && (
-          <div style={{ fontSize: '.55rem', color: '#c94a4a', textAlign: 'center', maxWidth: 72, lineHeight: 1.3 }}>
-            {error}
-          </div>
-        )}
+        {error && <div style={{ fontSize: '.55rem', color: '#c94a4a', textAlign: 'center', maxWidth: 72, lineHeight: 1.3 }}>{error}</div>}
       </div>
     )
   }
 
   return (
-    <div
-      onClick={startEdit}
-      title="Click to edit"
-      style={{
-        fontSize: '1rem', fontWeight: 700, fontFamily: 'Georgia, serif',
-        color: isActive ? T.primary2 : 'var(--text2)',
-        cursor: 'pointer', textAlign: 'center',
-        borderBottom: `1px dotted ${isActive ? T.primary : 'var(--border2)'}`,
-        minWidth: 24, display: 'inline-block',
-      }}
-    >
+    <div onClick={startEdit} title="Click to edit" style={{ fontSize: '1rem', fontWeight: 700, fontFamily: 'Georgia, serif', color: isActive ? T.primary2 : 'var(--text2)', cursor: 'pointer', textAlign: 'center', borderBottom: `1px dotted ${isActive ? T.primary : 'var(--border2)'}`, minWidth: 24, display: 'inline-block' }}>
       {value}
     </div>
   )
@@ -253,145 +338,93 @@ function EditablePoints({ value, onCommit, theme, isActive, locked }) {
 // ── SKILL ROW ─────────────────────────────────────────────────────────────────
 function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onUpdate, skillSource, theme, level, char, gmMode }) {
   const [expanded, setExpanded] = useState(false)
-
   const T = theme || THEMES.selfImprovement
   const costPerRank = parseInt(skill.costPerRank) || 1
   const maxRankRaw = skill.maxRank
   const maxRankNum = (maxRankRaw === 'any' || !maxRankRaw || isNaN(parseInt(maxRankRaw))) ? Infinity : parseInt(maxRankRaw)
-  const mclRaw = (!skill.mcl || skill.mcl === 'any' || skill.mcl === 'Any') ? null : parseInt(skill.mcl)
+  const mclRaw = (!skill.mcl || skill.mcl === 'any' || skill.mcl === 'Any' || skill.mcl === 'Self') ? null : parseInt(skill.mcl)
   const maint = parseFloat(skill.maintenancePerRank) || 0
   const isActive = rank > 0
   const actualMaint = Math.floor(maint * rank)
   const mclLimit = mclRaw ? mclRaw * (parseInt(level) || 1) : null
   const prereqResult = checkPrereq(skill.prereq, char)
   const locked = lockedPoints?.[skill.name] || 0
-
-  // A skill is locked (can't edit) if prereqs not met AND no points already invested
   const editLocked = !gmMode && !prereqResult.met && pointsInvested === 0
+  const maxDisplay = (maxRankRaw === 'any' || !maxRankRaw || maxRankRaw === 'Passive') ? '∞' : maxRankRaw
 
   const handleCommit = (newPoints) => {
-    if (!gmMode && newPoints < locked) {
-      return { error: `Cannot go below ${locked} (locked from last save)` }
-    }
-    if (!gmMode && !prereqResult.met && newPoints > 0) {
-      return { error: prereqResult.reason }
-    }
-    if (!gmMode && mclLimit !== null && newPoints > mclLimit) {
-      return { error: `MC/L limit: max ${mclLimit} pts at level ${level}` }
-    }
+    if (!gmMode && newPoints < locked) return { error: `Cannot go below ${locked} (locked from last save)` }
+    if (!gmMode && !prereqResult.met && newPoints > 0) return { error: prereqResult.reason }
+    if (!gmMode && mclLimit !== null && newPoints > mclLimit) return { error: `MC/L limit: max ${mclLimit} pts at level ${level}` }
     const newRank = Math.min(Math.floor(newPoints / costPerRank), isFinite(maxRankNum) ? maxRankNum : 999)
-    if (!gmMode && isFinite(maxRankNum) && newRank > maxRankNum) {
-      return { error: `Max rank is ${maxRankRaw}` }
-    }
+    if (!gmMode && isFinite(maxRankNum) && newRank > maxRankNum) return { error: `Max rank is ${maxRankRaw}` }
     onUpdate && onUpdate(skill.name, newPoints, skillSource || 'martial')
     return {}
   }
 
-  const maxDisplay = maxRankRaw === 'any' || !maxRankRaw ? '∞' : maxRankRaw
-
   return (
     <>
-      <div style={{
-        display: 'grid', gridTemplateColumns: GRID, alignItems: 'center',
-        borderBottom: '1px solid var(--border)',
-        background: isActive ? T.dim : 'transparent',
-        minHeight: 52,
-        opacity: editLocked ? 0.55 : 1,
-      }}>
+      <div style={{ display: 'grid', gridTemplateColumns: GRID, alignItems: 'center', borderBottom: '1px solid var(--border)', background: isActive ? T.dim : 'transparent', minHeight: 52, opacity: editLocked ? 0.55 : 1 }}>
 
         {/* Column 1: Skill name + prereq */}
-        <div
-          style={{ padding: '8px 12px', cursor: 'pointer', minWidth: 0 }}
-          onClick={() => setExpanded(!expanded)}
-        >
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 5, flexWrap: 'wrap',
-            fontSize: '.92rem', fontFamily: 'Georgia, serif',
-            color: isActive ? T.primary2 : (editLocked ? 'var(--text3)' : 'var(--text)'),
-            fontWeight: isActive ? 600 : 400,
-          }}>
-            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-              {skill.name}
-            </span>
+        <div style={{ padding: '8px 12px', cursor: 'pointer', minWidth: 0 }} onClick={() => setExpanded(!expanded)}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexWrap: 'wrap', fontSize: '.92rem', fontFamily: 'Georgia, serif', color: isActive ? T.primary2 : (editLocked ? 'var(--text3)' : 'var(--text)'), fontWeight: isActive ? 600 : 400 }}>
+            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{skill.name}</span>
             {prereqResult.tags?.map(tag => (
-              <span key={tag} style={{
-                fontSize: '.6rem', color: 'rgba(255,255,255,.6)',
-                background: 'rgba(255,255,255,.08)', borderRadius: 3,
-                padding: '1px 5px', whiteSpace: 'nowrap', flexShrink: 0,
-              }}>{tag}</span>
+              <span key={tag} style={{ fontSize: '.6rem', color: 'rgba(255,255,255,.6)', background: 'rgba(255,255,255,.08)', borderRadius: 3, padding: '1px 5px', whiteSpace: 'nowrap', flexShrink: 0 }}>{tag}</span>
             ))}
-            <span style={{ fontSize: '.58rem', color: 'var(--text3)', opacity: .5, flexShrink: 0 }}>
-              {expanded ? '▲' : '▼'}
-            </span>
+            <span style={{ fontSize: '.58rem', color: 'var(--text3)', opacity: .5, flexShrink: 0 }}>{expanded ? '▲' : '▼'}</span>
           </div>
-
           {!prereqResult.met && (
             <div style={{ fontSize: '.65rem', color: isActive ? '#c9a84c' : '#c94a4a', marginTop: 2, fontStyle: 'italic' }}>
               {isActive ? '⚠ Prereq no longer met' : `⚠ ${prereqResult.reason}`}
             </div>
           )}
-          {prereqResult.met && skill.prereq && skill.prereq !== 'none'
-            && !prereqResult.tags?.length && !prereqResult.partial && (
+          {prereqResult.met && skill.prereq && skill.prereq.toLowerCase() !== 'none'
+            && !prereqResult.tags?.length && !prereqResult.partial
+            && !prereqResult.markRequirements?.length && (
             <div style={{ fontSize: '.62rem', color: 'var(--text3)', marginTop: 1, fontStyle: 'italic' }}>
               {skill.prereq.replace(/\n/g, ' ')}
             </div>
           )}
           {prereqResult.partial && prereqResult.met && (
-            <div style={{ fontSize: '.62rem', color: 'var(--text3)', marginTop: 1 }}>
-              Unfettered: confirm at table
-            </div>
+            <div style={{ fontSize: '.62rem', color: 'var(--text3)', marginTop: 1 }}>Unfettered: confirm at table</div>
           )}
         </div>
 
-        {/* Column 2: Points (editable) over Cost/Rank */}
-        <div style={{
-          display: 'flex', flexDirection: 'column', alignItems: 'center',
-          justifyContent: 'center', padding: '6px 4px', gap: 2,
-        }}>
-          <EditablePoints
-            value={pointsInvested}
-            onCommit={handleCommit}
-            theme={T}
-            isActive={isActive}
-            locked={editLocked}
-          />
+        {/* Column 2: Points / Cost */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '6px 4px', gap: 2 }}>
+          <EditablePoints value={pointsInvested} onCommit={handleCommit} theme={T} isActive={isActive} locked={editLocked} />
           <div style={{ width: 36, height: 1, background: isActive ? T.border : 'var(--border)' }} />
-          <div style={{ fontSize: '.75rem', color: 'var(--text3)', fontFamily: 'Georgia, serif' }}>
-            {costPerRank}
-          </div>
+          <div style={{ fontSize: '.75rem', color: 'var(--text3)', fontFamily: 'Georgia, serif' }}>{costPerRank}</div>
         </div>
 
-        {/* Column 3: Rank over Max Rank */}
-        <div style={{
-          display: 'flex', flexDirection: 'column', alignItems: 'center',
-          justifyContent: 'center', padding: '6px 4px', gap: 2,
-        }}>
-          <div style={{
-            fontSize: isActive ? '1.2rem' : '.9rem',
-            fontWeight: isActive ? 700 : 400,
-            fontFamily: 'Georgia, serif',
-            color: isActive ? T.primary2 : 'var(--text3)',
-            lineHeight: 1,
-            textAlign: 'center',
-          }}>
+        {/* Column 3: Rank / Max */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '6px 4px', gap: 2 }}>
+          <div style={{ fontSize: isActive ? '1.2rem' : '.9rem', fontWeight: isActive ? 700 : 400, fontFamily: 'Georgia, serif', color: isActive ? T.primary2 : 'var(--text3)', lineHeight: 1, textAlign: 'center' }}>
             {isActive ? rank : '—'}
           </div>
           <div style={{ width: 28, height: 1, background: isActive ? T.border : 'var(--border)' }} />
-          <div style={{ fontSize: '.75rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', textAlign: 'center' }}>
-            {maxDisplay}
-          </div>
-          {isActive && actualMaint > 0 && (
-            <div style={{ fontSize: '.52rem', color: '#c94a4a', marginTop: 1 }}>{actualMaint}/lvl</div>
-          )}
+          <div style={{ fontSize: '.75rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', textAlign: 'center' }}>{maxDisplay}</div>
+          {isActive && actualMaint > 0 && <div style={{ fontSize: '.52rem', color: '#c94a4a', marginTop: 1 }}>{actualMaint}/lvl</div>}
         </div>
       </div>
 
       {/* Expanded detail */}
       {expanded && (
-        <div style={{
-          padding: '10px 12px 14px 12px', background: 'var(--bg2)',
-          borderBottom: '1px solid var(--border)',
-        }}>
+        <div style={{ padding: '10px 12px 14px 12px', background: 'var(--bg2)', borderBottom: '1px solid var(--border)' }}>
+          {/* Mark requirements */}
+          {prereqResult.markRequirements?.length > 0 && (
+            <div style={{ marginBottom: 8 }}>
+              {prereqResult.markRequirements.map((req, i) => (
+                <div key={i} style={{ fontSize: '.75rem', color: req.met ? 'var(--text3)' : '#c94a4a', fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
+                  {req.type === 'markOrShaman' ? 'Mark or Shaman Symbol of: ' : req.type === 'patronOnly' ? 'Patron\'s Mark of: ' : 'Shaman Symbol of: '}
+                  {req.list.join(', ')}
+                  {req.met ? ' ✓' : ' ✗'}
+                </div>
+              ))}
+            </div>
+          )}
           <div style={{ display: 'flex', gap: 20, marginBottom: skill.description ? 10 : 0, flexWrap: 'wrap' }}>
             {[
               ['Maint / Rank', maint > 0 ? maint : '—'],
@@ -404,9 +437,7 @@ function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onUpdate, sk
             ))}
           </div>
           {skill.description && (
-            <div style={{ fontSize: '.83rem', color: 'var(--text2)', lineHeight: 1.65, fontFamily: 'Georgia, serif' }}>
-              {skill.description}
-            </div>
+            <div style={{ fontSize: '.83rem', color: 'var(--text2)', lineHeight: 1.65, fontFamily: 'Georgia, serif' }}>{skill.description}</div>
           )}
         </div>
       )}
@@ -420,69 +451,34 @@ export function RankedSkillTable({ skills, char, onUpdate, theme, sectionLabel, 
 
   const getSkillData = (skillName) => {
     let data = {}
-    if (skillSource === 'selfImprovement') {
-      data = char.selfImprovementSkills?.[skillName] || {}
-    } else if (skillSource === 'arcane') {
-      data = char.arcaneSkills?.[skillName] || {}
-    } else {
-      data = char.martialSkills?.[skillName] || {}
-    }
+    if (skillSource === 'selfImprovement') data = char.selfImprovementSkills?.[skillName] || {}
+    else if (skillSource === 'arcane') data = char.arcaneSkills?.[skillName] || {}
+    else data = char.martialSkills?.[skillName] || {}
     return { rank: parseInt(data.rank) || 0, pointsInvested: parseInt(data.pointsInvested) || 0 }
   }
 
   return (
     <div>
-      {/* Section header */}
-      <div style={{
-        padding: '10px 12px', background: 'var(--bg)',
-        borderBottom: `2px solid ${T.primary}`,
-        fontSize: '1rem', letterSpacing: '.25em',
-        color: T.primary, textTransform: 'uppercase',
-        fontFamily: 'Georgia, serif', fontWeight: 600, textAlign: 'center',
-      }}>
+      <div style={{ padding: '10px 12px', background: 'var(--bg)', borderBottom: `2px solid ${T.primary}`, fontSize: '1rem', letterSpacing: '.25em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 600, textAlign: 'center' }}>
         {sectionLabel}
       </div>
-
-      {/* Column headers */}
-      <div style={{
-        display: 'grid', gridTemplateColumns: GRID,
-        background: 'var(--bg2)', borderBottom: `1px solid ${T.border}`,
-        minHeight: 44, alignItems: 'center',
-      }}>
-        <div style={{ padding: '0 12px', fontSize: '.85rem', letterSpacing: '.12em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>
-          Skill
-        </div>
-        {/* Pts over Cost header */}
+      <div style={{ display: 'grid', gridTemplateColumns: GRID, background: 'var(--bg2)', borderBottom: `1px solid ${T.border}`, minHeight: 44, alignItems: 'center' }}>
+        <div style={{ padding: '0 12px', fontSize: '.85rem', letterSpacing: '.12em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Skill</div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2, padding: '4px' }}>
           <div style={{ fontSize: '.7rem', letterSpacing: '.08em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Pts</div>
           <div style={{ width: 36, height: 1, background: T.border }} />
           <div style={{ fontSize: '.7rem', letterSpacing: '.08em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Cost</div>
         </div>
-        {/* Rank over Max header */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2, padding: '4px' }}>
           <div style={{ fontSize: '.7rem', letterSpacing: '.08em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Rnk</div>
           <div style={{ width: 28, height: 1, background: T.border }} />
           <div style={{ fontSize: '.7rem', letterSpacing: '.08em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Max</div>
         </div>
       </div>
-
-      {/* Rows */}
       {skills.map(skill => {
         const { rank, pointsInvested } = getSkillData(skill.name)
         return (
-          <SkillTableRow
-            key={skill.name}
-            skill={skill}
-            rank={rank}
-            pointsInvested={pointsInvested}
-            lockedPoints={lockedPoints}
-            theme={T}
-            level={level || 1}
-            char={char}
-            gmMode={gmMode}
-            onUpdate={onUpdate}
-            skillSource={skillSource || 'martial'}
-          />
+          <SkillTableRow key={skill.name} skill={skill} rank={rank} pointsInvested={pointsInvested} lockedPoints={lockedPoints} theme={T} level={level || 1} char={char} gmMode={gmMode} onUpdate={onUpdate} skillSource={skillSource || 'martial'} />
         )
       })}
     </div>

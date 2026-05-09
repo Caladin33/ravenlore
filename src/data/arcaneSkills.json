@@ -321,9 +321,29 @@
       "maxRank": "1",
       "mcl": "any",
       "maintenancePerRank": 1.0
-    }
+    },
+    {
+  "name": "Shaman's Symbol",
+  "category": "guild",
+  "prereq": "Chi Mastery 1\nOrder Mastery 1\nWill Mastery 1",
+  "description": "Make a sacrifice to a God to gain their favour, allowing you to wear a symbol. This is a more limited version of a mark, but multiple sacrifices can be made to multiple gods allowing the Shaman to carry multiple Symbols. Each Symbol gives the Shaman access to aura effects which can be placed on totems, some skills, and the inherent Mark benefit, with the following exceptions: Symbol of Mischief: +3 Precision, Symbol of Wisdom: +4 Evasion.",
+  "costPerRank": 1,
+  "maxRank": "1",
+  "mcl": "any",
+  "maintenancePerRank": 0.0
+}
   ],
   "divine": [
+    {
+  "name": "Patron's Mark",
+  "category": "divine",
+  "prereq": "none",
+  "description": "You have been chosen by a God and bear their Mark. Choose your Mark and make a Vow (sacrifice) to your Patron. The Mark grants a permanent passive bonus. You may only hold one Mark.",
+  "costPerRank": 1,
+  "maxRank": "1",
+  "mcl": "any",
+  "maintenancePerRank": 0.0
+},
     {
       "name": "Divine Affinity",
       "category": "divine",
