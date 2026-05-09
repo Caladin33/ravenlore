@@ -1,41 +1,30 @@
 // GeneralSkillCard.jsx
-// Green-themed card for general skills
-
 import { useState } from 'react'
 
-// ─────────────────────────────────────────────
-// THEME COLORS
-// ─────────────────────────────────────────────
-
 const G = {
-  primary:   '#4a9e4a',   // green
-  primary2:  '#6abf6a',   // light green
+  primary:   '#4a9e4a',
+  primary2:  '#6abf6a',
   surface:   'rgba(74,158,74,.06)',
   border:    'rgba(74,158,74,.25)',
   borderAct: 'rgba(74,158,74,.5)',
-  dim:       'rgba(74,158,74,.35)',
+  dim:       'rgba(74,158,74,.1)',
 }
 
-// ─────────────────────────────────────────────
-// PREREQ PARSER
-// ─────────────────────────────────────────────
+const GRID = '1fr 52px 72px'
 
+// ── PREREQ PARSER ─────────────────────────────────────────────────────────────
 function parsePrereq(prereqStr) {
   if (!prereqStr || prereqStr.toLowerCase() === 'none') return { type: 'none' }
   const str = prereqStr.trim()
-
   if (str.includes('<')) {
     const parts = str.split(/\n|\band\b|\bor\b/i).map(s => s.trim()).filter(Boolean)
     const caps = parts.filter(p => p.startsWith('<')).map(p => p.replace('<', '').trim())
     const isOr = str.toLowerCase().includes(' or')
     return { type: 'cap', caps, logic: isOr ? 'or' : 'and', raw: str }
   }
-
   const minMatch = str.match(/^(\d+)\+\s*(.+)$/)
   if (minMatch) return { type: 'min', score: parseInt(minMatch[1]), skill: minMatch[2].trim(), raw: str }
-
   if (str.toLowerCase().includes('trainer')) return { type: 'trainer', raw: str }
-
   return { type: 'narrative', raw: str }
 }
 
@@ -59,59 +48,123 @@ function checkMin(prereq, getSkillScore) {
   return { met: score >= prereq.score, score, required: prereq.score, skill: prereq.skill }
 }
 
-// ─────────────────────────────────────────────
-// CARD COMPONENT
-// ─────────────────────────────────────────────
+// ── EDITABLE POINTS ───────────────────────────────────────────────────────────
+function EditablePoints({ value, onCommit, isActive }) {
+  const [editing, setEditing] = useState(false)
+  const [draft, setDraft] = useState('')
+  const [error, setError] = useState(null)
 
-export function GeneralSkillCard({ skill, score, pointsInvested, onAdd, onRemove, getSkillScore }) {
-  const prereq = parsePrereq(skill.prereq)
-  const costMult = parseInt(skill.costMultiplier) || 1
-  const maxStr = skill.maximum || 'SC'
+  const startEdit = () => { setDraft(String(value)); setError(null); setEditing(true) }
+  const commit = () => {
+    const num = parseInt(draft)
+    if (isNaN(num) || num < 0) { setError('Must be ≥ 0'); return }
+    const result = onCommit(num)
+    if (result?.error) { setError(result.error) }
+    else { setError(null); setEditing(false) }
+  }
+  const cancel = () => { setEditing(false); setError(null) }
 
-  const capResult = checkCap(prereq, score, getSkillScore)
-  const minResult = prereq.type === 'min' ? checkMin(prereq, getSkillScore) : { met: true }
-
-  const wouldBeScore = score + costMult
-  const addBlocked = capResult.capped
-    || (prereq.type === 'cap' && wouldBeScore > capResult.capValue)
-    || !minResult.met
-  const removeBlocked = pointsInvested <= 0
-  const isActive = pointsInvested > 0
-  const isBlocked = prereq.type === 'min' && !minResult.met
+  if (editing) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+        <input
+          autoFocus value={draft}
+          onChange={e => { setDraft(e.target.value); setError(null) }}
+          onKeyDown={e => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') cancel() }}
+          onBlur={commit} onFocus={e => e.target.select()}
+          style={{
+            width: 52, textAlign: 'center', background: 'var(--bg)',
+            border: `1px solid ${error ? '#c94a4a' : G.primary}`,
+            color: 'var(--text)', borderRadius: 3, padding: '2px 4px',
+            fontFamily: 'Georgia, serif', fontSize: '1rem', fontWeight: 700,
+          }}
+        />
+        {error && <div style={{ fontSize: '.55rem', color: '#c94a4a', textAlign: 'center', maxWidth: 72, lineHeight: 1.3 }}>{error}</div>}
+      </div>
+    )
+  }
 
   return (
-    <div style={{
-      background: isActive ? G.surface : 'var(--surface)',
-      border: `1px solid ${isActive ? G.borderAct : G.border}`,
-      borderRadius: 7,
-      padding: '14px 16px',
-      opacity: isBlocked ? 0.55 : 1,
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 10,
+    <div onClick={startEdit} title="Click to edit" style={{
+      fontSize: '1rem', fontWeight: 700, fontFamily: 'Georgia, serif',
+      color: isActive ? G.primary2 : 'var(--text2)',
+      cursor: 'pointer', textAlign: 'center',
+      borderBottom: `1px dotted ${isActive ? G.primary : 'var(--border2)'}`,
+      minWidth: 24, display: 'inline-block',
     }}>
+      {value}
+    </div>
+  )
+}
 
-      {/* Header: name + score + controls */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+// ── SKILL ROW ─────────────────────────────────────────────────────────────────
+export function GeneralSkillCard({ skill, score, pointsInvested, onAdd, onRemove, getSkillScore, onUpdate, lockedPoints, gmMode }) {
+  const [expanded, setExpanded] = useState(false)
 
-        {/* Name + cost info */}
-        <div style={{ flex: 1, minWidth: 0 }}>
+  const prereq = parsePrereq(skill.prereq)
+  const costMult = parseInt(skill.costMultiplier) || 1
+  const capResult = checkCap(prereq, score, getSkillScore)
+  const minResult = prereq.type === 'min' ? checkMin(prereq, getSkillScore) : { met: true }
+  const isActive = pointsInvested > 0
+  const isBlocked = prereq.type === 'min' && !minResult.met
+  const locked = lockedPoints?.[skill.name] || 0
+
+  const handleCommit = (newPoints) => {
+    if (!gmMode && newPoints < locked) return { error: `Cannot go below ${locked} (locked from last save)` }
+    if (!minResult.met && newPoints > 0) return { error: `Requires ${prereq.skill} ${prereq.score}+` }
+    const newScore = skill.freeBase ? score + (newPoints - pointsInvested) * costMult : newPoints * costMult
+    if (capResult.capped && newPoints > pointsInvested) return { error: `Capped at ${capResult.capValue} by ${capResult.capBy}` }
+    if (onUpdate) onUpdate(newPoints)
+    else if (newPoints > pointsInvested) onAdd()
+    else onRemove()
+    return {}
+  }
+
+  const prereqLine = () => {
+    if (prereq.type === 'none') return null
+    if (prereq.type === 'cap') {
+      return capResult.capped
+        ? <span style={{ color: '#c94a4a' }}>⚠ Capped at {capResult.capValue} by {capResult.capBy}</span>
+        : <span style={{ color: 'var(--text3)', fontStyle: 'italic' }}>Cap: {prereq.caps.join(prereq.logic === 'or' ? ' or ' : ' and ')}</span>
+    }
+    if (prereq.type === 'min') {
+      return minResult.met
+        ? <span style={{ color: 'var(--text3)', fontStyle: 'italic' }}>Req: {prereq.skill} {prereq.score}+ ✓</span>
+        : <span style={{ color: '#c94a4a' }}>⚠ Requires {prereq.skill} {prereq.score}+ (currently {minResult.score})</span>
+    }
+    if (prereq.type === 'trainer') return <span style={{ color: 'var(--text3)', fontStyle: 'italic' }}>Requires in-game trainer</span>
+    return <span style={{ color: 'var(--text3)', fontStyle: 'italic' }}>{prereq.raw}</span>
+  }
+
+  return (
+    <>
+      <div style={{
+        display: 'grid', gridTemplateColumns: GRID, alignItems: 'center',
+        borderBottom: '1px solid var(--border)',
+        background: isActive ? G.dim : 'transparent',
+        minHeight: 48, opacity: isBlocked ? 0.55 : 1,
+      }}>
+        {/* Skill name + prereq */}
+        <div style={{ padding: '8px 12px', cursor: 'pointer', minWidth: 0 }} onClick={() => setExpanded(!expanded)}>
           <div style={{
-            fontSize: '1.05rem', fontFamily: 'Georgia, serif',
-            color: isBlocked ? 'var(--text3)' : 'var(--text)',
-            marginBottom: 4, fontWeight: 600,
+            display: 'flex', alignItems: 'center', gap: 5, flexWrap: 'wrap',
+            fontSize: '.92rem', fontFamily: 'Georgia, serif',
+            color: isActive ? G.primary2 : (isBlocked ? 'var(--text3)' : 'var(--text)'),
+            fontWeight: isActive ? 600 : 400,
           }}>
-            {skill.name}
+            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{skill.name}</span>
+            <span style={{ fontSize: '.58rem', color: 'var(--text3)', opacity: .5, flexShrink: 0 }}>{expanded ? '▲' : '▼'}</span>
           </div>
-          <div style={{ fontSize: '.8rem', color: G.dim, letterSpacing: '.03em' }}>
-            1pt = +{costMult} &nbsp;·&nbsp; Max: {maxStr}
-          </div>
+          {prereq.type !== 'none' && (
+            <div style={{ fontSize: '.62rem', marginTop: 2 }}>{prereqLine()}</div>
+          )}
         </div>
 
-        {/* Score */}
-        <div style={{ textAlign: 'center', minWidth: 56 }}>
+        {/* Score — calculated, display only */}
+        <div style={{ textAlign: 'center', padding: '8px 4px' }}>
           <div style={{
-            fontSize: '1.6rem', fontWeight: 700,
+            fontSize: isActive ? '1.2rem' : '.95rem',
+            fontWeight: isActive ? 700 : 400,
             fontFamily: 'Georgia, serif',
             color: capResult.capped ? '#c94a4a' : (isActive ? G.primary2 : G.primary),
             lineHeight: 1,
@@ -120,98 +173,36 @@ export function GeneralSkillCard({ skill, score, pointsInvested, onAdd, onRemove
           </div>
         </div>
 
-        {/* Controls */}
-        {!isBlocked && (
-          <div style={{ display: 'flex', gap: 5, alignItems: 'center', flexShrink: 0 }}>
-            <button
-              onClick={onRemove}
-              disabled={removeBlocked}
-              style={{
-                width: 28, height: 28,
-                background: 'var(--bg2)', border: '1px solid var(--border)',
-                borderRadius: 4, color: removeBlocked ? 'var(--text3)' : 'var(--text2)',
-                fontSize: 18, cursor: removeBlocked ? 'not-allowed' : 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                opacity: removeBlocked ? 0.35 : 1,
-              }}
-            >−</button>
-
-            {/* Points invested box */}
-            <div style={{
-              minWidth: 40, textAlign: 'center',
-              background: 'var(--bg)', border: `1px solid ${G.border}`,
-              borderRadius: 4, padding: '3px 6px',
-            }}>
-              <div style={{
-                fontSize: '1.1rem', color: G.primary2,
-                fontWeight: 700, fontFamily: 'Georgia, serif', lineHeight: 1,
-              }}>
-                {pointsInvested}
-              </div>
-            </div>
-
-            <button
-              onClick={onAdd}
-              disabled={addBlocked}
-              style={{
-                width: 28, height: 28,
-                background: addBlocked ? 'var(--bg2)' : `rgba(74,158,74,.15)`,
-                border: `1px solid ${addBlocked ? 'var(--border)' : G.primary}`,
-                borderRadius: 4,
-                color: addBlocked ? 'var(--text3)' : G.primary,
-                fontSize: 18, cursor: addBlocked ? 'not-allowed' : 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                opacity: addBlocked ? 0.35 : 1,
-              }}
-            >+</button>
+        {/* Points invested — editable */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '6px 4px', gap: 2 }}>
+          <EditablePoints value={pointsInvested} onCommit={handleCommit} isActive={isActive} />
+          <div style={{ width: 36, height: 1, background: isActive ? G.borderAct : 'var(--border)' }} />
+          <div style={{ fontSize: '.72rem', color: 'var(--text3)', fontFamily: 'Georgia, serif' }}>
+            ×{costMult}
           </div>
-        )}
+        </div>
       </div>
 
-      {/* Description */}
-      {skill.description && (
-        <div style={{
-          fontSize: '.85rem', color: 'var(--text2)', lineHeight: 1.65,
-          fontFamily: 'Georgia, serif',
-        }}>
-          {skill.description}
-        </div>
-      )}
-
-      {/* Prereq */}
-      {prereq.type !== 'none' && (
-        <div style={{
-          fontSize: '.78rem', fontFamily: 'Georgia, serif',
-          borderTop: `1px solid ${G.border}`, paddingTop: 7,
-        }}>
-          {prereq.type === 'cap' && (
-            <div style={{ color: capResult.capped ? '#c94a4a' : 'var(--text3)' }}>
-              {capResult.capped
-                ? `⚠ Capped at ${capResult.capValue} by ${capResult.capBy}`
-                : `Cap: cannot exceed ${prereq.caps.join(prereq.logic === 'or' ? ' or ' : ' and ')}`
-              }
+      {/* Expanded detail */}
+      {expanded && (
+        <div style={{ padding: '10px 12px 14px 12px', background: 'var(--bg2)', borderBottom: '1px solid var(--border)' }}>
+          <div style={{ display: 'flex', gap: 16, marginBottom: skill.description ? 8 : 0, flexWrap: 'wrap' }}>
+            <div>
+              <div style={{ fontSize: '.55rem', letterSpacing: '.12em', color: 'var(--text3)', textTransform: 'uppercase', marginBottom: 2 }}>Cost Multiplier</div>
+              <div style={{ fontSize: '.9rem', color: G.primary2, fontFamily: 'Georgia, serif', fontWeight: 600 }}>×{costMult} per point</div>
             </div>
-          )}
-          {prereq.type === 'min' && (
-            <div style={{ color: minResult.met ? 'var(--text3)' : '#c94a4a' }}>
-              {minResult.met
-                ? `Req: ${prereq.skill} ${prereq.score}+ ✓`
-                : `⚠ Requires ${prereq.skill} ${prereq.score}+ (currently ${minResult.score})`
-              }
-            </div>
-          )}
-          {prereq.type === 'trainer' && (
-            <div style={{ color: 'var(--text3)', fontStyle: 'italic' }}>
-              Requires in-game trainer
-            </div>
-          )}
-          {prereq.type === 'narrative' && (
-            <div style={{ color: 'var(--text3)', fontStyle: 'italic' }}>
-              {prereq.raw}
-            </div>
+            {skill.maximum && (
+              <div>
+                <div style={{ fontSize: '.55rem', letterSpacing: '.12em', color: 'var(--text3)', textTransform: 'uppercase', marginBottom: 2 }}>Maximum</div>
+                <div style={{ fontSize: '.9rem', color: G.primary2, fontFamily: 'Georgia, serif', fontWeight: 600 }}>{skill.maximum}</div>
+              </div>
+            )}
+          </div>
+          {skill.description && (
+            <div style={{ fontSize: '.83rem', color: 'var(--text2)', lineHeight: 1.65, fontFamily: 'Georgia, serif' }}>{skill.description}</div>
           )}
         </div>
       )}
-    </div>
+    </>
   )
 }

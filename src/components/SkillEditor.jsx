@@ -15,33 +15,33 @@ const OBSCURE_LABELS = { infernal: 'Infernal', lycanthropy: 'Lycanthropy', anima
 const DIVINE_MARKS = ['Blood','Death','Iron','Life','Light','Mischief','Passion','Storms','War','Wisdom']
 
 const DIVINE_VOWS = [
-  { name: 'Bloodless',  detail: 'No Edged Weapons',                    refusedBy: 'Blood'   },
-  { name: 'Restraint',  detail: 'Quick and Light Weapons only',         refusedBy: 'Storms'  },
-  { name: 'Humility',   detail: 'No Jewelry',                           refusedBy: 'Wisdom'  },
-  { name: 'Barefoot',   detail: 'No Footwear',                          refusedBy: 'Light'   },
-  { name: 'Poverty',    detail: 'No money, no gold or bejeweled anything', refusedBy: 'Iron' },
-  { name: 'Silence',    detail: 'Vocabulary of 1 word, or none.',       refusedBy: 'Passion' },
-  { name: 'Vengeance',  detail: 'Overriding priority',                  refusedBy: 'Death'   },
-  { name: 'Charity',    detail: 'Must help when needed',                refusedBy: 'Blood'   },
-  { name: 'Decency',    detail: 'Must confront impropriety',            refusedBy: 'Wisdom'  },
-  { name: 'Pain',       detail: 'Accept no healing',                    refusedBy: 'Life'    },
+  { name: 'Bloodless',  detail: 'No Edged Weapons',                       refusedBy: 'Blood'    },
+  { name: 'Restraint',  detail: 'Quick and Light Weapons only',            refusedBy: 'Storms'   },
+  { name: 'Humility',   detail: 'No Jewelry',                              refusedBy: 'Wisdom'   },
+  { name: 'Barefoot',   detail: 'No Footwear',                             refusedBy: 'Light'    },
+  { name: 'Poverty',    detail: 'No money, no gold or bejeweled anything', refusedBy: 'Iron'     },
+  { name: 'Silence',    detail: 'Vocabulary of 1 word, or none.',          refusedBy: 'Passion'  },
+  { name: 'Vengeance',  detail: 'Overriding priority',                     refusedBy: 'Death'    },
+  { name: 'Charity',    detail: 'Must help when needed',                   refusedBy: 'Blood'    },
+  { name: 'Decency',    detail: 'Must confront impropriety',               refusedBy: 'Wisdom'   },
+  { name: 'Pain',       detail: 'Accept no healing',                       refusedBy: 'Life'     },
   { name: 'Service',    detail: 'To a church or order related to the God', refusedBy: 'Mischief' },
-  { name: 'Peace',      detail: 'Kill Nothing',                         refusedBy: 'War'     },
+  { name: 'Peace',      detail: 'Kill Nothing',                            refusedBy: 'War'      },
 ]
 
 const SHAMAN_VOWS = [
-  { name: 'Bloodless Vow',       detail: 'No Edged Weapons',               refusedBy: 'Blood'   },
-  { name: 'Vow of Biting',       detail: 'Awkward Weapons only',           refusedBy: 'Storms'  },
-  { name: 'Simple Vow',          detail: 'No Jewelry',                     refusedBy: 'Wisdom'  },
-  { name: 'Barefoot Vow',        detail: 'No Footwear',                    refusedBy: 'Light'   },
-  { name: 'Vow of Symbols',      detail: 'Fettered, other gods may be jealous', refusedBy: 'Iron' },
-  { name: 'Vow of "Your Word"',  detail: 'Vocabulary of 1 word only.',     refusedBy: 'Passion' },
-  { name: 'Vow of Vengeance',    detail: 'Overriding priority',            refusedBy: 'Death'   },
-  { name: 'Vow of Caring',       detail: 'Must help when needed',          refusedBy: 'Blood'   },
-  { name: 'Vow of Tradition',    detail: 'Must confront impropriety',      refusedBy: 'Wisdom'  },
-  { name: 'Vow of Pain',         detail: 'Accept no healing',              refusedBy: 'Life'    },
-  { name: 'Vow of Loyalty',      detail: 'To the Chief',                   refusedBy: 'Mischief' },
-  { name: 'Vow of Peace',        detail: 'Kill Nothing',                   refusedBy: 'War'     },
+  { name: 'Bloodless Vow',      detail: 'No Edged Weapons',                    refusedBy: 'Blood'    },
+  { name: 'Vow of Biting',      detail: 'Awkward Weapons only',                refusedBy: 'Storms'   },
+  { name: 'Simple Vow',         detail: 'No Jewelry',                          refusedBy: 'Wisdom'   },
+  { name: 'Barefoot Vow',       detail: 'No Footwear',                         refusedBy: 'Light'    },
+  { name: 'Vow of Symbols',     detail: 'Fettered, other gods may be jealous', refusedBy: 'Iron'     },
+  { name: 'Vow of "Your Word"', detail: 'Vocabulary of 1 word only.',          refusedBy: 'Passion'  },
+  { name: 'Vow of Vengeance',   detail: 'Overriding priority',                 refusedBy: 'Death'    },
+  { name: 'Vow of Caring',      detail: 'Must help when needed',               refusedBy: 'Blood'    },
+  { name: 'Vow of Tradition',   detail: 'Must confront impropriety',           refusedBy: 'Wisdom'   },
+  { name: 'Vow of Pain',        detail: 'Accept no healing',                   refusedBy: 'Life'     },
+  { name: 'Vow of Loyalty',     detail: 'To the Chief',                        refusedBy: 'Mischief' },
+  { name: 'Vow of Peace',       detail: 'Kill Nothing',                        refusedBy: 'War'      },
 ]
 
 const MARK_BONUSES = {
@@ -68,68 +68,58 @@ const selectStyle = {
   fontFamily: 'Georgia, serif', fontSize: '.85rem', cursor: 'pointer', width: '100%',
 }
 
-const lbl = { fontSize: '.6rem', letterSpacing: '.14em', color: 'var(--text3)', textTransform: 'uppercase', fontFamily: 'Georgia, serif', display: 'block', marginBottom: 4 }
+const lbl = {
+  fontSize: '.6rem', letterSpacing: '.14em', color: 'var(--text3)',
+  textTransform: 'uppercase', fontFamily: 'Georgia, serif', display: 'block', marginBottom: 4,
+}
 
 // ── PATRON'S MARK PANEL ───────────────────────────────────────────────────────
-function PatronMarkPanel({ char, onUpdate, locked }) {
+function PatronMarkPanel({ char, onUpdate, gmMode }) {
   const pm = char.patronMark || {}
   const [mark, setMark] = useState(pm.mark || '')
   const [vow, setVow] = useState(pm.vow || '')
-
   const availableVows = DIVINE_VOWS.filter(v => v.refusedBy !== mark)
+  const isLocked = pm.locked && !gmMode
 
   const handleSave = () => {
     if (!mark || !vow) return
     onUpdate({ ...pm, mark, vow, locked: true })
   }
 
-  const isLocked = pm.locked && !locked // locked unless GM mode
-
   return (
     <div style={{ padding: '12px 14px', background: 'var(--bg2)', borderBottom: '1px solid var(--border)' }}>
       <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'flex-end' }}>
         <div style={{ flex: '1 1 140px' }}>
           <span style={lbl}>Divine Mark</span>
-          {isLocked ? (
-            <div style={{ fontSize: '1rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600 }}>
-              Mark of {pm.mark}
-            </div>
-          ) : (
-            <select value={mark} onChange={e => { setMark(e.target.value); setVow('') }} style={selectStyle}>
-              <option value="">— Choose Mark —</option>
-              {DIVINE_MARKS.map(m => <option key={m} value={m}>Mark of {m}</option>)}
-            </select>
-          )}
+          {isLocked
+            ? <div style={{ fontSize: '1rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600 }}>Mark of {pm.mark}</div>
+            : <select value={mark} onChange={e => { setMark(e.target.value); setVow('') }} style={selectStyle}>
+                <option value="">— Choose Mark —</option>
+                {DIVINE_MARKS.map(m => <option key={m} value={m}>Mark of {m}</option>)}
+              </select>
+          }
         </div>
         <div style={{ flex: '1 1 140px' }}>
           <span style={lbl}>Vow</span>
-          {isLocked ? (
-            <div style={{ fontSize: '1rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600 }}>
-              {pm.vow}
-            </div>
-          ) : (
-            <select value={vow} onChange={e => setVow(e.target.value)} style={selectStyle} disabled={!mark}>
-              <option value="">— Choose Vow —</option>
-              {availableVows.map(v => <option key={v.name} value={v.name}>{v.name} — {v.detail}</option>)}
-            </select>
-          )}
+          {isLocked
+            ? <div style={{ fontSize: '1rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600 }}>{pm.vow}</div>
+            : <select value={vow} onChange={e => setVow(e.target.value)} style={selectStyle} disabled={!mark}>
+                <option value="">— Choose Vow —</option>
+                {availableVows.map(v => <option key={v.name} value={v.name}>{v.name} — {v.detail}</option>)}
+              </select>
+          }
         </div>
         {!isLocked && (
-          <button
-            onClick={handleSave}
-            disabled={!mark || !vow}
-            style={{
-              padding: '7px 16px', background: 'rgba(201,168,76,.15)', border: '1px solid var(--gold)',
-              color: 'var(--gold2)', borderRadius: 4, cursor: mark && vow ? 'pointer' : 'not-allowed',
-              fontFamily: 'Georgia, serif', fontSize: '.85rem', opacity: mark && vow ? 1 : 0.4,
-            }}
-          >Confirm & Lock</button>
+          <button onClick={handleSave} disabled={!mark || !vow}
+            style={{ padding: '7px 16px', background: 'rgba(201,168,76,.15)', border: '1px solid var(--gold)', color: 'var(--gold2)', borderRadius: 4, cursor: mark && vow ? 'pointer' : 'not-allowed', fontFamily: 'Georgia, serif', fontSize: '.85rem', opacity: mark && vow ? 1 : 0.4 }}>
+            Confirm &amp; Lock
+          </button>
         )}
-        {isLocked && locked === false && (
-          <button
-            onClick={() => onUpdate({ ...pm, locked: false })}
-            style={{ padding: '7px 16px', background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.8rem' }}
-          >Unlock (GM)</button>
+        {isLocked && gmMode && (
+          <button onClick={() => onUpdate({ ...pm, locked: false })}
+            style={{ padding: '7px 16px', background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.8rem' }}>
+            Unlock (GM)
+          </button>
         )}
       </div>
       {mark && (
@@ -139,7 +129,7 @@ function PatronMarkPanel({ char, onUpdate, locked }) {
       )}
       {vow && (
         <div style={{ marginTop: 6, fontSize: '.8rem', color: 'var(--text2)', fontFamily: 'Georgia, serif', fontStyle: 'italic', borderLeft: '2px solid var(--border2)', paddingLeft: 10 }}>
-          <strong style={{ color: 'var(--text)' }}>Vow of {vow}:</strong> {DIVINE_VOWS.find(v => v.name === vow)?.detail}
+          <strong style={{ color: 'var(--text)' }}>{vow}:</strong> {DIVINE_VOWS.find(v => v.name === vow)?.detail}
         </div>
       )}
     </div>
@@ -151,7 +141,6 @@ function ShamanSymbolsPanel({ char, onUpdate, gmMode }) {
   const symbols = char.shamanSymbols || []
   const [newSymbol, setNewSymbol] = useState('')
   const [newVow, setNewVow] = useState('')
-
   const usedSymbols = new Set(symbols.map(s => s.symbol))
   const availableMarks = DIVINE_MARKS.filter(m => !usedSymbols.has(m))
   const availableVows = SHAMAN_VOWS.filter(v => v.refusedBy !== newSymbol)
@@ -159,25 +148,19 @@ function ShamanSymbolsPanel({ char, onUpdate, gmMode }) {
   const addSymbol = () => {
     if (!newSymbol || !newVow) return
     onUpdate([...symbols, { symbol: newSymbol, vow: newVow, locked: true }])
-    setNewSymbol('')
-    setNewVow('')
+    setNewSymbol(''); setNewVow('')
   }
 
   const removeSymbol = (i) => {
-    const next = [...symbols]
-    next.splice(i, 1)
-    onUpdate(next)
+    const next = [...symbols]; next.splice(i, 1); onUpdate(next)
   }
 
   return (
     <div style={{ padding: '12px 14px', background: 'var(--bg2)', borderBottom: '1px solid var(--border)' }}>
-      {/* Existing symbols */}
       {symbols.map((s, i) => (
         <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 8, padding: '8px 10px', background: 'var(--bg)', borderRadius: 4, border: '1px solid var(--border)' }}>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: '.9rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600 }}>
-              Symbol of {s.symbol}
-            </div>
+            <div style={{ fontSize: '.9rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600 }}>Symbol of {s.symbol}</div>
             <div style={{ fontSize: '.75rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
               {s.vow} — {SHAMAN_VOWS.find(v => v.name === s.vow)?.detail}
             </div>
@@ -192,8 +175,6 @@ function ShamanSymbolsPanel({ char, onUpdate, gmMode }) {
           )}
         </div>
       ))}
-
-      {/* Add new symbol */}
       {availableMarks.length > 0 && (
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'flex-end', marginTop: symbols.length > 0 ? 10 : 0 }}>
           <div style={{ flex: '1 1 140px' }}>
@@ -210,23 +191,20 @@ function ShamanSymbolsPanel({ char, onUpdate, gmMode }) {
               {availableVows.map(v => <option key={v.name} value={v.name}>{v.name} — {v.detail}</option>)}
             </select>
           </div>
-          <button
-            onClick={addSymbol}
-            disabled={!newSymbol || !newVow}
-            style={{ padding: '7px 16px', background: 'rgba(201,168,76,.15)', border: '1px solid var(--gold)', color: 'var(--gold2)', borderRadius: 4, cursor: newSymbol && newVow ? 'pointer' : 'not-allowed', fontFamily: 'Georgia, serif', fontSize: '.85rem', opacity: newSymbol && newVow ? 1 : 0.4 }}
-          >Add Symbol</button>
+          <button onClick={addSymbol} disabled={!newSymbol || !newVow}
+            style={{ padding: '7px 16px', background: 'rgba(201,168,76,.15)', border: '1px solid var(--gold)', color: 'var(--gold2)', borderRadius: 4, cursor: newSymbol && newVow ? 'pointer' : 'not-allowed', fontFamily: 'Georgia, serif', fontSize: '.85rem', opacity: newSymbol && newVow ? 1 : 0.4 }}>
+            Add Symbol
+          </button>
         </div>
       )}
       {availableMarks.length === 0 && symbols.length > 0 && (
-        <div style={{ fontSize: '.78rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', fontStyle: 'italic', marginTop: 8 }}>
-          All symbols claimed.
-        </div>
+        <div style={{ fontSize: '.78rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', fontStyle: 'italic', marginTop: 8 }}>All symbols claimed.</div>
       )}
     </div>
   )
 }
 
-// ── ATTRIBUTE CALCULATION ─────────────────────────────────────────────────────
+// ── HELPERS ───────────────────────────────────────────────────────────────────
 function getEffectiveAttributes(char) {
   const race = racesData[char.race?.charAt(0).toLowerCase() + char.race?.slice(1).replace(/\s+/g, '') || 'human'] || {}
   const attrs = char.attributes || {}
@@ -298,7 +276,6 @@ export default function SkillEditor({ character, onSave, onBack }) {
   const arcaneSkills = useMemo(() => getAllArcaneSkills(arcaneSkillsData), [])
   const effectiveAttrs = useMemo(() => getEffectiveAttributes(char), [char])
 
-  // ── POINT TOTALS ────────────────────────────────────────────────────────────
   const pointTotals = useMemo(() => {
     let selfImprovementSpent = 0
     Object.values(char.selfImprovementSkills || {}).forEach(s => { selfImprovementSpent += parseInt(s.pointsInvested) || 0 })
@@ -324,7 +301,6 @@ export default function SkillEditor({ character, onSave, onBack }) {
     return { generalSpent, martialSpent, spiritualSpent, obscureSpent, totalSpent, totalEarned, unspent: totalEarned - totalSpent }
   }, [char])
 
-  // ── UPDATE HANDLERS ─────────────────────────────────────────────────────────
   const handleUpdate = (skillName, newPoints, source) => {
     setChar(prev => {
       const next = JSON.parse(JSON.stringify(prev))
@@ -360,13 +336,8 @@ export default function SkillEditor({ character, onSave, onBack }) {
     })
   }
 
-  const handlePatronMarkUpdate = (markData) => {
-    setChar(prev => ({ ...prev, patronMark: markData }))
-  }
-
-  const handleShamanSymbolsUpdate = (symbols) => {
-    setChar(prev => ({ ...prev, shamanSymbols: symbols }))
-  }
+  const handlePatronMarkUpdate = (markData) => setChar(prev => ({ ...prev, patronMark: markData }))
+  const handleShamanSymbolsUpdate = (symbols) => setChar(prev => ({ ...prev, shamanSymbols: symbols }))
 
   const filterSkills = (skills) => {
     return skills.filter(skill => {
@@ -397,88 +368,22 @@ export default function SkillEditor({ character, onSave, onBack }) {
     borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.85rem',
   })
 
-  // Inject special panels into Divine section
-  const renderDivineTable = (skills, theme) => {
-    const patronMarkSkill = skills.find(s => s.name === "Patron's Mark")
-    const otherSkills = skills.filter(s => s.name !== "Patron's Mark")
+  // Build specialRows for Divine — Patron's Mark panel appears below that skill row
+  const buildDivineSpecialRows = () => {
     const patronRank = parseInt(char.arcaneSkills?.["Patron's Mark"]?.rank) || 0
-
-    return (
-      <div>
-        {/* Patron's Mark with special panel */}
-        {patronMarkSkill && (
-          <div style={{ borderBottom: '2px solid var(--border)' }}>
-            <RankedSkillTable
-              skills={[patronMarkSkill]}
-              char={char}
-              sectionLabel=""
-              theme={theme}
-              level={char.level || 1}
-              skillSource="arcane"
-              gmMode={gmMode}
-              lockedPoints={lockedPoints}
-              onUpdate={(name, newPts) => handleUpdate(name, newPts, 'arcane')}
-            />
-            {patronRank >= 1 && (
-              <PatronMarkPanel char={char} onUpdate={handlePatronMarkUpdate} locked={gmMode} />
-            )}
-          </div>
-        )}
-        {/* Rest of divine skills */}
-        <RankedSkillTable
-          skills={filterSkills(otherSkills)}
-          char={char}
-          sectionLabel="Divine"
-          theme={theme}
-          level={char.level || 1}
-          skillSource="arcane"
-          gmMode={gmMode}
-          lockedPoints={lockedPoints}
-          onUpdate={(name, newPts) => handleUpdate(name, newPts, 'arcane')}
-        />
-      </div>
-    )
+    if (patronRank < 1) return {}
+    return {
+      "Patron's Mark": <PatronMarkPanel char={char} onUpdate={handlePatronMarkUpdate} gmMode={gmMode} />
+    }
   }
 
-  // Inject Shaman's Symbol panel into Guild section
-  const renderGuildTable = (skills, theme) => {
-    const shamanSkill = skills.find(s => s.name === "Shaman's Symbol")
-    const otherSkills = skills.filter(s => s.name !== "Shaman's Symbol")
+  // Build specialRows for Guild — Shaman's Symbol panel appears below that skill row
+  const buildGuildSpecialRows = () => {
     const shamanRank = parseInt(char.arcaneSkills?.["Shaman's Symbol"]?.rank) || 0
-
-    return (
-      <div>
-        {shamanSkill && (
-          <div style={{ borderBottom: '2px solid var(--border)' }}>
-            <RankedSkillTable
-              skills={[shamanSkill]}
-              char={char}
-              sectionLabel=""
-              theme={theme}
-              level={char.level || 1}
-              skillSource="arcane"
-              gmMode={gmMode}
-              lockedPoints={lockedPoints}
-              onUpdate={(name, newPts) => handleUpdate(name, newPts, 'arcane')}
-            />
-            {shamanRank >= 1 && (
-              <ShamanSymbolsPanel char={char} onUpdate={handleShamanSymbolsUpdate} gmMode={gmMode} />
-            )}
-          </div>
-        )}
-        <RankedSkillTable
-          skills={filterSkills(otherSkills)}
-          char={char}
-          sectionLabel="Guild"
-          theme={theme}
-          level={char.level || 1}
-          skillSource="arcane"
-          gmMode={gmMode}
-          lockedPoints={lockedPoints}
-          onUpdate={(name, newPts) => handleUpdate(name, newPts, 'arcane')}
-        />
-      </div>
-    )
+    if (shamanRank < 1) return {}
+    return {
+      "Shaman's Symbol": <ShamanSymbolsPanel char={char} onUpdate={handleShamanSymbolsUpdate} gmMode={gmMode} />
+    }
   }
 
   return (
@@ -492,10 +397,10 @@ export default function SkillEditor({ character, onSave, onBack }) {
           ['Martial', pointTotals.martialSpent],
           ['Spiritual', pointTotals.spiritualSpent],
           ['Obscure', pointTotals.obscureSpent],
-        ].map(([lbl, val]) => (
-          <div key={lbl} style={{ textAlign: 'center', minWidth: 60 }}>
-            <div style={{ fontSize: '.55rem', letterSpacing: '.15em', color: 'var(--text3)', textTransform: 'uppercase', marginBottom: 2 }}>{lbl}</div>
-            <div style={{ fontSize: '1.1rem', fontWeight: 600, fontFamily: 'Georgia, serif', color: lbl === 'Unspent' && val < 0 ? '#c94a4a' : 'var(--gold2)' }}>{val}</div>
+        ].map(([l, val]) => (
+          <div key={l} style={{ textAlign: 'center', minWidth: 60 }}>
+            <div style={{ fontSize: '.55rem', letterSpacing: '.15em', color: 'var(--text3)', textTransform: 'uppercase', marginBottom: 2 }}>{l}</div>
+            <div style={{ fontSize: '1.1rem', fontWeight: 600, fontFamily: 'Georgia, serif', color: l === 'Unspent' && val < 0 ? '#c94a4a' : 'var(--gold2)' }}>{val}</div>
           </div>
         ))}
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -529,13 +434,32 @@ export default function SkillEditor({ character, onSave, onBack }) {
         {activeTab === 'General' && (
           <div>
             <RankedSkillTable skills={filterSkills(selfImprovementData)} char={char} sectionLabel="Self Improvement" theme={THEMES.selfImprovement} level={char.level || 1} skillSource="selfImprovement" gmMode={gmMode} lockedPoints={lockedPoints} onUpdate={(name, newPts) => handleUpdate(name, newPts, 'selfImprovement')} />
-            <div style={{ padding: '6px 14px', background: 'var(--bg)', borderBottom: '1px solid var(--border)', fontSize: '.6rem', letterSpacing: '.2em', color: '#2d6b2d', textTransform: 'uppercase' }}>Trades &amp; Talents</div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 10, padding: 14 }}>
+           <div style={{ padding: '10px 12px', background: 'var(--bg)', borderBottom: '2px solid #4a9e4a', fontSize: '1rem', letterSpacing: '.25em', color: '#4a9e4a', textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 600, textAlign: 'center' }}>Trades &amp; Talents</div>
+{/* Column headers */}
+<div style={{ display: 'grid', gridTemplateColumns: '1fr 52px 72px', background: 'var(--bg2)', borderBottom: '1px solid rgba(74,158,74,.25)', minHeight: 44, alignItems: 'center' }}>
+  <div style={{ padding: '0 12px', fontSize: '.85rem', letterSpacing: '.12em', color: '#4a9e4a', textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Skill</div>
+  <div style={{ textAlign: 'center', fontSize: '.7rem', letterSpacing: '.08em', color: '#4a9e4a', textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Score</div>
+  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2, padding: '4px' }}>
+    <div style={{ fontSize: '.7rem', letterSpacing: '.08em', color: '#4a9e4a', textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Pts</div>
+    <div style={{ width: 36, height: 1, background: 'rgba(74,158,74,.25)' }} />
+    <div style={{ fontSize: '.7rem', letterSpacing: '.08em', color: '#4a9e4a', textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Mult</div>
+  </div>
+</div>
+<div>
               {filterSkills(generalSkillsData).map(skill => {
                 const pts = parseInt(char.generalSkills?.[skill.name]?.pointsInvested) || 0
                 const score = effectiveAttrs ? calcSkillScore(skill, char, effectiveAttrs) : 0
                 const getSkillScore = (name) => { const s = generalSkillsData.find(x => x.name === name); return s ? calcSkillScore(s, char, effectiveAttrs || {}) : 0 }
-                return <GeneralSkillCard key={skill.name} skill={skill} score={score} pointsInvested={pts} getSkillScore={getSkillScore} onAdd={() => handleUpdate(skill.name, pts + 1, 'general')} onRemove={() => handleUpdate(skill.name, Math.max(0, pts - 1), 'general')} />
+               return <GeneralSkillCard
+  key={skill.name}
+  skill={skill}
+  score={score}
+  pointsInvested={pts}
+  getSkillScore={getSkillScore}
+  gmMode={gmMode}
+  lockedPoints={lockedPoints}
+  onUpdate={(newPts) => handleUpdate(skill.name, newPts, 'general')}
+/>
               })}
             </div>
           </div>
@@ -562,9 +486,22 @@ export default function SkillEditor({ character, onSave, onBack }) {
           return categories.map(category => {
             const categorySkills = filterSkills((arcaneSkillsData[category] || []).map(s => ({ ...s, category })))
             if (categorySkills.length === 0) return null
-            if (category === 'divine') return <div key={category}>{renderDivineTable(categorySkills, themeMap.divine)}</div>
-            if (category === 'guild') return <div key={category}>{renderGuildTable(categorySkills, themeMap.guild)}</div>
-            return <RankedSkillTable key={category} skills={categorySkills} char={char} sectionLabel={labels[category]} theme={themeMap[category]} level={char.level || 1} skillSource="arcane" gmMode={gmMode} lockedPoints={lockedPoints} onUpdate={(name, newPts) => handleUpdate(name, newPts, 'arcane')} />
+            const specialRows = category === 'divine' ? buildDivineSpecialRows() : category === 'guild' ? buildGuildSpecialRows() : undefined
+            return (
+              <RankedSkillTable
+                key={category}
+                skills={categorySkills}
+                char={char}
+                sectionLabel={labels[category]}
+                theme={themeMap[category]}
+                level={char.level || 1}
+                skillSource="arcane"
+                gmMode={gmMode}
+                lockedPoints={lockedPoints}
+                onUpdate={(name, newPts) => handleUpdate(name, newPts, 'arcane')}
+                specialRows={specialRows}
+              />
+            )
           })
         })()}
 

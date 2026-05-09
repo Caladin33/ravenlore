@@ -21,41 +21,18 @@ export const THEMES = {
 
 const GRID = '1fr 72px 52px'
 
-// ── PATTERN LISTS ─────────────────────────────────────────────────────────────
-
-// Show as chips, not enforced
 const FLAG_PATTERNS = [
-  /^special attack/i,
-  /^melee only/i,
-  /^2-handed only/i,
-  /^2-handed slashing only/i,
-  /^blunt$/i,
-  /^piercing weapon$/i,
-  /^passive$/i,
-  /^active$/i,
-  /^opportunity$/i,  // flag version only — "opportunity attack" type
-  /^no awkward weapons/i,
-  /^can not be a quick or light weapon/i,
-  /^quick and light weapons only/i,
+  /^special attack/i, /^melee only/i, /^2-handed only/i, /^2-handed slashing only/i,
+  /^blunt$/i, /^piercing weapon$/i, /^passive$/i, /^active$/i,
+  /^no awkward weapons/i, /^can not be a quick or light weapon/i, /^quick and light weapons only/i,
 ]
 
-// Silently ignored — no chip, no enforcement
 const IGNORE_PATTERNS = [
-  /^trainer/i,
-  /^exposure/i,
-  /^opportunity$/i,  // unenforceable prereq
-  /^access/i,
-  /^ranged only/i,
-  /^self$/i,
+  /^trainer/i, /^exposure/i, /^opportunity/i, /^access/i, /^ranged only/i, /^self$/i,
 ]
 
-// Martial marks — enforced as rank >= 1, no chip
 const MARTIAL_MARKS = ['Fox Mark', 'Serpent Mark', 'Tiger Mark', 'Heron Mark']
 
-// Divine marks full list
-const DIVINE_MARKS = ['Blood', 'Death', 'Iron', 'Life', 'Light', 'Mischief', 'Passion', 'Storms', 'War', 'Wisdom']
-
-// ── ATTRIBUTE HELPERS ─────────────────────────────────────────────────────────
 function getEffectiveAttrs(char) {
   const raceKey = char.race ? char.race.charAt(0).toLowerCase() + char.race.slice(1).replace(/\s+/g, '') : 'human'
   const race = racesData[raceKey] || {}
@@ -122,45 +99,32 @@ function getRankAcrossAllSkills(char, skillName) {
     || 0
 }
 
-// ── MARK HELPERS ──────────────────────────────────────────────────────────────
 function charHasPatronMark(char, markName) {
-  const m = char.patronMark?.mark || ''
-  return m.toLowerCase() === markName.toLowerCase()
+  return (char.patronMark?.mark || '').toLowerCase() === markName.toLowerCase()
 }
 
 function charHasShamanSymbol(char, symbolName) {
-  return (char.shamanSymbols || []).some(s =>
-    (s.symbol || '').toLowerCase() === symbolName.toLowerCase()
-  )
+  return (char.shamanSymbols || []).some(s => (s.symbol || '').toLowerCase() === symbolName.toLowerCase())
 }
 
 function charHasMarkOrShaman(char, markName) {
   return charHasPatronMark(char, markName) || charHasShamanSymbol(char, markName)
 }
 
-// Parse "Mark of X, Y or Z" → array of mark names
 function parseMarkList(str) {
-  // Remove "Mark of", "Shaman Symbol of", "Mark or Shaman Symbol of" prefix
   const cleaned = str
     .replace(/mark\s+or\s+shaman\s+symbol\s+of\s*/i, '')
-    .replace(/mark\s+of\s*/i, '')
+    .replace(/\bmark\s+of\s*/i, '')
     .replace(/shaman\s+symbol\s+of\s*/i, '')
-  // Split by comma and "or"
   return cleaned.split(/,|\bor\b/i).map(s => s.trim()).filter(Boolean)
 }
 
-// ── PREREQ CHECKER ────────────────────────────────────────────────────────────
 function checkSinglePrereq(token, char) {
   const str = token.trim()
   if (!str || str.toLowerCase() === 'none') return { met: true }
-
-  // Silently ignore unenforceable prereqs
   if (IGNORE_PATTERNS.some(p => p.test(str))) return { met: true, ignore: true }
-
-  // Flags — show as chip, don't enforce
   if (FLAG_PATTERNS.some(p => p.test(str))) return { met: true, tag: str }
 
-  // Unfettered
   if (/^unfettered/i.test(str)) {
     const result = checkUnfettered(char)
     if (!result.met) return result
@@ -169,8 +133,8 @@ function checkSinglePrereq(token, char) {
     return { met: true, partial: result.partial }
   }
 
-  // Martial marks — enforce rank >= 1, no chip
-  const martialMark = MARTIAL_MARKS.find(m => str.toLowerCase().includes(m.toLowerCase()))
+  // Martial marks — exact match, enforce rank >= 1, no chip
+  const martialMark = MARTIAL_MARKS.find(m => str.toLowerCase() === m.toLowerCase())
   if (martialMark) {
     const rank = getRankAcrossAllSkills(char, martialMark)
     if (rank < 1) return { met: false, reason: `${martialMark} rank 1 required` }
@@ -181,42 +145,24 @@ function checkSinglePrereq(token, char) {
   if (/mark\s+or\s+shaman\s+symbol\s+of/i.test(str)) {
     const marks = parseMarkList(str)
     const anyMet = marks.some(m => charHasMarkOrShaman(char, m))
-    if (!anyMet) return {
-      met: false,
-      reason: `Requires Mark or Shaman Symbol of: ${marks.join(', ')}`,
-      markList: marks,
-      markType: 'markOrShaman',
-    }
-    return { met: true, markList: marks, markType: 'markOrShaman' }
+    return { met: anyMet, reason: anyMet ? undefined : `Mark or Shaman Symbol of ${marks.join(', ')} required`, markList: marks, markType: 'markOrShaman' }
   }
 
   // "Mark of X, Y or Z" (patron mark only)
-  if (/mark\s+of\s/i.test(str) && !/shaman/i.test(str)) {
+  if (/\bmark\s+of\b/i.test(str) && !/shaman/i.test(str)) {
     const marks = parseMarkList(str)
     const anyMet = marks.some(m => charHasPatronMark(char, m))
-    if (!anyMet) return {
-      met: false,
-      reason: `Requires Patron's Mark of: ${marks.join(', ')}`,
-      markList: marks,
-      markType: 'patronOnly',
-    }
-    return { met: true, markList: marks, markType: 'patronOnly' }
+    return { met: anyMet, reason: anyMet ? undefined : `Patron's Mark of ${marks.join(', ')} required`, markList: marks, markType: 'patronOnly' }
   }
 
-  // "Shaman Symbol of X" only
+  // "Shaman Symbol of X"
   if (/shaman\s+symbol\s+of/i.test(str)) {
     const marks = parseMarkList(str)
     const anyMet = marks.some(m => charHasShamanSymbol(char, m))
-    if (!anyMet) return {
-      met: false,
-      reason: `Requires Shaman Symbol of: ${marks.join(', ')}`,
-      markList: marks,
-      markType: 'shamanOnly',
-    }
-    return { met: true, markList: marks, markType: 'shamanOnly' }
+    return { met: anyMet, reason: anyMet ? undefined : `Shaman Symbol of ${marks.join(', ')} required`, markList: marks, markType: 'shamanOnly' }
   }
 
-  // Attribute check: "Awareness 14+" or "14+ Chr"
+  // Attribute check
   const attrMatch = str.match(/^(\w+)\s+(\d+)\+$/) || str.match(/^(\d+)\+\s*(\w+)$/)
   if (attrMatch) {
     const attrNames = ['str','dex','con','aw','awareness','chr','wp','willpower','strength','dexterity','constitution','charisma']
@@ -230,7 +176,7 @@ function checkSinglePrereq(token, char) {
     }
   }
 
-  // Skill score threshold: "Inner Focus 90+"
+  // Skill threshold
   const skillThresholdMatch = str.match(/^(.+?)\s+(\d+)\+?$/)
   if (skillThresholdMatch) {
     const skillName = skillThresholdMatch[1].trim()
@@ -247,8 +193,8 @@ function checkSinglePrereq(token, char) {
     return { met: true }
   }
 
-  // Plain skill name — requires rank > 0
-  const skipPatterns = [/sword/i, /axe/i, /spear/i, /unarmed/i, /dagger/i, /staff/i, /^long$/i, /^short$/i, /^quick$/i, /^light$/i]
+  // Plain skill name
+  const skipPatterns = [/sword/i, /axe/i, /spear/i, /unarmed/i, /dagger/i, /staff/i, /^long$/i, /^short$/i, /^quick$/i]
   if (skipPatterns.some(p => p.test(str))) return { met: true, tag: str }
 
   const rank = getRankAcrossAllSkills(char, str)
@@ -261,12 +207,19 @@ function checkSinglePrereq(token, char) {
 
 function checkPrereq(prereqStr, char) {
   if (!prereqStr || prereqStr.toLowerCase() === 'none') return { met: true, tags: [], markRequirements: [] }
-  const tokens = prereqStr.split(/\n|,(?!\s*\d)|\band\b/i).map(s => s.trim()).filter(Boolean)
+  // Split only on newlines — commas are used inside mark lists and must not split tokens
+  const tokens = prereqStr.split(/\n/).map(s => s.trim()).filter(Boolean)
   const tags = [], failures = [], markRequirements = []
   let partial = false
 
   for (const token of tokens) {
-    if (token.toLowerCase().includes(' or ') && !/mark.*or.*shaman/i.test(token) && !/mark\s+of.*or/i.test(token)) {
+    // Plain "or" conditions that are not mark lists
+    if (
+      / or /i.test(token) &&
+      !/mark\s+or\s+shaman/i.test(token) &&
+      !/\bmark\s+of\b/i.test(token) &&
+      !/shaman\s+symbol\s+of/i.test(token)
+    ) {
       const orParts = token.split(/ or /i).map(s => s.trim())
       const orResults = orParts.map(p => checkSinglePrereq(p, char))
       if (!orResults.some(r => r.met)) {
@@ -288,7 +241,6 @@ function checkPrereq(prereqStr, char) {
   return { met: true, tags, partial, markRequirements }
 }
 
-// ── EDITABLE POINTS CELL ──────────────────────────────────────────────────────
 function EditablePoints({ value, onCommit, theme, isActive, locked }) {
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState('')
@@ -296,11 +248,7 @@ function EditablePoints({ value, onCommit, theme, isActive, locked }) {
   const T = theme
 
   if (locked) {
-    return (
-      <div style={{ fontSize: '1rem', fontWeight: 700, fontFamily: 'Georgia, serif', color: 'var(--text3)', textAlign: 'center', opacity: 0.35, cursor: 'not-allowed' }}>
-        {value}
-      </div>
-    )
+    return <div style={{ fontSize: '1rem', fontWeight: 700, fontFamily: 'Georgia, serif', color: 'var(--text3)', textAlign: 'center', opacity: 0.35, cursor: 'not-allowed' }}>{value}</div>
   }
 
   const startEdit = () => { setDraft(String(value)); setError(null); setEditing(true) }
@@ -316,8 +264,7 @@ function EditablePoints({ value, onCommit, theme, isActive, locked }) {
   if (editing) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-        <input
-          autoFocus value={draft}
+        <input autoFocus value={draft}
           onChange={e => { setDraft(e.target.value); setError(null) }}
           onKeyDown={e => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') cancel() }}
           onBlur={commit} onFocus={e => e.target.select()}
@@ -335,7 +282,6 @@ function EditablePoints({ value, onCommit, theme, isActive, locked }) {
   )
 }
 
-// ── SKILL ROW ─────────────────────────────────────────────────────────────────
 function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onUpdate, skillSource, theme, level, char, gmMode }) {
   const [expanded, setExpanded] = useState(false)
   const T = theme || THEMES.selfImprovement
@@ -365,8 +311,6 @@ function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onUpdate, sk
   return (
     <>
       <div style={{ display: 'grid', gridTemplateColumns: GRID, alignItems: 'center', borderBottom: '1px solid var(--border)', background: isActive ? T.dim : 'transparent', minHeight: 52, opacity: editLocked ? 0.55 : 1 }}>
-
-        {/* Column 1: Skill name + prereq */}
         <div style={{ padding: '8px 12px', cursor: 'pointer', minWidth: 0 }} onClick={() => setExpanded(!expanded)}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexWrap: 'wrap', fontSize: '.92rem', fontFamily: 'Georgia, serif', color: isActive ? T.primary2 : (editLocked ? 'var(--text3)' : 'var(--text)'), fontWeight: isActive ? 600 : 400 }}>
             <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{skill.name}</span>
@@ -384,7 +328,7 @@ function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onUpdate, sk
             && !prereqResult.tags?.length && !prereqResult.partial
             && !prereqResult.markRequirements?.length && (
             <div style={{ fontSize: '.62rem', color: 'var(--text3)', marginTop: 1, fontStyle: 'italic' }}>
-              {skill.prereq.replace(/\n/g, ' ')}
+              {skill.prereq.replace(/\n/g, ' · ')}
             </div>
           )}
           {prereqResult.partial && prereqResult.met && (
@@ -392,14 +336,12 @@ function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onUpdate, sk
           )}
         </div>
 
-        {/* Column 2: Points / Cost */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '6px 4px', gap: 2 }}>
           <EditablePoints value={pointsInvested} onCommit={handleCommit} theme={T} isActive={isActive} locked={editLocked} />
           <div style={{ width: 36, height: 1, background: isActive ? T.border : 'var(--border)' }} />
           <div style={{ fontSize: '.75rem', color: 'var(--text3)', fontFamily: 'Georgia, serif' }}>{costPerRank}</div>
         </div>
 
-        {/* Column 3: Rank / Max */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '6px 4px', gap: 2 }}>
           <div style={{ fontSize: isActive ? '1.2rem' : '.9rem', fontWeight: isActive ? 700 : 400, fontFamily: 'Georgia, serif', color: isActive ? T.primary2 : 'var(--text3)', lineHeight: 1, textAlign: 'center' }}>
             {isActive ? rank : '—'}
@@ -410,17 +352,14 @@ function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onUpdate, sk
         </div>
       </div>
 
-      {/* Expanded detail */}
       {expanded && (
         <div style={{ padding: '10px 12px 14px 12px', background: 'var(--bg2)', borderBottom: '1px solid var(--border)' }}>
-          {/* Mark requirements */}
           {prereqResult.markRequirements?.length > 0 && (
             <div style={{ marginBottom: 8 }}>
               {prereqResult.markRequirements.map((req, i) => (
-                <div key={i} style={{ fontSize: '.75rem', color: req.met ? 'var(--text3)' : '#c94a4a', fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
-                  {req.type === 'markOrShaman' ? 'Mark or Shaman Symbol of: ' : req.type === 'patronOnly' ? 'Patron\'s Mark of: ' : 'Shaman Symbol of: '}
-                  {req.list.join(', ')}
-                  {req.met ? ' ✓' : ' ✗'}
+                <div key={i} style={{ fontSize: '.75rem', color: req.met ? 'var(--text3)' : '#c94a4a', fontFamily: 'Georgia, serif', fontStyle: 'italic', marginBottom: 2 }}>
+                  {req.type === 'markOrShaman' ? 'Mark or Shaman Symbol of: ' : req.type === 'patronOnly' ? "Patron's Mark of: " : 'Shaman Symbol of: '}
+                  {req.list.join(', ')} {req.met ? '✓' : '✗'}
                 </div>
               ))}
             </div>
@@ -445,8 +384,8 @@ function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onUpdate, sk
   )
 }
 
-// ── TABLE ─────────────────────────────────────────────────────────────────────
-export function RankedSkillTable({ skills, char, onUpdate, theme, sectionLabel, level, skillSource, gmMode, lockedPoints }) {
+// specialRows: { [skillName]: ReactNode } — rendered below that skill's row
+export function RankedSkillTable({ skills, char, onUpdate, theme, sectionLabel, level, skillSource, gmMode, lockedPoints, specialRows }) {
   const T = theme || THEMES.selfImprovement
 
   const getSkillData = (skillName) => {
@@ -459,9 +398,11 @@ export function RankedSkillTable({ skills, char, onUpdate, theme, sectionLabel, 
 
   return (
     <div>
-      <div style={{ padding: '10px 12px', background: 'var(--bg)', borderBottom: `2px solid ${T.primary}`, fontSize: '1rem', letterSpacing: '.25em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 600, textAlign: 'center' }}>
-        {sectionLabel}
-      </div>
+      {sectionLabel ? (
+        <div style={{ padding: '10px 12px', background: 'var(--bg)', borderBottom: `2px solid ${T.primary}`, fontSize: '1rem', letterSpacing: '.25em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 600, textAlign: 'center' }}>
+          {sectionLabel}
+        </div>
+      ) : null}
       <div style={{ display: 'grid', gridTemplateColumns: GRID, background: 'var(--bg2)', borderBottom: `1px solid ${T.border}`, minHeight: 44, alignItems: 'center' }}>
         <div style={{ padding: '0 12px', fontSize: '.85rem', letterSpacing: '.12em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Skill</div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2, padding: '4px' }}>
@@ -478,7 +419,10 @@ export function RankedSkillTable({ skills, char, onUpdate, theme, sectionLabel, 
       {skills.map(skill => {
         const { rank, pointsInvested } = getSkillData(skill.name)
         return (
-          <SkillTableRow key={skill.name} skill={skill} rank={rank} pointsInvested={pointsInvested} lockedPoints={lockedPoints} theme={T} level={level || 1} char={char} gmMode={gmMode} onUpdate={onUpdate} skillSource={skillSource || 'martial'} />
+          <div key={skill.name}>
+            <SkillTableRow skill={skill} rank={rank} pointsInvested={pointsInvested} lockedPoints={lockedPoints} theme={T} level={level || 1} char={char} gmMode={gmMode} onUpdate={onUpdate} skillSource={skillSource || 'martial'} />
+            {specialRows?.[skill.name] || null}
+          </div>
         )
       })}
     </div>

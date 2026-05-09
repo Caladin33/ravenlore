@@ -275,7 +275,7 @@
     {
       "name": "Formic Casting",
       "category": "guild",
-      "prereq": "Druid Level 1",
+      "prereq": "Chi Mastery 1\nElemental Mastery 1\nOrder Mastery 1",
       "description": "When transformed you may weave Red, Green and Black with sounds and gestures suited to your form. (Augmentation, Divination and Nature)",
       "costPerRank": 25,
       "maxRank": "1",
@@ -285,7 +285,7 @@
     {
       "name": "Enduring Ghost",
       "category": "guild",
-      "prereq": "Sorcerer level 1",
+      "prereq": "Chaos Mastery 1\nChi Mastery 1\nWill Mastery 1",
       "description": "Your Ghost Armor lasts one more hit.",
       "costPerRank": 25,
       "maxRank": "1",
@@ -295,7 +295,7 @@
     {
       "name": "Smart Spells",
       "category": "guild",
-      "prereq": "Wizard level 6",
+      "prereq": "Chaos Mastery 4\nElemental Mastery 4\nOrder Mastery 4",
       "description": "Your Discerning spells do not draw arcs. Instead they fail to materialize in circles or spheres just large enough to spare your allies.",
       "costPerRank": 25,
       "maxRank": "1",
@@ -305,7 +305,7 @@
     {
       "name": "Totem Lag",
       "category": "guild",
-      "prereq": "Shaman level 4",
+      "prereq": "Chi Mastery 4\nOrder Mastery 4\nWill Mastery 4",
       "description": "When you activate a second totem of the same size, the first does not turn off until your next turn.  The effects can overlap.",
       "costPerRank": 25,
       "maxRank": "1",
@@ -315,7 +315,7 @@
     {
       "name": "Speedy Summon",
       "category": "guild",
-      "prereq": "Witch level 6",
+      "prereq": "Chi Mastery 5\nElemental Mastery 5\nWill Mastery 5",
       "description": "When you Summon Soulbound there is no delay.",
       "costPerRank": 20,
       "maxRank": "1",
