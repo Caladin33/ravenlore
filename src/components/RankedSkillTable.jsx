@@ -19,7 +19,7 @@ export const THEMES = {
   animal:          { primary: '#9a6a2a', primary2: '#cc9a50', dim: 'rgba(154,106,42,.1)',  border: 'rgba(154,106,42,.25)'  },
 }
 
-const GRID = '1fr 50px 120px'
+const GRID = '1fr 72px 52px'
 
 const DISPLAY_TAG_PATTERNS = [
   /^special attack/i, /^melee only/i, /^ranged only/i, /^blunt/i,
@@ -27,6 +27,7 @@ const DISPLAY_TAG_PATTERNS = [
   /^opportunity/i, /^exposure/i,
 ]
 
+// ── ATTRIBUTE HELPERS ─────────────────────────────────────────────────────────
 function getEffectiveAttrs(char) {
   const raceKey = char.race ? char.race.charAt(0).toLowerCase() + char.race.slice(1).replace(/\s+/g, '') : 'human'
   const race = racesData[raceKey] || {}
@@ -163,108 +164,249 @@ function checkPrereq(prereqStr, char) {
   return { met: true, tags, partial }
 }
 
+// ── EDITABLE POINTS CELL ──────────────────────────────────────────────────────
+function EditablePoints({ value, onCommit, theme, isActive, locked }) {
+  const [editing, setEditing] = useState(false)
+  const [draft, setDraft] = useState('')
+  const [error, setError] = useState(null)
+  const T = theme
+
+  if (locked) {
+    // Prereqs not met and no points — greyed out, not clickable
+    return (
+      <div style={{
+        fontSize: '1rem', fontWeight: 700, fontFamily: 'Georgia, serif',
+        color: 'var(--text3)', textAlign: 'center', opacity: 0.35,
+        cursor: 'not-allowed',
+      }}>
+        {value}
+      </div>
+    )
+  }
+
+  const startEdit = () => {
+    setDraft(String(value))
+    setError(null)
+    setEditing(true)
+  }
+
+  const commit = () => {
+    const num = parseInt(draft)
+    if (isNaN(num) || num < 0) {
+      setError('Must be ≥ 0')
+      return
+    }
+    const result = onCommit(num)
+    if (result?.error) {
+      setError(result.error)
+    } else {
+      setError(null)
+      setEditing(false)
+    }
+  }
+
+  const cancel = () => { setEditing(false); setError(null) }
+
+  if (editing) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+        <input
+          autoFocus
+          value={draft}
+          onChange={e => { setDraft(e.target.value); setError(null) }}
+          onKeyDown={e => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') cancel() }}
+          onBlur={commit}
+          onFocus={e => e.target.select()}
+          style={{
+            width: 48, textAlign: 'center',
+            background: 'var(--bg)', border: `1px solid ${error ? '#c94a4a' : T.primary}`,
+            color: 'var(--text)', borderRadius: 3, padding: '2px 4px',
+            fontFamily: 'Georgia, serif', fontSize: '1rem', fontWeight: 700,
+          }}
+        />
+        {error && (
+          <div style={{ fontSize: '.55rem', color: '#c94a4a', textAlign: 'center', maxWidth: 72, lineHeight: 1.3 }}>
+            {error}
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  return (
+    <div
+      onClick={startEdit}
+      title="Click to edit"
+      style={{
+        fontSize: '1rem', fontWeight: 700, fontFamily: 'Georgia, serif',
+        color: isActive ? T.primary2 : 'var(--text2)',
+        cursor: 'pointer', textAlign: 'center',
+        borderBottom: `1px dotted ${isActive ? T.primary : 'var(--border2)'}`,
+        minWidth: 24, display: 'inline-block',
+      }}
+    >
+      {value}
+    </div>
+  )
+}
+
+// ── SKILL ROW ─────────────────────────────────────────────────────────────────
 function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onUpdate, skillSource, theme, level, char, gmMode }) {
   const [expanded, setExpanded] = useState(false)
-  const [increment, setIncrement] = useState(1)
-  const timerRef = useState(null)
 
   const T = theme || THEMES.selfImprovement
   const costPerRank = parseInt(skill.costPerRank) || 1
   const maxRankRaw = skill.maxRank
-  const maxRank = (maxRankRaw === 'any' || !maxRankRaw || isNaN(parseInt(maxRankRaw))) ? Infinity : parseInt(maxRankRaw)
+  const maxRankNum = (maxRankRaw === 'any' || !maxRankRaw || isNaN(parseInt(maxRankRaw))) ? Infinity : parseInt(maxRankRaw)
   const mclRaw = (!skill.mcl || skill.mcl === 'any' || skill.mcl === 'Any') ? null : parseInt(skill.mcl)
   const maint = parseFloat(skill.maintenancePerRank) || 0
   const isActive = rank > 0
-  const atMax = rank >= maxRank
   const actualMaint = Math.floor(maint * rank)
-  const maintRed = isActive && actualMaint >= 1
   const mclLimit = mclRaw ? mclRaw * (parseInt(level) || 1) : null
   const prereqResult = checkPrereq(skill.prereq, char)
-  const mclBlockAdd = !gmMode && mclLimit !== null && pointsInvested >= mclLimit
-  const addBlocked = !gmMode && (atMax || !prereqResult.met || mclBlockAdd)
+  const locked = lockedPoints?.[skill.name] || 0
 
-  let blockReason = null
-  if (!gmMode) {
-    if (!prereqResult.met) blockReason = prereqResult.reason
-    else if (atMax) blockReason = `Max rank ${maxRankRaw} reached`
-    else if (mclBlockAdd) blockReason = `MC/L: max ${mclLimit}pts at level ${level}`
+  // A skill is locked (can't edit) if prereqs not met AND no points already invested
+  const editLocked = !gmMode && !prereqResult.met && pointsInvested === 0
+
+  const handleCommit = (newPoints) => {
+    if (!gmMode && newPoints < locked) {
+      return { error: `Cannot go below ${locked} (locked from last save)` }
+    }
+    if (!gmMode && !prereqResult.met && newPoints > 0) {
+      return { error: prereqResult.reason }
+    }
+    if (!gmMode && mclLimit !== null && newPoints > mclLimit) {
+      return { error: `MC/L limit: max ${mclLimit} pts at level ${level}` }
+    }
+    const newRank = Math.min(Math.floor(newPoints / costPerRank), isFinite(maxRankNum) ? maxRankNum : 999)
+    if (!gmMode && isFinite(maxRankNum) && newRank > maxRankNum) {
+      return { error: `Max rank is ${maxRankRaw}` }
+    }
+    onUpdate && onUpdate(skill.name, newPoints, skillSource || 'martial')
+    return {}
   }
 
-  const handleLongPress = () => { timerRef[0] = setTimeout(() => setIncrement(prev => prev === 1 ? 5 : 1), 500) }
-  const cancelLongPress = () => clearTimeout(timerRef[0])
-  const addAmount = mclLimit !== null ? Math.min(increment, Math.max(0, mclLimit - pointsInvested)) : increment
-  const canAdd = !addBlocked && addAmount > 0
-  const canRemove = gmMode ? pointsInvested > 0 : pointsInvested > (lockedPoints?.[skill.name] || 0)
-  const actualRemove = Math.max(gmMode ? 0 : (lockedPoints?.[skill.name] || 0), pointsInvested - increment)
-
-  const btnBase = {
-    height: 28, background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 3,
-    fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center',
-    flexShrink: 0, fontFamily: 'Georgia, serif', padding: '0 6px', minWidth: 34,
-    cursor: 'pointer', userSelect: 'none', WebkitUserSelect: 'none',
-  }
+  const maxDisplay = maxRankRaw === 'any' || !maxRankRaw ? '∞' : maxRankRaw
 
   return (
     <>
-      <div style={{ display: 'grid', gridTemplateColumns: GRID, alignItems: 'center', borderBottom: '1px solid var(--border)', background: isActive ? T.dim : 'transparent' }}>
-        <div style={{ padding: '9px 12px', cursor: 'pointer', minWidth: 0 }} onClick={() => setExpanded(!expanded)}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', fontSize: '.92rem', fontFamily: 'Georgia, serif', color: isActive ? T.primary2 : 'var(--text)', fontWeight: isActive ? 600 : 400 }}>
-            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{skill.name}</span>
+      <div style={{
+        display: 'grid', gridTemplateColumns: GRID, alignItems: 'center',
+        borderBottom: '1px solid var(--border)',
+        background: isActive ? T.dim : 'transparent',
+        minHeight: 52,
+        opacity: editLocked ? 0.55 : 1,
+      }}>
+
+        {/* Column 1: Skill name + prereq */}
+        <div
+          style={{ padding: '8px 12px', cursor: 'pointer', minWidth: 0 }}
+          onClick={() => setExpanded(!expanded)}
+        >
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 5, flexWrap: 'wrap',
+            fontSize: '.92rem', fontFamily: 'Georgia, serif',
+            color: isActive ? T.primary2 : (editLocked ? 'var(--text3)' : 'var(--text)'),
+            fontWeight: isActive ? 600 : 400,
+          }}>
+            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {skill.name}
+            </span>
             {prereqResult.tags?.map(tag => (
-              <span key={tag} style={{ fontSize: '.62rem', color: 'rgba(255,255,255,.7)', background: 'rgba(255,255,255,.08)', borderRadius: 3, padding: '1px 6px', letterSpacing: '.04em', whiteSpace: 'nowrap', flexShrink: 0 }}>{tag}</span>
+              <span key={tag} style={{
+                fontSize: '.6rem', color: 'rgba(255,255,255,.6)',
+                background: 'rgba(255,255,255,.08)', borderRadius: 3,
+                padding: '1px 5px', whiteSpace: 'nowrap', flexShrink: 0,
+              }}>{tag}</span>
             ))}
-            <span style={{ fontSize: '.6rem', color: 'var(--text3)', opacity: .6, flexShrink: 0 }}>{expanded ? '▲' : '▼'}</span>
+            <span style={{ fontSize: '.58rem', color: 'var(--text3)', opacity: .5, flexShrink: 0 }}>
+              {expanded ? '▲' : '▼'}
+            </span>
           </div>
-          {!prereqResult.met && <div style={{ fontSize: '.65rem', color: '#c94a4a', marginTop: 2, fontStyle: 'italic' }}>⚠ {prereqResult.reason}</div>}
-          {prereqResult.met && skill.prereq && skill.prereq !== 'none' && (prereqResult.tags?.length === 0 || !prereqResult.tags) && !prereqResult.partial && (
-            <div style={{ fontSize: '.63rem', color: 'var(--text3)', marginTop: 1, fontStyle: 'italic' }}>Req: {skill.prereq.replace(/\n/g, ' ')}</div>
+
+          {!prereqResult.met && (
+            <div style={{ fontSize: '.65rem', color: isActive ? '#c9a84c' : '#c94a4a', marginTop: 2, fontStyle: 'italic' }}>
+              {isActive ? '⚠ Prereq no longer met' : `⚠ ${prereqResult.reason}`}
+            </div>
           )}
-          {prereqResult.partial && prereqResult.met && <div style={{ fontSize: '.63rem', color: 'var(--text3)', marginTop: 1 }}>Unfettered: confirm off-hand &amp; weight at table</div>}
-          {mclBlockAdd && <div style={{ fontSize: '.63rem', color: '#c94a4a', marginTop: 1 }}>⚠ {blockReason}</div>}
+          {prereqResult.met && skill.prereq && skill.prereq !== 'none'
+            && !prereqResult.tags?.length && !prereqResult.partial && (
+            <div style={{ fontSize: '.62rem', color: 'var(--text3)', marginTop: 1, fontStyle: 'italic' }}>
+              {skill.prereq.replace(/\n/g, ' ')}
+            </div>
+          )}
+          {prereqResult.partial && prereqResult.met && (
+            <div style={{ fontSize: '.62rem', color: 'var(--text3)', marginTop: 1 }}>
+              Unfettered: confirm at table
+            </div>
+          )}
         </div>
 
-        <div style={{ textAlign: 'center', padding: '9px 4px' }}>
-          <div style={{ fontSize: isActive ? '1.3rem' : '1rem', fontWeight: isActive ? 700 : 400, fontFamily: 'Georgia, serif', color: isActive ? T.primary2 : 'var(--text3)', lineHeight: 1 }}>
+        {/* Column 2: Points (editable) over Cost/Rank */}
+        <div style={{
+          display: 'flex', flexDirection: 'column', alignItems: 'center',
+          justifyContent: 'center', padding: '6px 4px', gap: 2,
+        }}>
+          <EditablePoints
+            value={pointsInvested}
+            onCommit={handleCommit}
+            theme={T}
+            isActive={isActive}
+            locked={editLocked}
+          />
+          <div style={{ width: 36, height: 1, background: isActive ? T.border : 'var(--border)' }} />
+          <div style={{ fontSize: '.75rem', color: 'var(--text3)', fontFamily: 'Georgia, serif' }}>
+            {costPerRank}
+          </div>
+        </div>
+
+        {/* Column 3: Rank over Max Rank */}
+        <div style={{
+          display: 'flex', flexDirection: 'column', alignItems: 'center',
+          justifyContent: 'center', padding: '6px 4px', gap: 2,
+        }}>
+          <div style={{
+            fontSize: isActive ? '1.2rem' : '.9rem',
+            fontWeight: isActive ? 700 : 400,
+            fontFamily: 'Georgia, serif',
+            color: isActive ? T.primary2 : 'var(--text3)',
+            lineHeight: 1,
+            textAlign: 'center',
+          }}>
             {isActive ? rank : '—'}
           </div>
-          {maintRed && <div style={{ fontSize: '.58rem', color: '#c94a4a', marginTop: 2 }}>{actualMaint}/lvl</div>}
-        </div>
-
-        <div style={{ display: 'flex', gap: 4, alignItems: 'center', justifyContent: 'center', padding: '9px 8px' }} onClick={e => e.stopPropagation()}>
-          <button onMouseDown={handleLongPress} onMouseUp={cancelLongPress} onMouseLeave={cancelLongPress} onTouchStart={handleLongPress} onTouchEnd={cancelLongPress}
-            onClick={() => canRemove && onUpdate && onUpdate(skill.name, actualRemove, skillSource || 'martial')}
-            disabled={!canRemove} style={{ ...btnBase, color: !canRemove ? 'var(--text3)' : 'var(--text2)', opacity: !canRemove ? 0.3 : 1 }}>
-            −{increment > 1 ? increment : ''}
-          </button>
-          <div style={{ minWidth: 36, textAlign: 'center', background: 'var(--bg)', border: `1px solid ${T.border}`, borderRadius: 3, padding: '3px 4px' }}>
-            <div style={{ fontSize: '1rem', color: isActive ? T.primary2 : 'var(--text3)', fontWeight: 700, fontFamily: 'Georgia, serif', lineHeight: 1.1 }}>{pointsInvested}</div>
+          <div style={{ width: 28, height: 1, background: isActive ? T.border : 'var(--border)' }} />
+          <div style={{ fontSize: '.75rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', textAlign: 'center' }}>
+            {maxDisplay}
           </div>
-          <button onMouseDown={handleLongPress} onMouseUp={cancelLongPress} onMouseLeave={cancelLongPress} onTouchStart={handleLongPress} onTouchEnd={cancelLongPress}
-            onClick={() => canAdd && onUpdate && onUpdate(skill.name, pointsInvested + addAmount, skillSource || 'martial')}
-            disabled={!canAdd} title={blockReason || 'Hold to toggle ×5 mode'}
-            style={{ ...btnBase, background: !canAdd ? 'var(--bg2)' : T.dim, border: `1px solid ${!canAdd ? 'var(--border)' : T.primary}`, color: !canAdd ? 'var(--text3)' : T.primary, opacity: !canAdd ? 0.3 : 1, fontWeight: increment > 1 ? 700 : 400 }}>
-            +{increment > 1 ? increment : ''}
-          </button>
+          {isActive && actualMaint > 0 && (
+            <div style={{ fontSize: '.52rem', color: '#c94a4a', marginTop: 1 }}>{actualMaint}/lvl</div>
+          )}
         </div>
       </div>
 
+      {/* Expanded detail */}
       {expanded && (
-        <div style={{ padding: '10px 12px 14px 12px', background: 'var(--bg2)', borderBottom: '1px solid var(--border)' }}>
-          <div style={{ display: 'flex', gap: 20, marginBottom: 10, flexWrap: 'wrap' }}>
+        <div style={{
+          padding: '10px 12px 14px 12px', background: 'var(--bg2)',
+          borderBottom: '1px solid var(--border)',
+        }}>
+          <div style={{ display: 'flex', gap: 20, marginBottom: skill.description ? 10 : 0, flexWrap: 'wrap' }}>
             {[
-              ['Cost / Rank', costPerRank],
-              ['Max Rank', maxRankRaw ?? '—'],
               ['Maint / Rank', maint > 0 ? maint : '—'],
               ...(mclRaw ? [['MC/L', `${mclLimit} pts at Lv${level}`]] : []),
-            ].map(([label, value]) => (
-              <div key={label}>
-                <div style={{ fontSize: '.55rem', letterSpacing: '.12em', color: 'var(--text3)', textTransform: 'uppercase', marginBottom: 2 }}>{label}</div>
-                <div style={{ fontSize: '.9rem', color: T.primary2, fontFamily: 'Georgia, serif', fontWeight: 600 }}>{value}</div>
+            ].map(([lbl, val]) => (
+              <div key={lbl}>
+                <div style={{ fontSize: '.55rem', letterSpacing: '.12em', color: 'var(--text3)', textTransform: 'uppercase', marginBottom: 2 }}>{lbl}</div>
+                <div style={{ fontSize: '.9rem', color: T.primary2, fontFamily: 'Georgia, serif', fontWeight: 600 }}>{val}</div>
               </div>
             ))}
           </div>
           {skill.description && (
-            <div style={{ fontSize: '.83rem', color: 'var(--text2)', lineHeight: 1.65, fontFamily: 'Georgia, serif' }}>{skill.description}</div>
+            <div style={{ fontSize: '.83rem', color: 'var(--text2)', lineHeight: 1.65, fontFamily: 'Georgia, serif' }}>
+              {skill.description}
+            </div>
           )}
         </div>
       )}
@@ -272,6 +414,7 @@ function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onUpdate, sk
   )
 }
 
+// ── TABLE ─────────────────────────────────────────────────────────────────────
 export function RankedSkillTable({ skills, char, onUpdate, theme, sectionLabel, level, skillSource, gmMode, lockedPoints }) {
   const T = theme || THEMES.selfImprovement
 
@@ -289,22 +432,56 @@ export function RankedSkillTable({ skills, char, onUpdate, theme, sectionLabel, 
 
   return (
     <div>
-      <div style={{ padding: '12px 12px', background: 'var(--bg)', borderBottom: `2px solid ${T.primary}`, fontSize: '1.1rem', letterSpacing: '.25em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 600, textAlign: 'center' }}>
+      {/* Section header */}
+      <div style={{
+        padding: '10px 12px', background: 'var(--bg)',
+        borderBottom: `2px solid ${T.primary}`,
+        fontSize: '1rem', letterSpacing: '.25em',
+        color: T.primary, textTransform: 'uppercase',
+        fontFamily: 'Georgia, serif', fontWeight: 600, textAlign: 'center',
+      }}>
         {sectionLabel}
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: GRID, background: 'var(--bg2)', borderBottom: `1px solid ${T.border}`, alignItems: 'center', minHeight: 36 }}>
-        <div style={{ padding: '0 12px', fontSize: '.75rem', letterSpacing: '.12em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Skill</div>
-        <div style={{ textAlign: 'center', fontSize: '.75rem', letterSpacing: '.12em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Rank</div>
-        <div style={{ textAlign: 'center', fontSize: '.75rem', letterSpacing: '.12em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Points Invested</div>
+
+      {/* Column headers */}
+      <div style={{
+        display: 'grid', gridTemplateColumns: GRID,
+        background: 'var(--bg2)', borderBottom: `1px solid ${T.border}`,
+        minHeight: 44, alignItems: 'center',
+      }}>
+        <div style={{ padding: '0 12px', fontSize: '.85rem', letterSpacing: '.12em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>
+          Skill
+        </div>
+        {/* Pts over Cost header */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2, padding: '4px' }}>
+          <div style={{ fontSize: '.7rem', letterSpacing: '.08em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Pts</div>
+          <div style={{ width: 36, height: 1, background: T.border }} />
+          <div style={{ fontSize: '.7rem', letterSpacing: '.08em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Cost</div>
+        </div>
+        {/* Rank over Max header */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2, padding: '4px' }}>
+          <div style={{ fontSize: '.7rem', letterSpacing: '.08em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Rnk</div>
+          <div style={{ width: 28, height: 1, background: T.border }} />
+          <div style={{ fontSize: '.7rem', letterSpacing: '.08em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Max</div>
+        </div>
       </div>
+
+      {/* Rows */}
       {skills.map(skill => {
         const { rank, pointsInvested } = getSkillData(skill.name)
         return (
-          <SkillTableRow key={skill.name} skill={skill} rank={rank} pointsInvested={pointsInvested}
-            lockedPoints={lockedPoints} theme={T} level={level || 1} char={char} gmMode={gmMode}
-            onUpdate={onUpdate} skillSource={skillSource || 'martial'}
-            onAdd={() => onUpdate(skill.name, pointsInvested + 1, skillSource || 'martial')}
-            onRemove={() => onUpdate(skill.name, Math.max(gmMode ? 0 : (lockedPoints?.[skill.name] || 0), pointsInvested - 1), skillSource || 'martial')}
+          <SkillTableRow
+            key={skill.name}
+            skill={skill}
+            rank={rank}
+            pointsInvested={pointsInvested}
+            lockedPoints={lockedPoints}
+            theme={T}
+            level={level || 1}
+            char={char}
+            gmMode={gmMode}
+            onUpdate={onUpdate}
+            skillSource={skillSource || 'martial'}
           />
         )
       })}
