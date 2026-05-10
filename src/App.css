@@ -82,7 +82,7 @@ select option {
 
 @media (max-width: 600px) {
   .app-main {
-    padding: 16px 12px;
+    padding: 12px 6px;
   }
   .header-desktop {
     display: none !important;
