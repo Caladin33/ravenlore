@@ -374,7 +374,7 @@ function WeaponSlots({ character, onUpdateCharacter, stats }) {
 }
 
 // ── MAIN COMPONENT ────────────────────────────────────────────────────────────
-export default function CharacterSheet({ character, onBack, onEditSkills, onUpdateCharacter }) {
+export default function CharacterSheet({ character, onBack, onEditSkills, onUpdateCharacter, onRefresh }) {
   const [offHand, setOffHand] = useState(character.offHand || 'Empty')
   const [stance, setStance] = useState(character.stance || 'None')
   const [unfettered, setUnfettered] = useState(false)
@@ -405,8 +405,9 @@ const currentMaintenance = useMemo(() => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16, width: '100%' }}>
      {character.pendingSkillChanges && (
-        <div style={{ padding: '10px 16px', background: 'rgba(201,168,76,.08)', border: '1px solid rgba(201,168,76,.4)', borderRadius: 7, fontSize: '.85rem', color: 'var(--gold)', fontFamily: 'Georgia, serif' }}>
-          ⏳ Skill changes are pending GM approval.
+        <div style={{ padding: '10px 16px', background: 'rgba(201,168,76,.08)', border: '1px solid rgba(201,168,76,.4)', borderRadius: 7, fontSize: '.85rem', color: 'var(--gold)', fontFamily: 'Georgia, serif', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span>⏳ Skill changes are pending GM approval.</span>
+          <button onClick={onRefresh} style={{ padding: '4px 10px', background: 'none', border: '1px solid var(--gold)', color: 'var(--gold)', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.78rem' }}>↻ Refresh</button>
         </div>
       )}
       {character.levelUpAuthorized && (

@@ -262,6 +262,15 @@ function App() {
       loadCharacters(user.id).then(({ characters }) => setCharacters(characters || []))
     })
   }
+  const refreshSelectedCharacter = () => {
+    loadCharacters(user.id).then(({ characters }) => {
+      setCharacters(characters || [])
+      if (selectedCharacter) {
+        const fresh = characters?.find(c => c.name === selectedCharacter.name)
+        if (fresh) setSelectedCharacter(fresh)
+      }
+    })
+  }
   const handleDelete = (name) => {
     deleteCharacter(name, user.id).then(() => {
       loadCharacters(user.id).then(({ characters }) => setCharacters(characters || []))
@@ -297,7 +306,7 @@ function App() {
           <CharacterWizard userId={user.id} onComplete={handleWizardComplete} onCancel={() => setCurrentPage('home')} />
         )}
         {currentPage === 'sheet' && selectedCharacter && (
-          <CharacterSheet character={selectedCharacter} onBack={() => { setSelectedCharacter(null); navigate('home') }} onEditSkills={() => navigate('skillEditor')} onUpdateCharacter={handleUpdateCharacter} />
+          <CharacterSheet character={selectedCharacter} onBack={() => { setSelectedCharacter(null); navigate('home') }} onEditSkills={() => navigate('skillEditor')} onUpdateCharacter={handleUpdateCharacter} onRefresh={refreshSelectedCharacter} />
         )}
         {currentPage === 'skillEditor' && selectedCharacter && (
           <SkillEditor character={selectedCharacter} onBack={() => navigate('sheet')} onSave={(updated) => { handleUpdateCharacter(updated); navigate('sheet') }} isGM={isGM} />
