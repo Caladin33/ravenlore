@@ -116,8 +116,8 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
       </div>
 
       {/* Mobile: [home+token+name] / [Sheet|Skills|Spells|Stuff] */}
-      <div className="header-mobile" style={{ display: 'none', flexDirection: 'column', gap: 10 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+      <div className="header-mobile" style={{ display: 'none', flexDirection: 'column', gap: 10, width: '100%' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%' }}>
           {homeBtn}
           <CharacterToken
             imageUrl={character.imageUrl}
