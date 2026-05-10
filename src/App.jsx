@@ -6,6 +6,7 @@ import CharacterSheet from './components/CharacterSheet'
 import SkillEditor from './components/SkillEditor'
 import StuffPage from './components/StuffPage'
 import BioPage from './components/BioPage'
+import CharacterWizard from './components/CharacterWizard'
 import { calculate } from './utils/calculator'
 import { loadCharacters, saveCharacter, deleteCharacter } from './characterDB'
 import './App.css'
@@ -91,6 +92,7 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
       <div style={{ textAlign: 'center' }}>
         <div style={{ fontSize: '1.3rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 'bold', letterSpacing: '.04em', lineHeight: 1.1 }}>
           {character.name}
+          {character.hardcore && <span title="Hardcore character" style={{ marginLeft: 6, fontSize: '.7rem', color: '#c94a4a', fontFamily: 'Georgia, serif', verticalAlign: 'middle' }}>⚔</span>}
         </div>
         <div style={{ fontSize: '.72rem', color: 'var(--text3)', letterSpacing: '.12em', textTransform: 'uppercase', marginTop: 2 }}>
           Level {character.level} {character.race}
@@ -116,8 +118,8 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
       </div>
 
       {/* Mobile: [home+token+name] / [Sheet|Skills|Spells|Stuff] */}
-      <div className="header-mobile" style={{ display: 'none', flexDirection: 'column', gap: 10, width: '100%' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%' }}>
+      <div className="header-mobile" style={{ display: 'none', flexDirection: 'column', gap: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {homeBtn}
           <CharacterToken
             imageUrl={character.imageUrl}
@@ -127,9 +129,10 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
             isActive={currentTab === 'bio'}
           />
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: '1.1rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 'bold', letterSpacing: '.04em', lineHeight: 1.1 }}>
-              {character.name}
-            </div>
+            <div style={{ fontSize: '1.3rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 'bold', letterSpacing: '.04em', lineHeight: 1.1 }}>
+          {character.name}
+          {character.hardcore && <span title="Hardcore character" style={{ marginLeft: 6, fontSize: '.7rem', color: '#c94a4a', fontFamily: 'Georgia, serif', verticalAlign: 'middle' }}>⚔</span>}
+        </div>
             <div style={{ fontSize: '.65rem', color: 'var(--text3)', letterSpacing: '.1em', textTransform: 'uppercase' }}>
               Level {character.level} {character.race}
             </div>
@@ -147,7 +150,7 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
 }
 
 // ── HOME PAGE ─────────────────────────────────────────────────────────────────
-function HomePage({ characters, onSelectCharacter, onDelete, onLogout }) {
+function HomePage({ characters, onSelectCharacter, onDelete, onLogout, onNewCharacter }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 40, padding: '40px 0' }}>
       <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
@@ -159,7 +162,7 @@ function HomePage({ characters, onSelectCharacter, onDelete, onLogout }) {
       <div style={{ width: '100%', maxWidth: 600 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
           <h2 style={{ fontSize: '1rem', color: 'var(--gold)', letterSpacing: '.14em', textTransform: 'uppercase' }}>Your Characters</h2>
-          <button style={{ background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 4, padding: '5px 12px', fontFamily: 'Georgia, serif', fontSize: '.8rem', cursor: 'pointer' }}>
+          <button onClick={onNewCharacter} style={{ background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 4, padding: '5px 12px', fontFamily: 'Georgia, serif', fontSize: '.8rem', cursor: 'pointer' }}>
             + New Character
           </button>
         </div>
@@ -229,16 +232,34 @@ function App() {
 
   const navigate = (page) => setCurrentPage(page)
   const handleSelectCharacter = (char) => { setSelectedCharacter(char); setCurrentPage('sheet') }
+  const handleNewCharacter = () => setCurrentPage('wizard')
+  const handleWizardComplete = async (newChar) => {
+    await saveCharacter(newChar, user.id)
+    // Increment charactersCreated on user profile
+    await supabase.from('profiles').upsert({ id: user.id, charactersCreated: 1 }, { onConflict: 'id', ignoreDuplicates: false })
+      .select().then(async ({ data: profile }) => {
+        const current = profile?.[0]?.charactersCreated || 0
+        await supabase.from('profiles').update({ charactersCreated: current + 1 }).eq('id', user.id)
+      })
+    loadCharacters(user.id).then(({ characters }) => {
+      setCharacters(characters || [])
+      const created = characters?.find(c => c.name === newChar.name)
+      if (created) { setSelectedCharacter(created); setCurrentPage('bio') }
+      else setCurrentPage('home')
+    })
+  }
   const handleUpdateCharacter = (updated) => {
     setSelectedCharacter(updated)
     saveCharacter(updated, user.id).then(() => {
       loadCharacters(user.id).then(({ characters }) => setCharacters(characters || []))
     })
   }
-  const handleDelete = (name) => {
-    deleteCharacter(name, user.id).then(() => {
-      loadCharacters(user.id).then(({ characters }) => setCharacters(characters || []))
-    })
+ const handleDelete = (name) => {
+    if (window.confirm(`Permanently delete ${name}? This cannot be undone.`)) {
+      deleteCharacter(name, user.id).then(() => {
+        loadCharacters(user.id).then(({ characters }) => setCharacters(characters || []))
+      })
+    }
   }
   const handleLogout = () => { supabase.auth.signOut(); setSelectedCharacter(null); setCurrentPage('home') }
 
@@ -261,7 +282,10 @@ function App() {
         )}
 
         {currentPage === 'home' && (
-          <HomePage characters={characters} onSelectCharacter={handleSelectCharacter} onDelete={handleDelete} onLogout={handleLogout} />
+          <HomePage characters={characters} onSelectCharacter={handleSelectCharacter} onDelete={handleDelete} onLogout={handleLogout} onNewCharacter={handleNewCharacter} />
+        )}
+        {currentPage === 'wizard' && (
+          <CharacterWizard userId={user.id} onComplete={handleWizardComplete} onCancel={() => setCurrentPage('home')} />
         )}
         {currentPage === 'sheet' && selectedCharacter && (
           <CharacterSheet character={selectedCharacter} onBack={() => { setSelectedCharacter(null); navigate('home') }} onEditSkills={() => navigate('skillEditor')} onUpdateCharacter={handleUpdateCharacter} />
