@@ -91,18 +91,16 @@ export async function getUserCampaigns(userId) {
 export async function saveCharacterByOwner(character, ownerId) {
   const { data, error } = await supabase
     .from('characters')
-    .upsert({
-      owner_id: ownerId,
-      name: character.name,
+    .update({
       data: character,
       updated_at: new Date().toISOString(),
-    }, {
-      onConflict: 'owner_id,name'
     })
+    .eq('owner_id', ownerId)
+    .eq('name', character.name)
     .select()
 
   if (error) {
-    console.error('Error saving character:', error)
+    console.error('Error saving character as GM:', error)
     return { error }
   }
   return { data }
