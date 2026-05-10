@@ -193,51 +193,59 @@ function WeaponSlotRow({ slot, calcSlot, onEdit, onRemove, isRanged }) {
   const dmgMoV = calcSlot.movDamageRate
   const prFixed = calcSlot.precision
   const prMoV = isRanged ? calcSlot.hsPrecisionRate : calcSlot.movPrecisionRate
-  const apFixed = isRanged ? 0 : calcSlot.armorBypass
+  const apFixed = calcSlot.armorBypass ?? 0
   const apMoV = isRanged ? calcSlot.hsArmorBypassRate : calcSlot.movBypassRate
 
-  const movLabel = isRanged ? 'HS' : 'MoV'
-  const dmgStr = `${calcSlot.damageDie}${dmgFixed >= 0 ? '+' : ''}${dmgFixed}${dmgMoV > 0 ? `+${dmgMoV}/${movLabel}` : ''}`
-  const prStr = `${prFixed}${prMoV > 0 ? `+${prMoV}/${movLabel}` : ''}`
-  const apStr = (apFixed === 0 && (!apMoV || apMoV === 0)) ? '—' : `${apFixed}${apMoV > 0 ? `+${apMoV}/${movLabel}` : ''}`
+ const movLabel = isRanged ? 'HS' : 'MoV'
+  const dmgMain = `${calcSlot.damageDie}${dmgFixed >= 0 ? '+' : ''}${dmgFixed}`
+  const dmgSuffix = dmgMoV > 0 ? { num: `+${dmgMoV}/`, lbl: movLabel } : null
+  const prMain = `${prFixed}`
+  const prSuffix = prMoV > 0 ? { num: `+${prMoV}/`, lbl: movLabel } : null
+  const apMain = (apFixed === 0 && (!apMoV || apMoV === 0)) ? '—' : `${apFixed}`
+  const apSuffix = (apMoV > 0 && apMain !== '—') ? { num: `+${apMoV}/`, lbl: movLabel } : null
 
   const markLabel = slot.mark && slot.mark !== 'none' ? MARK_LABELS[slot.mark] : null
   return (
     <>
       <div style={{ borderBottom: expanded ? 'none' : '1px solid var(--border)', padding: '8px 0' }}>
         {/* Always-visible row */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-          {/* Weapon name + mark chip */}
-          <div style={{ flex: '1 1 120px', minWidth: 0, cursor: 'pointer' }} onClick={() => setExpanded(!expanded)}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ fontSize: '.92rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {slot.slotLabel || slot.name}
-              </span>
-              {markLabel && (
-                <span style={{ fontSize: '.6rem', background: 'rgba(201,168,76,.15)', border: '1px solid rgba(201,168,76,.3)', color: 'var(--gold)', borderRadius: 3, padding: '1px 5px', whiteSpace: 'nowrap', flexShrink: 0 }}>
-                  {markLabel}
-                </span>
-              )}
-              <span style={{ fontSize: '.55rem', color: 'var(--text3)', opacity: .5, flexShrink: 0 }}>{expanded ? '▲' : '▼'}</span>
-            </div>
-          </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexWrap: 'nowrap', cursor: 'pointer' }} onClick={() => setExpanded(!expanded)}>
+  {/* Weapon name + mark chip */}
+  <div style={{ flex: '1 1 80px', minWidth: 0 }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+      <span style={{ fontSize: '.88rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        {slot.slotLabel || slot.name}
+      </span>
+      {markLabel && (
+        <span style={{ fontSize: '.55rem', background: 'rgba(201,168,76,.15)', border: '1px solid rgba(201,168,76,.3)', color: 'var(--gold)', borderRadius: 3, padding: '1px 4px', whiteSpace: 'nowrap', flexShrink: 0 }}>
+          {markLabel}
+        </span>
+      )}
+      <span style={{ fontSize: '.55rem', color: 'var(--text3)', opacity: .5, flexShrink: 0 }}>{expanded ? '▲' : '▼'}</span>
+    </div>
+  </div>
 
-          {/* Stats */}
-          {[
-            [expLabel, expVal],
-            ['Dmg', dmgStr],
-            ['PR', prStr],
-            ['AByp', apStr],
-          ].map(([lbl, v]) => (
-            <div key={lbl} style={{ textAlign: 'center', minWidth: 48, flexShrink: 0 }}>
-              <div style={{ ...label, marginBottom: 1 }}>{lbl}</div>
-              <div style={{ fontSize: '.82rem', color: 'var(--text2)', fontFamily: 'Georgia, serif' }}>{v}</div>
-            </div>
-          ))}
-
-          {/* Edit button */}
-          <button onClick={onEdit} style={{ padding: '3px 8px', background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 3, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.72rem', flexShrink: 0 }}>⚙</button>
-        </div>
+  {/* Stats */}
+  {[
+    [expLabel, String(expVal), ''],
+    ['Dmg', dmgMain, dmgSuffix],
+    ['PR', prMain, prSuffix],
+    ['AB', apMain, apSuffix],
+  ].map(([lbl, main, suffix]) => (
+    <div key={lbl} style={{ textAlign: 'center', minWidth: 36, flexShrink: 0 }}>
+      <div style={{ fontSize: '.5rem', letterSpacing: '.1em', color: 'var(--text3)', textTransform: 'uppercase', fontFamily: 'Georgia, serif', marginBottom: 1 }}>{lbl}</div>
+      <div style={{ fontFamily: 'Georgia, serif', whiteSpace: 'nowrap' }}>
+        <span style={{ fontSize: '.78rem', color: 'var(--text2)' }}>{main}</span>
+       {suffix && (
+          <>
+           <span style={{ fontSize: '.78rem', color: 'var(--text2)' }}>{suffix.num}</span>
+            <span style={{ fontSize: '.52rem', color: 'var(--text3)' }}>{suffix.lbl}</span>
+          </>
+        )}
+      </div>
+    </div>
+  ))}
+</div>
       </div>
 
       {/* Expanded detail */}

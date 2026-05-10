@@ -581,6 +581,7 @@ const currentMaintenance = [
       precision,
       hsPrecisionRate,
       hsArmorBypassRate,
+      armorBypass: slot.itemAPBonus || 0,
       ranges,
       movDamageRate,
     }
