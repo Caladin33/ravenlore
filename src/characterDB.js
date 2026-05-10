@@ -8,6 +8,7 @@ export async function saveCharacter(character, userId) {
       owner_id: userId,
       name: character.name,
       data: character,
+      campaign_id: character.campaignId || null,
       updated_at: new Date().toISOString(),
     }, {
       onConflict: 'owner_id,name'
@@ -142,4 +143,14 @@ export async function isGM() {
   if (!user) return false
   const campaigns = await getUserCampaigns(user.id)
   return campaigns.length > 0
+}
+// Load all campaigns (for player campaign selection)
+export async function loadAllCampaigns() {
+  const { data, error } = await supabase
+    .from('campaigns')
+    .select('id, name, gm_id')
+    .order('name')
+
+  if (error) return []
+  return data || []
 }

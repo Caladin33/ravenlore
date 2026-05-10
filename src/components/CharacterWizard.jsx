@@ -1,6 +1,7 @@
 // CharacterWizard.jsx
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import racesData from '../data/races.json'
+import { loadAllCampaigns } from '../characterDB'
 import attributeData from '../data/attributes.json'
 
 // ── STYLES ────────────────────────────────────────────────────────────────────
@@ -136,6 +137,12 @@ function StepIndicator({ current, total }) {
 
 // ── STEP 1: NAME & PLAYER ─────────────────────────────────────────────────────
 function StepNamePlayer({ data, onChange }) {
+  const [campaigns, setCampaigns] = useState([])
+
+  useEffect(() => {
+    loadAllCampaigns().then(setCampaigns)
+  }, [])
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
       <div style={sectionTitle}>Your Character</div>
@@ -146,6 +153,13 @@ function StepNamePlayer({ data, onChange }) {
       <div>
         <span style={lbl}>Player Name</span>
         <input style={inputStyle} value={data.player} onChange={e => onChange({ ...data, player: e.target.value })} placeholder="Your name..." />
+      </div>
+      <div>
+        <span style={lbl}>Campaign</span>
+        <select style={selectStyle} value={data.campaignId || ''} onChange={e => onChange({ ...data, campaignId: e.target.value })}>
+          <option value="">— Choose Campaign —</option>
+          {campaigns.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+        </select>
       </div>
     </div>
   )
@@ -417,6 +431,8 @@ export default function CharacterWizard({ userId, onComplete, onCancel }) {
     const newCharacter = {
       name: data.name.trim(),
       player: data.player.trim(),
+      campaignId: data.campaignId || null,
+      campaignLocked: !!data.campaignId,
       race: race?.name || '',
       raceKey: data.raceKey,
       raceLocked: true,
