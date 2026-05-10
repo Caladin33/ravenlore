@@ -298,7 +298,7 @@ function EditablePoints({ value, onCommit, theme, isActive, locked }) {
   )
 }
 
-function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onUpdate, skillSource, theme, level, char, gmMode }) {
+function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onUpdate, skillSource, theme, level, char, gmMode, unspentPoints }) {
   const [expanded, setExpanded] = useState(false)
   const T = theme || THEMES.selfImprovement
   const costPerRank = parseInt(skill.costPerRank) || 1
@@ -314,20 +314,24 @@ function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onUpdate, sk
   const editLocked = !gmMode && !prereqResult.met && pointsInvested === 0
   const maxDisplay = (maxRankRaw === 'any' || !maxRankRaw || maxRankRaw === 'Passive') ? '∞' : maxRankRaw
 
- const handleCommit = (newPoints) => {
-      if (!gmMode && newPoints < locked) return { error: `Cannot go below ${locked} (locked from last save)` }
-      if (!gmMode && !prereqResult.met && newPoints > 0) return { error: prereqResult.reason }
-      if (!gmMode && mclLimit !== null && newPoints > mclLimit) return { error: `MC/L limit: max ${mclLimit} pts at level ${level}` }
-      const newRank = Math.min(Math.floor(newPoints / costPerRank), isFinite(maxRankNum) ? maxRankNum : 999)
-      if (!gmMode && isFinite(maxRankNum) && newRank > maxRankNum) return { error: `Max rank is ${maxRankRaw}` }
-      if (!gmMode && prereqResult.capRequirements?.length > 0) {
-        for (const cap of prereqResult.capRequirements) {
-          if (newRank >= cap.capRank) return { error: `Rank must stay below ${cap.capSkill} rank (${cap.capRank})` }
-        }
-      }
-      onUpdate && onUpdate(skill.name, newPoints, skillSource || 'martial')
-      return {}
+const handleCommit = (newPoints) => {
+  if (!gmMode && newPoints < locked) return { error: `Cannot go below ${locked} (locked from last save)` }
+  if (!gmMode && !prereqResult.met && newPoints > 0) return { error: prereqResult.reason }
+  if (!gmMode && mclLimit !== null && newPoints > mclLimit) return { error: `MC/L limit: max ${mclLimit} pts at level ${level}` }
+  const newRank = Math.min(Math.floor(newPoints / costPerRank), isFinite(maxRankNum) ? maxRankNum : 999)
+  if (!gmMode && isFinite(maxRankNum) && newRank > maxRankNum) return { error: `Max rank is ${maxRankRaw}` }
+  if (!gmMode && prereqResult.capRequirements?.length > 0) {
+    for (const cap of prereqResult.capRequirements) {
+      if (newRank >= cap.capRank) return { error: `Rank must stay below ${cap.capSkill} rank (${cap.capRank})` }
     }
+  }
+  const pointCost = newPoints - pointsInvested
+  if (!gmMode && pointCost > 0 && pointCost > (unspentPoints ?? 999)) {
+    return { error: `Not enough points (${unspentPoints} available)` }
+  }
+  onUpdate && onUpdate(skill.name, newPoints, skillSource || 'martial')
+  return {}
+}
 
   return (
     <>
@@ -406,7 +410,7 @@ function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onUpdate, sk
 }
 
 // specialRows: { [skillName]: ReactNode } — rendered below that skill's row
-export function RankedSkillTable({ skills, char, onUpdate, theme, sectionLabel, level, skillSource, gmMode, lockedPoints, specialRows }) {
+export function RankedSkillTable({ skills, char, onUpdate, theme, sectionLabel, level, skillSource, gmMode, lockedPoints, specialRows, unspentPoints }) {
   const T = theme || THEMES.selfImprovement
 
   const getSkillData = (skillName) => {
@@ -441,7 +445,7 @@ export function RankedSkillTable({ skills, char, onUpdate, theme, sectionLabel, 
         const { rank, pointsInvested } = getSkillData(skill.name)
         return (
           <div key={skill.name}>
-            <SkillTableRow skill={skill} rank={rank} pointsInvested={pointsInvested} lockedPoints={lockedPoints} theme={T} level={level || 1} char={char} gmMode={gmMode} onUpdate={onUpdate} skillSource={skillSource || 'martial'} />
+            <SkillTableRow skill={skill} rank={rank} pointsInvested={pointsInvested} lockedPoints={lockedPoints} theme={T} level={level || 1} char={char} gmMode={gmMode} onUpdate={onUpdate} skillSource={skillSource || 'martial'} unspentPoints={unspentPoints}/>
             {specialRows?.[skill.name] || null}
           </div>
         )

@@ -265,7 +265,7 @@ function getPointsInvested(char, skillName) {
 const TABS = ['General', 'Martial', 'Spiritual', 'Obscure']
 
 // ── MAIN COMPONENT ────────────────────────────────────────────────────────────
-export default function SkillEditor({ character, onSave, onBack }) {
+export default function SkillEditor({ character, onSave, onBack, isGM }) {
   const [activeTab, setActiveTab] = useState('Martial')
   const [char, setChar] = useState(() => JSON.parse(JSON.stringify(character)))
   const [gmMode, setGmMode] = useState(false)
@@ -356,15 +356,25 @@ export default function SkillEditor({ character, onSave, onBack }) {
       return true
     })
   }
- const handleSave = () => {
-    const newLocked = {}
-    Object.entries({ ...char.martialSkills, ...char.arcaneSkills, ...char.selfImprovementSkills }).forEach(([name, data]) => {
-      newLocked[name] = parseInt(data.pointsInvested) || 0
-    })
-    setLockedPoints(newLocked)
-    onSave(char)
-    setShowConfirm(false)
+const handleSave = () => {
+  const newLocked = {}
+  Object.entries({ ...char.martialSkills, ...char.arcaneSkills, ...char.selfImprovementSkills }).forEach(([name, data]) => {
+    newLocked[name] = parseInt(data.pointsInvested) || 0
+  })
+  setLockedPoints(newLocked)
+  // Save original skills as base, new skills as pending
+  const withPending = {
+    ...character,  // use original character prop, not char
+    pendingSkillChanges: {
+      martialSkills: char.martialSkills,
+      arcaneSkills: char.arcaneSkills,
+      selfImprovementSkills: char.selfImprovementSkills,
+      generalSkills: char.generalSkills,
+    }
   }
+  onSave(withPending)
+  setShowConfirm(false)
+}
 
   const tabBtn = (tab) => ({
     padding: '7px 18px',
@@ -410,9 +420,11 @@ export default function SkillEditor({ character, onSave, onBack }) {
           </div>
         ))}
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          <button onClick={() => setGmMode(!gmMode)} style={{ padding: '8px 16px', background: gmMode ? 'rgba(201,42,42,.2)' : 'var(--surface2)', border: `1px solid ${gmMode ? '#c94a4a' : 'var(--border)'}`, color: gmMode ? '#c94a4a' : 'var(--text3)', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.85rem' }}>
-            {gmMode ? '⚠ GM Mode ON' : 'GM Mode'}
-          </button>
+          {isGM && (
+            <button onClick={() => setGmMode(!gmMode)} style={{ padding: '8px 16px', background: gmMode ? 'rgba(201,42,42,.2)' : 'var(--surface2)', border: `1px solid ${gmMode ? '#c94a4a' : 'var(--border)'}`, color: gmMode ? '#c94a4a' : 'var(--text3)', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.85rem' }}>
+              {gmMode ? '⚠ GM Mode ON' : 'GM Mode'}
+            </button>
+          )}
           <button onClick={() => setShowConfirm(true)} style={{ padding: '8px 20px', background: 'rgba(74,158,74,.15)', border: '1px solid #4a9e4a', color: '#4a9e4a', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.9rem' }}>
             Save Changes
           </button>
@@ -439,7 +451,7 @@ export default function SkillEditor({ character, onSave, onBack }) {
 
         {activeTab === 'General' && (
           <div>
-            <RankedSkillTable skills={filterSkills(selfImprovementData)} char={char} sectionLabel="Self Improvement" theme={THEMES.selfImprovement} level={char.level || 1} skillSource="selfImprovement" gmMode={gmMode} lockedPoints={lockedPoints} onUpdate={(name, newPts) => handleUpdate(name, newPts, 'selfImprovement')} />
+            <RankedSkillTable skills={filterSkills(selfImprovementData)} char={char} sectionLabel="Self Improvement" theme={THEMES.selfImprovement} level={char.level || 1} skillSource="selfImprovement" gmMode={gmMode} lockedPoints={lockedPoints} onUpdate={(name, newPts) => handleUpdate(name, newPts, 'selfImprovement')} unspentPoints={pointTotals.unspent}/>
            <div style={{ padding: '10px 12px', background: 'var(--bg)', borderBottom: '2px solid #4a9e4a', fontSize: '1rem', letterSpacing: '.25em', color: '#4a9e4a', textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 600, textAlign: 'center' }}>Trades &amp; Talents</div>
 {/* Column headers */}
 <div style={{ display: 'grid', gridTemplateColumns: '1fr 52px 72px', background: 'var(--bg2)', borderBottom: '1px solid rgba(74,158,74,.25)', minHeight: 44, alignItems: 'center' }}>
@@ -481,7 +493,7 @@ export default function SkillEditor({ character, onSave, onBack }) {
           return sections.map(section => {
             const sectionSkills = filterSkills(martialSkillsData.filter(s => s.category === section.key))
             if (sectionSkills.length === 0) return null
-            return <RankedSkillTable key={section.key} skills={sectionSkills} char={char} sectionLabel={section.label} theme={section.theme} level={char.level || 1} skillSource="martial" gmMode={gmMode} lockedPoints={lockedPoints} onUpdate={(name, newPts) => handleUpdate(name, newPts, 'martial')} />
+            return <RankedSkillTable key={section.key} skills={sectionSkills} char={char} sectionLabel={section.label} theme={section.theme} level={char.level || 1} skillSource="martial" gmMode={gmMode} lockedPoints={lockedPoints} onUpdate={(name, newPts) => handleUpdate(name, newPts, 'martial')} unspentPoints={pointTotals.unspent}/>
           })
         })()}
 
@@ -506,6 +518,7 @@ export default function SkillEditor({ character, onSave, onBack }) {
                 lockedPoints={lockedPoints}
                 onUpdate={(name, newPts) => handleUpdate(name, newPts, 'arcane')}
                 specialRows={specialRows}
+                unspentPoints={pointTotals.unspent}
               />
             )
           })

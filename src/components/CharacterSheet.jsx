@@ -404,6 +404,16 @@ const currentMaintenance = useMemo(() => {
   }, [character])
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16, width: '100%' }}>
+     {character.pendingSkillChanges && (
+        <div style={{ padding: '10px 16px', background: 'rgba(201,168,76,.08)', border: '1px solid rgba(201,168,76,.4)', borderRadius: 7, fontSize: '.85rem', color: 'var(--gold)', fontFamily: 'Georgia, serif' }}>
+          ⏳ Skill changes are pending GM approval.
+        </div>
+      )}
+      {character.levelUpAuthorized && (
+        <div style={{ padding: '10px 16px', background: 'rgba(74,158,74,.08)', border: '1px solid #4a9e4a', borderRadius: 7, fontSize: '.85rem', color: '#4a9e4a', fontFamily: 'Georgia, serif' }}>
+          ✓ Level up authorized! Go to Bio to level up.
+        </div>
+      )}
       <AttributeBlock
         stats={stats} character={character} onUpdateCharacter={onUpdateCharacter}
         offHand={offHand} stance={stance} unfettered={unfettered}

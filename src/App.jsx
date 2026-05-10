@@ -7,8 +7,9 @@ import SkillEditor from './components/SkillEditor'
 import StuffPage from './components/StuffPage'
 import BioPage from './components/BioPage'
 import CharacterWizard from './components/CharacterWizard'
+import GMView from './components/GMView'
 import { calculate } from './utils/calculator'
-import { loadCharacters, saveCharacter, deleteCharacter } from './characterDB'
+import { loadCharacters, saveCharacter, deleteCharacter, getUserCampaigns } from './characterDB'
 import './App.css'
 
 function RavenLogo({ size = 48 }) {
@@ -92,7 +93,6 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
       <div style={{ textAlign: 'center' }}>
         <div style={{ fontSize: '1.3rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 'bold', letterSpacing: '.04em', lineHeight: 1.1 }}>
           {character.name}
-          {character.hardcore && <span title="Hardcore character" style={{ marginLeft: 6, fontSize: '.7rem', color: '#c94a4a', fontFamily: 'Georgia, serif', verticalAlign: 'middle' }}>⚔</span>}
         </div>
         <div style={{ fontSize: '.72rem', color: 'var(--text3)', letterSpacing: '.12em', textTransform: 'uppercase', marginTop: 2 }}>
           Level {character.level} {character.race}
@@ -129,10 +129,9 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
             isActive={currentTab === 'bio'}
           />
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: '1.3rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 'bold', letterSpacing: '.04em', lineHeight: 1.1 }}>
-          {character.name}
-          {character.hardcore && <span title="Hardcore character" style={{ marginLeft: 6, fontSize: '.7rem', color: '#c94a4a', fontFamily: 'Georgia, serif', verticalAlign: 'middle' }}>⚔</span>}
-        </div>
+            <div style={{ fontSize: '1.1rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 'bold', letterSpacing: '.04em', lineHeight: 1.1 }}>
+              {character.name}
+            </div>
             <div style={{ fontSize: '.65rem', color: 'var(--text3)', letterSpacing: '.1em', textTransform: 'uppercase' }}>
               Level {character.level} {character.race}
             </div>
@@ -150,7 +149,7 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
 }
 
 // ── HOME PAGE ─────────────────────────────────────────────────────────────────
-function HomePage({ characters, onSelectCharacter, onDelete, onLogout, onNewCharacter }) {
+function HomePage({ characters, onSelectCharacter, onDelete, onLogout, onNewCharacter, isGM, onGMView }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 40, padding: '40px 0' }}>
       <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
@@ -162,9 +161,16 @@ function HomePage({ characters, onSelectCharacter, onDelete, onLogout, onNewChar
       <div style={{ width: '100%', maxWidth: 600 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
           <h2 style={{ fontSize: '1rem', color: 'var(--gold)', letterSpacing: '.14em', textTransform: 'uppercase' }}>Your Characters</h2>
-          <button onClick={onNewCharacter} style={{ background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 4, padding: '5px 12px', fontFamily: 'Georgia, serif', fontSize: '.8rem', cursor: 'pointer' }}>
-            + New Character
-          </button>
+          <div style={{ display: 'flex', gap: 8 }}>
+            {isGM && (
+              <button onClick={onGMView} style={{ background: 'rgba(201,42,42,.15)', border: '1px solid #c94a4a', color: '#c94a4a', borderRadius: 4, padding: '5px 12px', fontFamily: 'Georgia, serif', fontSize: '.8rem', cursor: 'pointer' }}>
+                GM View
+              </button>
+            )}
+            <button onClick={onNewCharacter} style={{ background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 4, padding: '5px 12px', fontFamily: 'Georgia, serif', fontSize: '.8rem', cursor: 'pointer' }}>
+              + New Character
+            </button>
+          </div>
         </div>
 
         {characters.length === 0 ? (
@@ -210,6 +216,7 @@ function App() {
   const [characters, setCharacters] = useState([])
   const [currentPage, setCurrentPage] = useState('home')
   const [selectedCharacter, setSelectedCharacter] = useState(null)
+  const [isGM, setIsGM] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -225,6 +232,7 @@ function App() {
   useEffect(() => {
     if (!user) return
     loadCharacters(user.id).then(({ characters }) => setCharacters(characters || []))
+    getUserCampaigns(user.id).then(campaigns => setIsGM(campaigns.length > 0))
   }, [user])
 
   if (authLoading) return <div style={{ minHeight: '100vh', background: 'var(--bg)' }} />
@@ -244,7 +252,7 @@ function App() {
     loadCharacters(user.id).then(({ characters }) => {
       setCharacters(characters || [])
       const created = characters?.find(c => c.name === newChar.name)
-      if (created) { setSelectedCharacter(created); setCurrentPage('bio') }
+      if (created) { setSelectedCharacter(created); setCurrentPage('sheet') }
       else setCurrentPage('home')
     })
   }
@@ -254,12 +262,10 @@ function App() {
       loadCharacters(user.id).then(({ characters }) => setCharacters(characters || []))
     })
   }
- const handleDelete = (name) => {
-    if (window.confirm(`Permanently delete ${name}? This cannot be undone.`)) {
-      deleteCharacter(name, user.id).then(() => {
-        loadCharacters(user.id).then(({ characters }) => setCharacters(characters || []))
-      })
-    }
+  const handleDelete = (name) => {
+    deleteCharacter(name, user.id).then(() => {
+      loadCharacters(user.id).then(({ characters }) => setCharacters(characters || []))
+    })
   }
   const handleLogout = () => { supabase.auth.signOut(); setSelectedCharacter(null); setCurrentPage('home') }
 
@@ -282,7 +288,10 @@ function App() {
         )}
 
         {currentPage === 'home' && (
-          <HomePage characters={characters} onSelectCharacter={handleSelectCharacter} onDelete={handleDelete} onLogout={handleLogout} onNewCharacter={handleNewCharacter} />
+          <HomePage characters={characters} onSelectCharacter={handleSelectCharacter} onDelete={handleDelete} onLogout={handleLogout} onNewCharacter={handleNewCharacter} isGM={isGM} onGMView={() => navigate('gm')} />
+        )}
+        {currentPage === 'gm' && (
+          <GMView userId={user.id} onBack={() => navigate('home')} />
         )}
         {currentPage === 'wizard' && (
           <CharacterWizard userId={user.id} onComplete={handleWizardComplete} onCancel={() => setCurrentPage('home')} />
@@ -291,7 +300,7 @@ function App() {
           <CharacterSheet character={selectedCharacter} onBack={() => { setSelectedCharacter(null); navigate('home') }} onEditSkills={() => navigate('skillEditor')} onUpdateCharacter={handleUpdateCharacter} />
         )}
         {currentPage === 'skillEditor' && selectedCharacter && (
-          <SkillEditor character={selectedCharacter} onBack={() => navigate('sheet')} onSave={(updated) => { handleUpdateCharacter(updated); navigate('sheet') }} />
+          <SkillEditor character={selectedCharacter} onBack={() => navigate('sheet')} onSave={(updated) => { handleUpdateCharacter(updated); navigate('sheet') }} isGM={isGM} />
         )}
         {currentPage === 'spells' && selectedCharacter && (
           <ArcaneCompendium character={selectedCharacter} onUpdateCharacter={handleUpdateCharacter} stats={selectedCharacterStats} />
@@ -300,7 +309,7 @@ function App() {
           <StuffPage character={selectedCharacter} onUpdateCharacter={handleUpdateCharacter} stats={selectedCharacterStats} />
         )}
         {currentPage === 'bio' && selectedCharacter && (
-          <BioPage character={selectedCharacter} onUpdateCharacter={handleUpdateCharacter} stats={selectedCharacterStats} />
+          <BioPage character={selectedCharacter} onUpdateCharacter={handleUpdateCharacter} stats={selectedCharacterStats} isGM={isGM} />
         )}
       </main>
     </div>

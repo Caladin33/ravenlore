@@ -140,8 +140,9 @@ function LevelUpWizard({ character, stats, onUpdate, onClose }) {
           <button onClick={onClose} style={{ padding: '8px 16px', background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.9rem' }}>
             Cancel
           </button>
-          <button onClick={handleConfirm} style={saveBtn}>
-            Confirm Level Up
+         <button onClick={handleConfirm} disabled={!character.levelUpAuthorized}
+            style={{ ...saveBtn, opacity: character.levelUpAuthorized ? 1 : 0.4, cursor: character.levelUpAuthorized ? 'pointer' : 'not-allowed' }}>
+            {character.levelUpAuthorized ? 'Confirm Level Up' : 'Awaiting GM Authorization'}
           </button>
         </div>
       </div>
@@ -150,8 +151,8 @@ function LevelUpWizard({ character, stats, onUpdate, onClose }) {
 }
 
 // ── MAIN BIO PAGE ─────────────────────────────────────────────────────────────
-export default function BioPage({ character, onUpdateCharacter, stats, gmMode: gmModeProp }) {
-  const [gmMode, setGmMode] = useState(gmModeProp || false)
+export default function BioPage({ character, onUpdateCharacter, stats, isGM }) {
+ const [gmMode, setGmMode] = useState(false)
   const [showLevelUp, setShowLevelUp] = useState(false)
   const [raceLocked, setRaceLocked] = useState(!!(character.race && character.raceLocked))
   const [showMaintBreakdown, setShowMaintBreakdown] = useState(false)
@@ -195,9 +196,18 @@ export default function BioPage({ character, onUpdateCharacter, stats, gmMode: g
           onClose={() => setShowLevelUp(false)}
         />
       )}
-
+      {/* Creation banner */}
+      {character.status === 'creation' && (
+        <div style={{ padding: '14px 18px', background: 'rgba(201,168,76,.08)', border: '1px solid var(--gold)', borderRadius: 8, fontFamily: 'Georgia, serif' }}>
+          <div style={{ fontSize: '1rem', color: 'var(--gold2)', fontWeight: 600, marginBottom: 6 }}>Welcome to RavenLore!</div>
+          <div style={{ fontSize: '.85rem', color: 'var(--text2)', lineHeight: 1.7 }}>
+            Gameplay begins at level 3. Fill out your bio here, then go to <strong style={{ color: 'var(--gold)' }}>Skills</strong> to spend your {character.skillPoints?.totalEarned ?? 0} starting points. When you're done, save for GM approval — your GM will then enable your first level up.
+          </div>
+        </div>
+      )}
       {/* Header row: GM mode + Level Up */}
       <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+        {isGM && (
         <button
           onClick={() => setGmMode(!gmMode)}
           style={{
@@ -207,8 +217,13 @@ export default function BioPage({ character, onUpdateCharacter, stats, gmMode: g
             borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.85rem',
           }}
         >{gmMode ? '⚠ GM Mode ON' : 'GM Mode'}</button>
-        <button onClick={() => setShowLevelUp(true)} style={saveBtn}>
-          Level Up →
+          )}
+        <button 
+          onClick={() => setShowLevelUp(true)} 
+          disabled={!character.levelUpAuthorized && !gmMode}
+          style={{ ...saveBtn, opacity: (character.levelUpAuthorized || gmMode) ? 1 : 0.4, cursor: (character.levelUpAuthorized || gmMode) ? 'pointer' : 'not-allowed' }}
+        >
+          {character.levelUpAuthorized ? 'Level Up →' : gmMode ? 'Level Up (GM) →' : '🔒 Level Up'}
         </button>
       </div>
 
