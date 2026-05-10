@@ -311,7 +311,7 @@ export function ArmorHPTable({ stats, character, onUpdateCharacter }) {
 
   // Desktop: 7 col | Mobile: 4 col
 const DCOLS = '150px 120px 120px 100px 150px minmax(100px, 330px) 100px'
-  const MCOLS = '56px 1fr 1fr 1fr'
+  const MCOLS = '1fr 90px 90px 1fr'
 
   const grid  = isDesktop ? DCOLS : MCOLS
   const hdrBg = { background:'var(--bg2)', borderBottom:'2px solid var(--border2)' }
@@ -456,9 +456,9 @@ const DCOLS = '150px 120px 120px 100px 150px minmax(100px, 330px) 100px'
     </div>
   ) : (
     <div style={{ display:'grid', gridTemplateColumns:grid, background:'var(--bg2)', alignItems:'center' }}>
-      <div style={{ padding:'6px 8px' }} />
+      {dataCell(<div style={{ textAlign:'center' }}><span style={lbl}>Temp HP</span><ClickEdit value={hp.tempHP??0} onChange={v=>updateHPField('tempHP',v)} fontSize=".85rem" /></div>, true)}
       {dataCell(<div style={{ textAlign:'center' }}><span style={lbl}>Barrier HP</span><ClickEdit value={hp.barrierHP??0} onChange={v=>updateHPField('barrierHP',v)} fontSize=".85rem" /></div>)}
-      {dataCell(<div style={{ textAlign:'center' }}><span style={lbl}>Temp HP / Global AR</span><ClickEdit value={hp.tempHP??0} onChange={v=>updateHPField('tempHP',v)} fontSize=".85rem" /></div>)}
+      {dataCell(<div style={{ textAlign:'center' }}><span style={lbl}>Global AR+</span><ClickEdit value={character.globalARBonus??0} onChange={v=>updateGlobal('globalARBonus',v)} fontSize=".85rem" /></div>)}
       {dataCell(<div style={{ textAlign:'center' }}><span style={lbl}>Natural AR</span><ClickEdit value={character.naturalAR??0} onChange={v=>updateGlobal('naturalAR',v)} fontSize=".85rem" /></div>)}
     </div>
   )

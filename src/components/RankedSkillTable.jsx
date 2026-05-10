@@ -123,6 +123,13 @@ function checkSinglePrereq(token, char) {
   const str = token.trim()
   if (!str || str.toLowerCase() === 'none') return { met: true }
   if (IGNORE_PATTERNS.some(p => p.test(str))) return { met: true, ignore: true }
+ // Cap prereq: "< SkillName" means this skill's rank must be less than that skill's rank
+  if (str.startsWith('<')) {
+    const capSkillName = str.slice(1).trim()
+    const capRank = getRankAcrossAllSkills(char, capSkillName)
+    if (capRank === 0) return { met: false, reason: `${capSkillName} rank 1+ required first` }
+    return { met: true, capSkill: capSkillName, capRank }
+  }
   if (FLAG_PATTERNS.some(p => p.test(str))) return { met: true, tag: str }
 
   if (/^unfettered/i.test(str)) {
@@ -175,7 +182,16 @@ function checkSinglePrereq(token, char) {
       return { met: true }
     }
   }
-
+// Cap prereq: "<SkillName" means rank must be less than that skill's rank
+  if (str.startsWith('<')) {
+    const capSkillName = str.slice(1).trim()
+    const capRank = getRankAcrossAllSkills(char, capSkillName)
+    const myRank = 0 // will be checked at commit time, just return met:true here
+    // We can't check "my rank" here without knowing the current skill
+    // so just check if the cap skill has any rank at all (rank > 0 means allowed to start)
+    if (capRank === 0) return { met: false, reason: `${capSkillName} rank 1+ required first` }
+    return { met: true, capSkill: capSkillName, capRank }
+  }
   // Skill threshold
   const skillThresholdMatch = str.match(/^(.+?)\s+(\d+)\+?$/)
   if (skillThresholdMatch) {
@@ -206,10 +222,9 @@ function checkSinglePrereq(token, char) {
 }
 
 function checkPrereq(prereqStr, char) {
-  if (!prereqStr || prereqStr.toLowerCase() === 'none') return { met: true, tags: [], markRequirements: [] }
-  // Split only on newlines — commas are used inside mark lists and must not split tokens
+  if (!prereqStr || prereqStr.toLowerCase() === 'none') return { met: true, tags: [], markRequirements: [], capRequirements: [] }
   const tokens = prereqStr.split(/\n/).map(s => s.trim()).filter(Boolean)
-  const tags = [], failures = [], markRequirements = []
+  const tags = [], failures = [], markRequirements = [], capRequirements = []
   let partial = false
 
   for (const token of tokens) {
@@ -234,11 +249,12 @@ function checkPrereq(prereqStr, char) {
     if (result.tag) tags.push(result.tag)
     if (result.partial) partial = true
     if (result.markList) markRequirements.push({ list: result.markList, type: result.markType, met: result.met })
+    if (result.capSkill) capRequirements.push({ capSkill: result.capSkill, capRank: result.capRank })
     if (!result.met) failures.push(result.reason || token)
   }
 
-  if (failures.length > 0) return { met: false, reason: failures.join(' · '), tags, markRequirements }
-  return { met: true, tags, partial, markRequirements }
+  if (failures.length > 0) return { met: false, reason: failures.join(' · '), tags, markRequirements, capRequirements }
+ return { met: true, tags, partial, markRequirements, capRequirements }
 }
 
 function EditablePoints({ value, onCommit, theme, isActive, locked }) {
@@ -298,15 +314,20 @@ function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onUpdate, sk
   const editLocked = !gmMode && !prereqResult.met && pointsInvested === 0
   const maxDisplay = (maxRankRaw === 'any' || !maxRankRaw || maxRankRaw === 'Passive') ? '∞' : maxRankRaw
 
-  const handleCommit = (newPoints) => {
-    if (!gmMode && newPoints < locked) return { error: `Cannot go below ${locked} (locked from last save)` }
-    if (!gmMode && !prereqResult.met && newPoints > 0) return { error: prereqResult.reason }
-    if (!gmMode && mclLimit !== null && newPoints > mclLimit) return { error: `MC/L limit: max ${mclLimit} pts at level ${level}` }
-    const newRank = Math.min(Math.floor(newPoints / costPerRank), isFinite(maxRankNum) ? maxRankNum : 999)
-    if (!gmMode && isFinite(maxRankNum) && newRank > maxRankNum) return { error: `Max rank is ${maxRankRaw}` }
-    onUpdate && onUpdate(skill.name, newPoints, skillSource || 'martial')
-    return {}
-  }
+ const handleCommit = (newPoints) => {
+      if (!gmMode && newPoints < locked) return { error: `Cannot go below ${locked} (locked from last save)` }
+      if (!gmMode && !prereqResult.met && newPoints > 0) return { error: prereqResult.reason }
+      if (!gmMode && mclLimit !== null && newPoints > mclLimit) return { error: `MC/L limit: max ${mclLimit} pts at level ${level}` }
+      const newRank = Math.min(Math.floor(newPoints / costPerRank), isFinite(maxRankNum) ? maxRankNum : 999)
+      if (!gmMode && isFinite(maxRankNum) && newRank > maxRankNum) return { error: `Max rank is ${maxRankRaw}` }
+      if (!gmMode && prereqResult.capRequirements?.length > 0) {
+        for (const cap of prereqResult.capRequirements) {
+          if (newRank >= cap.capRank) return { error: `Rank must stay below ${cap.capSkill} rank (${cap.capRank})` }
+        }
+      }
+      onUpdate && onUpdate(skill.name, newPoints, skillSource || 'martial')
+      return {}
+    }
 
   return (
     <>
