@@ -62,7 +62,7 @@ function WeaponSlotEditor({ slot, onSave, onClose, char, isRanged }) {
   const [itemAPBonus, setItemAPBonus] = useState(slot.itemAPBonus || 0)
   const [itemMarksmanshipBonus, setItemMarksmanshipBonus] = useState(slot.itemMarksmanshipBonus || 0)
   const [isCursed, setIsCursed] = useState(slot.isCursed || false)
-
+  const [slotLabel, setSlotLabel] = useState(slot.slotLabel || slot.name || '')
   const weapons = weaponsData.filter(w => isRanged ? w.isRanged : !w.isRanged)
   const markOptions = getAvailableMarks(char, isRanged ? RANGED_MARK_OPTIONS : MELEE_MARK_OPTIONS)
   const selectedWeapon = weaponsData.find(w => w.name === name)
@@ -83,7 +83,15 @@ function WeaponSlotEditor({ slot, onSave, onClose, char, isRanged }) {
         <h3 style={{ color: 'var(--gold2)', fontFamily: 'Georgia, serif', marginBottom: 16, fontSize: '1.1rem' }}>
           {isRanged ? 'Ranged' : 'Melee'} Weapon Slot
         </h3>
-
+<div style={{ marginBottom: 14 }}>
+          <div style={{ ...label, marginBottom: 4 }}>Slot Name</div>
+          <input
+            value={slotLabel}
+            onChange={e => setSlotLabel(e.target.value)}
+            placeholder={name || 'e.g. Magic Dagger, Backup Sword...'}
+            style={{ width: '100%', boxSizing: 'border-box', background: 'var(--bg2)', border: '1px solid var(--border)', color: 'var(--text)', borderRadius: 4, padding: '6px 8px', fontFamily: 'Georgia, serif', fontSize: '.9rem' }}
+          />
+        </div>
         {/* Weapon select */}
         <div style={{ marginBottom: 14 }}>
           <div style={{ ...label, marginBottom: 4 }}>Weapon</div>
@@ -124,7 +132,7 @@ function WeaponSlotEditor({ slot, onSave, onClose, char, isRanged }) {
           <div style={{ ...label, marginBottom: 8, color: 'var(--gold)' }}>Item / Magic Bonuses</div>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
             {isRanged
-              ? numInput(itemMarksmanshipBonus, setItemMarksmanshipBonus, 'Marksmanship')
+              ? numInput(itemMarksmanshipBonus, setItemMarksmanshipBonus, 'To Hit')
               : numInput(itemExpertiseBonus, setItemExpertiseBonus, 'Expertise')}
             {numInput(itemDamageBonus, setItemDamageBonus, 'Damage')}
             {numInput(itemPrecisionBonus, setItemPrecisionBonus, 'Precision')}
@@ -143,7 +151,7 @@ function WeaponSlotEditor({ slot, onSave, onClose, char, isRanged }) {
         <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
           <button onClick={onClose} style={{ padding: '8px 16px', background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif' }}>Cancel</button>
           <button onClick={() => {
-            onSave({ name, mark, itemExpertiseBonus, itemDamageBonus, itemPrecisionBonus, itemAPBonus, itemMarksmanshipBonus, isCursed })
+            onSave({ name, slotLabel: slotLabel || name,mark, itemExpertiseBonus, itemDamageBonus, itemPrecisionBonus, itemAPBonus, itemMarksmanshipBonus, isCursed })
             onClose()
           }} disabled={!name}
             style={{ padding: '8px 20px', background: name ? 'rgba(74,158,74,.15)' : 'var(--bg2)', border: `1px solid ${name ? '#4a9e4a' : 'var(--border)'}`, color: name ? '#4a9e4a' : 'var(--text3)', borderRadius: 5, cursor: name ? 'pointer' : 'not-allowed', fontFamily: 'Georgia, serif' }}>
@@ -177,24 +185,23 @@ function WeaponSlotRow({ slot, calcSlot, onEdit, onRemove, isRanged }) {
     )
   }
 
-  // Format display strings
-  const expLabel = isRanged ? 'Mksm.' : 'Exp.'
+ // Format display strings
+  const expLabel = isRanged ? 'To Hit' : 'Exp.'
   const expVal = isRanged ? calcSlot.marksmanship : calcSlot.expertise
 
   const dmgFixed = calcSlot.damage
   const dmgMoV = calcSlot.movDamageRate
-  const dmgStr = `${calcSlot.damageDie}${dmgFixed >= 0 ? '+' : ''}${dmgFixed}${dmgMoV > 0 ? `+${dmgMoV}/MoV` : ''}`
-
   const prFixed = calcSlot.precision
   const prMoV = isRanged ? calcSlot.hsPrecisionRate : calcSlot.movPrecisionRate
-  const prStr = `${prFixed >= 0 ? '' : ''}${prFixed}${prMoV > 0 ? `+${prMoV}/MoV` : ''}`
-
   const apFixed = isRanged ? 0 : calcSlot.armorBypass
   const apMoV = isRanged ? calcSlot.hsArmorBypassRate : calcSlot.movBypassRate
-  const apStr = (apFixed === 0 && (!apMoV || apMoV === 0)) ? '—' : `${apFixed}${apMoV > 0 ? `+${apMoV}/MoV` : ''}`
+
+  const movLabel = isRanged ? 'HS' : 'MoV'
+  const dmgStr = `${calcSlot.damageDie}${dmgFixed >= 0 ? '+' : ''}${dmgFixed}${dmgMoV > 0 ? `+${dmgMoV}/${movLabel}` : ''}`
+  const prStr = `${prFixed}${prMoV > 0 ? `+${prMoV}/${movLabel}` : ''}`
+  const apStr = (apFixed === 0 && (!apMoV || apMoV === 0)) ? '—' : `${apFixed}${apMoV > 0 ? `+${apMoV}/${movLabel}` : ''}`
 
   const markLabel = slot.mark && slot.mark !== 'none' ? MARK_LABELS[slot.mark] : null
-
   return (
     <>
       <div style={{ borderBottom: expanded ? 'none' : '1px solid var(--border)', padding: '8px 0' }}>
@@ -204,7 +211,7 @@ function WeaponSlotRow({ slot, calcSlot, onEdit, onRemove, isRanged }) {
           <div style={{ flex: '1 1 120px', minWidth: 0, cursor: 'pointer' }} onClick={() => setExpanded(!expanded)}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <span style={{ fontSize: '.92rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {slot.name}
+                {slot.slotLabel || slot.name}
               </span>
               {markLabel && (
                 <span style={{ fontSize: '.6rem', background: 'rgba(201,168,76,.15)', border: '1px solid rgba(201,168,76,.3)', color: 'var(--gold)', borderRadius: 3, padding: '1px 5px', whiteSpace: 'nowrap', flexShrink: 0 }}>
@@ -377,7 +384,16 @@ export default function CharacterSheet({ character, onBack, onEditSkills, onUpda
       Error calculating stats. Check console for details.
     </div>
   )
-
+const currentMaintenance = useMemo(() => {
+    return [
+      ...Object.values(character.martialSkills || {}),
+      ...Object.values(character.arcaneSkills || {}),
+      ...Object.values(character.selfImprovementSkills || {}),
+    ].reduce((sum, data) => {
+      const pts = parseInt(data.pointsInvested) || 0
+      return sum + (pts > 0 ? Math.floor(parseFloat(data.maintenanceCost) || 0) : 0)
+    }, 0)
+  }, [character])
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16, width: '100%' }}>
       <AttributeBlock
@@ -391,10 +407,19 @@ export default function CharacterSheet({ character, onBack, onEditSkills, onUpda
 
       {/* Skill Points */}
       <Section title="Skill Points">
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          <StatBox label="Earned" value={stats.skillPoints.totalEarned} />
-          <StatBox label="Spent" value={stats.skillPoints.totalSpent} />
-          <StatBox label="Unspent" value={stats.skillPoints.unspent} color={stats.skillPoints.unspent < 0 ? '#c94a4a' : 'var(--gold2)'} />
+        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'flex-end' }}>
+          {[
+            ['Available', stats.skillPoints.unspent, stats.skillPoints.unspent < 0 ? '#c94a4a' : 'var(--gold2)'],
+            ['Earned', stats.skillPoints.totalEarned, 'var(--gold2)'],
+            ['Spent', stats.skillPoints.totalSpent, 'var(--text2)'],
+            ['Maint. Paid', stats.skillPoints.maintenancePaid, 'var(--text2)'],
+            ['Cur. Maint.', currentMaintenance, currentMaintenance > 0 ? '#c94a4a' : 'var(--text3)'],
+          ].map(([l, v, color]) => (
+            <div key={l} style={{ textAlign: 'center', minWidth: 60 }}>
+              <div style={{ fontSize: '.55rem', letterSpacing: '.15em', color: 'var(--text3)', textTransform: 'uppercase', marginBottom: 2, fontFamily: 'Georgia, serif' }}>{l}</div>
+              <div style={{ fontSize: '1.1rem', fontWeight: 600, fontFamily: 'Georgia, serif', color }}>{v ?? '—'}</div>
+            </div>
+          ))}
         </div>
       </Section>
 
