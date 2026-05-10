@@ -310,8 +310,8 @@ export function ArmorHPTable({ stats, character, onUpdateCharacter }) {
   const shieldStats = getShieldStats(shieldCode)
 
   // Desktop: 7 col | Mobile: 4 col
-const DCOLS = '150px 120px 120px 120px 150px minmax(100px, 330px) 100px'
-  const MCOLS = '48px 90px 80px 1fr'
+const DCOLS = '150px 120px 120px 100px 150px minmax(100px, 330px) 100px'
+  const MCOLS = '58px 90px 80px 1fr'
 
   const grid  = isDesktop ? DCOLS : MCOLS
   const hdrBg = { background:'var(--bg2)', borderBottom:'2px solid var(--border2)' }
