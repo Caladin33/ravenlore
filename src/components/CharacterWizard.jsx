@@ -11,7 +11,7 @@ const inputStyle = { background: 'var(--bg2)', border: '1px solid var(--border)'
 const btnPrimary = { padding: '10px 24px', background: 'rgba(201,168,76,.15)', border: '1px solid var(--gold)', color: 'var(--gold2)', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '1rem', fontWeight: 600 }
 const btnSecondary = { padding: '8px 18px', background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.9rem' }
 const sectionTitle = { fontSize: '.75rem', letterSpacing: '.2em', color: 'var(--gold)', textTransform: 'uppercase', fontFamily: 'Georgia, serif', marginBottom: 14 }
-
+const selectStyle = { background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 4, color: 'var(--text)', fontFamily: 'Georgia, serif', fontSize: '.95rem', padding: '8px 10px', width: '100%', boxSizing: 'border-box', cursor: 'pointer' }
 const ATTRS = ['STR', 'DEX', 'CON', 'AW', 'CHR', 'WP']
 const ATTR_LABELS = { STR: 'Strength', DEX: 'Dexterity', CON: 'Constitution', AW: 'Awareness', CHR: 'Charisma', WP: 'Willpower' }
 const ATTR_KEYS = { STR: 'str', DEX: 'dex', CON: 'con', AW: 'aw', CHR: 'chr', WP: 'wp' }
