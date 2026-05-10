@@ -165,7 +165,7 @@ export default function CharacterSheet({ character, onBack, onEditSkills, onUpda
   )
 
   return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16, maxWidth: 1100, width: '100%' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16, width: '100%' }}>
 
       <AttributeBlock
         stats={stats}
