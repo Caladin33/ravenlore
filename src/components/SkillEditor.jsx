@@ -79,6 +79,7 @@ const lbl = {
 function PatronMarkPanel({ char, onUpdate, gmMode }) {
   const pm = char.patronMark || {}
   const [mark, setMark] = useState(pm.mark || '')
+  const [confirmModal, setConfirmModal] = useState(null)
   const [vow, setVow] = useState(pm.vow || '')
   const availableVows = DIVINE_VOWS.filter(v => v.refusedBy !== mark)
   const isLocked = pm.locked && !gmMode
@@ -137,6 +138,13 @@ function PatronMarkPanel({ char, onUpdate, gmMode }) {
           <strong style={{ color: 'var(--text)' }}>{vow}:</strong> {DIVINE_VOWS.find(v => v.name === vow)?.detail}
         </div>
       )}
+      {confirmModal && (
+  <ConfirmModal
+    message={confirmModal.message}
+    onConfirm={confirmModal.onConfirm}
+    onCancel={() => setConfirmModal(null)}
+  />
+)}
     </div>
   )
 }
@@ -145,6 +153,7 @@ function PatronMarkPanel({ char, onUpdate, gmMode }) {
 function ShamanSymbolsPanel({ char, onUpdate, gmMode }) {
   const symbols = char.shamanSymbols || []
   const [newSymbol, setNewSymbol] = useState('')
+  const [confirmModal, setConfirmModal] = useState(null)
   const [newVow, setNewVow] = useState('')
   const usedSymbols = new Set(symbols.map(s => s.symbol))
   const availableMarks = DIVINE_MARKS.filter(m => !usedSymbols.has(m))
@@ -211,6 +220,13 @@ function ShamanSymbolsPanel({ char, onUpdate, gmMode }) {
       {availableMarks.length === 0 && symbols.length > 0 && (
         <div style={{ fontSize: '.78rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', fontStyle: 'italic', marginTop: 8 }}>All symbols claimed.</div>
       )}
+      {confirmModal && (
+  <ConfirmModal
+    message={confirmModal.message}
+    onConfirm={confirmModal.onConfirm}
+    onCancel={() => setConfirmModal(null)}
+  />
+)}
     </div>
   )
 }
