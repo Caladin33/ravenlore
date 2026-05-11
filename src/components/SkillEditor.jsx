@@ -297,15 +297,10 @@ export default function SkillEditor({ character, onSave, onBack, isGM }) {
       if (obscureNames.has(name)) obscureSpent += pts
       else spiritualSpent += pts
     })
-    const totalSpent = generalSpent + martialSpent + spiritualSpent + obscureSpent
-    const race = char.race || 'human'
-    const raceData = { halfling: 0, goblin: 6, ogre: -5, halfOgre: -5 }
-    const raceMod = raceData[race] || 0
-    const firstLevel = (race !== 'goblin' && race !== 'ogre') ? 65 : 0
-    const ironBonus = char.patronMark?.mark === 'Iron' ? 2 * (char.level || 1) : 0
-    const totalEarned = (65 + raceMod) * (char.level || 1) + firstLevel + (char.skillPoints?.bonusGiven || 0) + ironBonus
-    return { generalSpent, martialSpent, spiritualSpent, obscureSpent, totalSpent, totalEarned, unspent: totalEarned - totalSpent }
-  }, [char])
+   const totalSpent = generalSpent + martialSpent + spiritualSpent + obscureSpent
+    const totalEarned = (char.skillPoints?.totalEarned || 0) + (char.skillPoints?.bonusGiven || 0)
+    const maintenancePaid = char.skillPoints?.maintenancePaid || 0
+    return { generalSpent, martialSpent, spiritualSpent, obscureSpent, totalSpent, totalEarned, unspent: totalEarned - totalSpent - maintenancePaid }
 
   const handleUpdate = (skillName, newPoints, source) => {
     setChar(prev => {

@@ -243,16 +243,10 @@ function App() {
   const handleNewCharacter = () => setCurrentPage('wizard')
   const handleWizardComplete = async (newChar) => {
     await saveCharacter({ ...newChar, status: 'active' }, user.id)
-    // Increment charactersCreated on user profile
-    await supabase.from('profiles').upsert({ id: user.id, charactersCreated: 1 }, { onConflict: 'id', ignoreDuplicates: false })
-      .select().then(async ({ data: profile }) => {
-        const current = profile?.[0]?.charactersCreated || 0
-        await supabase.from('profiles').update({ charactersCreated: current + 1 }).eq('id', user.id)
-      })
     loadCharacters(user.id).then(({ characters }) => {
       setCharacters(characters || [])
       const created = characters?.find(c => c.name === newChar.name)
-      if (created) { setSelectedCharacter(created); setCurrentPage('sheet') }
+      if (created) { setSelectedCharacter(created); setCurrentPage('bio') }
       else setCurrentPage('home')
     })
   }
