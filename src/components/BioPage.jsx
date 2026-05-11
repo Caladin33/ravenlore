@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import racesData from '../data/races.json'
 import ConfirmModal from './ConfirmModal'
+import { supabase } from '../supabase'
 import { loadAllCampaigns } from '../characterDB'
 
 // ── RACES LIST ────────────────────────────────────────────────────────────────
@@ -157,6 +158,7 @@ function LevelUpWizard({ character, stats, onUpdate, onClose }) {
 export default function BioPage({ character, onUpdateCharacter, stats, isGM }) {
  const [gmMode, setGmMode] = useState(false)
   const [showLevelUp, setShowLevelUp] = useState(false)
+  const [uploading, setUploading] = useState(false)
   const [raceLocked, setRaceLocked] = useState(!!(character.race && character.raceLocked))
   const [showMaintBreakdown, setShowMaintBreakdown] = useState(false)
   const [campaigns, setCampaigns] = useState([])
@@ -203,7 +205,7 @@ export default function BioPage({ character, onUpdateCharacter, stats, isGM }) {
         />
       )}
       {/* Creation banner */}
-      {character.status === 'creation' && (
+      {character.level === 1 && !character.pendingSkillChanges && Object.keys(character.martialSkills || {}).length === 0 && Object.keys(character.arcaneSkills || {}).length === 0 && (
         <div style={{ padding: '14px 18px', background: 'rgba(201,168,76,.08)', border: '1px solid var(--gold)', borderRadius: 8, fontFamily: 'Georgia, serif' }}>
           <div style={{ fontSize: '1rem', color: 'var(--gold2)', fontWeight: 600, marginBottom: 6 }}>Welcome to RavenLore!</div>
           <div style={{ fontSize: '.85rem', color: 'var(--text2)', lineHeight: 1.7 }}>
@@ -315,9 +317,54 @@ export default function BioPage({ character, onUpdateCharacter, stats, isGM }) {
               : <span style={{ fontSize: '.7rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', textAlign: 'center', padding: 8 }}>No image</span>
             }
           </div>
+
+          {/* Upload button — available to all players */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center' }}>
+            <label style={{
+              padding: '5px 12px', background: 'rgba(201,168,76,.12)', border: '1px solid var(--gold)',
+              color: 'var(--gold2)', borderRadius: 4, cursor: 'pointer',
+              fontFamily: 'Georgia, serif', fontSize: '.78rem', whiteSpace: 'nowrap',
+            }}>
+              {uploading ? 'Uploading...' : '↑ Upload Token'}
+              <input type="file" accept="image/*" style={{ display: 'none' }} disabled={uploading}
+                onChange={async (e) => {
+                  const file = e.target.files?.[0]
+                  if (!file) return
+                  if (file.size > 1024 * 1024) {
+                    alert('Image must be under 1MB.')
+                    return
+                  }
+                  setUploading(true)
+                  try {
+                    const ext = file.name.split('.').pop()
+                    const path = `${character.createdBy}/${character.name}-${Date.now()}.${ext}`
+                    const { error: uploadError } = await supabase.storage
+                      .from('Tokens')
+                      .upload(path, file, { upsert: true })
+                    if (uploadError) throw uploadError
+                    const { data } = supabase.storage.from('Tokens').getPublicUrl(path)
+                    updateChar('imageUrl', data.publicUrl)
+                  } catch (err) {
+                    console.error('Upload error:', err)
+                    alert('Upload failed. Please try again.')
+                  } finally {
+                    setUploading(false)
+                  }
+                }}
+              />
+            </label>
+            {character.imageUrl && (
+              <button onClick={() => updateChar('imageUrl', '')}
+                style={{ background: 'none', border: 'none', color: 'var(--text3)', cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.7rem' }}>
+                Remove image
+              </button>
+            )}
+          </div>
+
+          {/* GM can also paste a URL directly */}
           {gmMode && (
             <input
-              placeholder="Image URL..."
+              placeholder="Or paste URL..."
               value={character.imageUrl || ''}
               onChange={e => updateChar('imageUrl', e.target.value)}
               style={{ ...inputStyle, fontSize: '.72rem', width: 120 }}
