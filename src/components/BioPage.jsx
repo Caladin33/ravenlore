@@ -2,6 +2,7 @@
 // Character biography, image, and level up wizard
 import { useState, useMemo, useEffect } from 'react'
 import racesData from '../data/races.json'
+import ConfirmModal from './ConfirmModal'
 import { loadAllCampaigns } from '../characterDB'
 
 // ── RACES LIST ────────────────────────────────────────────────────────────────
@@ -159,6 +160,7 @@ export default function BioPage({ character, onUpdateCharacter, stats, isGM }) {
   const [raceLocked, setRaceLocked] = useState(!!(character.race && character.raceLocked))
   const [showMaintBreakdown, setShowMaintBreakdown] = useState(false)
   const [campaigns, setCampaigns] = useState([])
+  const [confirmModal, setConfirmModal] = useState(null)
   useEffect(() => { loadAllCampaigns().then(setCampaigns) }, [])
   const bio = character.bio || {}
   const sp = character.skillPoints || {}
@@ -357,13 +359,13 @@ export default function BioPage({ character, onUpdateCharacter, stats, isGM }) {
                   </select>
                   {gmMode && raceLocked && (
                   <button
-                   onClick={() => { if (window.confirm('Unlock race selection for the player?')) { setRaceLocked(false); onUpdateCharacter({ ...character, raceLocked: false }) } }}
+                   onClick={() => setConfirmModal({ message: 'Unlock race selection for the player?', onConfirm: () => { setRaceLocked(false); onUpdateCharacter({ ...character, raceLocked: false }); setConfirmModal(null) } })}
                     style={{ padding: '5px 10px', background: 'none', border: '1px solid #c94a4a', color: '#c94a4a', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.8rem', whiteSpace: 'nowrap' }}
                    >Unlock</button>
                   )}
                   {!raceLocked && (
                   <button
-                  onClick={() => { if (window.confirm(`Lock race as ${character.race}? This cannot be changed without GM mode.`)) { setRaceLocked(true); onUpdateCharacter({ ...character, raceLocked: true }) } }}
+                 onClick={() => setConfirmModal({ message: `Lock race as ${character.race}? This cannot be changed without GM mode.`, onConfirm: () => { setRaceLocked(true); onUpdateCharacter({ ...character, raceLocked: true }); setConfirmModal(null) } })}
                   style={{ padding: '5px 10px', background: 'rgba(201,168,76,.12)', border: '1px solid var(--gold)', color: 'var(--gold2)', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.8rem', whiteSpace: 'nowrap' }}
                  >Lock</button>
                  )}
@@ -392,7 +394,7 @@ export default function BioPage({ character, onUpdateCharacter, stats, isGM }) {
                       </select>
                       {!character.campaignLocked && character.campaignId && (
                         <button
-                          onClick={() => { if (window.confirm('Lock campaign? This cannot be changed without GM mode.')) { onUpdateCharacter({ ...character, campaignLocked: true }) } }}
+                          onClick={() => setConfirmModal({ message: 'Lock campaign? This cannot be changed without GM mode.', onConfirm: () => { onUpdateCharacter({ ...character, campaignLocked: true }); setConfirmModal(null) } })}
                           style={{ padding: '5px 10px', background: 'rgba(201,168,76,.12)', border: '1px solid var(--gold)', color: 'var(--gold2)', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.8rem', whiteSpace: 'nowrap' }}
                         >Lock</button>
                       )}
@@ -472,7 +474,14 @@ export default function BioPage({ character, onUpdateCharacter, stats, isGM }) {
           <textarea style={textareaStyle} value={bio.contacts || ''} onChange={e => updateBio('contacts', e.target.value)} placeholder="Useful allies, informants, merchants..." />
         )}
       </div>
-
+        {confirmModal && (
+          <ConfirmModal
+           message={confirmModal.message}
+           dangerous={confirmModal.dangerous}
+            onConfirm={confirmModal.onConfirm}
+            onCancel={() => setConfirmModal(null)}
+  />
+)}
     </div>
   )
 }

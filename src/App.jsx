@@ -10,6 +10,7 @@ import CharacterWizard from './components/CharacterWizard'
 import GMView from './components/GMView'
 import { calculate } from './utils/calculator'
 import { loadCharacters, saveCharacter, deleteCharacter, getUserCampaigns } from './characterDB'
+import ConfirmModal from './components/ConfirmModal'
 import './App.css'
 
 function RavenLogo({ size = 48 }) {
@@ -217,6 +218,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState('home')
   const [selectedCharacter, setSelectedCharacter] = useState(null)
   const [isGM, setIsGM] = useState(false)
+  const [confirmModal, setConfirmModal] = useState(null)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -266,12 +268,17 @@ function App() {
     })
   }
   const handleDelete = (name) => {
-    if (window.confirm(`Permanently delete ${name}? This cannot be undone.`)) {
+  setConfirmModal({
+    message: `Permanently delete ${name}? This cannot be undone.`,
+    dangerous: true,
+    onConfirm: () => {
       deleteCharacter(name, user.id).then(() => {
         loadCharacters(user.id).then(({ characters }) => setCharacters(characters || []))
       })
+      setConfirmModal(null)
     }
-  }
+  })
+}
   const handleLogout = () => { supabase.auth.signOut(); setSelectedCharacter(null); setCurrentPage('home') }
 
   const selectedCharacterStats = selectedCharacter
@@ -317,6 +324,14 @@ function App() {
           <BioPage character={selectedCharacter} onUpdateCharacter={handleUpdateCharacter} stats={selectedCharacterStats} isGM={isGM} />
         )}
       </main>
+     {confirmModal && (
+  <ConfirmModal
+    message={confirmModal.message}
+    dangerous={confirmModal.dangerous}
+    onConfirm={confirmModal.onConfirm}
+    onCancel={() => setConfirmModal(null)}
+  />
+)} 
     </div>
   )
 }

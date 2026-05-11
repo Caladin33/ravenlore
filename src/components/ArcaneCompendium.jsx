@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import spells from '../data/spells.json'
 import magicData from '../data/magic.json'
+import ConfirmModal from './ConfirmModal'
 import druidFormsData from '../data/druidForms.json'
 
 const COLORS = {
@@ -98,17 +99,25 @@ function DruidFormSelector({ category, character, onSelect, onClose }) {
           <button onClick={onClose} style={{ padding: '8px 16px', background: 'none', border: '1px solid #3a2e1e', color: '#7a6a50', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif' }}>
             Decide Later
           </button>
-          <button onClick={() => {
+         <button onClick={() => {
             if (!selected) return
-            if (window.confirm(`Lock ${selected} as your ${CATEGORY_LABELS[category]} form? This cannot be changed without GM mode.`)) {
-              onSelect(selected)
-            }
+            setConfirmModal({
+              message: `Lock ${selected} as your ${CATEGORY_LABELS[category]} form? This cannot be changed without GM mode.`,
+              onConfirm: () => { onSelect(selected); setConfirmModal(null) }
+            })
           }} disabled={!selected}
             style={{ padding: '8px 20px', background: selected ? 'rgba(74,158,74,.15)' : '#13100a', border: `1px solid ${selected ? '#4a9e4a' : '#3a2e1e'}`, color: selected ? '#4a9e4a' : '#7a6a50', borderRadius: 5, cursor: selected ? 'pointer' : 'not-allowed', fontFamily: 'Georgia, serif', fontWeight: 600 }}>
             Confirm Form
           </button>
         </div>
       </div>
+      {confirmModal && (
+  <ConfirmModal
+    message={confirmModal.message}
+    onConfirm={confirmModal.onConfirm}
+    onCancel={() => setConfirmModal(null)}
+  />
+)}
     </div>
   )
 }
@@ -216,6 +225,7 @@ export default function ArcaneCompendium({ character, onUpdateCharacter, stats }
   const setHooks = (val) => onUpdateCharacter({ ...character, spellHooks: val })
 
   const [filterSchool, setFilterSchool] = useState(null)
+  const [confirmModal, setConfirmModal] = useState(null)
   const [showUnlockedOnly, setShowUnlockedOnly] = useState(false)
   const [showKnownOnly, setShowKnownOnly] = useState(false)
   const [previewAll, setPreviewAll] = useState(false)

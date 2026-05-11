@@ -6,6 +6,7 @@ import racesData from '../data/races.json'
 import { GeneralSkillCard } from './GeneralSkillCard'
 import { RankedSkillTable, THEMES } from './RankedSkillTable'
 import SaveConfirmModal from './SaveConfirmModal'
+import ConfirmModal from './ConfirmModal'
 import selfImprovementData from '../data/selfImprovementSkills.json'
 
 const OBSCURE_CATEGORIES = ['infernal', 'lycanthropy', 'animal']
@@ -83,11 +84,12 @@ function PatronMarkPanel({ char, onUpdate, gmMode }) {
   const isLocked = pm.locked && !gmMode
 
   const handleSave = () => {
-    if (!mark || !vow) return
-    if (window.confirm(`Lock Mark of ${mark} with vow: ${vow}? This cannot be changed without GM mode.`)) {
-      onUpdate({ ...pm, mark, vow, locked: true })
-    }
-  }
+  if (!mark || !vow) return
+  setConfirmModal({
+    message: `Lock Mark of ${mark} with vow: "${vow}"? This cannot be changed without GM mode.`,
+    onConfirm: () => { onUpdate({ ...pm, mark, vow, locked: true }); setConfirmModal(null) }
+  })
+}
 
   return (
     <div style={{ padding: '12px 14px', background: 'var(--bg2)', borderBottom: '1px solid var(--border)' }}>
@@ -148,12 +150,16 @@ function ShamanSymbolsPanel({ char, onUpdate, gmMode }) {
   const availableMarks = DIVINE_MARKS.filter(m => !usedSymbols.has(m))
   const availableVows = SHAMAN_VOWS.filter(v => v.refusedBy !== newSymbol)
 
-  const addSymbol = () => {
+ const addSymbol = () => {
   if (!newSymbol || !newVow) return
-  if (window.confirm(`Add Symbol of ${newSymbol} with vow: ${newVow}? This cannot be undone without GM mode.`)) {
-    onUpdate([...symbols, { symbol: newSymbol, vow: newVow, locked: true }])
-    setNewSymbol(''); setNewVow('')
-  }
+  setConfirmModal({
+    message: `Add Symbol of ${newSymbol} with vow: "${newVow}"? This cannot be undone without GM mode.`,
+    onConfirm: () => {
+      onUpdate([...symbols, { symbol: newSymbol, vow: newVow, locked: true }])
+      setNewSymbol(''); setNewVow('')
+      setConfirmModal(null)
+    }
+  })
 }
 
   const removeSymbol = (i) => {
@@ -270,6 +276,7 @@ export default function SkillEditor({ character, onSave, onBack, isGM }) {
   const [char, setChar] = useState(() => JSON.parse(JSON.stringify(character)))
   const [gmMode, setGmMode] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
+  const [confirmModal, setConfirmModal] = useState(null)
   const [lockedPoints, setLockedPoints] = useState(() => {
     const locked = {}
     const allSkills = { ...character.martialSkills, ...character.arcaneSkills, ...character.selfImprovementSkills }
@@ -529,6 +536,14 @@ const handleSave = () => {
           />
         )}
       </div>
+      {confirmModal && (
+  <ConfirmModal
+    message={confirmModal.message}
+    dangerous={confirmModal.dangerous}
+    onConfirm={confirmModal.onConfirm}
+    onCancel={() => setConfirmModal(null)}
+  />
+)}
     </div>
   )
 }
