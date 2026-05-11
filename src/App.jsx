@@ -242,7 +242,7 @@ function App() {
   const handleSelectCharacter = (char) => { setSelectedCharacter(char); setCurrentPage('sheet') }
   const handleNewCharacter = () => setCurrentPage('wizard')
   const handleWizardComplete = async (newChar) => {
-    await saveCharacter(newChar, user.id)
+    await saveCharacter({ ...newChar, status: 'active' }, user.id)
     // Increment charactersCreated on user profile
     await supabase.from('profiles').upsert({ id: user.id, charactersCreated: 1 }, { onConflict: 'id', ignoreDuplicates: false })
       .select().then(async ({ data: profile }) => {

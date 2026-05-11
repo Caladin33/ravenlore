@@ -451,7 +451,6 @@ export default function CharacterWizard({ userId, onComplete, onCancel }) {
       weapons: { melee: [null, null], ranged: [null] },
       knownSpells: [], spellHooks: [],
       hardcore: data.selectedSet === 2,
-      status: 'creation',
       levelUpAuthorized: false,
       createdAt: new Date().toISOString(),
       createdBy: userId,
