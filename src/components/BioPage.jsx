@@ -78,6 +78,7 @@ function LevelUpWizard({ character, stats, onUpdate, onClose }) {
     onUpdate({
       ...character,
       level: newLevel,
+      levelUpAuthorized: false,
       skillPoints: {
         ...character.skillPoints,
         totalEarned: newEarned,
