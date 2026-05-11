@@ -266,9 +266,11 @@ function App() {
     })
   }
   const handleDelete = (name) => {
-    deleteCharacter(name, user.id).then(() => {
-      loadCharacters(user.id).then(({ characters }) => setCharacters(characters || []))
-    })
+    if (window.confirm(`Permanently delete ${name}? This cannot be undone.`)) {
+      deleteCharacter(name, user.id).then(() => {
+        loadCharacters(user.id).then(({ characters }) => setCharacters(characters || []))
+      })
+    }
   }
   const handleLogout = () => { supabase.auth.signOut(); setSelectedCharacter(null); setCurrentPage('home') }
 

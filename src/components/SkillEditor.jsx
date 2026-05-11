@@ -297,11 +297,12 @@ export default function SkillEditor({ character, onSave, onBack, isGM }) {
       if (obscureNames.has(name)) obscureSpent += pts
       else spiritualSpent += pts
     })
+
    const totalSpent = generalSpent + martialSpent + spiritualSpent + obscureSpent
     const totalEarned = (char.skillPoints?.totalEarned || 0) + (char.skillPoints?.bonusGiven || 0)
     const maintenancePaid = char.skillPoints?.maintenancePaid || 0
     return { generalSpent, martialSpent, spiritualSpent, obscureSpent, totalSpent, totalEarned, unspent: totalEarned - totalSpent - maintenancePaid }
-
+  }, [char])
   const handleUpdate = (skillName, newPoints, source) => {
     setChar(prev => {
       const next = JSON.parse(JSON.stringify(prev))
