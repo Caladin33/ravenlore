@@ -491,6 +491,7 @@ const handleSave = () => {
   key={skill.name}
   skill={skill}
   score={score}
+  stats={null} character={char}
   pointsInvested={pts}
   getSkillScore={getSkillScore}
   gmMode={gmMode}

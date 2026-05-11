@@ -179,9 +179,9 @@
     "move": 13, "vision": "None", "visionRange": 0,
     "heightRange": "7'4\" to 8'",
     "hpModifier": 0, "skillPointsPerLevelModifier": 0, "firstLevelBonus": true,
-    "strModifier": 4, "conModifier": 4, "apModifier": 0, "precisionModifier": 0,
+    "strModifier": 4, "conModifier": 4, "apModifier": -4, "precisionModifier": 0,
     "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 0,
-    "advantages": [], "specialRules": "Huge, Pacifist, Steading-Linked",
+    "advantages": [], "specialRules": "Huge, Pacifist, Stedding-Linked",
     "attrMin": { "str": 12, "con": 14 },
     "attrMax": {}
   },

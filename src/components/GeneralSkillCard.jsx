@@ -1,5 +1,6 @@
 // GeneralSkillCard.jsx
 import { useState } from 'react'
+import attributeData from '../data/attributes.json'
 
 const G = {
   primary:   '#4a9e4a',
@@ -11,6 +12,30 @@ const G = {
 }
 
 const GRID = '1fr 52px 72px'
+
+// ── MAXIMUM PARSER ────────────────────────────────────────────────────────────
+function parseMaximum(formula, attrs, isOgier) {
+  if (!formula) return null
+  const f = formula.trim()
+  const ogierBonus = isOgier ? 10 : 0
+
+  if (f === 'SC') {
+    const sc = attributeData.awareness?.[String(Math.max(1, Math.min(20, attrs.aw)))]?.skillCap ?? 100
+    return sc + ogierBonus
+  }
+  if (f === '2SC') {
+    const sc = attributeData.awareness?.[String(Math.max(1, Math.min(20, attrs.aw)))]?.skillCap ?? 100
+    return sc * 2 + ogierBonus
+  }
+  const match = f.match(/^(\d+)(Str|Dex|Con|Aw|Chr|Wp)$/i)
+  if (match) {
+    const mult = parseInt(match[1])
+    const key = match[2].toLowerCase()
+    const attrMap = { str: attrs.str, dex: attrs.dex, con: attrs.con, aw: attrs.aw, chr: attrs.chr, wp: attrs.wp }
+    return mult * (attrMap[key] || 10) + ogierBonus
+  }
+  return null
+}
 
 // ── PREREQ PARSER ─────────────────────────────────────────────────────────────
 function parsePrereq(prereqStr) {
@@ -98,7 +123,7 @@ function EditablePoints({ value, onCommit, isActive }) {
 }
 
 // ── SKILL ROW ─────────────────────────────────────────────────────────────────
-export function GeneralSkillCard({ skill, score, pointsInvested, onAdd, onRemove, getSkillScore, onUpdate, lockedPoints, gmMode }) {
+export function GeneralSkillCard({ skill, score, pointsInvested, onAdd, onRemove, getSkillScore, onUpdate, lockedPoints, gmMode, stats, character }) {
   const [expanded, setExpanded] = useState(false)
 
   const prereq = parsePrereq(skill.prereq)
@@ -109,11 +134,31 @@ export function GeneralSkillCard({ skill, score, pointsInvested, onAdd, onRemove
   const isBlocked = prereq.type === 'min' && !minResult.met
   const locked = lockedPoints?.[skill.name] || 0
 
+  const isOgier = character?.raceKey === 'ogier' || character?.race === 'Ogier'
+
+  const effectiveAttrs = {
+    str: stats?.attributes?.str?.effective ?? (typeof character?.attributes?.str === 'object' ? character.attributes.str.base : character?.attributes?.str) ?? 10,
+    dex: stats?.attributes?.dex?.effective ?? (typeof character?.attributes?.dex === 'object' ? character.attributes.dex.base : character?.attributes?.dex) ?? 10,
+    con: stats?.attributes?.con?.effective ?? (typeof character?.attributes?.con === 'object' ? character.attributes.con.base : character?.attributes?.con) ?? 10,
+    aw:  stats?.attributes?.aw?.effective  ?? (typeof character?.attributes?.aw  === 'object' ? character.attributes.aw.base  : character?.attributes?.aw)  ?? 10,
+    chr: stats?.attributes?.chr?.effective ?? (typeof character?.attributes?.chr === 'object' ? character.attributes.chr.base : character?.attributes?.chr) ?? 10,
+    wp:  stats?.attributes?.wp?.effective  ?? (typeof character?.attributes?.wp  === 'object' ? character.attributes.wp.base  : character?.attributes?.wp)  ?? 10,
+  }
+
+  const maxValue = parseMaximum(skill.maximum, effectiveAttrs, isOgier)
+  const atMax = maxValue !== null && score >= maxValue
+
   const handleCommit = (newPoints) => {
     if (!gmMode && newPoints < locked) return { error: `Cannot go below ${locked} (locked from last save)` }
     if (!minResult.met && newPoints > 0) return { error: `Requires ${prereq.skill} ${prereq.score}+` }
-    const newScore = skill.freeBase ? score + (newPoints - pointsInvested) * costMult : newPoints * costMult
-    if (capResult.capped && newPoints > pointsInvested) return { error: `Capped at ${capResult.capValue} by ${capResult.capBy}` }
+    if (!gmMode && capResult.capped && newPoints > pointsInvested) return { error: `Capped at ${capResult.capValue} by ${capResult.capBy}` }
+    // Calculate what the new score would be
+    const currentScore = score
+    const pointDelta = newPoints - pointsInvested
+    const newScore = currentScore + pointDelta * costMult
+    if (!gmMode && maxValue !== null && newScore > maxValue) {
+      return { error: `Maximum score is ${maxValue}${isOgier ? ' (includes +10 Ogier bonus)' : ''}` }
+    }
     if (onUpdate) onUpdate(newPoints)
     else if (newPoints > pointsInvested) onAdd()
     else onRemove()
@@ -158,22 +203,30 @@ export function GeneralSkillCard({ skill, score, pointsInvested, onAdd, onRemove
           {prereq.type !== 'none' && (
             <div style={{ fontSize: '.62rem', marginTop: 2 }}>{prereqLine()}</div>
           )}
+          {atMax && (
+            <div style={{ fontSize: '.6rem', color: '#c9a84c', fontFamily: 'Georgia, serif', marginTop: 1 }}>⚑ At maximum</div>
+          )}
         </div>
 
-        {/* Score — calculated, display only */}
+        {/* Score */}
         <div style={{ textAlign: 'center', padding: '8px 4px' }}>
           <div style={{
             fontSize: isActive ? '1.2rem' : '.95rem',
             fontWeight: isActive ? 700 : 400,
             fontFamily: 'Georgia, serif',
-            color: capResult.capped ? '#c94a4a' : (isActive ? G.primary2 : G.primary),
+            color: atMax ? '#c9a84c' : (capResult.capped ? '#c94a4a' : (isActive ? G.primary2 : G.primary)),
             lineHeight: 1,
           }}>
             {score}
           </div>
+          {maxValue !== null && (
+            <div style={{ fontSize: '.55rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', marginTop: 1 }}>
+              /{maxValue}
+            </div>
+          )}
         </div>
 
-        {/* Points invested — editable */}
+        {/* Points invested */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '6px 4px', gap: 2 }}>
           <EditablePoints value={pointsInvested} onCommit={handleCommit} isActive={isActive} />
           <div style={{ width: 36, height: 1, background: isActive ? G.borderAct : 'var(--border)' }} />
@@ -194,7 +247,11 @@ export function GeneralSkillCard({ skill, score, pointsInvested, onAdd, onRemove
             {skill.maximum && (
               <div>
                 <div style={{ fontSize: '.55rem', letterSpacing: '.12em', color: 'var(--text3)', textTransform: 'uppercase', marginBottom: 2 }}>Maximum</div>
-                <div style={{ fontSize: '.9rem', color: G.primary2, fontFamily: 'Georgia, serif', fontWeight: 600 }}>{skill.maximum}</div>
+                <div style={{ fontSize: '.9rem', color: G.primary2, fontFamily: 'Georgia, serif', fontWeight: 600 }}>
+                  {maxValue !== null ? maxValue : skill.maximum}
+                  {isOgier && maxValue !== null && <span style={{ fontSize: '.7rem', color: '#c9a84c', marginLeft: 6 }}>(+10 Ogier)</span>}
+                  <span style={{ fontSize: '.7rem', color: 'var(--text3)', marginLeft: 6 }}>({skill.maximum})</span>
+                </div>
               </div>
             )}
           </div>
