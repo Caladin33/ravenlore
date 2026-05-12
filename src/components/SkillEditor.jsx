@@ -92,59 +92,73 @@ function PatronMarkPanel({ char, onUpdate, gmMode }) {
   })
 }
 
-  return (
+ return (
     <div style={{ padding: '12px 14px', background: 'var(--bg2)', borderBottom: '1px solid var(--border)' }}>
-      <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'flex-end' }}>
-        <div style={{ flex: '1 1 140px' }}>
-          <span style={lbl}>Divine Mark</span>
-          {isLocked
-            ? <div style={{ fontSize: '1rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600 }}>Mark of {pm.mark}</div>
-            : <select value={mark} onChange={e => { setMark(e.target.value); setVow('') }} style={selectStyle}>
-                <option value="">— Choose Mark —</option>
-                {DIVINE_MARKS.map(m => <option key={m} value={m}>Mark of {m}</option>)}
-              </select>
-          }
+      {isLocked ? (
+        <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'flex-start' }}>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: '.55rem', letterSpacing: '.16em', color: 'var(--text3)', textTransform: 'uppercase', fontFamily: 'Georgia, serif', marginBottom: 4 }}>Divine Mark</div>
+            <div style={{ fontSize: '1rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600 }}>Mark of {pm.mark}</div>
+            <div style={{ fontSize: '.78rem', color: 'var(--text2)', fontFamily: 'Georgia, serif', fontStyle: 'italic', marginTop: 4 }}>{MARK_BONUSES[pm.mark]}</div>
+            <div style={{ fontSize: '.78rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', marginTop: 4 }}>Vow: {pm.vow} — {DIVINE_VOWS.find(v => v.name === pm.vow)?.detail}</div>
+          </div>
+          {gmMode && (
+            <button onClick={() => onUpdate({ ...pm, locked: false })}
+              style={{ padding: '7px 16px', background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.8rem' }}>
+              Unlock (GM)
+            </button>
+          )}
         </div>
-        <div style={{ flex: '1 1 140px' }}>
-          <span style={lbl}>Vow</span>
-          {isLocked
-            ? <div style={{ fontSize: '1rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600 }}>{pm.vow}</div>
-            : <select value={vow} onChange={e => setVow(e.target.value)} style={selectStyle} disabled={!mark}>
-                <option value="">— Choose Vow —</option>
-                {availableVows.map(v => <option key={v.name} value={v.name}>{v.name} — {v.detail}</option>)}
-              </select>
-          }
-        </div>
-        {!isLocked && (
-          <button onClick={handleSave} disabled={!mark || !vow}
-            style={{ padding: '7px 16px', background: 'rgba(201,168,76,.15)', border: '1px solid var(--gold)', color: 'var(--gold2)', borderRadius: 4, cursor: mark && vow ? 'pointer' : 'not-allowed', fontFamily: 'Georgia, serif', fontSize: '.85rem', opacity: mark && vow ? 1 : 0.4 }}>
-            Confirm &amp; Lock
-          </button>
-        )}
-        {isLocked && gmMode && (
-          <button onClick={() => onUpdate({ ...pm, locked: false })}
-            style={{ padding: '7px 16px', background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.8rem' }}>
-            Unlock (GM)
-          </button>
-        )}
-      </div>
-      {mark && (
-        <div style={{ marginTop: 10, fontSize: '.8rem', color: 'var(--text2)', fontFamily: 'Georgia, serif', fontStyle: 'italic', borderLeft: '2px solid var(--gold)', paddingLeft: 10 }}>
-          <strong style={{ color: 'var(--gold2)' }}>Mark of {mark}:</strong> {MARK_BONUSES[mark]}
-        </div>
-      )}
-      {vow && (
-        <div style={{ marginTop: 6, fontSize: '.8rem', color: 'var(--text2)', fontFamily: 'Georgia, serif', fontStyle: 'italic', borderLeft: '2px solid var(--border2)', paddingLeft: 10 }}>
-          <strong style={{ color: 'var(--text)' }}>{vow}:</strong> {DIVINE_VOWS.find(v => v.name === vow)?.detail}
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div>
+            <div style={{ fontSize: '.55rem', letterSpacing: '.16em', color: 'var(--text3)', textTransform: 'uppercase', fontFamily: 'Georgia, serif', marginBottom: 6 }}>Choose Divine Mark</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {DIVINE_MARKS.map(m => (
+                <div key={m} onClick={() => { setMark(mark === m ? '' : m); setVow('') }} style={{
+                  padding: '10px 14px', borderRadius: 7, cursor: 'pointer',
+                  border: `2px solid ${mark === m ? 'var(--gold)' : 'var(--border)'}`,
+                  background: mark === m ? 'rgba(201,168,76,.08)' : 'var(--bg)',
+                  transition: 'all .15s',
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                    <span style={{ fontSize: '.95rem', color: mark === m ? 'var(--gold2)' : 'var(--text)', fontFamily: 'Georgia, serif', fontWeight: mark === m ? 600 : 400 }}>
+                      Mark of {m}
+                    </span>
+                    {mark === m && <span style={{ fontSize: '.7rem', color: 'var(--gold)', fontFamily: 'Georgia, serif' }}>✓ Selected</span>}
+                  </div>
+                  <div style={{ fontSize: '.78rem', color: 'var(--text2)', fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
+                    {MARK_BONUSES[m]}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {mark && (
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'flex-end' }}>
+              <div style={{ flex: '1 1 180px' }}>
+                <div style={{ fontSize: '.55rem', letterSpacing: '.16em', color: 'var(--text3)', textTransform: 'uppercase', fontFamily: 'Georgia, serif', marginBottom: 4 }}>Vow</div>
+                <select value={vow} onChange={e => setVow(e.target.value)} style={selectStyle}>
+                  <option value="">— Choose Vow —</option>
+                  {availableVows.map(v => <option key={v.name} value={v.name}>{v.name} — {v.detail}</option>)}
+                </select>
+              </div>
+              <button onClick={handleSave} disabled={!mark || !vow}
+                style={{ padding: '7px 16px', background: 'rgba(201,168,76,.15)', border: '1px solid var(--gold)', color: 'var(--gold2)', borderRadius: 4, cursor: mark && vow ? 'pointer' : 'not-allowed', fontFamily: 'Georgia, serif', fontSize: '.85rem', opacity: mark && vow ? 1 : 0.4 }}>
+                Confirm &amp; Lock
+              </button>
+            </div>
+          )}
         </div>
       )}
       {confirmModal && (
-  <ConfirmModal
-    message={confirmModal.message}
-    onConfirm={confirmModal.onConfirm}
-    onCancel={() => setConfirmModal(null)}
-  />
-)}
+        <ConfirmModal
+          message={confirmModal.message}
+          onConfirm={confirmModal.onConfirm}
+          onCancel={() => setConfirmModal(null)}
+        />
+      )}
     </div>
   )
 }
@@ -159,7 +173,9 @@ function ShamanSymbolsPanel({ char, onUpdate, gmMode }) {
   const availableMarks = DIVINE_MARKS.filter(m => !usedSymbols.has(m))
   const availableVows = SHAMAN_VOWS.filter(v => v.refusedBy !== newSymbol)
 
- const addSymbol = () => {
+const addSymbol = () => {
+  console.log('addSymbol called', newSymbol, newVow)
+  if (!newSymbol || !newVow) return
   if (!newSymbol || !newVow) return
   setConfirmModal({
     message: `Add Symbol of ${newSymbol} with vow: "${newVow}"? This cannot be undone without GM mode.`,
@@ -196,37 +212,50 @@ function ShamanSymbolsPanel({ char, onUpdate, gmMode }) {
         </div>
       ))}
       {availableMarks.length > 0 && (
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'flex-end', marginTop: symbols.length > 0 ? 10 : 0 }}>
-          <div style={{ flex: '1 1 140px' }}>
-            <span style={lbl}>Add Symbol</span>
-            <select value={newSymbol} onChange={e => { setNewSymbol(e.target.value); setNewVow('') }} style={selectStyle}>
-              <option value="">— Choose Symbol —</option>
-              {availableMarks.map(m => <option key={m} value={m}>Symbol of {m}</option>)}
-            </select>
+        <div style={{ marginTop: symbols.length > 0 ? 10 : 0 }}>
+          <span style={lbl}>Add Symbol</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 10 }}>
+            {availableMarks.map(m => (
+              <div key={m} onClick={() => setNewSymbol(newSymbol === m ? '' : m)} style={{
+                padding: '10px 14px', borderRadius: 7, cursor: 'pointer',
+                border: `2px solid ${newSymbol === m ? 'var(--gold)' : 'var(--border)'}`,
+                background: newSymbol === m ? 'rgba(201,168,76,.08)' : 'var(--bg)',
+                transition: 'all .15s',
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                  <span style={{ fontSize: '.95rem', color: newSymbol === m ? 'var(--gold2)' : 'var(--text)', fontFamily: 'Georgia, serif', fontWeight: newSymbol === m ? 600 : 400 }}>
+                    Symbol of {m}
+                  </span>
+                  {newSymbol === m && <span style={{ fontSize: '.7rem', color: 'var(--gold)', fontFamily: 'Georgia, serif' }}>✓ Selected</span>}
+                </div>
+                <div style={{ fontSize: '.78rem', color: 'var(--text2)', fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
+                  {SHAMAN_BONUS_OVERRIDES[m] || MARK_BONUSES[m]}
+                </div>
+              </div>
+            ))}
           </div>
-          <div style={{ flex: '1 1 140px' }}>
-            <span style={lbl}>Vow</span>
-            <select value={newVow} onChange={e => setNewVow(e.target.value)} style={selectStyle} disabled={!newSymbol}>
-              <option value="">— Choose Vow —</option>
-              {availableVows.map(v => <option key={v.name} value={v.name}>{v.name} — {v.detail}</option>)}
-            </select>
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'flex-end' }}>
+            <div style={{ flex: '1 1 180px' }}>
+              <span style={lbl}>Vow</span>
+              <select value={newVow} onChange={e => setNewVow(e.target.value)} style={selectStyle} disabled={!newSymbol}>
+                <option value="">— Choose Vow —</option>
+                {availableVows.map(v => <option key={v.name} value={v.name}>{v.name} — {v.detail}</option>)}
+              </select>
+            </div>
+            <button onClick={addSymbol} disabled={!newSymbol || !newVow}
+              style={{ padding: '7px 16px', background: 'rgba(201,168,76,.15)', border: '1px solid var(--gold)', color: 'var(--gold2)', borderRadius: 4, cursor: newSymbol && newVow ? 'pointer' : 'not-allowed', fontFamily: 'Georgia, serif', fontSize: '.85rem', opacity: newSymbol && newVow ? 1 : 0.4 }}>
+              Add Symbol
+            </button>
           </div>
-          <button onClick={addSymbol} disabled={!newSymbol || !newVow}
-            style={{ padding: '7px 16px', background: 'rgba(201,168,76,.15)', border: '1px solid var(--gold)', color: 'var(--gold2)', borderRadius: 4, cursor: newSymbol && newVow ? 'pointer' : 'not-allowed', fontFamily: 'Georgia, serif', fontSize: '.85rem', opacity: newSymbol && newVow ? 1 : 0.4 }}>
-            Add Symbol
-          </button>
         </div>
       )}
-      {availableMarks.length === 0 && symbols.length > 0 && (
-        <div style={{ fontSize: '.78rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', fontStyle: 'italic', marginTop: 8 }}>All symbols claimed.</div>
-      )}
       {confirmModal && (
-  <ConfirmModal
-    message={confirmModal.message}
-    onConfirm={confirmModal.onConfirm}
-    onCancel={() => setConfirmModal(null)}
-  />
-)}
+        <ConfirmModal
+          message={confirmModal.message}
+          onConfirm={confirmModal.onConfirm}
+          onCancel={() => setConfirmModal(null)}
+        />
+      )}
     </div>
   )
 }
