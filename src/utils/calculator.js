@@ -138,21 +138,22 @@ function getWeapon(weaponName) {
   return weaponsData.find(w => w.name.toLowerCase() === weaponName.toLowerCase()) || null
 }
 
-function getArmor(armorName) {
-  if (!armorName || armorName === 'None') return armorData.bodyArmor[0]
-  return armorData.bodyArmor.find(a => a.name.toLowerCase() === armorName.toLowerCase()) || armorData.bodyArmor[0]
+function getArmor(armorCode) {
+  if (!armorCode || armorCode === 'None') return armorData.bodyArmor[0]
+  return armorData.bodyArmor.find(a => a.code === armorCode) || armorData.bodyArmor[0]
 }
 
-function getHelm(helmName) {
-  if (!helmName || helmName === 'None') return armorData.helms[0]
-  return armorData.helms.find(h => h.name.toLowerCase() === helmName.toLowerCase()) || armorData.helms[0]
+function getHelm(helmCode) {
+  if (!helmCode || helmCode === 'None') return armorData.helms[0]
+  return armorData.helms.find(h => h.code === helmCode) || armorData.helms[0]
 }
 
-function getShieldSize(shieldType) {
-  if (!shieldType) return null
-  const size = shieldType.split('-')[0] // e.g. 'M-Metal' → 'M'
+function getShieldSize(shieldCode) {
+  if (!shieldCode || shieldCode === 'None') return null
+  // New format: 'SM', 'LL', 'TM' etc. First letter = size, second = material
   const sizeMap = { S: 'Small', M: 'Medium', L: 'Large', T: 'Tower' }
-  return armorData.shieldSizes.find(s => s.size === sizeMap[size]) || null
+  const size = sizeMap[shieldCode[0]]
+  return armorData.shieldSizes.find(s => s.size === size) || null
 }
 
 // ─────────────────────────────────────────────

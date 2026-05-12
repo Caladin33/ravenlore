@@ -390,8 +390,20 @@ export default function SkillEditor({ character, onSave, onBack, isGM }) {
     })
   }
 
-  const handlePatronMarkUpdate = (markData) => setChar(prev => ({ ...prev, patronMark: markData }))
-  const handleShamanSymbolsUpdate = (symbols) => setChar(prev => ({ ...prev, shamanSymbols: symbols }))
+ const handlePatronMarkUpdate = (markData) => {
+  setChar(prev => {
+    const updated = { ...prev, patronMark: markData }
+    onSave(updated)
+    return updated
+  })
+}
+const handleShamanSymbolsUpdate = (symbols) => {
+  setChar(prev => {
+    const updated = { ...prev, shamanSymbols: symbols }
+    onSave(updated)
+    return updated
+  })
+}
 
   const filterSkills = (skills) => {
     return skills.filter(skill => {
@@ -410,17 +422,19 @@ const handleSave = () => {
     newLocked[name] = parseInt(data.pointsInvested) || 0
   })
   setLockedPoints(newLocked)
-  // Save original skills as base, new skills as pending
-  const withPending = {
-    ...character,  // use original character prop, not char
-    pendingSkillChanges: {
-      martialSkills: char.martialSkills,
-      arcaneSkills: char.arcaneSkills,
-      selfImprovementSkills: char.selfImprovementSkills,
-      generalSkills: char.generalSkills,
+  setChar(prev => {
+    const withPending = {
+      ...prev,
+      pendingSkillChanges: {
+        martialSkills: prev.martialSkills,
+        arcaneSkills: prev.arcaneSkills,
+        selfImprovementSkills: prev.selfImprovementSkills,
+        generalSkills: prev.generalSkills,
+      }
     }
-  }
-  onSave(withPending)
+    onSave(withPending)
+    return prev
+  })
   setShowConfirm(false)
 }
 
