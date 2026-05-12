@@ -1,7 +1,6 @@
 // CharacterWizard.jsx
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import racesData from '../data/races.json'
-import { loadAllCampaigns } from '../characterDB'
 import attributeData from '../data/attributes.json'
 
 // ── STYLES ────────────────────────────────────────────────────────────────────
@@ -11,7 +10,7 @@ const inputStyle = { background: 'var(--bg2)', border: '1px solid var(--border)'
 const btnPrimary = { padding: '10px 24px', background: 'rgba(201,168,76,.15)', border: '1px solid var(--gold)', color: 'var(--gold2)', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '1rem', fontWeight: 600 }
 const btnSecondary = { padding: '8px 18px', background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.9rem' }
 const sectionTitle = { fontSize: '.75rem', letterSpacing: '.2em', color: 'var(--gold)', textTransform: 'uppercase', fontFamily: 'Georgia, serif', marginBottom: 14 }
-const selectStyle = { background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 4, color: 'var(--text)', fontFamily: 'Georgia, serif', fontSize: '.95rem', padding: '8px 10px', width: '100%', boxSizing: 'border-box', cursor: 'pointer' }
+
 const ATTRS = ['STR', 'DEX', 'CON', 'AW', 'CHR', 'WP']
 const ATTR_LABELS = { STR: 'Strength', DEX: 'Dexterity', CON: 'Constitution', AW: 'Awareness', CHR: 'Charisma', WP: 'Willpower' }
 const ATTR_KEYS = { STR: 'str', DEX: 'dex', CON: 'con', AW: 'aw', CHR: 'chr', WP: 'wp' }
@@ -93,35 +92,8 @@ function applyThresholdFix(rolls) {
   return fixed
 }
 
-function rollNd(n, sides) {
-  const dice = Array.from({ length: n }, () => Math.ceil(Math.random() * sides))
-  return { dice, total: dice.reduce((a, b) => a + b, 0) }
-}
-
-function generateHardcoreSet() {
-  const rolls = []
-  // 4 rolls of 3d6
-  for (let i = 0; i < 4; i++) {
-    const r = rollNd(3, 6)
-    rolls.push({ dice: r.dice, total: r.total })
-  }
-  // 2 rolls of 1d4+14
-  for (let i = 0; i < 2; i++) {
-    const d = Math.ceil(Math.random() * 4)
-    rolls.push({ dice: [d, '+14'], total: d + 14, bonus: true })
-  }
-  // 1 roll of 1d4+5 — cannot be discarded
-  const d = Math.ceil(Math.random() * 4)
-  rolls.push({ dice: [d, '+5'], total: d + 5, bonus: true, mustKeep: true })
-  return rolls // no threshold fix for hardcore
-}
-
 function generateAllSets() {
-  return [
-    applyThresholdFix(Array.from({ length: 7 }, () => roll4d6kh3())),
-    applyThresholdFix(Array.from({ length: 7 }, () => roll4d6kh3())),
-    generateHardcoreSet(),
-  ]
+  return [1,2,3].map(() => applyThresholdFix(Array.from({ length: 7 }, () => roll4d6kh3())))
 }
 
 // ── STEP INDICATOR ────────────────────────────────────────────────────────────
@@ -137,12 +109,6 @@ function StepIndicator({ current, total }) {
 
 // ── STEP 1: NAME & PLAYER ─────────────────────────────────────────────────────
 function StepNamePlayer({ data, onChange }) {
-  const [campaigns, setCampaigns] = useState([])
-
-  useEffect(() => {
-    loadAllCampaigns().then(setCampaigns)
-  }, [])
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
       <div style={sectionTitle}>Your Character</div>
@@ -153,13 +119,6 @@ function StepNamePlayer({ data, onChange }) {
       <div>
         <span style={lbl}>Player Name</span>
         <input style={inputStyle} value={data.player} onChange={e => onChange({ ...data, player: e.target.value })} placeholder="Your name..." />
-      </div>
-      <div>
-        <span style={lbl}>Campaign</span>
-        <select style={selectStyle} value={data.campaignId || ''} onChange={e => onChange({ ...data, campaignId: e.target.value })}>
-          <option value="">— Choose Campaign —</option>
-          {campaigns.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-        </select>
       </div>
     </div>
   )
@@ -197,9 +156,7 @@ function StepRoll({ data, onChange }) {
             return (
               <div key={si} onClick={() => selectSet(si)} style={{ padding: '12px 14px', borderRadius: 7, cursor: 'pointer', border: `2px solid ${isSel ? 'var(--gold)' : 'var(--border)'}`, background: isSel ? 'rgba(201,168,76,.08)' : 'var(--bg2)', transition: 'all .2s' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                  <span style={{ ...lbl, marginBottom: 0, color: si === 2 ? '#c94a4a' : (isSel ? 'var(--gold)' : 'var(--text3)') }}>
-                    {si === 2 ? '⚔ Hardcore' : `Set ${si + 1}`}
-                  </span>
+                  <span style={{ ...lbl, marginBottom: 0, color: isSel ? 'var(--gold)' : 'var(--text3)' }}>Set {si + 1}</span>
                   {isSel && <span style={{ fontSize: '.7rem', color: 'var(--gold)', fontFamily: 'Georgia, serif' }}>✓ Selected</span>}
                 </div>
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
@@ -225,9 +182,6 @@ function StepRoll({ data, onChange }) {
 // ── STEP 3: ASSIGN & PREVIEW ──────────────────────────────────────────────────
 function StepAssign({ data, onChange }) {
   const values = data.rolledValues || []
-  const mustKeepIdx = data.selectedSet === 2 
-    ? data.rollSets?.[2]?.findIndex(r => r.mustKeep) ?? null
-    : null
   const [assignedMap, setAssignedMap] = useState(data.assignedMap || {}) // { ATTR: valueIndex }
   const [discardIdx, setDiscardIdx] = useState(data.discardIdx ?? null)
   const [selIdx, setSelIdx] = useState(null)
@@ -265,10 +219,7 @@ function StepAssign({ data, onChange }) {
   }
 
   const handleDiscardTap = () => {
-    if (selIdx !== null && selIdx !== mustKeepIdx) {
-      save(assignedMap, selIdx)
-      setSelIdx(null)
-    }
+    if (selIdx !== null) { save(assignedMap, selIdx); setSelIdx(null) }
   }
 
   // Current attribute values for preview
@@ -295,10 +246,7 @@ function StepAssign({ data, onChange }) {
           const isDiscard = discardIdx === i
           return (
             <div key={i} onClick={() => handleValueTap(i)} style={{ width: 42, height: 42, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 7, cursor: 'pointer', fontFamily: 'Georgia, serif', fontWeight: 700, fontSize: '1.05rem', transition: 'all .15s', border: `2px solid ${isSel ? 'var(--gold)' : isDiscard ? '#c94a4a' : isAssigned ? '#4a9e4a' : 'var(--border)'}`, background: isSel ? 'rgba(201,168,76,.2)' : isDiscard ? 'rgba(201,74,74,.12)' : isAssigned ? 'rgba(74,158,74,.1)' : 'var(--bg)', color: isSel ? 'var(--gold2)' : isDiscard ? '#c94a4a' : isAssigned ? '#4a9e4a' : 'var(--text)', opacity: isUsed && !isSel ? 0.6 : 1 }}>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <span>{v}</span>
-                {mustKeepIdx === i && <span style={{ fontSize: '.42rem', color: 'var(--gold)', letterSpacing: '.05em' }}>KEEP</span>}
-              </div>
+              {v}
             </div>
           )
         })}
@@ -377,24 +325,57 @@ function StepRace({ data, onChange }) {
           const reqs = getRaceRequirements(key)
           return (
             <div key={key} onClick={() => select(key)} style={{ padding: '12px 14px', borderRadius: 7, cursor: 'pointer', border: `2px solid ${isSel ? 'var(--gold)' : 'var(--border)'}`, background: isSel ? 'rgba(201,168,76,.08)' : 'var(--bg2)', transition: 'all .2s' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+              {/* Name */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
                 <span style={{ fontSize: '1rem', color: isSel ? 'var(--gold2)' : 'var(--text)', fontFamily: 'Georgia, serif', fontWeight: isSel ? 600 : 400 }}>{race.name}</span>
-                <span style={{ fontSize: '.75rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600 }}>{pts} pts</span>
+                {isSel && <span style={{ fontSize: '.65rem', color: 'var(--gold)', fontFamily: 'Georgia, serif' }}>✓ Selected</span>}
               </div>
-              {reqs && <div style={{ fontSize: '.65rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', marginBottom: 4 }}>Requires: {reqs}</div>}
-              <div style={{ fontSize: '.75rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', lineHeight: 1.5 }}>{race.specialRules}</div>
-              {isSel && (
-                <div style={{ marginTop: 8, display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+              {/* Description */}
+              {race.description && (
+                <div style={{ fontSize: '.8rem', color: 'var(--text2)', fontFamily: 'Georgia, serif', fontStyle: 'italic', lineHeight: 1.5, marginBottom: 8 }}>{race.description}</div>
+              )}
+              {/* Stats */}
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 8 }}>
+                {[
+                  ['Start Pts', pts],
+                  ['Pts/Level', 65 + (race.skillPointsPerLevelModifier || 0)],
+                  ['Move', race.move],
+                  ['HP Mod', race.hpModifier !== 0 ? (race.hpModifier > 0 ? `+${race.hpModifier}` : race.hpModifier) : '—'],
+                  race.vision !== 'None' ? ['Vision', race.vision] : null,
+                ].filter(Boolean).map(([label, value]) => (
+                  <div key={label} style={{ textAlign: 'center', minWidth: 52 }}>
+                    <div style={{ fontSize: '.52rem', letterSpacing: '.12em', color: 'var(--text3)', textTransform: 'uppercase', fontFamily: 'Georgia, serif', marginBottom: 1 }}>{label}</div>
+                    <div style={{ fontSize: '.88rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600 }}>{value}</div>
+                  </div>
+                ))}
+              </div>
+              {/* Attribute modifiers */}
+              {[
+                race.strModifier ? `STR ${race.strModifier > 0 ? '+' : ''}${race.strModifier}` : null,
+                race.conModifier ? `CON ${race.conModifier > 0 ? '+' : ''}${race.conModifier}` : null,
+                race.chrModifier ? `CHR ${race.chrModifier > 0 ? '+' : ''}${race.chrModifier}` : null,
+                race.apModifier ? `Arc.Power ${race.apModifier > 0 ? '+' : ''}${race.apModifier}` : null,
+                race.precisionModifier ? `PR ${race.precisionModifier > 0 ? '+' : ''}${race.precisionModifier}` : null,
+                race.naturalArmor ? `Natural AR ${race.naturalArmor}` : null,
+                race.maintenanceModifier ? `Maintenance ${race.maintenanceModifier > 0 ? '+' : ''}${race.maintenanceModifier}%` : null,
+              ].filter(Boolean).length > 0 && (
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
                   {[
-                    race.strModifier && `STR ${race.strModifier > 0 ? '+' : ''}${race.strModifier}`,
-                    race.conModifier && `CON ${race.conModifier > 0 ? '+' : ''}${race.conModifier}`,
-                    race.chrModifier && `CHR ${race.chrModifier > 0 ? '+' : ''}${race.chrModifier}`,
-                    race.move && `Move ${race.move}`,
-                    race.vision !== 'None' && race.vision,
+                    race.strModifier ? `STR ${race.strModifier > 0 ? '+' : ''}${race.strModifier}` : null,
+                    race.conModifier ? `CON ${race.conModifier > 0 ? '+' : ''}${race.conModifier}` : null,
+                    race.chrModifier ? `CHR ${race.chrModifier > 0 ? '+' : ''}${race.chrModifier}` : null,
+                    race.apModifier ? `Arc.Power ${race.apModifier > 0 ? '+' : ''}${race.apModifier}` : null,
+                    race.precisionModifier ? `PR ${race.precisionModifier > 0 ? '+' : ''}${race.precisionModifier}` : null,
+                    race.naturalArmor ? `Natural AR ${race.naturalArmor}` : null,
+                    race.maintenanceModifier ? `Maintenance ${race.maintenanceModifier > 0 ? '+' : ''}${race.maintenanceModifier}%` : null,
                   ].filter(Boolean).map(t => (
-                    <span key={t} style={{ fontSize: '.7rem', color: 'var(--gold)', fontFamily: 'Georgia, serif' }}>{t}</span>
+                    <span key={t} style={{ fontSize: '.72rem', color: 'var(--gold)', fontFamily: 'Georgia, serif', background: 'rgba(201,168,76,.1)', border: '1px solid rgba(201,168,76,.2)', borderRadius: 3, padding: '1px 6px' }}>{t}</span>
                   ))}
                 </div>
+              )}
+              {/* Special rules */}
+              {race.specialRules && race.specialRules !== 'None' && (
+                <div style={{ fontSize: '.72rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', lineHeight: 1.5, borderLeft: '2px solid var(--border2)', paddingLeft: 8 }}>{race.specialRules}</div>
               )}
             </div>
           )
@@ -431,8 +412,6 @@ export default function CharacterWizard({ userId, onComplete, onCancel }) {
     const newCharacter = {
       name: data.name.trim(),
       player: data.player.trim(),
-      campaignId: data.campaignId || null,
-      campaignLocked: !!data.campaignId,
       race: race?.name || '',
       raceKey: data.raceKey,
       raceLocked: true,
@@ -450,7 +429,7 @@ export default function CharacterWizard({ userId, onComplete, onCancel }) {
       armor: {}, hp: { current: {} },
       weapons: { melee: [null, null], ranged: [null] },
       knownSpells: [], spellHooks: [],
-      hardcore: data.selectedSet === 2,
+      status: 'creation',
       levelUpAuthorized: false,
       createdAt: new Date().toISOString(),
       createdBy: userId,

@@ -1,17 +1,18 @@
 {
   "human": {
     "name": "Human",
+    "description": "Humans are the most populous race, and are the most varied.",
     "move": 10, "vision": "None", "visionRange": 0,
     "heightRange": "4'5\" to 7'",
     "hpModifier": 0, "skillPointsPerLevelModifier": 0, "firstLevelBonus": true,
     "strModifier": 0, "conModifier": 1, "apModifier": 0, "precisionModifier": 0,
     "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 0,
     "advantages": [], "specialRules": "None",
-    "attrMin": {},
-    "attrMax": {}
+    "attrMin": {}, "attrMax": {}
   },
   "dwarf": {
     "name": "Dwarf",
+    "description": "Dwarves are a proud and ancient folk, and their numbers are dwindling.",
     "move": 8, "vision": "Darkvision", "visionRange": 60,
     "heightRange": "4' to 5'5\"",
     "hpModifier": 1, "skillPointsPerLevelModifier": 0, "firstLevelBonus": true,
@@ -19,11 +20,11 @@
     "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 0,
     "advantages": ["constitution", "willpower"],
     "specialRules": "Advantage on all Constitution and Willpower checks",
-    "attrMin": { "str": 8, "con": 12 },
-    "attrMax": { "dex": 16 }
+    "attrMin": { "str": 8, "con": 12 }, "attrMax": { "dex": 16 }
   },
   "halfling": {
     "name": "Halfling",
+    "description": "Halflings are small, lucky, and surprisingly resilient. Their cheerful nature belies a fierce determination.",
     "move": 7, "vision": "None", "visionRange": 0,
     "heightRange": "3'6\" to 4'6\"",
     "hpModifier": 0, "skillPointsPerLevelModifier": 0, "firstLevelBonus": true,
@@ -31,11 +32,11 @@
     "maintenanceModifier": -20, "generalSkillBonus": 0, "naturalArmor": 0,
     "advantages": ["all"],
     "specialRules": "Advantage on all attribute checks, 20% off maintenance costs",
-    "attrMin": { "wp": 11 },
-    "attrMax": { "str": 15, "con": 15 }
+    "attrMin": { "wp": 11 }, "attrMax": { "str": 15, "con": 15 }
   },
   "elfWood": {
     "name": "Wood Elf",
+    "description": "The elusive Wood Elves protect their forests with zeal and precision.",
     "move": 10, "vision": "Darkvision", "visionRange": 30,
     "heightRange": "5' to 5'10\"",
     "hpModifier": 0, "skillPointsPerLevelModifier": -2, "firstLevelBonus": true,
@@ -43,11 +44,11 @@
     "maintenanceModifier": -10, "generalSkillBonus": 10, "naturalArmor": 0,
     "advantages": ["awareness"],
     "specialRules": "Elvish Education, Advantage on all Awareness checks, +3 Precision, -1 Arcane Power, 10% off maintenance costs",
-    "attrMin": { "aw": 11, "dex": 11, "chr": 11 },
-    "attrMax": { "str": 16, "con": 16 }
+    "attrMin": { "aw": 11, "dex": 11, "chr": 11 }, "attrMax": { "str": 16, "con": 16 }
   },
   "elfHigh": {
     "name": "High Elf",
+    "description": "High Elves have watched the world diminish, as they see it, through the centuries.",
     "move": 10, "vision": "Darkvision", "visionRange": 30,
     "heightRange": "5' to 6'",
     "hpModifier": 0, "skillPointsPerLevelModifier": -2, "firstLevelBonus": true,
@@ -55,11 +56,11 @@
     "maintenanceModifier": -10, "generalSkillBonus": 10, "naturalArmor": 0,
     "advantages": ["awareness"],
     "specialRules": "Elvish Education, Advantage on all Awareness checks, 10% off maintenance costs",
-    "attrMin": { "aw": 11, "dex": 11, "chr": 11 },
-    "attrMax": { "str": 16, "con": 16 }
+    "attrMin": { "aw": 11, "dex": 11, "chr": 11 }, "attrMax": { "str": 16, "con": 16 }
   },
   "elfDark": {
     "name": "Dark Elf",
+    "description": "Little is known of the rumoured Dark Elves, as both High Elves and Wood Elves decline to discuss them.",
     "move": 10, "vision": "Darkvision", "visionRange": 60,
     "heightRange": "5' to 5'8\"",
     "hpModifier": 0, "skillPointsPerLevelModifier": -2, "firstLevelBonus": true,
@@ -67,11 +68,11 @@
     "maintenanceModifier": -10, "generalSkillBonus": 10, "naturalArmor": 0,
     "advantages": ["awareness"],
     "specialRules": "Elvish Education, Advantage on all Awareness checks, 10% off maintenance costs",
-    "attrMin": { "aw": 11, "dex": 11, "chr": 11 },
-    "attrMax": { "str": 16, "con": 16 }
+    "attrMin": { "aw": 11, "dex": 11, "chr": 11 }, "attrMax": { "str": 16, "con": 16 }
   },
   "halfElf": {
     "name": "Half-Elf",
+    "description": "Half Elves may have a lot of elvish blood, or very little.",
     "move": 10, "vision": "Darkvision", "visionRange": 30,
     "heightRange": "4'9\" to 6'2\"",
     "hpModifier": 0, "skillPointsPerLevelModifier": -1, "firstLevelBonus": true,
@@ -79,11 +80,11 @@
     "maintenanceModifier": 0, "generalSkillBonus": 5, "naturalArmor": 0,
     "advantages": ["awareness"],
     "specialRules": "Elvish Education, Advantage on all Awareness checks",
-    "attrMin": { "aw": 9, "dex": 9, "chr": 9 },
-    "attrMax": { "con": 16 }
+    "attrMin": { "aw": 9, "dex": 9, "chr": 9 }, "attrMax": { "con": 16 }
   },
   "gnome": {
     "name": "Gnome",
+    "description": "Gnomes belong to a complex, rigid, and smugly superior society.",
     "move": 6, "vision": "Darkvision", "visionRange": 60,
     "heightRange": "3' to 4'",
     "hpModifier": -1, "skillPointsPerLevelModifier": 0, "firstLevelBonus": true,
@@ -92,77 +93,77 @@
     "chrModifier": 1, "manaModifier": 15,
     "advantages": [], "disadvantages": ["constitution"],
     "specialRules": "Disadvantage on Constitution checks, +1 Charisma, 15% more mana",
-    "attrMin": { "aw": 12, "chr": 12 },
-    "attrMax": { "str": 14 }
+    "attrMin": { "aw": 12, "chr": 12 }, "attrMax": { "str": 14 }
   },
   "orc": {
     "name": "Orc",
+    "description": "Orcs live in nomadic tribes, guided by Shamans who teach fierceness in all things.",
     "move": 10, "vision": "Darkvision", "visionRange": 30,
     "heightRange": "5' to 6'",
     "hpModifier": 0, "skillPointsPerLevelModifier": 0, "firstLevelBonus": true,
     "strModifier": 1, "conModifier": 0, "apModifier": 0, "precisionModifier": 0,
     "maintenanceModifier": 0, "generalSkillBonus": -10, "naturalArmor": 0,
-    "advantages": [], "specialRules": "Shamanic Education",
-    "attrMin": { "str": 13, "con": 9 },
-    "attrMax": { "chr": 16 }
+    "advantages": [], "specialRules": "Shamanic Education, +1 Strength, -10% General skill cap",
+    "attrMin": { "str": 13, "con": 9 }, "attrMax": { "chr": 16 }
   },
   "halfOrc": {
     "name": "Half-Orc",
+    "description": "Half Orcs refers to Orc-Human mixes raised by humans.",
     "move": 10, "vision": "Darkvision", "visionRange": 30,
     "heightRange": "5'5\" to 7'",
     "hpModifier": 0, "skillPointsPerLevelModifier": 0, "firstLevelBonus": true,
     "strModifier": 0, "conModifier": 0, "apModifier": 0, "precisionModifier": 0,
     "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 0,
     "advantages": [], "specialRules": "None",
-    "attrMin": { "str": 9, "con": 9 },
-    "attrMax": { "chr": 15 }
+    "attrMin": { "str": 9, "con": 9 }, "attrMax": { "chr": 15 }
   },
   "goblin": {
     "name": "Goblin",
+    "description": "Goblins are, as a group, cunning and reckless.",
     "move": 8, "vision": "Darkvision", "visionRange": 30,
     "heightRange": "4' to 5'",
     "hpModifier": -1, "skillPointsPerLevelModifier": 6, "firstLevelBonus": false,
     "strModifier": 0, "conModifier": 0, "apModifier": 0, "precisionModifier": 0,
     "maintenanceModifier": 0, "generalSkillBonus": -10, "naturalArmor": 0,
-    "advantages": [], "specialRules": "Impulsive Education, no first level skill point bonus",
-    "attrMin": { "aw": 12},
-    "attrMax": {"str": 15, "con": 15}
+    "advantages": [], "specialRules": "Impulsive Education, no first level skill point bonus, -10% General skill cap",
+    "attrMin": { "aw": 12 }, "attrMax": { "str": 15, "con": 15 }
   },
   "ogre": {
     "name": "Ogre",
+    "description": "Huge, fierce and greatly feared, Ogres have a simple minded reputation.",
     "move": 12, "vision": "None", "visionRange": 0,
     "heightRange": "7' to 8'",
     "hpModifier": 0, "skillPointsPerLevelModifier": -5, "firstLevelBonus": false,
     "strModifier": 3, "conModifier": 3, "apModifier": 0, "precisionModifier": 0,
     "maintenanceModifier": 0, "generalSkillBonus": -5, "naturalArmor": 2,
-    "advantages": [], "specialRules": "Natural Armor Rating 2, Huge, Simplistic, no first level skill point bonus",
-    "attrMin": { "con": 11 },
-    "attrMax": {}
+    "advantages": [], "specialRules": "Natural Armor 2, Huge, Simplistic, no first level skill point bonus",
+    "attrMin": { "con": 11 }, "attrMax": {}
   },
   "halfOgre": {
     "name": "Half-Ogre",
+    "description": "Smaller, smarter, and kinder, Half-Ogres are nevertheless not small, or smart, or often kind.",
     "move": 11, "vision": "None", "visionRange": 0,
     "heightRange": "6'5\" to 7'5\"",
     "hpModifier": 0, "skillPointsPerLevelModifier": -5, "firstLevelBonus": true,
     "strModifier": 2, "conModifier": 2, "apModifier": 0, "precisionModifier": 0,
     "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 1,
-    "advantages": [], "specialRules": "Natural Armor Rating 1, Oversize",
-    "attrMin": { "con": 9 },
-    "attrMax": {}
+    "advantages": [], "specialRules": "Natural Armor 1, Oversize",
+    "attrMin": { "con": 9 }, "attrMax": {}
   },
   "lizardfolk": {
     "name": "Lizardfolk",
+    "description": "Lizardfolk originated in the great southern jungle.",
     "move": 10, "vision": "None", "visionRange": 0,
     "heightRange": "5'4\" to 5'10\"",
     "hpModifier": 0, "skillPointsPerLevelModifier": 0, "firstLevelBonus": true,
     "strModifier": 1, "conModifier": 0, "apModifier": 0, "precisionModifier": 3,
     "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 4,
-    "advantages": [], "specialRules": "Natural Armor Rating 4, Cold Blooded",
-    "attrMin": { "con": 9 },
-    "attrMax": { "chr": 16 }
+    "advantages": [], "specialRules": "Natural Armor 4, Cold Blooded, +1 Strength, +3 Precision",
+    "attrMin": { "con": 9 }, "attrMax": { "chr": 16 }
   },
   "elderling": {
     "name": "Elderling",
+    "description": "Altered forever by their bond with vain and fickle dragons, Elderlings remain a proud and resourceful people.",
     "move": 10, "vision": "Ultravision", "visionRange": 60,
     "heightRange": "6' to 7'",
     "hpModifier": 0, "skillPointsPerLevelModifier": 0, "firstLevelBonus": true,
@@ -170,30 +171,29 @@
     "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 0,
     "chrModifier": 1,
     "advantages": [], "disadvantages": ["constitution"],
-    "specialRules": "Disadvantage on Constitution checks, +1 Charisma, +1 Arcane Power",
-    "attrMin": { "chr": 10, "wp": 10 },
-    "attrMax": { "con": 16 }
+    "specialRules": "Disadvantage on Constitution checks, +1 Charisma, +1 Arcane Power, Ultravision 60ft",
+    "attrMin": { "chr": 10, "wp": 10 }, "attrMax": { "con": 16 }
   },
   "ogier": {
     "name": "Ogier",
+    "description": "Ogier are tied to the Steddings, where magic does not function.",
     "move": 13, "vision": "None", "visionRange": 0,
     "heightRange": "7'4\" to 8'",
     "hpModifier": 0, "skillPointsPerLevelModifier": 0, "firstLevelBonus": true,
-    "strModifier": 4, "conModifier": 4, "apModifier": -4, "precisionModifier": 0,
+    "strModifier": 4, "conModifier": 4, "apModifier": 0, "precisionModifier": 0,
     "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 0,
-    "advantages": [], "specialRules": "Huge, Pacifist, Stedding-Linked",
-    "attrMin": { "str": 12, "con": 14 },
-    "attrMax": {}
+    "advantages": [], "specialRules": "Huge, Pacifist, Steading-Linked, +4 STR, +4 CON, +10 General skill maximums",
+    "attrMin": { "str": 12, "con": 14 }, "attrMax": {}
   },
   "undeadHuman": {
     "name": "Undead Human",
+    "description": "Zombies are generally mindless creatures, but there is a lot of magic out there and strange things happen.",
     "move": 10, "vision": "None", "visionRange": 0,
     "heightRange": "4'5\" to 7'",
     "hpModifier": 0, "skillPointsPerLevelModifier": 0, "firstLevelBonus": true,
     "strModifier": 0, "conModifier": 0, "apModifier": 0, "precisionModifier": 0,
     "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 0,
     "advantages": [], "specialRules": "Rotting, Sleepless",
-    "attrMin": { "wp": 12 },
-    "attrMax": {}
+    "attrMin": { "wp": 12 }, "attrMax": {}
   }
 }

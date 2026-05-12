@@ -442,7 +442,7 @@ export function ArmorHPTable({ stats, character, onUpdateCharacter }) {
   const shieldCode  = armor.shield?.type || 'None'
   const shieldStats = getShieldStats(shieldCode)
 
-  const DCOLS = '56px 70px 60px 50px 70px minmax(100px, 180px) 56px'
+const DCOLS = '56px 70px 60px 50px 70px minmax(100px, 180px) 56px 1fr'
   const MCOLS = '52px 1fr 1fr 1fr'
   const grid  = isDesktop ? DCOLS : MCOLS
   const hdrBg = { background:'var(--bg2)', borderBottom:'2px solid var(--border2)' }
@@ -500,6 +500,13 @@ export function ArmorHPTable({ stats, character, onUpdateCharacter }) {
           )}
           {dataCell(dropdown)}
           {dataCell(<span style={{ fontSize:'.82rem', color:evColor, fontFamily:'Georgia, serif' }}>{evPen>0?`-${evPen}`:'-'}</span>)}
+           {dataCell(
+  <span style={{ fontSize: '.72rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
+    {loc === 'head'
+      ? (getHelm(helmCode)?.awPenalty > 0 ? `Awareness check penalty: ${getHelm(helmCode).awPenalty}` : '')
+      : (getBodyArmor(code)?.special?.join(', ') || '')}
+  </span>
+)}
         </div>
       )
     } else {
@@ -543,6 +550,7 @@ export function ArmorHPTable({ stats, character, onUpdateCharacter }) {
       {dataCell(<span style={{ fontSize:'.75rem', color:'var(--text3)', fontFamily:'Georgia, serif' }}>Min STR: {shieldCode==='None'?'—':shieldStats.minStr}</span>)}
       {dataCell(<select value={shieldCode} onChange={e=>updateArmor('shield','type',e.target.value)} style={selectSt}>{SHIELD_OPTIONS.map(o=><option key={o.code} value={o.code}>{o.label}</option>)}</select>)}
       {dataCell(<span style={{ fontSize:'.82rem', color:evColor, fontFamily:'Georgia, serif' }}>{shieldStats.evasionBonus>0?`+${shieldStats.evasionBonus}`:'-'}</span>)}
+      {dataCell(<span style={{ fontSize: '.72rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>Shields give you Evasion, and nothing else</span>)}
     </div>
   ) : (
     <div style={{ display:'grid', gridTemplateColumns:grid, ...rowDiv, alignItems:'center' }}>
@@ -564,21 +572,22 @@ export function ArmorHPTable({ stats, character, onUpdateCharacter }) {
     </div>
   )
 
-  const globalRow = isDesktop ? (
+const globalRow = isDesktop ? (
     <div style={{ display:'grid', gridTemplateColumns:grid, background:'var(--bg2)', alignItems:'center' }}>
-      <div style={{ padding:'6px 8px', background:'var(--bg2)' }} />
-      {dataCell(<div style={{ textAlign:'center' }}><span style={lbl}>Barrier HP</span><ClickEdit value={hp.barrierHP??0} onChange={v=>updateHPField('barrierHP',v)} fontSize=".9rem" /></div>)}
+      {dataCell(<div style={{ textAlign:'center' }}><span style={lbl}>Barrier HP</span><ClickEdit value={hp.barrierHP??0} onChange={v=>updateHPField('barrierHP',v)} fontSize=".9rem" /></div>, true)}
       {dataCell(<div style={{ textAlign:'center' }}><span style={lbl}>Temp HP</span><ClickEdit value={hp.tempHP??0} onChange={v=>updateHPField('tempHP',v)} fontSize=".9rem" /></div>)}
+      {dataCell(<div />)}
       {dataCell(<div style={{ textAlign:'center' }}><span style={lbl}>Global AR+</span><ClickEdit value={character.globalARBonus??0} onChange={v=>updateGlobal('globalARBonus',v)} fontSize=".9rem" /></div>)}
       {dataCell(<div />)}
       {dataCell(<div style={{ textAlign:'center' }}><span style={lbl}>Natural AR</span><ClickEdit value={character.naturalAR??0} onChange={v=>updateGlobal('naturalAR',v)} fontSize=".9rem" /></div>)}
       {dataCell(<div />)}
+      {dataCell(<span style={{ fontSize:'.72rem', color:'var(--text3)', fontFamily:'Georgia, serif', fontStyle:'italic' }}>Barrier HP → Armor → Temp HP → Location HP</span>,)}
     </div>
   ) : (
     <div style={{ display:'grid', gridTemplateColumns:grid, background:'var(--bg2)', alignItems:'center' }}>
-      <div style={{ padding:'6px 8px' }} />
+      {dataCell(<div style={{ textAlign:'center' }}><span style={lbl}>Barrier HP</span><ClickEdit value={hp.barrierHP??0} onChange={v=>updateHPField('barrierHP',v)} fontSize=".85rem" /></div>, true)}
       {dataCell(<div style={{ textAlign:'center' }}><span style={lbl}>Temp HP</span><ClickEdit value={hp.tempHP??0} onChange={v=>updateHPField('tempHP',v)} fontSize=".85rem" /></div>)}
-      {dataCell(<div style={{ textAlign:'center' }}><span style={lbl}>Barrier HP</span><ClickEdit value={hp.barrierHP??0} onChange={v=>updateHPField('barrierHP',v)} fontSize=".85rem" /></div>)}
+      {dataCell(<div style={{ textAlign:'center' }}><span style={lbl}>Global AR+</span><ClickEdit value={character.globalARBonus??0} onChange={v=>updateGlobal('globalARBonus',v)} fontSize=".85rem" /></div>)}
       {dataCell(<div style={{ textAlign:'center' }}><span style={lbl}>Natural AR</span><ClickEdit value={character.naturalAR??0} onChange={v=>updateGlobal('naturalAR',v)} fontSize=".85rem" /></div>)}
     </div>
   )
@@ -595,6 +604,7 @@ export function ArmorHPTable({ stats, character, onUpdateCharacter }) {
             {hdrCell('Breaches')}
             {hdrCell('Type')}
             {hdrCell('Ev.Pen')}
+            {hdrCell('Special')}
           </>
         ) : (
           <>
