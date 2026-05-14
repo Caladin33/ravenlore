@@ -293,7 +293,7 @@ export function calculate(char, session = {}) {
   const shieldSizeData = getShieldSize(shieldCode)
   const shieldMatData  = getShieldMaterial(shieldCode)
   const shieldMinSTR   = shieldMatData?.minStr?.[shieldSizeData?.size] || 0
-  const shieldSTRWarning = shieldEquipped && STR < shieldMinSTR
+  const shieldSTRWarning = shieldCode !== 'None' && STR < shieldMinSTR
 
   // ── UNFETTERED ────────────────────────────
   const weightAllowance = conWeight(CON) + STR

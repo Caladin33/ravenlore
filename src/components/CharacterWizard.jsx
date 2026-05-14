@@ -1,12 +1,14 @@
 // CharacterWizard.jsx
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import racesData from '../data/races.json'
+import { loadAllCampaigns } from '../characterDB'
 import attributeData from '../data/attributes.json'
 
 // ── STYLES ────────────────────────────────────────────────────────────────────
 const surface = { background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '18px 20px' }
 const lbl = { fontSize: '.6rem', letterSpacing: '.16em', color: 'var(--text3)', textTransform: 'uppercase', fontFamily: 'Georgia, serif', display: 'block', marginBottom: 4 }
 const inputStyle = { background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 4, color: 'var(--text)', fontFamily: 'Georgia, serif', fontSize: '.95rem', padding: '8px 10px', width: '100%', boxSizing: 'border-box' }
+const selectStyle = { background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 4, color: 'var(--text)', fontFamily: 'Georgia, serif', fontSize: '.95rem', padding: '8px 10px', width: '100%', boxSizing: 'border-box', cursor: 'pointer' }
 const btnPrimary = { padding: '10px 24px', background: 'rgba(201,168,76,.15)', border: '1px solid var(--gold)', color: 'var(--gold2)', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '1rem', fontWeight: 600 }
 const btnSecondary = { padding: '8px 18px', background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.9rem' }
 const sectionTitle = { fontSize: '.75rem', letterSpacing: '.2em', color: 'var(--gold)', textTransform: 'uppercase', fontFamily: 'Georgia, serif', marginBottom: 14 }
@@ -109,6 +111,9 @@ function StepIndicator({ current, total }) {
 
 // ── STEP 1: NAME & PLAYER ─────────────────────────────────────────────────────
 function StepNamePlayer({ data, onChange }) {
+  const [campaigns, setCampaigns] = useState([])
+  useEffect(() => { loadAllCampaigns().then(setCampaigns) }, [])
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
       <div style={sectionTitle}>Your Character</div>
@@ -119,6 +124,13 @@ function StepNamePlayer({ data, onChange }) {
       <div>
         <span style={lbl}>Player Name</span>
         <input style={inputStyle} value={data.player} onChange={e => onChange({ ...data, player: e.target.value })} placeholder="Your name..." />
+      </div>
+      <div>
+        <span style={lbl}>Campaign</span>
+        <select style={selectStyle} value={data.campaignId || ''} onChange={e => onChange({ ...data, campaignId: e.target.value || null })}>
+          <option value="">I don't know yet</option>
+          {campaigns.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+        </select>
       </div>
     </div>
   )
@@ -147,7 +159,7 @@ function StepRoll({ data, onChange }) {
       <div style={{ fontSize: '.83rem', color: 'var(--text2)', fontFamily: 'Georgia, serif', lineHeight: 1.6 }}>
         Three sets of 7 rolls (4d6, drop lowest). If no roll is 17+ or two 16+, the third-highest is replaced with a 1d3+15 roll (★). Choose the set you prefer.
       </div>
-      <button onClick={doRoll} style={btnPrimary}>{sets ? '↺ Roll Again' : '🎲 Roll Attributes'}</button>
+      {!sets && <button onClick={doRoll} style={btnPrimary}>🎲 Roll Attributes</button>}
       {sets && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {sets.map((set, si) => {
@@ -462,7 +474,7 @@ export default function CharacterWizard({ userId, onComplete, onCancel }) {
         {step < STEPS.length - 1 ? (
           <button onClick={() => setStep(s => s + 1)} disabled={!canAdvance}
             style={{ ...btnPrimary, opacity: canAdvance ? 1 : 0.4, cursor: canAdvance ? 'pointer' : 'not-allowed' }}>
-            Next →
+            {step === 2 ? 'Choose Race →' : 'Next →'}
           </button>
         ) : (
           <button onClick={handleCreate} disabled={!canAdvance}

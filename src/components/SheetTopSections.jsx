@@ -545,7 +545,11 @@ const DCOLS = '56px 70px 60px 50px 70px minmax(100px, 180px) 56px 1fr'
       {dataCell(<span style={{ fontSize:'.75rem', color:'var(--text3)', fontFamily:'Georgia, serif' }}>Min STR: {shieldCode==='None'?'—':shieldStats.minStr}</span>)}
       {dataCell(<select value={shieldCode} onChange={e=>updateArmor('shield','type',e.target.value)} style={selectSt}>{SHIELD_OPTIONS.map(o=><option key={o.code} value={o.code}>{o.label}</option>)}</select>)}
       {dataCell(<span style={{ fontSize:'.82rem', color:evColor, fontFamily:'Georgia, serif' }}>{shieldStats.evasionBonus>0?`+${shieldStats.evasionBonus}`:'-'}</span>)}
-      {dataCell(<span style={{ fontSize: '.72rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>Shields give you Evasion, and nothing else</span>)}
+     {dataCell(
+  <span style={{ fontSize: '.72rem', fontFamily: 'Georgia, serif', fontStyle: 'italic', color: stats.shieldSTRWarning ? '#c94a4a' : 'var(--text3)' }}>
+    {stats.shieldSTRWarning ? `⚠ Min STR ${stats.shieldMinSTR} required` : 'Shields give you Evasion, and nothing else'}
+  </span>
+, true)}
     </div>
   ) : (
     <div style={{ display:'grid', gridTemplateColumns:grid, ...rowDiv, alignItems:'center' }}>
@@ -558,7 +562,9 @@ const DCOLS = '56px 70px 60px 50px 70px minmax(100px, 180px) 56px 1fr'
       {dataCell(<div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:1 }}>
         <span style={{ ...val, fontSize:'.9rem' }}>{shieldCode==='None'?'—':shieldStats.ar}</span>
         {sep}
-        <span style={{ fontSize:'.65rem', color:'var(--text3)', fontFamily:'Georgia, serif' }}>Min STR: {shieldCode==='None'?'—':shieldStats.minStr}</span>
+       <span style={{ fontSize: '.65rem', color: stats.shieldSTRWarning ? '#c94a4a' : 'var(--text3)', fontFamily: 'Georgia, serif' }}>
+        {shieldCode==='None' ? '—' : `Min STR: ${shieldStats.minStr}${stats.shieldSTRWarning ? ' ⚠' : ''}`}
+      </span>
       </div>)}
       {dataCell(<div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:3, width:'100%' }}>
         <select value={shieldCode} onChange={e=>updateArmor('shield','type',e.target.value)} style={{ ...selectSt, fontSize:'.65rem' }}>{SHIELD_OPTIONS.map(o=><option key={o.code} value={o.code}>{o.code==='None'?'None':o.code}</option>)}</select>
