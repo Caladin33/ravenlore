@@ -417,26 +417,44 @@ const handleShamanSymbolsUpdate = (symbols) => {
     })
   }
 const handleSave = () => {
-  const newLocked = {}
-  Object.entries({ ...char.martialSkills, ...char.arcaneSkills, ...char.selfImprovementSkills }).forEach(([name, data]) => {
-    newLocked[name] = parseInt(data.pointsInvested) || 0
-  })
-  setLockedPoints(newLocked)
-  setChar(prev => {
+    const newLocked = {}
+    Object.entries({ ...char.martialSkills, ...char.arcaneSkills, ...char.selfImprovementSkills }).forEach(([name, data]) => {
+      newLocked[name] = parseInt(data.pointsInvested) || 0
+    })
+    setLockedPoints(newLocked)
+
+    // Build pending changes — only skills that actually changed
+    const pending = {}
+    const sources = [
+      ['martial', char.martialSkills, character.martialSkills],
+      ['arcane', char.arcaneSkills, character.arcaneSkills],
+      ['selfImprovement', char.selfImprovementSkills, character.selfImprovementSkills],
+      ['general', char.generalSkills, character.generalSkills],
+    ]
+    sources.forEach(([category, newSkills, oldSkills]) => {
+      // Skills with changed points
+      Object.entries(newSkills || {}).forEach(([name, data]) => {
+        const oldPts = parseInt(oldSkills?.[name]?.pointsInvested) || 0
+        const newPts = parseInt(data.pointsInvested) || 0
+        if (oldPts !== newPts) pending[name] = { category, oldPts, newPts, skillData: data }
+      })
+      // Skills removed entirely
+      Object.keys(oldSkills || {}).forEach(name => {
+        if (!newSkills?.[name] && !pending[name]) {
+          pending[name] = { category, oldPts: parseInt(oldSkills[name].pointsInvested) || 0, newPts: 0 }
+        }
+      })
+    })
+
     const withPending = {
-      ...prev,
-      pendingSkillChanges: {
-        martialSkills: prev.martialSkills,
-        arcaneSkills: prev.arcaneSkills,
-        selfImprovementSkills: prev.selfImprovementSkills,
-        generalSkills: prev.generalSkills,
-      }
+      ...character,        // approved base state untouched
+      patronMark: char.patronMark,
+      shamanSymbols: char.shamanSymbols,
+      pendingSkillChanges: pending,
     }
     onSave(withPending)
-    return prev
-  })
-  setShowConfirm(false)
-}
+    setShowConfirm(false)
+  }
 
   const tabBtn = (tab) => ({
     padding: '7px 18px',

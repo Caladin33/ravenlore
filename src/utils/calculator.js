@@ -183,7 +183,7 @@ function getActiveForm(char) {
 // ─────────────────────────────────────────────
 
 export function calculate(char, session = {}) {
-  console.log('calculator v2, activeForm:', char.activeForm)
+
   const offHand    = session.offHand    || 'Empty'
   const stance     = session.stance     || 'None'
   const unfettered = session.unfettered || false
@@ -349,7 +349,7 @@ export function calculate(char, session = {}) {
 
   const shieldEvasion    = shieldEquipped ? (getShieldSize(shieldCode)?.evasionBonus || 0) : 0
   const expertShieldBonus = shieldEquipped ? expertShieldingRank : 0
-console.log('evasion debug:', { AW, awEvasionResult: awEvasion(AW), formEVBonus, symbolWisdomBonus, totalArmorEvasionPenalty, form: form?.name })
+
   const evasionRaw = awEvasion(AW)
     + evasiveMotionRank
     + otData.evasionBonus
@@ -363,7 +363,7 @@ console.log('evasion debug:', { AW, awEvasionResult: awEvasion(AW), formEVBonus,
     - Math.floor(totalArmorEvasionPenalty)
 
   const evasion = Math.max(0, Math.min(20, evasionRaw))
-console.log('evasionRaw:', evasionRaw, 'evasion:', evasion)
+
   // ── REAR EVASION ──────────────────────────
   const aLeafOnTheWind = skillKnown(char, 'A Leaf on the Wind')
   const leafMult = aLeafOnTheWind ? 1 : 0.5

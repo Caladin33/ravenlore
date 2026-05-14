@@ -43,20 +43,31 @@ function CharacterCard({ char, onUpdate }) {
     generalSkills: char.pendingSkillChanges.generalSkills || char.generalSkills,
   } : null
 
-  const handleApprove = () => {
-  const p = char.pendingSkillChanges
-  const updated = {
-    ...char,
-    martialSkills: p.martialSkills ?? char.martialSkills,
-    arcaneSkills: p.arcaneSkills ?? char.arcaneSkills,
-    selfImprovementSkills: p.selfImprovementSkills ?? char.selfImprovementSkills,
-    generalSkills: p.generalSkills ?? char.generalSkills,
-    pendingSkillChanges: null,
-  }
+const handleApprove = () => {
+  const pending = char.pendingSkillChanges || {}
+  const updated = JSON.parse(JSON.stringify({ ...char, pendingSkillChanges: null }))
+
+  Object.entries(pending).forEach(([name, { category, newPts }]) => {
+    const categoryMap = {
+      martial: 'martialSkills',
+      arcane: 'arcaneSkills',
+      selfImprovement: 'selfImprovementSkills',
+      general: 'generalSkills',
+    }
+    const skillKey = categoryMap[category]
+    if (skillKey) {
+      if (!updated[skillKey]) updated[skillKey] = {}
+      if (newPts === 0) {
+        delete updated[skillKey][name]
+      } else {
+        updated[skillKey][name] = { ...pending[name].skillData, pointsInvested: newPts }
+      }
+    }
+  })
+
   onUpdate(updated)
   setShowDiff(false)
 }
-
   const handleReject = () => {
     const updated = { ...char, pendingSkillChanges: null }
     onUpdate(updated)
@@ -130,7 +141,7 @@ function CharacterCard({ char, onUpdate }) {
               </div>
               {showDiff && pendingChar && (
                 <div style={{ marginTop: 12 }}>
-                  <InlineDiff original={char} updated={pendingChar} onApprove={handleApprove} onReject={handleReject} />
+                  <InlineDiff original={char} onApprove={handleApprove} onReject={handleReject} />
                 </div>
               )}
             </div>
@@ -171,11 +182,11 @@ function CharacterCard({ char, onUpdate }) {
 }
 
 // ── INLINE DIFF ───────────────────────────────────────────────────────────────
-function InlineDiff({ original, updated, onApprove, onReject }) {
-  const changes = getSkillChanges(original, updated)
+function InlineDiff({ original, onApprove, onReject }) {
+  const changes = getSkillChanges(original)
   const oldMaint = calcMaintenance(original)
-  const newMaint = calcMaintenance(updated)
-  const maintChanged = oldMaint !== newMaint
+  const newMaint = oldMaint
+  const maintChanged = false
 
   const increased = changes.filter(c => c.delta > 0)
   const decreased = changes.filter(c => c.delta < 0)
@@ -243,27 +254,16 @@ function calcMaintenance(char) {
   }, 0)
 }
 
-function getSkillChanges(original, updated) {
-  const changes = []
-  const sources = [
-    ['martialSkills', original.martialSkills || {}, updated.martialSkills || {}],
-    ['arcaneSkills', original.arcaneSkills || {}, updated.arcaneSkills || {}],
-    ['selfImprovementSkills', original.selfImprovementSkills || {}, updated.selfImprovementSkills || {}],
-    ['generalSkills', original.generalSkills || {}, updated.generalSkills || {}],
-  ]
-
-  sources.forEach(([, orig, upd]) => {
-    const names = new Set([...Object.keys(orig), ...Object.keys(upd)])
-    names.forEach(name => {
-      const oldPts = parseInt(orig[name]?.pointsInvested) || 0
-      const newPts = parseInt(upd[name]?.pointsInvested) || 0
-      if (oldPts !== newPts) {
-        changes.push({ name, oldPts, newPts, delta: newPts - oldPts })
-      }
-    })
-  })
-
-  return changes.sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta))
+function getSkillChanges(char) {
+  const pending = char.pendingSkillChanges || {}
+  return Object.entries(pending)
+    .map(([name, { oldPts, newPts }]) => ({
+      name,
+      oldPts,
+      newPts,
+      delta: newPts - oldPts,
+    }))
+    .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta))
 }
 
 // ── MAIN GM VIEW ──────────────────────────────────────────────────────────────
