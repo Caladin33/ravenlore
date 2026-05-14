@@ -1,5 +1,6 @@
 // RankedSkillTable.jsx
 import { useState } from 'react'
+import { FormattedSkillDescription } from '../utils/skillFormatting.jsx'
 import generalSkillsData from '../data/generalSkills.json'
 import racesData from '../data/races.json'
 import armorData from '../data/armor.json'
@@ -401,8 +402,8 @@ const handleCommit = (newPoints) => {
             ))}
           </div>
           {skill.description && (
-            <div style={{ fontSize: '.83rem', color: 'var(--text2)', lineHeight: 1.65, fontFamily: 'Georgia, serif' }}>{skill.description}</div>
-          )}
+  <FormattedSkillDescription skillName={skill.name} fallback={skill.description} />
+)}
         </div>
       )}
     </>
