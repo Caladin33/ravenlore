@@ -337,12 +337,7 @@ export function AttributeBlock({ stats, character, onUpdateCharacter, offHand, s
   const dexPR  = lookupAttr('dexterity', dexEff, 'precision')
   const awEv   = lookupAttr('awareness',  awEff,  'evasionBonus')
 
-  const evasionVal = formData
-    ? attrs.aw.effective + (formData.awarenessBonus || 0) + (formData.ev || 0)
-    : stats.evasion
-  const evasionDisplay = formData
-    ? `${evasionVal}(${Math.floor(evasionVal / 2)})`
-    : `${stats.evasion}(${stats.rearEvasion})`
+  const evasionDisplay = `${stats.evasion}(${stats.rearEvasion})`
 
   return (
     <div style={{ background:'var(--surface)', border: formData ? '1px solid rgba(74,158,74,.4)' : '1px solid var(--border)', borderRadius:8, overflow:'hidden' }}>

@@ -52,6 +52,7 @@ function isUnlocked(spell, ranks) {
 // ── DRUID FORM SELECTOR ───────────────────────────────────────────────────────
 function DruidFormSelector({ category, character, onSelect, onClose }) {
   const [selected, setSelected] = useState('')
+  const [confirmModal, setConfirmModal] = useState(null)
   const forms = druidFormsData.filter(f => f.category === category)
   const alreadyChosen = character.druidForms?.[category]?.form
 
@@ -118,6 +119,13 @@ function DruidFormSelector({ category, character, onSelect, onClose }) {
     onCancel={() => setConfirmModal(null)}
   />
 )}
+{confirmModal && (
+        <ConfirmModal
+          message={confirmModal.message}
+          onConfirm={confirmModal.onConfirm}
+          onCancel={() => setConfirmModal(null)}
+        />
+      )}
     </div>
   )
 }
