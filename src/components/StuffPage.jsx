@@ -118,13 +118,13 @@ function InventoryRow({ row, onChange, onRemove }) {
   )
 }
 
-function InventorySection({ title, rows, onChange }) {
+function InventorySection({ title, rows, onChange, tourId }) {
   const addRow = () => onChange([...rows, { item: '', qty: '', loc: '', lbs: '' }])
   const updateRow = (i, val) => { const r = [...rows]; r[i] = val; onChange(r) }
   const removeRow = (i) => { const r = [...rows]; r.splice(i, 1); onChange(r) }
 
   return (
-    <div style={{ ...surface, flex: '1 1 260px', minWidth: 0 }}>
+    <div data-tour={tourId || undefined} style={{ ...surface, flex: '1 1 260px', minWidth: 0 }}>
       <div style={sectionTitle}>{title}</div>
       <InventoryHeader />
       {rows.map((row, i) => (
@@ -138,13 +138,13 @@ function InventorySection({ title, rows, onChange }) {
 // ── SPECIAL ITEMS ─────────────────────────────────────────────────────────────
 const SPEC_COLS = '16px 1fr 46px 42px'
 
-function SpecialItemsSection({ items, onChange }) {
+function SpecialItemsSection({ items, onChange, tourId }) {
   const addRow = () => onChange([...items, { item: '', loc: '', lbs: '' }])
   const updateRow = (i, val) => { const r = [...items]; r[i] = val; onChange(r) }
   const removeRow = (i) => { const r = [...items]; r.splice(i, 1); onChange(r) }
 
   return (
-    <div style={{ ...surface }}>
+    <div data-tour={tourId || undefined} style={{ ...surface }}>
       <div style={sectionTitle}>Special Items</div>
       <div style={{ display: 'grid', gridTemplateColumns: SPEC_COLS, gap: 4, marginBottom: 4 }}>
         <div />
@@ -299,11 +299,11 @@ const BONUS_FIELDS = [
   { key: 'evasion', label: 'Evasion' },
 ]
 
-function MagicBonusesSection({ bonuses, onChange }) {
+function MagicBonusesSection({ bonuses, onChange, tourId }) {
   const update = (key, val) => onChange({ ...bonuses, [key]: val === '' ? 0 : parseInt(val) || 0 })
 
   return (
-    <div style={surface}>
+    <div data-tour={tourId || undefined} style={surface}>
       <div style={sectionTitle}>Magic Item Bonuses</div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
         {BONUS_FIELDS.map(({ key, label }) => (
@@ -326,7 +326,7 @@ function MagicBonusesSection({ bonuses, onChange }) {
 }
 
 // ── ENCUMBRANCE ───────────────────────────────────────────────────────────────
-function EncumbranceDisplay({ carried, money, stats }) {
+function EncumbranceDisplay({ carried, money, stats, tourId }) {
   const invLbs = (carried || []).reduce((sum, row) => {
     const qty = parseFloat(row.qty) || 1
     const lbs = parseFloat(row.lbs) || 0
@@ -342,7 +342,7 @@ function EncumbranceDisplay({ carried, money, stats }) {
   const color = pct >= 1 ? '#c94a4a' : pct > 0.5 ? '#c9a84c' : 'var(--gold2)'
 
   return (
-    <div style={{ ...surface, padding: '10px 16px' }}>
+    <div data-tour={tourId || undefined} style={{ ...surface, padding: '10px 16px' }}>
       <span style={{ fontFamily: 'Georgia, serif', fontSize: '.95rem', color }}>
         Carrying <strong>{totalCarried}</strong> lbs of <strong>{maxWeight}</strong> Max
         {pct >= 1 && <span style={{ marginLeft: 12, fontSize: '.78rem', fontStyle: 'italic' }}>— Encumbered</span>}
@@ -367,14 +367,14 @@ export default function StuffPage({ character, onUpdateCharacter, stats }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14, maxWidth: 900 }}>
 
-      <EncumbranceDisplay carried={carried} money={money} stats={stats} />
+      <EncumbranceDisplay carried={carried} money={money} stats={stats} tourId="stuff-encumbrance" />
 
       {/* Left: Carried | Right: Not Carried + Special Items stacked */}
       <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'flex-start' }}>
-        <InventorySection title="Carried" rows={carried} onChange={v => update('carried', v)} />
+        <InventorySection title="Carried" rows={carried} onChange={v => update('carried', v)} tourId="stuff-carried" />
         <div style={{ flex: '1 1 260px', minWidth: 0, display: 'flex', flexDirection: 'column', gap: 14 }}>
-          <InventorySection title="Not Carried" rows={notCarried} onChange={v => update('notCarried', v)} />
-          <SpecialItemsSection items={special} onChange={v => update('special', v)} />
+          <InventorySection title="Not Carried" rows={notCarried} onChange={v => update('notCarried', v)} tourId="stuff-notcarried" />
+          <SpecialItemsSection items={special} onChange={v => update('special', v)} tourId="stuff-special" />
         </div>
       </div>
 
@@ -384,7 +384,7 @@ export default function StuffPage({ character, onUpdateCharacter, stats }) {
         <GemsSection money={money} onChange={v => update('money', v)} />
       </div>
 
-      <MagicBonusesSection bonuses={bonuses} onChange={v => update('magicBonuses', v)} />
+      <MagicBonusesSection bonuses={bonuses} onChange={v => update('magicBonuses', v)} tourId="stuff-magic" />
 
     </div>
   )

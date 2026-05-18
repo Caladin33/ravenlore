@@ -171,7 +171,7 @@ function getIssues(stats, character) {
 }
 
 // ── ATTR ROW ──────────────────────────────────────────────────────────────────
-function AttrRow({ abbr, current, checkMod, derivedLabel, derivedValue, detailContent, transformed, transformedValue, transformMode }) {
+function AttrRow({ abbr, current, checkMod, derivedLabel, derivedValue, detailContent, transformed, transformedValue, transformMode, tourId, tourLeftId, tourRightId }) {
   const [expanded, setExpanded] = useState(false)
   const cc = checkMod >= 0 ? 'var(--text2)' : '#c94a4a'
 
@@ -180,8 +180,8 @@ function AttrRow({ abbr, current, checkMod, derivedLabel, derivedValue, detailCo
 
   return (
     <>
-      <div style={{ display:'flex', alignItems:'center', ...rowDiv, minHeight:44, background: transformed ? 'rgba(74,158,74,.04)' : 'transparent' }}>
-        <div onClick={() => setExpanded(!expanded)} style={{ display:'flex', alignItems:'center', gap:8, padding:'8px 12px', cursor:'pointer', flex:'0 0 auto' }}>
+     <div data-tour={tourId||undefined} style={{ display:'flex', alignItems:'center', ...rowDiv, minHeight:44, background: transformed ? 'rgba(74,158,74,.04)' : 'transparent' }}>
+        <div data-tour={tourLeftId||undefined} onClick={() => setExpanded(!expanded)} style={{ display:'flex', alignItems:'center', gap:8, padding:'8px 12px', cursor:'pointer', flex:'0 0 auto' }}>
           <span style={{ fontSize:'.85rem', color: transformed ? '#4a9e4a' : 'var(--gold)', fontFamily:'Georgia, serif', fontWeight:600, minWidth:28 }}>{abbr}</span>
           <span style={{ ...val, fontSize:'1.1rem', color: transformed ? transformColor : 'var(--gold2)' }}>{displayVal}</span>
           {transformed && transformMode === 'bonus' && (
@@ -190,9 +190,9 @@ function AttrRow({ abbr, current, checkMod, derivedLabel, derivedValue, detailCo
           {!transformed && <span style={{ fontSize:'.82rem', color:cc, fontFamily:'Georgia, serif' }}>{checkMod>=0?'+':''}{checkMod}</span>}
           <span style={{ fontSize:'.55rem', color:'var(--text3)', opacity:.5 }}>{expanded?'▲':'▼'}</span>
         </div>
-        <div style={{ flex:1, padding:'8px 12px 8px 0', display:'flex', alignItems:'center', justifyContent:'flex-end' }}>
+       <div style={{ flex:1, padding:'8px 12px 8px 0', display:'flex', alignItems:'center', justifyContent:'flex-end' }}>
           {derivedValue!=null && (
-            <div style={{ textAlign:'right' }}>
+            <div data-tour={tourRightId||undefined} style={{ textAlign:'right' }}>
               {derivedLabel && <span style={{ fontSize:'.6rem', color:'var(--text3)', letterSpacing:'.12em', textTransform:'uppercase', fontFamily:'Georgia, serif', marginRight:6 }}>{derivedLabel}</span>}
               <span style={val}>{derivedValue}</span>
             </div>
@@ -354,12 +354,14 @@ export function AttributeBlock({ stats, character, onUpdateCharacter, offHand, s
       <AttrRow abbr="STR" current={attrs.str.effective} checkMod={attrs.str.checkMod}
         transformed={!!formData} transformedValue={strResolved?.value} transformMode={strResolved?.mode}
         derivedLabel="Dmg Bonus" derivedValue={stats.damageBonus>=0?`+${stats.damageBonus}`:stats.damageBonus}
-        detailContent={<DI label="Rolled STR" value={getBase('str')} />} />
+        detailContent={<DI label="Rolled STR" value={getBase('str')} />}
+        tourLeftId="sheet-attr-left" tourRightId="sheet-attr-derived" />
 
       <AttrRow abbr="DEX" current={attrs.dex.effective} checkMod={attrs.dex.checkMod}
         transformed={!!formData} transformedValue={dexResolved?.value} transformMode={dexResolved?.mode}
         derivedLabel="Initiative" derivedValue={`+${stats.initiative}`}
-        detailContent={<><DI label="Rolled DEX" value={getBase('dex')} /><DI label="Exp. Bonus" value={dexExp>=0?`+${dexExp}`:dexExp} /><DI label="PR Bonus" value={dexPR>=0?`+${dexPR}`:dexPR} /></>} />
+        detailContent={<><DI label="Rolled DEX" value={getBase('dex')} /><DI label="Exp. Bonus" value={dexExp>=0?`+${dexExp}`:dexExp} /><DI label="PR Bonus" value={dexPR>=0?`+${dexPR}`:dexPR} /></>}
+        tourLeftId="sheet-attr-left" tourRightId="sheet-attr-derived" />
 
       <AttrRow abbr="CON" current={attrs.con.effective} checkMod={attrs.con.checkMod}
         transformed={!!formData} transformedValue={conResolved?.value} transformMode={conResolved?.mode}
@@ -369,23 +371,26 @@ export function AttributeBlock({ stats, character, onUpdateCharacter, offHand, s
           {formData && <DI label="Form Max HP" value={formData.naturalMaxHP} />}
           {formData && <DI label="Your Max HP" value={stats.hp?.torso ?? '?'} />}
           {formData && <DI label="Effective Max HP" value={Math.max(formData.naturalMaxHP, stats.hp?.torso ?? 0)} />}
-        </>} />
+        </>}
+        tourLeftId="sheet-attr-left" tourRightId="sheet-attr-derived" />
 
       <AttrRow abbr="AW" current={attrs.aw.effective} checkMod={attrs.aw.checkMod}
         transformed={!!(formData && formData.awarenessBonus !== 0)} transformedValue={awResolved?.value} transformMode={awResolved?.mode}
         derivedLabel="Evasion" derivedValue={evasionDisplay}
-        detailContent={<><DI label="Rolled AW" value={getBase('aw')} /><DI label="Skill Cap" value={stats.skillCap} /><DI label="Ev. Bonus (AW)" value={awEv>=0?`+${awEv}`:awEv} /></>} />
+        detailContent={<><DI label="Rolled AW" value={getBase('aw')} /><DI label="Skill Cap" value={stats.skillCap} /><DI label="Ev. Bonus (AW)" value={awEv>=0?`+${awEv}`:awEv} /></>}
+        tourLeftId="sheet-attr-left" tourRightId="sheet-attr-derived" />
 
       <AttrRow abbr="CHR" current={attrs.chr.effective} checkMod={attrs.chr.checkMod}
         derivedValue={ok
           ? <span style={{ fontSize:'.78rem', color:'#4a9e4a', fontFamily:'Georgia, serif' }}>✓ All Good</span>
           : <span style={{ fontSize:'.72rem', color:'#c94a4a', fontFamily:'Georgia, serif' }}>⚠ {issues[0]}{issues.length>1?` +${issues.length-1}`:''}</span>}
-        detailContent={<><DI label="Rolled CHR" value={getBase('chr')} />{!ok&&<div>{issues.map((i,idx)=><div key={idx} style={{ fontSize:'.8rem', color:'#c94a4a', fontFamily:'Georgia, serif', marginBottom:2 }}>⚠ {i}</div>)}</div>}</>} />
+        detailContent={<><DI label="Rolled CHR" value={getBase('chr')} />{!ok&&<div>{issues.map((i,idx)=><div key={idx} style={{ fontSize:'.8rem', color:'#c94a4a', fontFamily:'Georgia, serif', marginBottom:2 }}>⚠ {i}</div>)}</div>}</>}
+        tourLeftId="sheet-attr-left" tourRightId="sheet-attr-chr" />
 
       <AttrRow abbr="WP" current={attrs.wp.effective} checkMod={attrs.wp.checkMod}
         derivedLabel="Mana" derivedValue={<EditableMana value={currentMana} onChange={setMana} />}
-        detailContent={<><DI label="Rolled WP" value={getBase('wp')} /><DI label="Arc. Power" value={stats.arcanePower} /><DI label="Mana Mean" value={stats.manaMean} /></>} />
-
+        detailContent={<><DI label="Rolled WP" value={getBase('wp')} /><DI label="Arc. Power" value={stats.arcanePower} /><DI label="Mana Mean" value={stats.manaMean} /></>}
+        tourLeftId="sheet-attr-left" tourRightId="sheet-attr-mana" />
       <MagicRows ranks={ranks} weavingDice={stats.weavingDice} />
 
       <SessionRow

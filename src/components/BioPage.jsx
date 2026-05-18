@@ -155,7 +155,7 @@ function LevelUpWizard({ character, stats, onUpdate, onClose }) {
 }
 
 // ── MAIN BIO PAGE ─────────────────────────────────────────────────────────────
-export default function BioPage({ character, onUpdateCharacter, stats, isGM }) {
+export default function BioPage({ character, onUpdateCharacter, stats, isGM, onRestartTour }) {
  const [gmMode, setGmMode] = useState(false)
   const [showLevelUp, setShowLevelUp] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -204,16 +204,7 @@ export default function BioPage({ character, onUpdateCharacter, stats, isGM }) {
           onClose={() => setShowLevelUp(false)}
         />
       )}
-      {/* Creation banner */}
-      {character.level === 1 && !character.pendingSkillChanges && Object.keys(character.martialSkills || {}).length === 0 && Object.keys(character.arcaneSkills || {}).length === 0 && (
-        <div style={{ padding: '14px 18px', background: 'rgba(201,168,76,.08)', border: '1px solid var(--gold)', borderRadius: 8, fontFamily: 'Georgia, serif' }}>
-          <div style={{ fontSize: '1rem', color: 'var(--gold2)', fontWeight: 600, marginBottom: 6 }}>Welcome to RavenLore!</div>
-          <div style={{ fontSize: '.85rem', color: 'var(--text2)', lineHeight: 1.7 }}>
-            Gameplay begins at level 3. Fill out your bio here, then go to <strong style={{ color: 'var(--gold)' }}>Skills</strong> to spend your {character.skillPoints?.totalEarned ?? 0} starting points. When you're done, save for GM approval — your GM will then enable your first level up.
-          </div>
-        </div>
-      )}
-      {/* Header row: GM mode + Level Up */}
+      {/* Header row: GM mode + Level Up + Tour */}
       <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
         {isGM && (
         <button
@@ -233,10 +224,23 @@ export default function BioPage({ character, onUpdateCharacter, stats, isGM }) {
         >
           {character.levelUpAuthorized ? 'Level Up →' : gmMode ? 'Level Up (GM) →' : '🔒 Level Up'}
         </button>
+        {onRestartTour && (
+          <button
+            data-tour="bio-restart-tour"
+            onClick={onRestartTour}
+            title="Restart the new player tour"
+            style={{
+              marginLeft: 'auto', padding: '7px 12px',
+              background: 'none', border: '1px solid var(--border)',
+              color: 'var(--text3)', borderRadius: 4, cursor: 'pointer',
+              fontFamily: 'Georgia, serif', fontSize: '.78rem', letterSpacing: '.06em',
+            }}
+          >❓ Tour</button>
+        )}
       </div>
 
       {/* Skill Points Summary */}
-      <div style={surface}>
+      <div data-tour="bio-skillpoints" style={surface}>
         <div style={sectionTitle}>Skill Points</div>
         <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
           {[
@@ -304,7 +308,7 @@ export default function BioPage({ character, onUpdateCharacter, stats, isGM }) {
       <div style={{ ...surface, display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'flex-start' }}>
 
         {/* Token image */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'center' }}>
+        <div data-tour="bio-portrait" style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'center' }}>
           <div style={{
             width: 120, height: 120, borderRadius: 8,
             border: '2px solid var(--border2)',
@@ -419,7 +423,7 @@ export default function BioPage({ character, onUpdateCharacter, stats, isGM }) {
                 </div>
 )}
             </div>
-            <div style={{ gridColumn: '1 / -1' }}>
+            <div data-tour="bio-campaign" style={{ gridColumn: '1 / -1' }}>
               {field('Campaign',
                 character.campaignLocked && !gmMode
                   ? <div style={{ fontSize: '1rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600, padding: '6px 0' }}>

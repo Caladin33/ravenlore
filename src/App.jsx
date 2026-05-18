@@ -11,6 +11,7 @@ import GMView from './components/GMView'
 import { calculate } from './utils/calculator'
 import { loadCharacters, saveCharacter, deleteCharacter, getUserCampaigns } from './characterDB'
 import ConfirmModal from './components/ConfirmModal'
+import NewPlayerTour from './components/NewPlayerTour'
 import './App.css'
 
 function RavenLogo({ size = 48 }) {
@@ -20,9 +21,10 @@ function RavenLogo({ size = 48 }) {
 }
 
 // ── CHARACTER TOKEN ───────────────────────────────────────────────────────────
-function CharacterToken({ imageUrl, name, size = 36, onClick, isActive }) {
+function CharacterToken({ imageUrl, name, size = 36, onClick, isActive, 'data-tour': dataTour }) {
   return (
     <button
+      data-tour={dataTour}
       onClick={onClick}
       title="Bio"
       style={{
@@ -52,6 +54,7 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
   const tabBtn = (key, label) => (
     <button
       key={key}
+      data-tour="nav-tab-btn"
       onClick={() => onNavigate(key)}
       style={{
         background: currentTab === key ? 'rgba(201,168,76,.12)' : 'none',
@@ -67,6 +70,7 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
 
   const homeBtn = (
     <button
+      data-tour="nav-logo"
       onClick={onHome}
       style={{
         background: 'none', border: 'none', cursor: 'pointer',
@@ -85,6 +89,7 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
   const charInfo = (
     <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, justifyContent: 'center' }}>
       <CharacterToken
+        data-tour="nav-token"
         imageUrl={character.imageUrl}
         name={character.name}
         size={36}
@@ -124,6 +129,7 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {homeBtn}
           <CharacterToken
+            data-tour="nav-token"
             imageUrl={character.imageUrl}
             name={character.name}
             size={32}
@@ -221,6 +227,22 @@ function App() {
   const [selectedCharacter, setSelectedCharacter] = useState(null)
   const [isGM, setIsGM] = useState(false)
   const [confirmModal, setConfirmModal] = useState(null)
+  const [tourStep, setTourStep] = useState(null)
+
+  // Persist tour step across browser back/refresh
+  useEffect(() => {
+    const saved = localStorage.getItem('rl_tour_step')
+    if (saved !== null) setTourStep(parseInt(saved))
+  }, [])
+
+  const advanceTour = (stepOrFn) => {
+    setTourStep(prev => {
+      const next = typeof stepOrFn === 'function' ? stepOrFn(prev) : stepOrFn
+      if (next === null) localStorage.removeItem('rl_tour_step')
+      else localStorage.setItem('rl_tour_step', String(next))
+      return next
+    })
+  }
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -249,9 +271,10 @@ function App() {
     await saveCharacter({ ...newChar, status: 'active' }, user.id)
     loadCharacters(user.id).then(({ characters }) => {
       setCharacters(characters || [])
-      const created = characters?.find(c => c.name === newChar.name)
-      if (created) { setSelectedCharacter(created); setCurrentPage('bio') }
-      else setCurrentPage('home')
+      const created = characters?.find(c => c.name === newChar.name) || newChar
+      setSelectedCharacter(created)
+      setCurrentPage('bio')
+      advanceTour(0)
     })
   }
   const handleUpdateCharacter = (updated) => {
@@ -323,7 +346,7 @@ function App() {
           <StuffPage character={selectedCharacter} onUpdateCharacter={handleUpdateCharacter} stats={selectedCharacterStats} />
         )}
         {currentPage === 'bio' && selectedCharacter && (
-          <BioPage character={selectedCharacter} onUpdateCharacter={handleUpdateCharacter} stats={selectedCharacterStats} isGM={isGM} />
+          <BioPage character={selectedCharacter} onUpdateCharacter={handleUpdateCharacter} stats={selectedCharacterStats} isGM={isGM} onRestartTour={() => advanceTour(0)} />
         )}
       </main>
      {confirmModal && (
@@ -333,7 +356,17 @@ function App() {
     onConfirm={confirmModal.onConfirm}
     onCancel={() => setConfirmModal(null)}
   />
-)} 
+)}
+      {tourStep !== null && selectedCharacter && (
+        <NewPlayerTour
+          step={tourStep}
+          character={selectedCharacter}
+          currentPage={currentPage}
+          onNavigate={navigate}
+          onNext={() => advanceTour(s => s + 1)}
+          onSkip={() => advanceTour(null)}
+        />
+      )}
     </div>
   )
 }
