@@ -343,15 +343,16 @@ function WeaponSlots({ character, onUpdateCharacter, stats }) {
 
       {sectionHdr('Melee Weapons')}
       {meleeSlots.map((slot, i) => (
-        <WeaponSlotRow
-          key={i}
-          slot={slot}
-          calcSlot={stats.meleeSlots[i]}
-          isRanged={false}
-          activeFormData={activeFormData}
-          onEdit={() => setEditingSlot({ type: 'melee', index: i })}
-          onRemove={() => removeSlot('melee', i)}
-        />
+        <div key={i} data-tour={i === 0 ? 'sheet-weapon-slot-0' : undefined}>
+          <WeaponSlotRow
+            slot={slot}
+            calcSlot={stats.meleeSlots[i]}
+            isRanged={false}
+            activeFormData={activeFormData}
+            onEdit={() => setEditingSlot({ type: 'melee', index: i })}
+            onRemove={() => removeSlot('melee', i)}
+          />
+        </div>
       ))}
       <button onClick={() => addSlot('melee')}
         style={{ marginTop: 8, padding: '4px 12px', background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.78rem' }}>

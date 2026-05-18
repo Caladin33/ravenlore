@@ -301,12 +301,12 @@ export default function ArcaneCompendium({ character, onUpdateCharacter, stats }
         <div>
           <h2 style={{ color: '#e8c96a', letterSpacing: '.08em', margin: 0, fontSize: '1.5rem' }}>Spells</h2>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '.75rem', color: '#7a6a50', letterSpacing: '.14em', textTransform: 'uppercase', fontFamily: 'Georgia, serif', lineHeight: 1 }}>Mastery Ranks:</span>
+        <div data-tour="spells-mastery-ranks" style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
           {Object.entries(COLORS).map(([key, col]) => (
-            <span key={key} style={{ fontSize: '1.5rem', fontWeight: 600, lineHeight: 1, color: ranks[key] > 0 ? col.dot : '#3a2e1e', fontFamily: 'Georgia, serif', textShadow: ranks[key] > 0 ? `0 0 8px ${col.dot}66` : 'none', minWidth: 16, textAlign: 'center' }}>
-              {ranks[key]}
-            </span>
+            <div key={key} style={{ textAlign: 'center', background: ranks[key] > 0 ? `${col.dot}14` : '#1a1510', border: `1px solid ${ranks[key] > 0 ? col.dot : '#3a2e1e'}`, borderRadius: 6, padding: '6px 10px', minWidth: 44 }}>
+              <div style={{ fontSize: '1.4rem', fontWeight: 700, fontFamily: 'Georgia, serif', color: ranks[key] > 0 ? col.dot : '#3a2e1e', textShadow: ranks[key] > 0 ? `0 0 8px ${col.dot}66` : 'none', lineHeight: 1, marginBottom: 3 }}>{ranks[key]}</div>
+              <div style={{ fontSize: '.52rem', color: ranks[key] > 0 ? col.dot : '#3a2e1e', letterSpacing: '.08em', fontFamily: 'Georgia, serif', opacity: ranks[key] > 0 ? .85 : .4 }}>{col.name}</div>
+            </div>
           ))}
         </div>
         <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
@@ -340,17 +340,19 @@ export default function ArcaneCompendium({ character, onUpdateCharacter, stats }
       {/* Search + filters */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         <input placeholder="Search spells..." value={search} onChange={e => setSearch(e.target.value)} style={{ width: '100%', padding: '8px 14px', background: '#1f1a12', border: '1px solid #3a2e1e', color: '#e8dcc8', borderRadius: 6, fontFamily: 'Georgia, serif', fontSize: '1rem' }} />
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-          <ToggleBtn active={filterSchool === null} onClick={() => setFilterSchool(null)}>All Schools</ToggleBtn>
-          {ALL_SCHOOLS.map(school => (
-            <ToggleBtn key={school} active={filterSchool === school} onClick={() => setFilterSchool(filterSchool === school ? null : school)}>{school}</ToggleBtn>
-          ))}
-        </div>
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
-          <ToggleBtn active={showUnlockedOnly} onClick={() => { setShowUnlockedOnly(!showUnlockedOnly); setShowKnownOnly(false); setPreviewAll(false) }}>🔓 Unlocked Only</ToggleBtn>
-          <ToggleBtn active={showKnownOnly} onClick={() => { setShowKnownOnly(!showKnownOnly); setShowUnlockedOnly(false); setPreviewAll(false) }}>✦ Known Only</ToggleBtn>
-          <ToggleBtn active={previewAll} accent onClick={() => { setPreviewAll(!previewAll); setShowUnlockedOnly(false); setShowKnownOnly(false) }}>{previewAll ? '👁 Preview Mode On' : '👁 Preview All'}</ToggleBtn>
-          <span style={{ color: '#7a6a50', fontSize: '.78rem', marginLeft: 4 }}>{filtered.length} spells</span>
+       <div data-tour="spells-school-filters" style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+            <ToggleBtn active={filterSchool === null} onClick={() => setFilterSchool(null)}>All Schools</ToggleBtn>
+            {ALL_SCHOOLS.map(school => (
+              <ToggleBtn key={school} active={filterSchool === school} onClick={() => setFilterSchool(filterSchool === school ? null : school)}>{school}</ToggleBtn>
+            ))}
+          </div>
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
+            <ToggleBtn active={showUnlockedOnly} onClick={() => { setShowUnlockedOnly(!showUnlockedOnly); setShowKnownOnly(false); setPreviewAll(false) }}>🔓 Unlocked Only</ToggleBtn>
+            <ToggleBtn active={showKnownOnly} onClick={() => { setShowKnownOnly(!showKnownOnly); setShowUnlockedOnly(false); setPreviewAll(false) }}>✦ Known Only</ToggleBtn>
+            <ToggleBtn active={previewAll} accent onClick={() => { setPreviewAll(!previewAll); setShowUnlockedOnly(false); setShowKnownOnly(false) }}>{previewAll ? '👁 Preview Mode On' : '👁 Preview All'}</ToggleBtn>
+            <span style={{ color: '#7a6a50', fontSize: '.78rem', marginLeft: 4 }}>{filtered.length} spells</span>
+          </div>
         </div>
         {previewAll && <div style={{ fontSize: '.75rem', color: '#4a9e4a', fontStyle: 'italic', fontFamily: 'Georgia, serif' }}>Preview mode — showing all spells as unlocked. Your actual ranks are unchanged.</div>}
       </div>
@@ -379,7 +381,7 @@ export default function ArcaneCompendium({ character, onUpdateCharacter, stats }
                 const isWoP = isWordOfPower(spell)
                 const isFormSpell = !!FORM_SPELLS[spell.name]
                 return (
-                  <div key={spell.id} onClick={() => setSelected(isSelected ? null : spell)} style={{
+                 <div key={spell.id} data-tour={spell.id === levelSpells[0]?.id && level === groupedByLevel[0]?.level ? 'spells-first-spell' : undefined} onClick={() => setSelected(isSelected ? null : spell)} style={{
                     display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px', cursor: 'pointer',
                     borderBottom: '1px solid #3a2e1e',
                     background: isSelected ? '#261f15' : (isKnown ? 'rgba(201,168,76,.04)' : 'transparent'),

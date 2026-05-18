@@ -222,17 +222,21 @@ function MagicRows({ ranks, weavingDice }) {
   return (
     <>
       <div style={{ display:'flex', alignItems:'center', gap:6, padding:'8px 12px', flexWrap:'wrap', ...rowDiv, background:'var(--bg2)' }}>
-        <span style={{ ...lbl, marginBottom:0, marginRight:4, whiteSpace:'nowrap' }}>Masteries:</span>
-        {COLOR_ORDER.map(key => {
-          const t=MAGIC_COLORS[key], r=ranks[key]??0
-          return <span key={key} style={{ fontSize:'1.1rem', fontWeight:700, fontFamily:'Georgia, serif', color:r>0?t.accent:'#3a2e1e', textShadow:r>0?`0 0 8px ${t.accent}55`:'none', minWidth:18, textAlign:'center', background:key==='chaos'&&r>0?'#555':'transparent', borderRadius:3, padding:key==='chaos'?'0 3px':'0' }}>{r}</span>
-        })}
+        <div data-tour="sheet-magic-rows" style={{ display:'inline-flex', alignItems:'center', gap:6, flexWrap:'wrap' }}>
+          <span style={{ ...lbl, marginBottom:0, marginRight:4, whiteSpace:'nowrap' }}>Masteries:</span>
+          {COLOR_ORDER.map(key => {
+            const t=MAGIC_COLORS[key], r=ranks[key]??0
+            return <span key={key} style={{ fontSize:'1.1rem', fontWeight:700, fontFamily:'Georgia, serif', color:r>0?t.accent:'#3a2e1e', textShadow:r>0?`0 0 8px ${t.accent}55`:'none', minWidth:18, textAlign:'center', background:key==='chaos'&&r>0?'#555':'transparent', borderRadius:3, padding:key==='chaos'?'0 3px':'0' }}>{r}</span>
+          })}
+        </div>
       </div>
       <div style={{ display:'flex', alignItems:'center', gap:6, padding:'6px 12px', flexWrap:'wrap', ...rowDiv }}>
-        {COLOR_ORDER.map(key => {
-          const t=MAGIC_COLORS[key], die=weavingDice?.[key]??null
-          return <div key={key} style={{ background:t.bg, border:`1px solid ${t.border}`, borderRadius:4, padding:'2px 8px', fontSize:'.8rem', fontFamily:'Georgia, serif', color:die?t.accent:t.border, fontWeight:die?600:400 }}>{die??'—'}</div>
-        })}
+        <div data-tour="sheet-magic-dice" style={{ display:'inline-flex', alignItems:'center', gap:6, flexWrap:'wrap' }}>
+          {COLOR_ORDER.map(key => {
+            const t=MAGIC_COLORS[key], die=weavingDice?.[key]??null
+            return <div key={key} style={{ background:t.bg, border:`1px solid ${t.border}`, borderRadius:4, padding:'2px 8px', fontSize:'.8rem', fontFamily:'Georgia, serif', color:die?t.accent:t.border, fontWeight:die?600:400 }}>{die??'—'}</div>
+          })}
+        </div>
       </div>
     </>
   )
@@ -246,6 +250,7 @@ function SessionRow({ stats, character, offHand, stance, onOffHandChange, onStan
 
   return (
     <div style={{ display:'flex', gap:10, flexWrap:'wrap', alignItems:'center', padding:'8px 12px', background: activeForm && activeForm !== 'None' ? 'rgba(74,158,74,.06)' : 'var(--bg2)', borderTop: activeForm && activeForm !== 'None' ? '1px solid rgba(74,158,74,.3)' : 'none' }}>
+      <div data-tour="sheet-session-row" style={{ display:'inline-flex', gap:10, alignItems:'center' }}>
       {[['Off-hand', offHand, onOffHandChange, ['Empty','2-Handed','Dual Wield','Shield']],
         ['Stance', stance, onStanceChange, ['None','Wind','Wave','Stone','Flame']]
       ].map(([label, v, fn, opts]) => (
@@ -256,6 +261,7 @@ function SessionRow({ stats, character, offHand, stance, onOffHandChange, onStan
           </select>
         </div>
       ))}
+      </div>
 
       {/* Druid transform dropdown */}
       {hasDruidForms && (
@@ -482,7 +488,7 @@ const DCOLS = '56px 70px 60px 50px 70px minmax(100px, 180px) 56px 1fr'
     const maxChanged = formData && loc === 'torso' && effectiveMaxHP !== baseMaxHP
 
     const dropdown = (
-      <select value={code} onChange={e => updateArmor(loc, 'type', e.target.value)} style={{ ...selectSt, fontSize: isDesktop ? '.72rem' : '.65rem' }}>
+      <select data-tour="sheet-armor-type" value={code} onChange={e => updateArmor(loc, 'type', e.target.value)} style={{ ...selectSt, fontSize: isDesktop ? '.72rem' : '.65rem' }}>
         {options.map(o => <option key={o.code} value={o.code}>{isDesktop ? o.label : o.code}</option>)}
       </select>
     )
@@ -579,7 +585,7 @@ const DCOLS = '56px 70px 60px 50px 70px minmax(100px, 180px) 56px 1fr'
   )
 
 const globalRow = isDesktop ? (
-    <div style={{ display:'grid', gridTemplateColumns:grid, background:'var(--bg2)', alignItems:'center' }}>
+    <div data-tour="sheet-global-row" style={{ display:'grid', gridTemplateColumns:grid, background:'var(--bg2)', alignItems:'center' }}>
       {dataCell(<div style={{ textAlign:'center' }}><span style={lbl}>Barrier HP</span><ClickEdit value={hp.barrierHP??0} onChange={v=>updateHPField('barrierHP',v)} fontSize=".9rem" /></div>, true)}
       {dataCell(<div style={{ textAlign:'center' }}><span style={lbl}>Temp HP</span><ClickEdit value={hp.tempHP??0} onChange={v=>updateHPField('tempHP',v)} fontSize=".9rem" /></div>)}
       {dataCell(<div />)}
@@ -590,7 +596,7 @@ const globalRow = isDesktop ? (
       {dataCell(<span style={{ fontSize:'.72rem', color:'var(--text3)', fontFamily:'Georgia, serif', fontStyle:'italic' }}>Barrier HP → Armor → Temp HP → Location HP</span>,)}
     </div>
   ) : (
-    <div style={{ display:'grid', gridTemplateColumns:grid, background:'var(--bg2)', alignItems:'center' }}>
+    <div data-tour="sheet-global-row" style={{ display:'grid', gridTemplateColumns:grid, background:'var(--bg2)', alignItems:'center' }}>
       {dataCell(<div style={{ textAlign:'center' }}><span style={lbl}>Barrier HP</span><ClickEdit value={hp.barrierHP??0} onChange={v=>updateHPField('barrierHP',v)} fontSize=".85rem" /></div>, true)}
       {dataCell(<div style={{ textAlign:'center' }}><span style={lbl}>Temp HP</span><ClickEdit value={hp.tempHP??0} onChange={v=>updateHPField('tempHP',v)} fontSize=".85rem" /></div>)}
       {dataCell(<div style={{ textAlign:'center' }}><span style={lbl}>Global AR+</span><ClickEdit value={character.globalARBonus??0} onChange={v=>updateGlobal('globalARBonus',v)} fontSize=".85rem" /></div>)}
@@ -599,7 +605,7 @@ const globalRow = isDesktop ? (
   )
 
   return (
-    <div style={{ background:'var(--surface)', border:'1px solid var(--border)', borderRadius:8, overflow:'hidden' }}>
+    <div data-tour="sheet-hptable" style={{ background:'var(--surface)', border:'1px solid var(--border)', borderRadius:8, overflow:'visible' }}>
       <div style={{ display:'grid', gridTemplateColumns:grid, ...hdrBg }}>
         <div style={{ padding:'8px 8px', background:'var(--bg2)' }} />
         {isDesktop ? (

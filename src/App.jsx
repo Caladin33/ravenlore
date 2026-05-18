@@ -364,6 +364,7 @@ function App() {
           currentPage={currentPage}
           onNavigate={navigate}
           onNext={() => advanceTour(s => s + 1)}
+          onPrev={() => advanceTour(s => s - 1)}
           onSkip={() => advanceTour(null)}
         />
       )}
