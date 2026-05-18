@@ -94,6 +94,7 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
       <div style={{ textAlign: 'center' }}>
         <div style={{ fontSize: '1.3rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 'bold', letterSpacing: '.04em', lineHeight: 1.1 }}>
           {character.name}
+          {character.hardcore && <span title="Hardcore character" style={{ marginLeft: 6, fontSize: '.7rem', color: '#c94a4a', verticalAlign: 'middle' }}>⚔</span>}
         </div>
         <div style={{ fontSize: '.72rem', color: 'var(--text3)', letterSpacing: '.12em', textTransform: 'uppercase', marginTop: 2 }}>
           Level {character.level} {character.race}
@@ -130,8 +131,9 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
             isActive={currentTab === 'bio'}
           />
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: '1.1rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 'bold', letterSpacing: '.04em', lineHeight: 1.1 }}>
+           <div style={{ fontSize: '1.1rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 'bold', letterSpacing: '.04em', lineHeight: 1.1 }}>
               {character.name}
+              {character.hardcore && <span title="Hardcore character" style={{ marginLeft: 6, fontSize: '.7rem', color: '#c94a4a', verticalAlign: 'middle' }}>⚔</span>}
             </div>
             <div style={{ fontSize: '.65rem', color: 'var(--text3)', letterSpacing: '.1em', textTransform: 'uppercase' }}>
               Level {character.level} {character.race}

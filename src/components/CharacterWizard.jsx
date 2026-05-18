@@ -94,8 +94,18 @@ function applyThresholdFix(rolls) {
   return fixed
 }
 
-function generateAllSets() {
-  return [1,2,3].map(() => applyThresholdFix(Array.from({ length: 7 }, () => roll4d6kh3())))
+function generateHardcoreSet() {
+  return Array.from({ length: 7 }, () => {
+    const dice = [1,2,3].map(() => Math.ceil(Math.random() * 6))
+    return { dice, total: dice.reduce((a,b) => a+b, 0), hardcore: true }
+  })
+}
+
+function generateAllSets(method) {
+  if (method === 'hardcore') {
+    return Array.from({ length: 3 }, () => generateHardcoreSet())
+  }
+  return Array.from({ length: 3 }, () => applyThresholdFix(Array.from({ length: 7 }, () => roll4d6kh3())))
 }
 
 // ── STEP INDICATOR ────────────────────────────────────────────────────────────
@@ -132,6 +142,25 @@ function StepNamePlayer({ data, onChange }) {
           {campaigns.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
       </div>
+     <div>
+        <span style={lbl}>Rolling Method</span>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 4 }}>
+          {[
+            ['standard', '🎲 Standard', '4d6 drop lowest, 3 sets. Minimum quality guaranteed.'],
+            ['hardcore', '⚔ Hardcore', '3d6, 3 sets, no modifiers, no guarantees. For the brave.'],
+          ].map(([value, label, desc]) => (
+            <div key={value} onClick={() => onChange({ ...data, rollMethod: value })} style={{
+              padding: '10px 14px', borderRadius: 7, cursor: 'pointer',
+              border: `2px solid ${(data.rollMethod || 'standard') === value ? (value === 'hardcore' ? '#c94a4a' : 'var(--gold)') : 'var(--border)'}`,
+              background: (data.rollMethod || 'standard') === value ? (value === 'hardcore' ? 'rgba(201,74,74,.08)' : 'rgba(201,168,76,.08)') : 'var(--bg2)',
+              transition: 'all .15s',
+            }}>
+              <div style={{ fontSize: '.92rem', fontFamily: 'Georgia, serif', fontWeight: 600, color: (data.rollMethod || 'standard') === value ? (value === 'hardcore' ? '#c94a4a' : 'var(--gold2)') : 'var(--text)', marginBottom: 3 }}>{label}</div>
+              <div style={{ fontSize: '.75rem', color: 'var(--text3)', fontFamily: 'Georgia, serif' }}>{desc}</div>
+            </div>
+          ))}
+        </div>
+      </div> 
     </div>
   )
 }
@@ -142,7 +171,7 @@ function StepRoll({ data, onChange }) {
   const [selected, setSelected] = useState(data.selectedSet ?? null)
 
   const doRoll = () => {
-    const newSets = generateAllSets()
+    const newSets = generateAllSets(data.rollMethod || 'standard')
     setSets(newSets)
     setSelected(null)
     onChange({ ...data, rollSets: newSets, selectedSet: null, rolledValues: null })
@@ -157,7 +186,10 @@ function StepRoll({ data, onChange }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
       <div style={sectionTitle}>Roll Attributes</div>
       <div style={{ fontSize: '.83rem', color: 'var(--text2)', fontFamily: 'Georgia, serif', lineHeight: 1.6 }}>
-        Three sets of 7 rolls (4d6, drop lowest). If no roll is 17+ or two 16+, the third-highest is replaced with a 1d3+15 roll (★). Choose the set you prefer.
+        {data.rollMethod === 'hardcore'
+          ? '⚔ Hardcore mode: Three sets of 7 rolls (3d6, no modifiers, no guarantees). Choose the set you prefer.'
+          : 'Three sets of 7 rolls (4d6, drop lowest). If no roll is 17+ or two 16+, the third-highest is replaced with a 1d3+15 roll (★). Choose the set you prefer.'
+        }
       </div>
       {!sets && <button onClick={doRoll} style={btnPrimary}>🎲 Roll Attributes</button>}
       {sets && (
@@ -168,7 +200,9 @@ function StepRoll({ data, onChange }) {
             return (
               <div key={si} onClick={() => selectSet(si)} style={{ padding: '12px 14px', borderRadius: 7, cursor: 'pointer', border: `2px solid ${isSel ? 'var(--gold)' : 'var(--border)'}`, background: isSel ? 'rgba(201,168,76,.08)' : 'var(--bg2)', transition: 'all .2s' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                  <span style={{ ...lbl, marginBottom: 0, color: isSel ? 'var(--gold)' : 'var(--text3)' }}>Set {si + 1}</span>
+                 <span style={{ ...lbl, marginBottom: 0, color: isSel ? (data.rollMethod === 'hardcore' ? '#c94a4a' : 'var(--gold)') : 'var(--text3)' }}>
+                  {data.rollMethod === 'hardcore' ? `⚔ Set ${si + 1}` : `Set ${si + 1}`}
+                </span>
                   {isSel && <span style={{ fontSize: '.7rem', color: 'var(--gold)', fontFamily: 'Georgia, serif' }}>✓ Selected</span>}
                 </div>
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
@@ -411,7 +445,7 @@ export default function CharacterWizard({ userId, onComplete, onCancel }) {
   const canAdvance = useMemo(() => {
     if (step === 0) return data.name.trim() && data.player.trim()
     if (step === 1) return data.rolledValues !== null
-    if (step === 2) return Object.keys(data.assignedMap || {}).length === 6 && data.discardIdx !== null
+    if (step === 2) return Object.keys(data.assignedMap || {}).length === 6
     if (step === 3) return !!data.raceKey
     return false
   }, [step, data])
@@ -422,6 +456,7 @@ export default function CharacterWizard({ userId, onComplete, onCancel }) {
     const attrs = data.finalAttrs || {}
 
     const newCharacter = {
+      hardcore: data.rollMethod === 'hardcore',
       name: data.name.trim(),
       player: data.player.trim(),
       race: race?.name || '',
