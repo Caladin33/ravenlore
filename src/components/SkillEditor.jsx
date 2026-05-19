@@ -317,7 +317,7 @@ const TABS = ['General', 'Martial', 'Spiritual', 'Obscure']
 
 // ── MAIN COMPONENT ────────────────────────────────────────────────────────────
 export default function SkillEditor({ character, onSave, onBack, isGM }) {
-  const [activeTab, setActiveTab] = useState('Martial')
+  const [activeTab, setActiveTab] = useState('General')
   const [char, setChar] = useState(() => JSON.parse(JSON.stringify(character)))
   const [gmMode, setGmMode] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
@@ -487,6 +487,7 @@ const handleSave = () => {
 
       {/* Points + GM Mode + Save */}
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '12px 16px', alignItems: 'center' }}>
+        <div data-tour="skills-points-bar" style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
         {[
           ['Unspent', pointTotals.unspent],
           ['General', pointTotals.generalSpent],
@@ -499,21 +500,22 @@ const handleSave = () => {
             <div style={{ fontSize: '1.1rem', fontWeight: 600, fontFamily: 'Georgia, serif', color: l === 'Unspent' && val < 0 ? '#c94a4a' : 'var(--gold2)' }}>{val}</div>
           </div>
         ))}
+        </div>
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           {isGM && (
             <button onClick={() => setGmMode(!gmMode)} style={{ padding: '8px 16px', background: gmMode ? 'rgba(201,42,42,.2)' : 'var(--surface2)', border: `1px solid ${gmMode ? '#c94a4a' : 'var(--border)'}`, color: gmMode ? '#c94a4a' : 'var(--text3)', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.85rem' }}>
               {gmMode ? '⚠ GM Mode ON' : 'GM Mode'}
             </button>
           )}
-          <button onClick={() => setShowConfirm(true)} style={{ padding: '8px 20px', background: 'rgba(74,158,74,.15)', border: '1px solid #4a9e4a', color: '#4a9e4a', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.9rem' }}>
+          <button data-tour="skills-save-btn" onClick={() => setShowConfirm(true)} style={{ padding: '8px 20px', background: 'rgba(74,158,74,.15)', border: '1px solid #4a9e4a', color: '#4a9e4a', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.9rem' }}>
             Save Changes
           </button>
         </div>
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-        {TABS.map(tab => <button key={tab} style={tabBtn(tab)} onClick={() => setActiveTab(tab)}>{tab}</button>)}
+      <div data-tour="skills-tabs" style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+        {TABS.map(tab => <button key={tab} data-skills-tab={tab} style={tabBtn(tab)} onClick={() => setActiveTab(tab)}>{tab}</button>)}
       </div>
 
       {/* Search + filter */}
@@ -531,7 +533,12 @@ const handleSave = () => {
 
         {activeTab === 'General' && (
           <div>
-            <RankedSkillTable skills={filterSkills(selfImprovementData)} char={char} sectionLabel="Self Improvement" theme={THEMES.selfImprovement} level={char.level || 1} skillSource="selfImprovement" gmMode={gmMode} lockedPoints={lockedPoints} onUpdate={(name, newPts) => handleUpdate(name, newPts, 'selfImprovement')} unspentPoints={pointTotals.unspent}/>
+            <RankedSkillTable skills={filterSkills(selfImprovementData)} char={char} sectionLabel="Self Improvement" theme={THEMES.selfImprovement} level={char.level || 1} skillSource="selfImprovement" gmMode={gmMode} lockedPoints={lockedPoints} onUpdate={(name, newPts) => handleUpdate(name, newPts, 'selfImprovement')} unspentPoints={pointTotals.unspent}
+              sectionHeaderTourId="skills-self-improvement-header"
+              firstSkillTourId="skills-first-skill"
+              fourthSkillRightTourId="skills-bodybuilding-right"
+              fourthSkillPtsTourId="skills-bodybuilding-pts"
+            />
            <div style={{ padding: '10px 12px', background: 'var(--bg)', borderBottom: '2px solid #4a9e4a', fontSize: '1rem', letterSpacing: '.25em', color: '#4a9e4a', textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 600, textAlign: 'center' }}>Trades &amp; Talents</div>
 {/* Column headers */}
 <div style={{ display: 'grid', gridTemplateColumns: '1fr 52px 72px', background: 'var(--bg2)', borderBottom: '1px solid rgba(74,158,74,.25)', minHeight: 44, alignItems: 'center' }}>
@@ -544,7 +551,7 @@ const handleSave = () => {
   </div>
 </div>
 <div>
-              {filterSkills(generalSkillsData).map(skill => {
+              {filterSkills(generalSkillsData).map((skill, idx) => {
                 const pts = parseInt(char.generalSkills?.[skill.name]?.pointsInvested) || 0
                 const score = effectiveAttrs ? calcSkillScore(skill, char, effectiveAttrs) : 0
                 const getSkillScore = (name) => { const s = generalSkillsData.find(x => x.name === name); return s ? calcSkillScore(s, char, effectiveAttrs || {}) : 0 }
@@ -558,6 +565,7 @@ const handleSave = () => {
   gmMode={gmMode}
   lockedPoints={lockedPoints}
   onUpdate={(newPts) => handleUpdate(skill.name, newPts, 'general')}
+  tourId={idx === 0 ? 'skills-acting' : undefined}
 />
               })}
             </div>
@@ -574,7 +582,21 @@ const handleSave = () => {
           return sections.map(section => {
             const sectionSkills = filterSkills(martialSkillsData.filter(s => s.category === section.key))
             if (sectionSkills.length === 0) return null
-            return <RankedSkillTable key={section.key} skills={sectionSkills} char={char} sectionLabel={section.label} theme={section.theme} level={char.level || 1} skillSource="martial" gmMode={gmMode} lockedPoints={lockedPoints} onUpdate={(name, newPts) => handleUpdate(name, newPts, 'martial')} unspentPoints={pointTotals.unspent}/>
+            return (
+              <RankedSkillTable
+                key={section.key}
+                skills={sectionSkills}
+                char={char}
+                sectionLabel={section.label}
+                theme={section.theme}
+                level={char.level || 1}
+                skillSource="martial"
+                gmMode={gmMode}
+                lockedPoints={lockedPoints}
+                onUpdate={(name, newPts) => handleUpdate(name, newPts, 'martial')}
+                unspentPoints={pointTotals.unspent}
+              />
+            )
           })
         })()}
 
@@ -600,6 +622,11 @@ const handleSave = () => {
                 onUpdate={(name, newPts) => handleUpdate(name, newPts, 'arcane')}
                 specialRows={specialRows}
                 unspentPoints={pointTotals.unspent}
+                sectionHeaderTourId={
+                  category === 'divine' ? 'skills-divine-header' :
+                  category === 'balance' ? 'skills-balance-header' :
+                  category === 'spellcaster' ? 'skills-arcane-header' : undefined
+                }
               />
             )
           })

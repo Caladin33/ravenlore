@@ -218,6 +218,7 @@ export default function BioPage({ character, onUpdateCharacter, stats, isGM, onR
         >{gmMode ? '⚠ GM Mode ON' : 'GM Mode'}</button>
           )}
         <button 
+          data-tour="bio-levelup-btn"
           onClick={() => setShowLevelUp(true)} 
           disabled={!character.levelUpAuthorized && !gmMode}
           style={{ ...saveBtn, opacity: (character.levelUpAuthorized || gmMode) ? 1 : 0.4, cursor: (character.levelUpAuthorized || gmMode) ? 'pointer' : 'not-allowed' }}

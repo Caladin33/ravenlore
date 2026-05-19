@@ -299,7 +299,7 @@ function EditablePoints({ value, onCommit, theme, isActive, locked }) {
   )
 }
 
-function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onUpdate, skillSource, theme, level, char, gmMode, unspentPoints }) {
+function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onUpdate, skillSource, theme, level, char, gmMode, unspentPoints, tourLeftId, tourRightId, tourPtsId }) {
   const [expanded, setExpanded] = useState(false)
   const T = theme || THEMES.selfImprovement
   const costPerRank = parseInt(skill.costPerRank) || 1
@@ -337,7 +337,7 @@ const handleCommit = (newPoints) => {
   return (
     <>
       <div style={{ display: 'grid', gridTemplateColumns: GRID, alignItems: 'center', borderBottom: '1px solid var(--border)', background: isActive ? T.dim : 'transparent', minHeight: 52, opacity: editLocked ? 0.55 : 1 }}>
-        <div style={{ padding: '8px 12px', cursor: 'pointer', minWidth: 0 }} onClick={() => setExpanded(!expanded)}>
+        <div data-tour={tourLeftId || undefined} style={{ padding: '8px 12px', cursor: 'pointer', minWidth: 0 }} onClick={() => setExpanded(!expanded)}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexWrap: 'wrap', fontSize: '.92rem', fontFamily: 'Georgia, serif', color: isActive ? T.primary2 : (editLocked ? 'var(--text3)' : 'var(--text)'), fontWeight: isActive ? 600 : 400 }}>
             <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{skill.name}</span>
             {prereqResult.tags?.map(tag => (
@@ -362,13 +362,13 @@ const handleCommit = (newPoints) => {
           )}
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '6px 4px', gap: 2 }}>
+        <div data-tour={tourPtsId || undefined} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '6px 4px', gap: 2 }}>
           <EditablePoints value={pointsInvested} onCommit={handleCommit} theme={T} isActive={isActive} locked={editLocked} />
           <div style={{ width: 36, height: 1, background: isActive ? T.border : 'var(--border)' }} />
           <div style={{ fontSize: '.75rem', color: 'var(--text3)', fontFamily: 'Georgia, serif' }}>{costPerRank}</div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '6px 4px', gap: 2 }}>
+        <div data-tour={tourRightId || undefined} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '6px 4px', gap: 2 }}>
           <div style={{ fontSize: isActive ? '1.2rem' : '.9rem', fontWeight: isActive ? 700 : 400, fontFamily: 'Georgia, serif', color: isActive ? T.primary2 : 'var(--text3)', lineHeight: 1, textAlign: 'center' }}>
             {isActive ? rank : '—'}
           </div>
@@ -411,7 +411,7 @@ const handleCommit = (newPoints) => {
 }
 
 // specialRows: { [skillName]: ReactNode } — rendered below that skill's row
-export function RankedSkillTable({ skills, char, onUpdate, theme, sectionLabel, level, skillSource, gmMode, lockedPoints, specialRows, unspentPoints }) {
+export function RankedSkillTable({ skills, char, onUpdate, theme, sectionLabel, level, skillSource, gmMode, lockedPoints, specialRows, unspentPoints, sectionHeaderTourId, firstSkillTourId, fourthSkillRightTourId, fourthSkillPtsTourId }) {
   const T = theme || THEMES.selfImprovement
 
   const getSkillData = (skillName) => {
@@ -425,7 +425,7 @@ export function RankedSkillTable({ skills, char, onUpdate, theme, sectionLabel, 
   return (
     <div>
       {sectionLabel ? (
-        <div style={{ padding: '10px 12px', background: 'var(--bg)', borderBottom: `2px solid ${T.primary}`, fontSize: '1rem', letterSpacing: '.25em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 600, textAlign: 'center' }}>
+        <div data-tour={sectionHeaderTourId || undefined} style={{ padding: '10px 12px', background: 'var(--bg)', borderBottom: `2px solid ${T.primary}`, fontSize: '1rem', letterSpacing: '.25em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 600, textAlign: 'center' }}>
           {sectionLabel}
         </div>
       ) : null}
@@ -442,11 +442,19 @@ export function RankedSkillTable({ skills, char, onUpdate, theme, sectionLabel, 
           <div style={{ fontSize: '.7rem', letterSpacing: '.08em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Max</div>
         </div>
       </div>
-      {skills.map(skill => {
+      {skills.map((skill, idx) => {
         const { rank, pointsInvested } = getSkillData(skill.name)
         return (
           <div key={skill.name}>
-            <SkillTableRow skill={skill} rank={rank} pointsInvested={pointsInvested} lockedPoints={lockedPoints} theme={T} level={level || 1} char={char} gmMode={gmMode} onUpdate={onUpdate} skillSource={skillSource || 'martial'} unspentPoints={unspentPoints}/>
+            <SkillTableRow
+              skill={skill} rank={rank} pointsInvested={pointsInvested}
+              lockedPoints={lockedPoints} theme={T} level={level || 1}
+              char={char} gmMode={gmMode} onUpdate={onUpdate}
+              skillSource={skillSource || 'martial'} unspentPoints={unspentPoints}
+              tourLeftId={idx === 0 ? firstSkillTourId : undefined}
+              tourRightId={idx === 3 ? fourthSkillRightTourId : undefined}
+              tourPtsId={idx === 3 ? fourthSkillPtsTourId : undefined}
+            />
             {specialRows?.[skill.name] || null}
           </div>
         )

@@ -6,10 +6,6 @@
 
 import { useEffect, useState } from 'react'
 
-// ── STEP DEFINITIONS ──────────────────────────────────────────────────────────
-// target:      data-tour value(s) to highlight. String = single, Array = multi.
-// navigateTo:  page to navigate to when Continue is pressed (null = stay)
-
 // ── FAKE SPELL COMPONENTS ─────────────────────────────────────────────────────
 
 const MAGIC_COLORS_TOUR = [
@@ -47,26 +43,19 @@ function FakeSpellHooks() {
     boxSizing: 'border-box',
   })
   const lbl = { fontSize: '.55rem', color: '#7a6a50', letterSpacing: '.12em', textTransform: 'uppercase', fontFamily: 'Georgia, serif', marginBottom: 4 }
-
   return (
     <div style={{ border: '1px solid #3a2e1e', borderRadius: 8, padding: '12px 14px', background: '#13100a', marginTop: 4 }}>
-      <div style={{ fontSize: '.58rem', letterSpacing: '.2em', color: '#7a6a50', textTransform: 'uppercase', marginBottom: 10, fontFamily: 'Georgia, serif' }}>
-        Spell Hooks — example
-      </div>
+      <div style={{ fontSize: '.58rem', letterSpacing: '.2em', color: '#7a6a50', textTransform: 'uppercase', marginBottom: 10, fontFamily: 'Georgia, serif' }}>Spell Hooks — example</div>
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-        {/* Hook 1 — show inline open list above the select, no absolute positioning */}
         <div style={{ flex: '1 1 120px', minWidth: 120 }}>
           <div style={lbl}>Hook 1</div>
           <div style={{ background: '#1f1a12', border: '1px solid #3a2e1e', borderRadius: 4, marginBottom: 2 }}>
             {['Levitate', 'Shock', 'Steam Jet'].map((name, i) => (
-              <div key={name} style={{ padding: '5px 8px', fontFamily: 'Georgia, serif', fontSize: '.82rem', color: i === 0 ? '#e8c96a' : '#b8a888', borderBottom: i < 2 ? '1px solid #2a2318' : 'none', background: i === 0 ? 'rgba(201,168,76,.08)' : 'transparent' }}>
-                {name}
-              </div>
+              <div key={name} style={{ padding: '5px 8px', fontFamily: 'Georgia, serif', fontSize: '.82rem', color: i === 0 ? '#e8c96a' : '#b8a888', borderBottom: i < 2 ? '1px solid #2a2318' : 'none', background: i === 0 ? 'rgba(201,168,76,.08)' : 'transparent' }}>{name}</div>
             ))}
           </div>
           <div style={hookStyle(false)}><span>— Empty —</span><span style={{ fontSize: '.7rem' }}>▾</span></div>
         </div>
-        {/* Hook 2 — filled */}
         <div style={{ flex: '1 1 120px', minWidth: 120 }}>
           <div style={lbl}>Hook 2</div>
           <div style={hookStyle(true)}><span>Levitate</span></div>
@@ -78,35 +67,21 @@ function FakeSpellHooks() {
 
 function WPBadgeTour() {
   return (
-    <span style={{
-      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-      background: 'rgba(74,126,201,.15)', border: '1px solid #4a7ec9',
-      borderRadius: 3, padding: '1px 5px', fontSize: '.58rem',
-      fontFamily: 'Georgia, serif', fontWeight: 'bold', letterSpacing: '.08em',
-      color: '#4a7ec9', marginLeft: 6, flexShrink: 0,
-    }}>WP</span>
+    <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(74,126,201,.15)', border: '1px solid #4a7ec9', borderRadius: 3, padding: '1px 5px', fontSize: '.58rem', fontFamily: 'Georgia, serif', fontWeight: 'bold', letterSpacing: '.08em', color: '#4a7ec9', marginLeft: 6, flexShrink: 0 }}>WP</span>
   )
 }
 
 function FakeSpellDetail() {
   const requireColors = [
-    { label: 'Chaos', color: '#ffffff', dot: '#ffffff' },
-    { label: 'Order', color: '#888888', dot: '#888888' },
+    { label: 'Chaos', dot: '#ffffff' },
+    { label: 'Order', dot: '#888888' },
   ]
   return (
     <div style={{ border: '1px solid #4a3c28', borderRadius: 8, padding: '14px 16px', background: '#1f1a12', marginTop: 4 }}>
-      <div style={{ fontSize: '.58rem', color: '#7a6a50', letterSpacing: '.15em', textTransform: 'uppercase', marginBottom: 4, fontFamily: 'Georgia, serif' }}>
-        Alteration · Level 1
-      </div>
-      <div style={{ fontSize: '1.05rem', color: '#e8c96a', marginBottom: 4, fontWeight: 600, fontFamily: 'Georgia, serif', display: 'flex', alignItems: 'center' }}>
-        Feather Fall <WPBadgeTour />
-      </div>
-      <div style={{ fontSize: '.72rem', color: '#4a7ec9', fontStyle: 'italic', marginBottom: 10, fontFamily: 'Georgia, serif' }}>
-        1 action to cast, no roll required
-      </div>
-      <div style={{ fontSize: '.82rem', color: '#b8a888', lineHeight: 1.6, marginBottom: 12, fontFamily: 'Georgia, serif' }}>
-        Target Creature reduces any and all falling damage by 90%. Word of Power.
-      </div>
+      <div style={{ fontSize: '.58rem', color: '#7a6a50', letterSpacing: '.15em', textTransform: 'uppercase', marginBottom: 4, fontFamily: 'Georgia, serif' }}>Alteration · Level 1</div>
+      <div style={{ fontSize: '1.05rem', color: '#e8c96a', marginBottom: 4, fontWeight: 600, fontFamily: 'Georgia, serif', display: 'flex', alignItems: 'center' }}>Feather Fall <WPBadgeTour /></div>
+      <div style={{ fontSize: '.72rem', color: '#4a7ec9', fontStyle: 'italic', marginBottom: 10, fontFamily: 'Georgia, serif' }}>1 action to cast, no roll required</div>
+      <div style={{ fontSize: '.82rem', color: '#b8a888', lineHeight: 1.6, marginBottom: 12, fontFamily: 'Georgia, serif' }}>Target Creature reduces any and all falling damage by 90%. Word of Power.</div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, marginBottom: 12 }}>
         {[['Range', '100'], ['Duration', '1 minute'], ['Area', 'Target Creature']].map(([label, val]) => (
           <div key={label} style={{ background: '#13100a', border: '1px solid #3a2e1e', borderRadius: 4, padding: '6px 8px', gridColumn: label === 'Area' ? '1 / -1' : 'auto' }}>
@@ -122,19 +97,122 @@ function FakeSpellDetail() {
             <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 5, background: '#261f15', border: '1px solid #3a2e1e', borderRadius: 4, padding: '4px 9px', fontSize: '.75rem', fontFamily: 'Georgia, serif' }}>
               <div style={{ width: 6, height: 6, borderRadius: '50%', background: dot, flexShrink: 0 }} />
               <span style={{ color: '#b8a888' }}>{label} 1+</span>
-             <span style={{ color: '#4a9e4a' }}>✓</span>
+              <span style={{ color: '#4a9e4a' }}>✓</span>
             </div>
           ))}
         </div>
       </div>
-      <div style={{ width: '100%', padding: '8px 0', background: 'rgba(201,168,76,.12)', border: '1px solid #c9a84c', color: '#e8c96a', borderRadius: 5, fontSize: '.88rem', fontFamily: 'Georgia, serif', textAlign: 'center' }}>
-        ✦ Add to Known
+      <div style={{ width: '100%', padding: '8px 0', background: 'rgba(201,168,76,.12)', border: '1px solid #c9a84c', color: '#e8c96a', borderRadius: 5, fontSize: '.88rem', fontFamily: 'Georgia, serif', textAlign: 'center' }}>✦ Add to Known</div>
+    </div>
+  )
+}
+
+// ── FAKE DEMO COMPONENTS ──────────────────────────────────────────────────────
+
+function FakeBodybuildingRow() {
+  const T = { primary: '#c9a84c', primary2: '#e8c96a', border: 'rgba(201,168,76,.25)' }
+  return (
+    <div style={{ border: '1px solid var(--border2)', borderRadius: 6, overflow: 'hidden', marginTop: 4 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 72px 52px', alignItems: 'center', background: 'rgba(201,168,76,.1)', minHeight: 52 }}>
+        <div style={{ padding: '8px 12px' }}>
+          <div style={{ fontSize: '.92rem', fontFamily: 'Georgia, serif', color: T.primary2, fontWeight: 600 }}>Bodybuilding</div>
+          <div style={{ fontSize: '.62rem', color: 'var(--text3)', fontStyle: 'italic', marginTop: 2 }}>none</div>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '6px 4px', gap: 2 }}>
+          <div style={{ fontSize: '1rem', fontWeight: 700, fontFamily: 'Georgia, serif', color: T.primary2, borderBottom: `1px dotted ${T.primary}`, minWidth: 24, textAlign: 'center' }}>40</div>
+          <div style={{ width: 36, height: 1, background: T.border }} />
+          <div style={{ fontSize: '.75rem', color: 'var(--text3)', fontFamily: 'Georgia, serif' }}>20</div>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '6px 4px', gap: 2 }}>
+          <div style={{ fontSize: '1.2rem', fontWeight: 700, fontFamily: 'Georgia, serif', color: T.primary2, lineHeight: 1, textAlign: 'center' }}>2</div>
+          <div style={{ width: 28, height: 1, background: T.border }} />
+          <div style={{ fontSize: '.75rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', textAlign: 'center' }}>6</div>
+        </div>
       </div>
     </div>
   )
 }
 
-// ── BUILD STEPS ───────────────────────────────────────────────────────────────
+function FakeWeaponModal() {
+  const row = (label, content) => (
+    <div style={{ marginBottom: 10 }}>
+      <div style={{ fontSize: '.58rem', letterSpacing: '.15em', color: 'var(--text3)', textTransform: 'uppercase', fontFamily: 'Georgia, serif', marginBottom: 3 }}>{label}</div>
+      {content}
+    </div>
+  )
+  const fakeInput = (val) => (
+    <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 4, padding: '5px 8px', fontFamily: 'Georgia, serif', fontSize: '.85rem', color: 'var(--text)' }}>{val}</div>
+  )
+  const fakeSelect = (val) => (
+    <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 4, padding: '5px 8px', fontFamily: 'Georgia, serif', fontSize: '.85rem', color: 'var(--text)', display: 'flex', justifyContent: 'space-between' }}>
+      <span>{val}</span><span style={{ color: 'var(--text3)' }}>▾</span>
+    </div>
+  )
+  const fakeNum = (val) => (
+    <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 4, padding: '5px 8px', fontFamily: 'Georgia, serif', fontSize: '.85rem', color: 'var(--text)', textAlign: 'center', width: 48 }}>{val}</div>
+  )
+  return (
+    <div style={{ border: '1px solid var(--border2)', borderRadius: 8, padding: '12px 14px', background: 'var(--bg)', marginTop: 4 }}>
+      <div style={{ fontSize: '.78rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600, letterSpacing: '.06em', marginBottom: 10 }}>Melee Weapon Slot <span style={{ fontSize: '.65rem', color: 'var(--text3)', fontWeight: 400 }}>(example)</span></div>
+      {row('Slot Name', fakeInput('Sleeve Blade'))}
+      {row('Weapon', fakeSelect('Dagger'))}
+      <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 5, padding: '6px 10px', marginBottom: 10, fontSize: '.75rem', color: 'var(--text2)', fontFamily: 'Georgia, serif' }}>
+        Die: d4 &nbsp;·&nbsp; Dmg: +1 &nbsp;·&nbsp; Class: Light &nbsp;·&nbsp; Breaches: 1
+      </div>
+      {row('Weapon Mark', fakeSelect('Serpent'))}
+      <div style={{ marginBottom: 10 }}>
+        <div style={{ fontSize: '.58rem', letterSpacing: '.15em', color: 'var(--gold)', textTransform: 'uppercase', fontFamily: 'Georgia, serif', marginBottom: 6 }}>Item / Magic Bonuses</div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          {[['Expertise', '2'], ['Damage', '0'], ['Precision', '0'], ['Arm. Bypass', '0']].map(([lbl, val]) => (
+            <div key={lbl} style={{ flex: 1 }}>
+              <div style={{ fontSize: '.55rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', marginBottom: 3, textAlign: 'center' }}>{lbl}</div>
+              {fakeNum(val)}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+        <div style={{ padding: '5px 12px', border: '1px solid var(--border)', borderRadius: 4, color: 'var(--text3)', fontFamily: 'Georgia, serif', fontSize: '.78rem' }}>Cancel</div>
+        <div style={{ padding: '5px 14px', border: '1px solid #4a9e4a', borderRadius: 4, color: '#4a9e4a', fontFamily: 'Georgia, serif', fontSize: '.78rem' }}>Save</div>
+      </div>
+    </div>
+  )
+}
+
+function FakeWeaponSlot() {
+  const stats = [['Exp.', '7'], ['Dmg', '1d4+1'], ['PR', '2'], ['AB', '—']]
+  return (
+    <>
+      <div style={{ border: '1px solid var(--border2)', borderRadius: 6, padding: '10px 12px', background: 'var(--bg)', marginTop: 4, marginBottom: 10 }}>
+        <div style={{ fontSize: '.65rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', letterSpacing: '.12em', textTransform: 'uppercase', marginBottom: 6 }}>Example slot</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ flex: '1 1 80px', minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ fontSize: '.88rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600 }}>Sleeve Blade</span>
+              <span style={{ fontSize: '.55rem', background: 'rgba(201,168,76,.15)', border: '1px solid rgba(201,168,76,.3)', color: 'var(--gold)', borderRadius: 3, padding: '1px 4px' }}>Serpent</span>
+            </div>
+          </div>
+          {stats.map(([lbl, val]) => (
+            <div key={lbl} style={{ textAlign: 'center', minWidth: 36, flexShrink: 0 }}>
+              <div style={{ fontSize: '.5rem', letterSpacing: '.1em', color: 'var(--text3)', textTransform: 'uppercase', fontFamily: 'Georgia, serif', marginBottom: 2 }}>{lbl}</div>
+              <div style={{ fontSize: '.78rem', color: 'var(--text2)', fontFamily: 'Georgia, serif' }}>{val}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <p style={{ margin: 0, fontSize: '.84rem', color: 'var(--text2)', lineHeight: 1.7, fontFamily: 'Georgia, serif' }}>
+        This slot now shows the correct stats for that weapon, and will update as you improve your skills. Ranged slots work the same way.
+      </p>
+    </>
+  )
+}
+
+// ── STEP DEFINITIONS ──────────────────────────────────────────────────────────
+// target:      data-tour value(s) to highlight. String = single, Array = multi.
+// navigateTo:  page to navigate to when Continue is pressed (null = stay)
+// tab:         data-skills-tab value to click when arriving at this step
+// position:    'below-nav' pins card just below the header bar
+// wideCard:    true = 420px wide instead of 320px
 
 function buildSteps(character) {
   const availablePts = character?.skillPoints?.available ?? 0
@@ -252,6 +330,7 @@ function buildSteps(character) {
       body: "Enter bonuses from magical equipment here — they feed directly into your Sheet stats.",
       cta: 'Next →',
     },
+
     // ── SHEET ────────────────────────────────────────────────────────────────
     {
       page: 'sheet',
@@ -309,6 +388,7 @@ function buildSteps(character) {
       body: "Set your off-hand weapon and stance here. Other options, such as Druid Form, will appear when you unlock them.",
       cta: 'Next →',
     },
+
     // ── HP / ARMOR TABLE ─────────────────────────────────────────────────────
     {
       page: 'sheet',
@@ -334,6 +414,7 @@ function buildSteps(character) {
       body: "Barrier HP, Temp HP, and bonus AR go here. The note shows the order damage is applied.",
       cta: 'Next →',
     },
+
     // ── WEAPON SLOTS ─────────────────────────────────────────────────────────
     {
       page: 'sheet',
@@ -355,12 +436,13 @@ function buildSteps(character) {
       page: 'sheet',
       navigateTo: null,
       target: 'sheet-weapon-slot-0',
-      title: 'Weapon Slot — Filled',
       wideCard: true,
+      title: 'Weapon Slot — Filled',
       body: <FakeWeaponSlot />,
       cta: 'Next →',
     },
-  // ── SPELLS ───────────────────────────────────────────────────────────────
+
+    // ── SPELLS ───────────────────────────────────────────────────────────────
     {
       page: 'spells',
       navigateTo: 'spells',
@@ -369,7 +451,7 @@ function buildSteps(character) {
       body: "This is the Spells page. It's a searchable compendium of all the spells in the game.",
       cta: 'Next →',
     },
-   {
+    {
       page: 'spells',
       navigateTo: null,
       target: 'spells-mastery-ranks',
@@ -401,83 +483,145 @@ function buildSteps(character) {
       body: <><p style={{margin:'0 0 8px',fontSize:'.84rem',color:'var(--text2)',lineHeight:1.7,fontFamily:'Georgia,serif'}}>Click any spell to see its full description, requirements, and stats. Check the box to add it to your Known spells.</p><FakeSpellDetail /></>,
       cta: 'Next →',
     },
+
+    // ── SKILLS ───────────────────────────────────────────────────────────────
+    {
+      page: 'skillEditor',
+      navigateTo: 'skillEditor',
+      tab: 'General',
+      target: 'skills-points-bar',
+      title: 'Skills Page',
+      body: "This is the Skills page. This is where you spend your skill points. This bar shows how many points you have available to spend, and how many you have invested on each tab.",
+      cta: 'Next →',
+    },
+    {
+      page: 'skillEditor',
+      navigateTo: null,
+      tab: 'General',
+      target: 'skills-save-btn',
+      title: 'Save Changes',
+      body: "When you're done spending points, Save the Changes here. Unsaved changes will be forgotten when you leave the skills page. Once saved, they go for GM approval.",
+      cta: 'Next →',
+    },
+    {
+      page: 'skillEditor',
+      navigateTo: null,
+      tab: 'General',
+      target: 'skills-tabs',
+      title: 'Skill Tabs',
+      body: "Skills are organized into four tabs — General, Martial, Spiritual, and Obscure. We are on the General Tab. There is no maintenance cost for any skills on this Tab.",
+      cta: 'Next →',
+    },
+    {
+      page: 'skillEditor',
+      navigateTo: null,
+      tab: 'General',
+      target: 'skills-self-improvement-header',
+      title: 'Self Improvement',
+      body: "The Self Improvement section is mostly permanent passive effects. Click or Tap on a skill for a detailed description.",
+      cta: 'Next →',
+    },
+    {
+      page: 'skillEditor',
+      navigateTo: null,
+      tab: 'General',
+      target: 'skills-first-skill',
+      title: 'Prerequisites',
+      body: "This skill requires you already have rank two in another skill.",
+      cta: 'Next →',
+    },
+    {
+      page: 'skillEditor',
+      navigateTo: null,
+      tab: 'General',
+      target: 'skills-bodybuilding-right',
+      title: 'Rank & Maximum',
+      body: "This shows your current rank over the maximum rank for this skill.",
+      cta: 'Next →',
+    },
+    {
+      page: 'skillEditor',
+      navigateTo: null,
+      tab: 'General',
+      target: 'skills-bodybuilding-pts',
+      wideCard: true,
+      title: 'Investing Points',
+      body: <><p style={{margin:'0 0 8px',fontSize:'.84rem',color:'var(--text2)',lineHeight:1.7,fontFamily:'Georgia,serif'}}>This shows points invested over the cost per rank. Click or tap the points and type a new number. If it's not an allowed amount it will turn red and tell you why.</p><FakeBodybuildingRow /></>,
+      cta: 'Next →',
+    },
+    {
+      page: 'skillEditor',
+      navigateTo: null,
+      tab: 'General',
+      target: 'skills-acting',
+      title: 'Trades & Talents',
+      body: "Trades & Talents work differently. Each skill shows your current score over the maximum, based on your attributes, and your points invested over the multiple. Each point you spend in Acting raises your score by 4, the skill's multiple.",
+      cta: 'Next →',
+    },
+    {
+      page: 'skillEditor',
+      navigateTo: null,
+      tab: 'Martial',
+      target: 'skills-tabs',
+      title: 'Martial Tab',
+      body: "The Martial Tab holds the Melee, Unfettered, Ranged and Leadership sections. Skills here are ranked and work like the Self Improvement skills.",
+      cta: 'Next →',
+    },
+    {
+      page: 'skillEditor',
+      navigateTo: null,
+      tab: 'Spiritual',
+      target: 'skills-tabs',
+      title: 'Spiritual Tab',
+      body: "The Spiritual Tab contains the Arcane section, which allows access to the five types of magic combining into the ten schools you saw on the Spells page.",
+      cta: 'Next →',
+    },
+    {
+      page: 'skillEditor',
+      navigateTo: null,
+      tab: 'Spiritual',
+      target: 'skills-divine-header',
+      title: 'Divine',
+      body: "The Divine section holds powers granted by great powers in exchange for sacrifices.",
+      cta: 'Next →',
+    },
+    {
+      page: 'skillEditor',
+      navigateTo: null,
+      tab: 'Spiritual',
+      target: 'skills-balance-header',
+      title: 'Balance',
+      body: "The way of Balance requires forsaking all armor and weapons.",
+      cta: 'Next →',
+    },
+    {
+      page: 'skillEditor',
+      navigateTo: null,
+      tab: 'Obscure',
+      target: 'skills-tabs',
+      title: 'Obscure Tab',
+      body: "The Obscure tab is for those unfortunate enough to have been tainted by a demon or worse, and some special skills animals can acquire through the Animal Bond Talent.",
+      cta: 'Next →',
+    },
+
+    // ── END ──────────────────────────────────────────────────────────────────
+    {
+      page: 'bio',
+      navigateTo: 'bio',
+      target: 'bio-levelup-btn',
+      title: "You're All Set!",
+      body: "Fill in your background, and spend your starting points. Remember to Save Changes! Your GM will approve them and authorize your first level up, which will unlock this button.",
+      cta: 'Next →',
+    },
+    {
+      page: 'bio',
+      navigateTo: null,
+      target: 'bio-handbook-btn',
+      title: 'Player Handbook',
+      body: "The Player's Handbook can be found here. Happy Hunting!",
+      cta: 'Done →',
+    },
   ]
-}
-
-// ── FAKE DEMO COMPONENTS ──────────────────────────────────────────────────────
-function FakeWeaponModal() {
-  const row = (label, content) => (
-    <div style={{ marginBottom: 10 }}>
-      <div style={{ fontSize: '.58rem', letterSpacing: '.15em', color: 'var(--text3)', textTransform: 'uppercase', fontFamily: 'Georgia, serif', marginBottom: 3 }}>{label}</div>
-      {content}
-    </div>
-  )
-  const fakeInput = (val) => (
-    <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 4, padding: '5px 8px', fontFamily: 'Georgia, serif', fontSize: '.85rem', color: 'var(--text)' }}>{val}</div>
-  )
-  const fakeSelect = (val) => (
-    <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 4, padding: '5px 8px', fontFamily: 'Georgia, serif', fontSize: '.85rem', color: 'var(--text)', display: 'flex', justifyContent: 'space-between' }}>
-      <span>{val}</span><span style={{ color: 'var(--text3)' }}>▾</span>
-    </div>
-  )
-  const fakeNum = (val) => (
-    <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 4, padding: '5px 8px', fontFamily: 'Georgia, serif', fontSize: '.85rem', color: 'var(--text)', textAlign: 'center', width: 48 }}>{val}</div>
-  )
-
-  return (
-    <div style={{ border: '1px solid var(--border2)', borderRadius: 8, padding: '12px 14px', background: 'var(--bg)', marginTop: 4 }}>
-      <div style={{ fontSize: '.78rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600, letterSpacing: '.06em', marginBottom: 10 }}>Melee Weapon Slot <span style={{ fontSize: '.65rem', color: 'var(--text3)', fontWeight: 400 }}>(example)</span></div>
-      {row('Slot Name', fakeInput('Sleeve Blade'))}
-      {row('Weapon', fakeSelect('Dagger'))}
-      <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 5, padding: '6px 10px', marginBottom: 10, fontSize: '.75rem', color: 'var(--text2)', fontFamily: 'Georgia, serif' }}>
-        Die: d4 &nbsp;·&nbsp; Dmg: +1 &nbsp;·&nbsp; Class: Light &nbsp;·&nbsp; Breaches: 1
-      </div>
-      {row('Weapon Mark', fakeSelect('Serpent'))}
-      <div style={{ marginBottom: 10 }}>
-        <div style={{ fontSize: '.58rem', letterSpacing: '.15em', color: 'var(--gold)', textTransform: 'uppercase', fontFamily: 'Georgia, serif', marginBottom: 6 }}>Item / Magic Bonuses</div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          {[['Expertise', '2'], ['Damage', '0'], ['Precision', '0'], ['Arm. Bypass', '0']].map(([lbl, val]) => (
-            <div key={lbl} style={{ flex: 1 }}>
-              <div style={{ fontSize: '.55rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', marginBottom: 3, textAlign: 'center' }}>{lbl}</div>
-              {fakeNum(val)}
-            </div>
-          ))}
-        </div>
-      </div>
-      <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-        <div style={{ padding: '5px 12px', border: '1px solid var(--border)', borderRadius: 4, color: 'var(--text3)', fontFamily: 'Georgia, serif', fontSize: '.78rem' }}>Cancel</div>
-        <div style={{ padding: '5px 14px', border: '1px solid #4a9e4a', borderRadius: 4, color: '#4a9e4a', fontFamily: 'Georgia, serif', fontSize: '.78rem' }}>Save</div>
-      </div>
-    </div>
-  )
-}
-
-function FakeWeaponSlot() {
-  const stats = [['Exp.', '7'], ['Dmg', '1d4+1'], ['PR', '2'], ['AB', '—']]
-  return (
-    <>
-      <div style={{ border: '1px solid var(--border2)', borderRadius: 6, padding: '10px 12px', background: 'var(--bg)', marginTop: 4, marginBottom: 12 }}>
-        <div style={{ fontSize: '.65rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', letterSpacing: '.12em', textTransform: 'uppercase', marginBottom: 6 }}>Example slot</div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div style={{ flex: '1 1 80px', minWidth: 0 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ fontSize: '.88rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600 }}>Sleeve Blade</span>
-              <span style={{ fontSize: '.55rem', background: 'rgba(201,168,76,.15)', border: '1px solid rgba(201,168,76,.3)', color: 'var(--gold)', borderRadius: 3, padding: '1px 4px' }}>Serpent</span>
-            </div>
-          </div>
-          {stats.map(([lbl, val]) => (
-            <div key={lbl} style={{ textAlign: 'center', minWidth: 36, flexShrink: 0 }}>
-              <div style={{ fontSize: '.5rem', letterSpacing: '.1em', color: 'var(--text3)', textTransform: 'uppercase', fontFamily: 'Georgia, serif', marginBottom: 2 }}>{lbl}</div>
-              <div style={{ fontSize: '.78rem', color: 'var(--text2)', fontFamily: 'Georgia, serif' }}>{val}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-      <p style={{ margin: 0, fontSize: '.84rem', color: 'var(--text2)', lineHeight: 1.7, fontFamily: 'Georgia, serif' }}>
-        This slot now shows the correct stats for that weapon, and will update as you improve your skills. Ranged slots work the same way.
-      </p>
-    </>
-  )
 }
 
 // ── HIGHLIGHT ─────────────────────────────────────────────────────────────────
@@ -506,7 +650,6 @@ function ensureStyle() {
   document.head.appendChild(s)
 }
 
-// Returns true if element is actually visible (not hidden by display:none ancestor)
 function isVisible(el) {
   return !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length)
 }
@@ -517,7 +660,6 @@ function toIds(target) {
   return Array.isArray(target) ? target : [target]
 }
 
-// Returns the bounding rect covering all VISIBLE highlighted elements across all target ids.
 function getTargetRect(target) {
   const ids = toIds(target)
   if (!ids.length) return null
@@ -549,7 +691,6 @@ function setHighlight(target) {
   })
 }
 
-// Scroll the first visible target element into view, then wait for scroll to settle.
 function scrollToTarget(target) {
   const ids = toIds(target)
   if (!ids.length) return Promise.resolve()
@@ -573,7 +714,6 @@ const MARGIN = 16
 function computeCardPosition(target, positionHint) {
   const vh = window.innerHeight
 
-  // below-nav: fixed just below the header bar (~100px)
   if (positionHint === 'below-nav') {
     return { top: 100, bottom: null }
   }
@@ -593,18 +733,15 @@ function computeCardPosition(target, positionHint) {
     return { top: Math.round(cardTop_centered), bottom: null }
   }
 
-  // Try below
   const belowTop = rect.bottom + GAP
   if (belowTop + CARD_H_EST + MARGIN < vh) {
     return { top: Math.round(belowTop), bottom: null }
   }
 
-  // Try above
   if (rect.top - GAP - CARD_H_EST > MARGIN) {
     return { top: null, bottom: Math.round(vh - rect.top + GAP) }
   }
 
-  // Fallback: center
   return { top: Math.round(cardTop_centered), bottom: null }
 }
 
@@ -636,6 +773,10 @@ export default function NewPlayerTour({ step, character, currentPage, onNavigate
     setPosReady(false)
     if (def.page && currentPage !== def.page) onNavigate(def.page)
     const t = setTimeout(async () => {
+      if (def.tab) {
+        const tabEl = document.querySelector(`[data-skills-tab="${def.tab}"]`)
+        if (tabEl) { tabEl.click(); await new Promise(r => setTimeout(r, 250)) }
+      }
       await scrollToTarget(def.target)
       setHighlight(def.target)
       setPosReady(true)
@@ -650,18 +791,15 @@ export default function NewPlayerTour({ step, character, currentPage, onNavigate
   if (!def) return null
 
   const isLast = step === steps.length - 1
+  const cardWidth = def.wideCard ? 420 : CARD_W
 
   const handlePrev = () => { onPrev() }
-
   const handleNext = () => {
     if (def.navigateTo) onNavigate(def.navigateTo)
     if (isLast) { setHighlight(null); onSkip() }
     else onNext()
   }
-
   const handleSkip = () => { setHighlight(null); onSkip() }
-
-  const cardWidth = def.wideCard ? 420 : CARD_W
 
   const cardStyle = {
     position: 'fixed',
@@ -686,7 +824,6 @@ export default function NewPlayerTour({ step, character, currentPage, onNavigate
   return (
     <div style={cardStyle}>
 
-      {/* Skip */}
       <button onClick={handleSkip} style={{
         position: 'absolute', top: 10, right: 12,
         background: 'none', border: 'none', color: 'var(--text3)',
@@ -697,7 +834,6 @@ export default function NewPlayerTour({ step, character, currentPage, onNavigate
         Skip tour
       </button>
 
-      {/* Title */}
       <div style={{
         fontSize: '.95rem', color: '#4a90d9',
         fontWeight: 600, letterSpacing: '.03em',
@@ -706,13 +842,11 @@ export default function NewPlayerTour({ step, character, currentPage, onNavigate
         {def.title}
       </div>
 
-      {/* Body — string or React element */}
       {typeof def.body === 'string'
         ? <p style={{ margin: '0 0 18px', fontSize: '.84rem', color: 'var(--text2)', lineHeight: 1.7 }}>{def.body}</p>
         : <div style={{ marginBottom: 18 }}>{def.body}</div>
       }
 
-      {/* Footer: prev + progress dots + CTA */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           {step > 0 && (

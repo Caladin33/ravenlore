@@ -123,7 +123,7 @@ function EditablePoints({ value, onCommit, isActive }) {
 }
 
 // ── SKILL ROW ─────────────────────────────────────────────────────────────────
-export function GeneralSkillCard({ skill, score, pointsInvested, onAdd, onRemove, getSkillScore, onUpdate, lockedPoints, gmMode, stats, character }) {
+export function GeneralSkillCard({ skill, score, pointsInvested, onAdd, onRemove, getSkillScore, onUpdate, lockedPoints, gmMode, stats, character, tourId }) {
   const [expanded, setExpanded] = useState(false)
 
   const prereq = parsePrereq(skill.prereq)
@@ -183,7 +183,7 @@ export function GeneralSkillCard({ skill, score, pointsInvested, onAdd, onRemove
 
   return (
     <>
-      <div style={{
+      <div data-tour={tourId || undefined} style={{
         display: 'grid', gridTemplateColumns: GRID, alignItems: 'center',
         borderBottom: '1px solid var(--border)',
         background: isActive ? G.dim : 'transparent',
