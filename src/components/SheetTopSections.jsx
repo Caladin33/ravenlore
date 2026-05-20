@@ -400,7 +400,7 @@ export function AttributeBlock({ stats, character, onUpdateCharacter, offHand, s
       <AttrRow abbr="STR" current={attrs.str.effective} checkMod={attrs.str.checkMod}
         transformed={!!formData} transformedValue={strResolved?.value} transformMode={strResolved?.mode}
         derivedLabel="Dmg Bonus" derivedValue={stats.damageBonus>=0?`+${stats.damageBonus}`:stats.damageBonus}
-        detailContent={<DI label="Rolled STR" value={getBase('str')} />}
+       detailContent={<><DI label="Rolled STR" value={getBase('str')} /><DI label="Punishing Blows" value={parseInt(character.martialSkills?.['Punishing Blows']?.rank) || 0} /></>}
         tourLeftId="sheet-attr-left" tourRightId="sheet-attr-derived" />
 
       <AttrRow abbr="DEX" current={attrs.dex.effective} checkMod={attrs.dex.checkMod}
@@ -413,7 +413,8 @@ export function AttributeBlock({ stats, character, onUpdateCharacter, offHand, s
         transformed={!!formData} transformedValue={conResolved?.value} transformMode={conResolved?.mode}
         derivedValue={<span style={{ fontSize:'.85rem', color:'var(--text2)', fontFamily:'Georgia, serif' }}>Carrying {carriedLbs} of {maxWeight} lbs</span>}
         detailContent={<>
-          <DI label="Rolled CON" value={getBase('con')} />
+         <DI label="Rolled CON" value={getBase('con')} />
+         <DI label="Tireless" value={parseInt(character.martialSkills?.['Tireless']?.rank) || parseInt(character.selfImprovementSkills?.['Tireless']?.rank) || 0} />
           {formData && <DI label="Form Max HP" value={formData.naturalMaxHP} />}
           {formData && <DI label="Your Max HP" value={stats.hp?.torso ?? '?'} />}
           {formData && <DI label="Effective Max HP" value={Math.max(formData.naturalMaxHP, stats.hp?.torso ?? 0)} />}
@@ -430,7 +431,8 @@ export function AttributeBlock({ stats, character, onUpdateCharacter, offHand, s
         derivedValue={ok
           ? <span style={{ fontSize:'.78rem', color:'#4a9e4a', fontFamily:'Georgia, serif' }}>✓ All Good</span>
           : <span style={{ fontSize:'.72rem', color:'#c94a4a', fontFamily:'Georgia, serif' }}>⚠ {issues[0]}{issues.length>1?` +${issues.length-1}`:''}</span>}
-        detailContent={<><DI label="Rolled CHR" value={getBase('chr')} />{!ok&&<div>{issues.map((i,idx)=><div key={idx} style={{ fontSize:'.8rem', color:'#c94a4a', fontFamily:'Georgia, serif', marginBottom:2 }}>⚠ {i}</div>)}</div>}</>}
+       detailContent={<><DI label="Rolled CHR" value={getBase('chr')} /><DI label="Leadership" value={(parseInt(character.generalSkills?.['Leadership']?.pointsInvested) || 0) * 3 + attrs.chr.effective + attrs.chr.effective} />{!ok&&
+        <div>{issues.map((i,idx)=><div key={idx} style={{ fontSize:'.8rem', color:'#c94a4a', fontFamily:'Georgia, serif', marginBottom:2 }}>⚠ {i}</div>)}</div>}</>}
         tourLeftId="sheet-attr-left" tourRightId="sheet-attr-chr" />
 
       <AttrRow abbr="WP" current={attrs.wp.effective} checkMod={attrs.wp.checkMod}

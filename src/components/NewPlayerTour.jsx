@@ -259,7 +259,7 @@ function buildSteps(character) {
       target: 'nav-token',
       position: 'below-nav',
       title: 'Your Token',
-      body: "Your token will show up here when you add one. This is also the Bio page button.",
+      body: "Your token will show up here when you add one. This is also the button to get back to this page.",
       cta: 'Next →',
     },
     {

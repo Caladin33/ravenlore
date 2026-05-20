@@ -215,13 +215,23 @@ export default function BioPage({ character, onUpdateCharacter, stats, gmModeAct
         >
           {character.levelUpAuthorized ? 'Level Up →' : gmMode ? 'Level Up (GM) →' : '🔒 Level Up'}
         </button>
+        <button
+  data-tour="bio-handbook-btn"
+  onClick={() => window.open('https://docs.google.com/document/d/1qD5UADHYXfC_W0bHLyy_Z_ZEkz_gZi8IgBeZMPLBnKI/edit?tab=t.0', '_blank')}
+  style={{
+    marginLeft: 'auto', padding: '7px 12px',
+    background: 'none', border: '1px solid var(--border)',
+    color: 'var(--text3)', borderRadius: 4, cursor: 'pointer',
+    fontFamily: 'Georgia, serif', fontSize: '.78rem', letterSpacing: '.06em',
+  }}
+>{'📖 Handbook'}</button>
         {onRestartTour && (
           <button
             data-tour="bio-restart-tour"
             onClick={onRestartTour}
             title="Restart the new player tour"
             style={{
-              marginLeft: 'auto', padding: '7px 12px',
+               padding: '7px 12px',
               background: 'none', border: '1px solid var(--border)',
               color: 'var(--text3)', borderRadius: 4, cursor: 'pointer',
               fontFamily: 'Georgia, serif', fontSize: '.78rem', letterSpacing: '.06em',

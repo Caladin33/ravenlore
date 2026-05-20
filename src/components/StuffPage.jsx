@@ -136,10 +136,10 @@ function InventorySection({ title, rows, onChange, tourId }) {
 }
 
 // ── SPECIAL ITEMS ─────────────────────────────────────────────────────────────
-const SPEC_COLS = '16px 1fr 46px 42px'
+const SPEC_COLS = '16px 1fr 36px 46px 42px'
 
 function SpecialItemsSection({ items, onChange, tourId }) {
-  const addRow = () => onChange([...items, { item: '', loc: '', lbs: '' }])
+  const addRow = () => onChange([...items, { item: '', qty: '', loc: '', lbs: '' }])
   const updateRow = (i, val) => { const r = [...items]; r[i] = val; onChange(r) }
   const removeRow = (i) => { const r = [...items]; r.splice(i, 1); onChange(r) }
 
@@ -149,6 +149,7 @@ function SpecialItemsSection({ items, onChange, tourId }) {
       <div style={{ display: 'grid', gridTemplateColumns: SPEC_COLS, gap: 4, marginBottom: 4 }}>
         <div />
         <div style={lbl}>Item</div>
+        <div style={{ ...lbl, textAlign: 'center' }}>#</div>
         <div style={{ ...lbl, textAlign: 'center' }}>Loc</div>
         <div style={{ ...lbl, textAlign: 'center' }}>Lbs</div>
       </div>
@@ -160,6 +161,14 @@ function SpecialItemsSection({ items, onChange, tourId }) {
             value={row.item || ''}
             onChange={e => updateRow(i, { ...row, item: e.target.value })}
             placeholder="—"
+          />
+          <input
+            style={{ ...inputStyle, textAlign: 'center' }}
+            value={row.qty || ''}
+            onChange={e => updateRow(i, { ...row, qty: e.target.value })}
+            onFocus={selectAll}
+            placeholder="1"
+            maxLength={4}
           />
           <input
             style={{ ...inputStyle, textAlign: 'center' }}
@@ -347,18 +356,19 @@ export default function StuffPage({ character, onUpdateCharacter, stats }) {
   const stuff = character.stuff || {}
   const carried    = stuff.carried    || Array(15).fill(null).map(() => ({ item: '', qty: '', loc: '', lbs: '' }))
   const notCarried = stuff.notCarried || Array(5).fill(null).map(() => ({ item: '', qty: '', loc: '', lbs: '' }))
-  const special    = stuff.special    || Array(5).fill(null).map(() => ({ item: '', loc: '', lbs: '' }))
+ const special = stuff.special || Array(5).fill(null).map(() => ({ item: '', qty: '', loc: '', lbs: '' }))
   const money      = stuff.money      || {}
   const bonuses    = stuff.magicBonuses || {}
 
-  const calcWeight = (c, m) => Math.round((
-    (c || []).reduce((sum, r) => sum + (parseFloat(r.qty)||1) * (parseFloat(r.lbs)||0), 0) +
+   const calcWeight = (c, m, s) => Math.round((
+  (c || []).reduce((sum, r) => sum + (parseFloat(r.qty)||1) * (parseFloat(r.lbs)||0), 0) +
+  (s || []).reduce((sum, r) => sum + (parseFloat(r.qty)||1) * (parseFloat(r.lbs)||0), 0) +
     COIN_TYPES.reduce((sum, t) => sum + (parseInt(m?.[t]?.party||0) + parseInt(m?.[t]?.mine||0)), 0) / 50
   ) * 10) / 10
 
   const update = (field, val) => {
     const newStuff = { ...stuff, [field]: val }
-    const carryingWeight = calcWeight(newStuff.carried || carried, newStuff.money || money)
+    const carryingWeight = calcWeight(newStuff.carried || carried, newStuff.money || money, newStuff.special || special)
     onUpdateCharacter({ ...character, stuff: newStuff, carryingWeight })
   }
 
@@ -367,7 +377,7 @@ export default function StuffPage({ character, onUpdateCharacter, stats }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14, maxWidth: 900 }}>
 
-     <EncumbranceDisplay totalCarried={calcWeight(carried, money)} stats={stats} tourId="stuff-encumbrance" />
+    <EncumbranceDisplay totalCarried={calcWeight(carried, money, special)} stats={stats} tourId="stuff-encumbrance" />
       {/* Left: Carried | Right: Not Carried + Special Items stacked */}
       <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'flex-start' }}>
         <InventorySection title="Carried" rows={carried} onChange={v => update('carried', v)} tourId="stuff-carried" />

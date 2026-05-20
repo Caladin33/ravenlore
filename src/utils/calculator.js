@@ -199,6 +199,7 @@ export function calculate(char, session = {}) {
 
   // ── ATTRIBUTE SKILL RANKS ──────────────────
   const bbRank    = skillRank(char, 'Bodybuilding')
+  const tirelessRank = skillRank(char, 'Tireless')
   const rtRank    = skillRank(char, 'Reflex Training')
   const condRank  = skillRank(char, 'Conditioning')
   const otRank    = skillRank(char, 'Observation Training')
@@ -298,7 +299,7 @@ export function calculate(char, session = {}) {
   const shieldSTRWarning = shieldCode !== 'None' && STR < shieldMinSTR
 
   // ── UNFETTERED ────────────────────────────
-  const weightAllowance = conWeight(CON) + STR
+ const weightAllowance = (conWeight(CON) + STR) * (tirelessRank > 0 ? 1.5 : 1)
   const carryingWeight  = char.carryingWeight || 0
   const unfetteredConditions = {
     weightOk:         carryingWeight < (weightAllowance / 2),

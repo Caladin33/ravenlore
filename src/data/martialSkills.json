@@ -561,17 +561,6 @@
     "strictMCL": false
   },
   {
-    "name": "Tireless",
-    "category": "Melee",
-    "prereq": "none",
-    "description": "Increase your weight allowance by 50%.",
-    "costPerRank": 15,
-    "maxRank": 1,
-    "mcl": "20",
-    "maintenancePerRank": 0.0,
-    "strictMCL": false
-  },
-  {
     "name": "Twist the blade",
     "category": "Melee",
     "prereq": "none",
