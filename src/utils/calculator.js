@@ -663,7 +663,8 @@ export function calculate(char, session = {}) {
     // Shield warning
     shieldSTRWarning,
     shieldMinSTR,
-
+    totalArmorEvasionPenalty,
+    
     // Form info for UI
     activeForm: form ? form.name : null,
     formNaturalArmor,

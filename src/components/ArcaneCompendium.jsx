@@ -303,10 +303,10 @@ export default function ArcaneCompendium({ character, onUpdateCharacter, stats }
         </div>
         <div data-tour="spells-mastery-ranks" style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
           {Object.entries(COLORS).map(([key, col]) => (
-            <div key={key} style={{ textAlign: 'center', background: ranks[key] > 0 ? `${col.dot}14` : '#1a1510', border: `1px solid ${ranks[key] > 0 ? col.dot : '#3a2e1e'}`, borderRadius: 6, padding: '6px 10px', minWidth: 44 }}>
-              <div style={{ fontSize: '1.4rem', fontWeight: 700, fontFamily: 'Georgia, serif', color: ranks[key] > 0 ? col.dot : '#3a2e1e', textShadow: ranks[key] > 0 ? `0 0 8px ${col.dot}66` : 'none', lineHeight: 1, marginBottom: 3 }}>{ranks[key]}</div>
-              <div style={{ fontSize: '.52rem', color: ranks[key] > 0 ? col.dot : '#3a2e1e', letterSpacing: '.08em', fontFamily: 'Georgia, serif', opacity: ranks[key] > 0 ? .85 : .4 }}>{col.name}</div>
-            </div>
+            <div key={key} style={{ textAlign: 'center', background: `${col.dot}14`, border: `1px solid ${col.dot}`, borderRadius: 6, padding: '6px 10px', minWidth: 44 }}>
+  <div style={{ fontSize: '1.4rem', fontWeight: 700, fontFamily: 'Georgia, serif', color: col.dot, textShadow: ranks[key] > 0 ? `0 0 8px ${col.dot}66` : 'none', lineHeight: 1, marginBottom: 3 }}>{ranks[key]}</div>
+  <div style={{ fontSize: '.52rem', color: col.dot, letterSpacing: '.08em', fontFamily: 'Georgia, serif', lineHeight: 1 }}>{col.name}</div>
+</div>
           ))}
         </div>
         <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>

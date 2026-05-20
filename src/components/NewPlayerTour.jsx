@@ -345,7 +345,7 @@ function buildSteps(character) {
       navigateTo: null,
       target: 'sheet-attr-left',
       title: 'Attributes',
-      body: "These are your Attributes. Tap or click for the bonuses they're giving you. The smaller number next to each is the bonus you get on attribute checks.",
+      body: "These are your Attributes. Tap or click for more info. The smaller number next to each is the bonus you get on attribute checks.",
       cta: 'Next →',
     },
     {
@@ -479,6 +479,7 @@ function buildSteps(character) {
       page: 'spells',
       navigateTo: null,
       target: 'spells-first-spell',
+      position: 'below-nav',
       title: 'Spell List',
       body: <><p style={{margin:'0 0 8px',fontSize:'.84rem',color:'var(--text2)',lineHeight:1.7,fontFamily:'Georgia,serif'}}>Click any spell to see its full description, requirements, and stats. Check the box to add it to your Known spells.</p><FakeSpellDetail /></>,
       cta: 'Next →',
@@ -527,7 +528,7 @@ function buildSteps(character) {
       tab: 'General',
       target: 'skills-first-skill',
       title: 'Prerequisites',
-      body: "This skill requires you already have rank two in another skill.",
+      body: "This skill requires you already have rank two in another skill, which is why it's dimmed. Note the red text explaining what's lacking.",
       cta: 'Next →',
     },
     {
@@ -573,7 +574,7 @@ function buildSteps(character) {
       tab: 'Spiritual',
       target: 'skills-tabs',
       title: 'Spiritual Tab',
-      body: "The Spiritual Tab contains the Arcane section, which allows access to the five types of magic combining into the ten schools you saw on the Spells page.",
+      body: "The Spiritual Tab contains the Arcane section, which allows access to the five types of magic combining into the ten schools you saw on the Spells page, and",
       cta: 'Next →',
     },
     {
@@ -582,7 +583,7 @@ function buildSteps(character) {
       tab: 'Spiritual',
       target: 'skills-divine-header',
       title: 'Divine',
-      body: "The Divine section holds powers granted by great powers in exchange for sacrifices.",
+      body: "The Divine section holds powers granted by great powers in exchange for sacrifices, and",
       cta: 'Next →',
     },
     {

@@ -525,7 +525,7 @@ const handleSave = () => {
       </div>
 
       {/* Skill list */}
-      <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 8, overflow: 'hidden' }}>
+      <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 8, overflow: 'visible' }}>
 
         {activeTab === 'General' && (
           <div>

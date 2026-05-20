@@ -7,13 +7,13 @@ import druidFormsData from '../data/druidForms.json'
 
 // ── MAGIC COLORS ──────────────────────────────────────────────────────────────
 const MAGIC_COLORS = {
-  order:     { bg: '#0d0d0d', accent: '#ffffff', border: '#444444' },
+  order:     { bg: '#0d0d0d', accent: '#888888', border: '#444444' },
   will:      { bg: '#0d1a2e', accent: '#4a90d9', border: '#2a5a8a' },
-  chaos:     { bg: '#e8e8e8', accent: '#111111', border: '#aaaaaa' },
+ chaos:     { bg: '#e8e8e8', accent: '#cccccc', border: '#aaaaaa' },
   elemental: { bg: '#1e0a0a', accent: '#c94a4a', border: '#7a2a2a' },
   chi:       { bg: '#0a1a0a', accent: '#4a9e4a', border: '#2a6a2a' },
 }
-const COLOR_ORDER = ['order', 'will', 'chaos', 'elemental', 'chi']
+const COLOR_ORDER = ['chaos', 'chi', 'elemental', 'order', 'will']
 
 // ── DRUID FORM HELPERS ────────────────────────────────────────────────────────
 function getFormData(formName) {
@@ -263,18 +263,16 @@ function MagicRows({ ranks, weavingDice }) {
     <>
       <div style={{ display:'flex', alignItems:'center', gap:6, padding:'8px 12px', flexWrap:'wrap', ...rowDiv, background:'var(--bg2)' }}>
         <div data-tour="sheet-magic-rows" style={{ display:'inline-flex', alignItems:'center', gap:6, flexWrap:'wrap' }}>
-          <span style={{ ...lbl, marginBottom:0, marginRight:4, whiteSpace:'nowrap' }}>Masteries:</span>
           {COLOR_ORDER.map(key => {
             const t=MAGIC_COLORS[key], r=ranks[key]??0
-            return <span key={key} style={{ fontSize:'1.1rem', fontWeight:700, fontFamily:'Georgia, serif', color:r>0?t.accent:'#3a2e1e', textShadow:r>0?`0 0 8px ${t.accent}55`:'none', minWidth:18, textAlign:'center', background:key==='chaos'&&r>0?'#555':'transparent', borderRadius:3, padding:key==='chaos'?'0 3px':'0' }}>{r}</span>
-          })}
-        </div>
-      </div>
-      <div style={{ display:'flex', alignItems:'center', gap:6, padding:'6px 12px', flexWrap:'wrap', ...rowDiv }}>
-        <div data-tour="sheet-magic-dice" style={{ display:'inline-flex', alignItems:'center', gap:6, flexWrap:'wrap' }}>
-          {COLOR_ORDER.map(key => {
-            const t=MAGIC_COLORS[key], die=weavingDice?.[key]??null
-            return <div key={key} style={{ background:t.bg, border:`1px solid ${t.border}`, borderRadius:4, padding:'2px 8px', fontSize:'.8rem', fontFamily:'Georgia, serif', color:die?t.accent:t.border, fontWeight:die?600:400 }}>{die??'—'}</div>
+            const die=weavingDice?.[key]??null
+            return (
+              <div key={key} style={{ textAlign:'center', background:`${t.accent}14`, border:`1px solid ${t.accent}`, borderRadius:6, padding:'6px 10px', minWidth:44 }}>
+                <div style={{ fontSize:'1.4rem', fontWeight:700, fontFamily:'Georgia, serif', color:t.accent, textShadow:r>0?`0 0 8px ${t.accent}55`:'none', lineHeight:1, marginBottom:3 }}>{r}</div>
+                <div style={{ fontSize:'.52rem', color:t.accent, letterSpacing:'.08em', fontFamily:'Georgia, serif', lineHeight:1, marginBottom: die ? 3 : 0 }}>{key}</div>
+                {die && <div style={{ fontSize:'.95rem', color:t.accent, fontFamily:'Georgia, serif', fontWeight:600, opacity:.8 }}>{die}</div>}
+              </div>
+            )
           })}
         </div>
       </div>
@@ -634,8 +632,8 @@ const globalRow = isDesktop ? (
       {dataCell(<div style={{ textAlign:'center' }}><span style={lbl}>Global AR+</span><ClickEdit value={character.globalARBonus??0} onChange={v=>updateGlobal('globalARBonus',v)} fontSize=".9rem" /></div>)}
       {dataCell(<div />)}
       {dataCell(<div style={{ textAlign:'center' }}><span style={lbl}>Natural AR</span><ClickEdit value={character.naturalAR??0} onChange={v=>updateGlobal('naturalAR',v)} fontSize=".9rem" /></div>)}
-      {dataCell(<div />)}
-      {dataCell(<span style={{ fontSize:'.72rem', color:'var(--text3)', fontFamily:'Georgia, serif', fontStyle:'italic' }}>Barrier HP → Armor → Temp HP → Location HP</span>,)}
+      {dataCell(<div style={{ textAlign:'center' }}><span style={lbl}>Total Ev.Pen</span><span style={{ fontSize:'.9rem', fontWeight:600, fontFamily:'Georgia, serif', color: stats.totalArmorEvasionPenalty > 0 ? '#c94a4a' : 'var(--text3)' }}>{stats.totalArmorEvasionPenalty ?? 0}</span></div>)}
+{dataCell(<span style={{ fontSize:'.72rem', color:'var(--text3)', fontFamily:'Georgia, serif', fontStyle:'italic' }}>Barrier HP → Armor → Temp HP → Location HP</span>,)}
     </div>
   ) : (
     <div data-tour="sheet-global-row" style={{ display:'grid', gridTemplateColumns:grid, background:'var(--bg2)', alignItems:'center' }}>
