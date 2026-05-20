@@ -1,32 +1,106 @@
 // GMView.jsx
 import { useState, useEffect } from 'react'
-import { loadCampaignCharacters, saveCharacterByOwner } from '../characterDB'
+import { loadCampaignCharacters, loadAllCampaignCharacters, saveCharacterByOwner } from '../characterDB'
 
 // ── STYLES ────────────────────────────────────────────────────────────────────
 const surface = { background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '14px 18px' }
 const lbl = { fontSize: '.58rem', letterSpacing: '.16em', color: 'var(--text3)', textTransform: 'uppercase', fontFamily: 'Georgia, serif', display: 'block', marginBottom: 3 }
 const val = { fontSize: '1rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600 }
 
-// ── PENDING DIFF ──────────────────────────────────────────────────────────────
-function PendingDiff({ original, pending, onApprove, onReject }) {
+// ── INLINE DIFF (skill change review) ────────────────────────────────────────
+function InlineDiff({ original, onApprove, onReject }) {
+  const pending = original.pendingSkillChanges || {}
+
+  const changes = Object.entries(pending).map(([name, { oldPts, newPts }]) => ({
+    name, oldPts, newPts, delta: newPts - oldPts,
+  })).sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta))
+
+  const increased = changes.filter(c => c.delta > 0)
+  const decreased = changes.filter(c => c.delta < 0)
+
+  const oldMaint = [
+    ...Object.values(original.martialSkills || {}),
+    ...Object.values(original.arcaneSkills || {}),
+    ...Object.values(original.selfImprovementSkills || {}),
+  ].reduce((sum, d) => {
+    const pts = parseInt(d.pointsInvested) || 0
+    return sum + (pts > 0 ? Math.floor(parseFloat(d.maintenanceCost) || 0) : 0)
+  }, 0)
+
+  // Build pending state to calculate new maintenance
+  const pendingSkills = {
+    martialSkills: { ...original.martialSkills },
+    arcaneSkills: { ...original.arcaneSkills },
+    selfImprovementSkills: { ...original.selfImprovementSkills },
+  }
+  const categoryMap = { martial: 'martialSkills', arcane: 'arcaneSkills', selfImprovement: 'selfImprovementSkills', general: 'generalSkills' }
+  Object.entries(pending).forEach(([name, { category, newPts, skillData }]) => {
+    const key = categoryMap[category]
+    if (key) {
+      if (newPts === 0) delete pendingSkills[key]?.[name]
+      else pendingSkills[key] = { ...(pendingSkills[key] || {}), [name]: { ...skillData, pointsInvested: newPts } }
+    }
+  })
+  const newMaint = [
+    ...Object.values(pendingSkills.martialSkills || {}),
+    ...Object.values(pendingSkills.arcaneSkills || {}),
+    ...Object.values(pendingSkills.selfImprovementSkills || {}),
+  ].reduce((sum, d) => {
+    const pts = parseInt(d.pointsInvested) || 0
+    return sum + (pts > 0 ? Math.floor(parseFloat(d.maintenanceCost) || 0) : 0)
+  }, 0)
+  const maintChanged = newMaint !== oldMaint
+
   return (
-    <div style={{ marginTop: 12 }}>
-      <SaveConfirmModal
-        original={original}
-        updated={pending}
-        onConfirm={onApprove}
-        onCancel={onReject}
-        title="Pending Skill Changes"
-        confirmLabel="Approve"
-        cancelLabel="Reject"
-        inline
-      />
+    <div style={{ marginTop: 8 }}>
+      <div style={{ marginBottom: 10 }}>
+        <div style={{ ...lbl, marginBottom: 4 }}>Maintenance / Level Up</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'Georgia, serif' }}>
+          <span style={{ color: 'var(--text2)' }}>{oldMaint}</span>
+          <span style={{ color: 'var(--text3)' }}>→</span>
+          <span style={{ fontSize: '1.1rem', fontWeight: 700, color: newMaint > oldMaint ? '#c94a4a' : (newMaint < oldMaint ? '#4a9e4a' : 'var(--gold2)') }}>{newMaint}</span>
+          {maintChanged && <span style={{ fontSize: '.75rem', color: newMaint > oldMaint ? '#c94a4a' : '#4a9e4a', fontStyle: 'italic' }}>({newMaint > oldMaint ? '+' : ''}{newMaint - oldMaint}/level)</span>}
+        </div>
+      </div>
+
+      {changes.length === 0 && <div style={{ fontSize: '.82rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', fontStyle: 'italic', marginBottom: 10 }}>No skill changes.</div>}
+      {increased.length > 0 && (
+        <div style={{ marginBottom: 8 }}>
+          <div style={{ ...lbl, color: '#4a9e4a', marginBottom: 4 }}>Increased</div>
+          {increased.map(c => (
+            <div key={c.name} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 8px', background: 'rgba(74,158,74,.06)', border: '1px solid rgba(74,158,74,.2)', borderRadius: 3, marginBottom: 2 }}>
+              <span style={{ fontSize: '.85rem', color: 'var(--text)', fontFamily: 'Georgia, serif' }}>{c.name}</span>
+              <span style={{ fontSize: '.8rem', color: '#4a9e4a', fontFamily: 'Georgia, serif', fontWeight: 600 }}>{c.oldPts} → {c.newPts} (+{c.delta})</span>
+            </div>
+          ))}
+        </div>
+      )}
+      {decreased.length > 0 && (
+        <div style={{ marginBottom: 10 }}>
+          <div style={{ ...lbl, color: '#c94a4a', marginBottom: 4 }}>Decreased / Removed</div>
+          {decreased.map(c => (
+            <div key={c.name} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 8px', background: 'rgba(201,74,74,.06)', border: '1px solid rgba(201,74,74,.2)', borderRadius: 3, marginBottom: 2 }}>
+              <span style={{ fontSize: '.85rem', color: 'var(--text)', fontFamily: 'Georgia, serif' }}>{c.name}</span>
+              <span style={{ fontSize: '.8rem', color: '#c94a4a', fontFamily: 'Georgia, serif', fontWeight: 600 }}>{c.oldPts} → {c.newPts} ({c.delta})</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div style={{ display: 'flex', gap: 10 }}>
+        <button onClick={onReject} style={{ flex: 1, padding: '8px', background: 'none', border: '1px solid #c94a4a', color: '#c94a4a', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.9rem' }}>
+          Reject
+        </button>
+        <button onClick={onApprove} style={{ flex: 1, padding: '8px', background: 'rgba(74,158,74,.15)', border: '1px solid #4a9e4a', color: '#4a9e4a', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.9rem', fontWeight: 600 }}>
+          Approve
+        </button>
+      </div>
     </div>
   )
 }
 
 // ── CHARACTER CARD ────────────────────────────────────────────────────────────
-function CharacterCard({ char, onUpdate }) {
+function CharacterCard({ char, onUpdate, onOpen }) {
   const [expanded, setExpanded] = useState(false)
   const [showDiff, setShowDiff] = useState(false)
 
@@ -34,71 +108,68 @@ function CharacterCard({ char, onUpdate }) {
   const isLevelUpAuth = !!char.levelUpAuthorized
   const status = char.status || 'active'
 
-  // Build pending character state for diff
-  const pendingChar = hasPending ? {
-    ...char,
-    martialSkills: char.pendingSkillChanges.martialSkills || char.martialSkills,
-    arcaneSkills: char.pendingSkillChanges.arcaneSkills || char.arcaneSkills,
-    selfImprovementSkills: char.pendingSkillChanges.selfImprovementSkills || char.selfImprovementSkills,
-    generalSkills: char.pendingSkillChanges.generalSkills || char.generalSkills,
-  } : null
+  const handleApprove = () => {
+    const pending = char.pendingSkillChanges || {}
+    // Deep clone, clear pending, preserve _ownerId for the save call
+    const updated = JSON.parse(JSON.stringify({ ...char, pendingSkillChanges: null }))
+    const categoryMap = { martial: 'martialSkills', arcane: 'arcaneSkills', selfImprovement: 'selfImprovementSkills', general: 'generalSkills' }
 
-const handleApprove = () => {
-  const pending = char.pendingSkillChanges || {}
-  const updated = JSON.parse(JSON.stringify({ ...char, pendingSkillChanges: null }))
-
-  Object.entries(pending).forEach(([name, { category, newPts }]) => {
-    const categoryMap = {
-      martial: 'martialSkills',
-      arcane: 'arcaneSkills',
-      selfImprovement: 'selfImprovementSkills',
-      general: 'generalSkills',
-    }
-    const skillKey = categoryMap[category]
-    if (skillKey) {
-      if (!updated[skillKey]) updated[skillKey] = {}
-      if (newPts === 0) {
-        delete updated[skillKey][name]
-      } else {
-        updated[skillKey][name] = { ...pending[name].skillData, pointsInvested: newPts }
+    Object.entries(pending).forEach(([name, { category, newPts, skillData }]) => {
+      const skillKey = categoryMap[category]
+      if (skillKey) {
+        if (!updated[skillKey]) updated[skillKey] = {}
+        if (newPts === 0) delete updated[skillKey][name]
+        else updated[skillKey][name] = { ...skillData, pointsInvested: newPts }
       }
-    }
-  })
+    })
 
-  onUpdate(updated)
-  setShowDiff(false)
-}
-  const handleReject = () => {
-    const updated = { ...char, pendingSkillChanges: null }
-    onUpdate(updated)
+    onUpdate(updated)   // _ownerId is still on updated, handleUpdate uses it then strips it
     setShowDiff(false)
   }
 
-  const toggleLevelUp = () => {
-    onUpdate({ ...char, levelUpAuthorized: !isLevelUpAuth })
+  const handleReject = () => {
+    onUpdate({ ...char, pendingSkillChanges: null })
+    setShowDiff(false)
   }
 
+  const toggleLevelUp = () => onUpdate({ ...char, levelUpAuthorized: !isLevelUpAuth })
+
   const statusColor = hasPending ? '#c9a84c' : status === 'creation' ? '#4a90d9' : '#4a9e4a'
-  const statusLabel = hasPending ? '⏳ Pending Approval' : status === 'creation' ? '🔵 In Creation' : '✓ Active'
+  const statusLabel = hasPending ? '⏳ Pending' : status === 'creation' ? '🔵 In Creation' : '✓ Active'
 
   return (
     <div style={{ ...surface, padding: '12px 16px' }}>
       {/* Header row */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }} onClick={() => setExpanded(!expanded)}>
-        {char.imageUrl && (
-          <img src={char.imageUrl} alt={char.name} style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--border2)', flexShrink: 0 }} />
-        )}
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontSize: '1rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600 }}>{char.name}</span>
-            {char.hardcore && <span style={{ fontSize: '.65rem', color: '#c94a4a' }}>⚔</span>}
-            {hasPending && <span style={{ fontSize: '.62rem', background: 'rgba(201,168,76,.15)', border: '1px solid rgba(201,168,76,.4)', color: 'var(--gold)', borderRadius: 3, padding: '1px 6px', flexShrink: 0 }}>Pending</span>}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, cursor: 'pointer' }} onClick={() => setExpanded(!expanded)}>
+          {char.imageUrl && (
+            <img src={char.imageUrl} alt={char.name} style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--border2)', flexShrink: 0 }} />
+          )}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: '1rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600 }}>{char.name}</span>
+              {char.hardcore && <span style={{ fontSize: '.65rem', color: '#c94a4a' }}>⚔</span>}
+              {hasPending && <span style={{ fontSize: '.62rem', background: 'rgba(201,168,76,.15)', border: '1px solid rgba(201,168,76,.4)', color: 'var(--gold)', borderRadius: 3, padding: '1px 6px', flexShrink: 0 }}>Pending</span>}
+            </div>
+            <div style={{ fontSize: '.72rem', color: 'var(--text3)', fontFamily: 'Georgia, serif' }}>
+              Level {char.level} {char.race} · <span style={{ color: statusColor }}>{statusLabel}</span>
+            </div>
           </div>
-          <div style={{ fontSize: '.72rem', color: 'var(--text3)', fontFamily: 'Georgia, serif' }}>
-            Level {char.level} {char.race} · <span style={{ color: statusColor }}>{statusLabel}</span>
-          </div>
+          <span style={{ fontSize: '.6rem', color: 'var(--text3)', opacity: .5, flexShrink: 0 }}>{expanded ? '▲' : '▼'}</span>
         </div>
-        <span style={{ fontSize: '.6rem', color: 'var(--text3)', opacity: .5 }}>{expanded ? '▲' : '▼'}</span>
+
+        {/* Open button — always visible */}
+        <button
+          onClick={() => onOpen(char)}
+          style={{
+            padding: '5px 14px', background: 'rgba(201,168,76,.1)',
+            border: '1px solid var(--gold)', color: 'var(--gold2)',
+            borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif',
+            fontSize: '.8rem', flexShrink: 0, whiteSpace: 'nowrap',
+          }}
+        >
+          Open →
+        </button>
       </div>
 
       {/* Expanded controls */}
@@ -130,7 +201,7 @@ const handleApprove = () => {
             ))}
           </div>
 
-          {/* Pending changes */}
+          {/* Pending skill changes */}
           {hasPending && (
             <div style={{ background: 'rgba(201,168,76,.06)', border: '1px solid rgba(201,168,76,.3)', borderRadius: 6, padding: '10px 12px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -139,10 +210,8 @@ const handleApprove = () => {
                   {showDiff ? 'Hide' : 'Review'}
                 </button>
               </div>
-              {showDiff && pendingChar && (
-                <div style={{ marginTop: 12 }}>
-                  <InlineDiff original={char} onApprove={handleApprove} onReject={handleReject} />
-                </div>
+              {showDiff && (
+                <InlineDiff original={char} onApprove={handleApprove} onReject={handleReject} />
               )}
             </div>
           )}
@@ -152,7 +221,7 @@ const handleApprove = () => {
             <div>
               <span style={{ fontSize: '.85rem', color: 'var(--text)', fontFamily: 'Georgia, serif' }}>Level Up Authorization</span>
               <div style={{ fontSize: '.7rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', marginTop: 2 }}>
-                {isLevelUpAuth ? 'Player can level up to ' + (char.level + 1) : 'Level up locked'}
+                {isLevelUpAuth ? `Player can level up to ${(char.level || 1) + 1}` : 'Level up locked'}
               </div>
             </div>
             <button onClick={toggleLevelUp} style={{
@@ -165,121 +234,141 @@ const handleApprove = () => {
               {isLevelUpAuth ? 'Revoke' : 'Authorize'}
             </button>
           </div>
-
-          {/* Bonus Points */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span style={{ ...lbl, marginBottom: 0 }}>Bonus Skill Points</span>
-            <input type="number" value={char.skillPoints?.bonusGiven ?? 0}
-              onChange={e => onUpdate({ ...char, skillPoints: { ...char.skillPoints, bonusGiven: parseInt(e.target.value) || 0 } })}
-              style={{ width: 60, background: 'var(--bg2)', border: '1px solid var(--border)', color: 'var(--text)', borderRadius: 4, padding: '4px 8px', fontFamily: 'Georgia, serif', fontSize: '.9rem' }}
-            />
-          </div>
-
         </div>
       )}
     </div>
   )
 }
 
-// ── INLINE DIFF ───────────────────────────────────────────────────────────────
-function InlineDiff({ original, onApprove, onReject }) {
-  const changes = getSkillChanges(original)
-  const oldMaint = calcMaintenance(original)
-  const newMaint = oldMaint
-  const maintChanged = false
+// ── CAMPAIGN SECTION (a named campaign + its character list) ──────────────────
+function CampaignSection({ campaign, characters, onUpdate, onOpen, defaultOpen = true }) {
+  const [open, setOpen] = useState(defaultOpen)
+  const pendingCount = characters.filter(c => c.pendingSkillChanges).length
+  const sorted = [...characters].sort((a, b) => (b.pendingSkillChanges ? 1 : 0) - (a.pendingSkillChanges ? 1 : 0))
 
-  const increased = changes.filter(c => c.delta > 0)
-  const decreased = changes.filter(c => c.delta < 0)
+  return (
+    <div style={{ ...surface, padding: 0, overflow: 'hidden' }}>
+      {/* Campaign header */}
+      <div
+        onClick={() => setOpen(!open)}
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px', cursor: 'pointer', background: 'var(--bg2)' }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span style={{ fontSize: '.95rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600 }}>{campaign.name}</span>
+          <span style={{ fontSize: '.65rem', color: 'var(--text3)', fontFamily: 'Georgia, serif' }}>{characters.length} character{characters.length !== 1 ? 's' : ''}</span>
+          {pendingCount > 0 && (
+            <span style={{ fontSize: '.62rem', background: 'rgba(201,168,76,.15)', border: '1px solid rgba(201,168,76,.4)', color: 'var(--gold)', borderRadius: 3, padding: '1px 6px' }}>
+              {pendingCount} pending
+            </span>
+          )}
+        </div>
+        <span style={{ fontSize: '.6rem', color: 'var(--text3)', opacity: .5 }}>{open ? '▲' : '▼'}</span>
+      </div>
+
+      {open && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, padding: '10px 12px' }}>
+          {sorted.length === 0 ? (
+            <div style={{ fontSize: '.8rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', fontStyle: 'italic', padding: '6px 4px' }}>No characters assigned.</div>
+          ) : (
+            sorted.map(char => (
+              <CharacterCard key={char.name + char._ownerId} char={char} onUpdate={onUpdate} onOpen={onOpen} />
+            ))
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ── BUCKET SECTION (My Campaigns / Other Campaigns / No Campaign) ─────────────
+function BucketSection({ title, color, campaigns, noCampaignChars, onUpdate, onOpen, defaultOpen = true }) {
+  const [open, setOpen] = useState(defaultOpen)
+  const totalPending = campaigns
+    ? campaigns.reduce((n, { characters }) => n + characters.filter(c => c.pendingSkillChanges).length, 0)
+    : noCampaignChars.filter(c => c.pendingSkillChanges).length
 
   return (
     <div>
-      {/* Maintenance */}
-      <div style={{ background: maintChanged ? (newMaint > oldMaint ? 'rgba(201,74,74,.08)' : 'rgba(74,158,74,.08)') : 'var(--bg2)', border: `1px solid ${maintChanged ? (newMaint > oldMaint ? 'rgba(201,74,74,.3)' : 'rgba(74,158,74,.3)') : 'var(--border)'}`, borderRadius: 5, padding: '8px 12px', marginBottom: 10 }}>
-        <div style={{ ...lbl, marginBottom: 4 }}>Maintenance / Level Up</div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'Georgia, serif' }}>
-          <span style={{ color: 'var(--text2)' }}>{oldMaint}</span>
-          <span style={{ color: 'var(--text3)' }}>→</span>
-          <span style={{ fontSize: '1.1rem', fontWeight: 700, color: newMaint > oldMaint ? '#c94a4a' : (newMaint < oldMaint ? '#4a9e4a' : 'var(--gold2)') }}>{newMaint}</span>
-          {maintChanged && <span style={{ fontSize: '.75rem', color: newMaint > oldMaint ? '#c94a4a' : '#4a9e4a', fontStyle: 'italic' }}>({newMaint > oldMaint ? '+' : ''}{newMaint - oldMaint}/level)</span>}
-        </div>
+      {/* Bucket header */}
+      <div
+        onClick={() => setOpen(!open)}
+        style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 4px', cursor: 'pointer', marginBottom: open ? 8 : 0 }}
+      >
+        <span style={{ fontSize: '.65rem', letterSpacing: '.18em', color: color || 'var(--gold)', textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 600 }}>{title}</span>
+        {totalPending > 0 && (
+          <span style={{ fontSize: '.62rem', background: 'rgba(201,168,76,.15)', border: '1px solid rgba(201,168,76,.4)', color: 'var(--gold)', borderRadius: 3, padding: '1px 6px' }}>
+            {totalPending} pending
+          </span>
+        )}
+        <span style={{ marginLeft: 'auto', fontSize: '.6rem', color: 'var(--text3)', opacity: .5 }}>{open ? '▲' : '▼'}</span>
       </div>
 
-      {/* Skill changes */}
-      {changes.length === 0 && <div style={{ fontSize: '.82rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', fontStyle: 'italic', marginBottom: 10 }}>No skill changes.</div>}
-      {increased.length > 0 && (
-        <div style={{ marginBottom: 8 }}>
-          <div style={{ ...lbl, color: '#4a9e4a', marginBottom: 4 }}>Increased</div>
-          {increased.map(c => (
-            <div key={c.name} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 8px', background: 'rgba(74,158,74,.06)', border: '1px solid rgba(74,158,74,.2)', borderRadius: 3, marginBottom: 2 }}>
-              <span style={{ fontSize: '.85rem', color: 'var(--text)', fontFamily: 'Georgia, serif' }}>{c.name}</span>
-              <span style={{ fontSize: '.8rem', color: '#4a9e4a', fontFamily: 'Georgia, serif', fontWeight: 600 }}>{c.oldPts} → {c.newPts} (+{c.delta})</span>
-            </div>
+      {open && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingLeft: 4 }}>
+          {/* Campaign-based bucket */}
+          {campaigns && campaigns.map(({ campaign, characters }) => (
+            <CampaignSection
+              key={campaign.id}
+              campaign={campaign}
+              characters={characters}
+              onUpdate={onUpdate}
+              onOpen={onOpen}
+              defaultOpen={campaigns.length === 1}
+            />
           ))}
-        </div>
-      )}
-      {decreased.length > 0 && (
-        <div style={{ marginBottom: 10 }}>
-          <div style={{ ...lbl, color: '#c94a4a', marginBottom: 4 }}>Decreased / Removed</div>
-          {decreased.map(c => (
-            <div key={c.name} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 8px', background: 'rgba(201,74,74,.06)', border: '1px solid rgba(201,74,74,.2)', borderRadius: 3, marginBottom: 2 }}>
-              <span style={{ fontSize: '.85rem', color: 'var(--text)', fontFamily: 'Georgia, serif' }}>{c.name}</span>
-              <span style={{ fontSize: '.8rem', color: '#c94a4a', fontFamily: 'Georgia, serif', fontWeight: 600 }}>{c.oldPts} → {c.newPts} ({c.delta})</span>
-            </div>
-          ))}
-        </div>
-      )}
+          {campaigns && campaigns.length === 0 && (
+            <div style={{ fontSize: '.8rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', fontStyle: 'italic', padding: '4px 8px' }}>None.</div>
+          )}
 
-      {/* Approve / Reject */}
-      <div style={{ display: 'flex', gap: 10 }}>
-        <button onClick={onReject} style={{ flex: 1, padding: '8px', background: 'none', border: '1px solid #c94a4a', color: '#c94a4a', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.9rem' }}>
-          Reject
-        </button>
-        <button onClick={onApprove} style={{ flex: 1, padding: '8px', background: 'rgba(74,158,74,.15)', border: '1px solid #4a9e4a', color: '#4a9e4a', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.9rem', fontWeight: 600 }}>
-          Approve
-        </button>
-      </div>
+          {/* No-campaign bucket */}
+          {noCampaignChars && (
+            noCampaignChars.length === 0 ? (
+              <div style={{ fontSize: '.8rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', fontStyle: 'italic', padding: '4px 8px' }}>None.</div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {[...noCampaignChars]
+                  .sort((a, b) => (b.pendingSkillChanges ? 1 : 0) - (a.pendingSkillChanges ? 1 : 0))
+                  .map(char => (
+                    <CharacterCard key={char.name + char._ownerId} char={char} onUpdate={onUpdate} onOpen={onOpen} />
+                  ))
+                }
+              </div>
+            )
+          )}
+        </div>
+      )}
     </div>
   )
 }
 
-// ── HELPER FUNCTIONS ──────────────────────────────────────────────────────────
-function calcMaintenance(char) {
-  return [
-    ...Object.values(char.martialSkills || {}),
-    ...Object.values(char.arcaneSkills || {}),
-    ...Object.values(char.selfImprovementSkills || {}),
-  ].reduce((sum, data) => {
-    const pts = parseInt(data.pointsInvested) || 0
-    return sum + (pts > 0 ? Math.floor(parseFloat(data.maintenanceCost) || 0) : 0)
-  }, 0)
-}
-
-function getSkillChanges(char) {
-  const pending = char.pendingSkillChanges || {}
-  return Object.entries(pending)
-    .map(([name, { oldPts, newPts }]) => ({
-      name,
-      oldPts,
-      newPts,
-      delta: newPts - oldPts,
-    }))
-    .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta))
-}
-
 // ── MAIN GM VIEW ──────────────────────────────────────────────────────────────
-export default function GMView({ userId, onBack }) {
+export default function GMView({ userId, isSuperuser, onBack, onOpenAsGM }) {
   const [loading, setLoading] = useState(true)
+
+  // Regular GM state
   const [campaigns, setCampaigns] = useState([])
   const [charactersByCampaign, setCharactersByCampaign] = useState({})
   const [activeCampaign, setActiveCampaign] = useState(null)
 
+  // Superuser state
+  const [myCampaigns, setMyCampaigns] = useState([])
+  const [otherCampaigns, setOtherCampaigns] = useState([])
+  const [noCampaignChars, setNoCampaignChars] = useState([])
+
   const load = async () => {
     setLoading(true)
-    const result = await loadCampaignCharacters(userId)
-    setCampaigns(result.campaigns || [])
-    setCharactersByCampaign(result.charactersByCampaign || {})
-    if (result.campaigns?.length > 0 && !activeCampaign) {
-      setActiveCampaign(result.campaigns[0].id)
+    if (isSuperuser) {
+      const result = await loadAllCampaignCharacters(userId)
+      setMyCampaigns(result.myCampaigns || [])
+      setOtherCampaigns(result.otherCampaigns || [])
+      setNoCampaignChars(result.noCampaignChars || [])
+    } else {
+      const result = await loadCampaignCharacters(userId)
+      setCampaigns(result.campaigns || [])
+      setCharactersByCampaign(result.charactersByCampaign || {})
+      if (result.campaigns?.length > 0 && !activeCampaign) {
+        setActiveCampaign(result.campaigns[0].id)
+      }
     }
     setLoading(false)
   }
@@ -287,27 +376,82 @@ export default function GMView({ userId, onBack }) {
   useEffect(() => { load() }, [])
 
   const handleUpdate = async (char) => {
-    await saveCharacterByOwner(char, char._ownerId)
+    const ownerId = char._ownerId
+    await saveCharacterByOwner(char, ownerId)
     await load()
   }
 
-  const activeChars = activeCampaign ? (charactersByCampaign[activeCampaign] || []) : []
-  const pendingCount = activeChars.filter(c => c.pendingSkillChanges).length
+  // ── Pending counts for header ─────────────────────────────────────────────
+  const totalPending = isSuperuser
+    ? [
+        ...myCampaigns.flatMap(({ characters }) => characters),
+        ...otherCampaigns.flatMap(({ characters }) => characters),
+        ...noCampaignChars,
+      ].filter(c => c.pendingSkillChanges).length
+    : (activeCampaign ? (charactersByCampaign[activeCampaign] || []) : []).filter(c => c.pendingSkillChanges).length
 
   if (loading) return (
     <div style={{ padding: 40, textAlign: 'center', color: 'var(--text3)', fontFamily: 'Georgia, serif' }}>Loading campaigns...</div>
   )
 
+  // ── SUPERUSER VIEW ────────────────────────────────────────────────────────
+  if (isSuperuser) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 20, maxWidth: 700 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div>
+            <h2 style={{ color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontSize: '1.3rem', marginBottom: 2 }}>GM View</h2>
+            <div style={{ fontSize: '.7rem', color: '#c94a4a', fontFamily: 'Georgia, serif', letterSpacing: '.1em', textTransform: 'uppercase' }}>Superuser</div>
+            {totalPending > 0 && (
+              <div style={{ fontSize: '.78rem', color: '#c9a84c', fontFamily: 'Georgia, serif', marginTop: 2 }}>
+                {totalPending} pending approval{totalPending > 1 ? 's' : ''}
+              </div>
+            )}
+          </div>
+          <button onClick={onBack} style={{ padding: '7px 16px', background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.85rem' }}>
+            ← Back
+          </button>
+        </div>
+
+        <BucketSection
+          title="My Campaigns"
+          color="var(--gold)"
+          campaigns={myCampaigns}
+          onUpdate={handleUpdate}
+          onOpen={onOpenAsGM}
+          defaultOpen={true}
+        />
+        <BucketSection
+          title="Other Campaigns"
+          color="var(--text2)"
+          campaigns={otherCampaigns}
+          onUpdate={handleUpdate}
+          onOpen={onOpenAsGM}
+          defaultOpen={false}
+        />
+        <BucketSection
+          title="No Campaign"
+          color="#c94a4a"
+          noCampaignChars={noCampaignChars}
+          onUpdate={handleUpdate}
+          onOpen={onOpenAsGM}
+          defaultOpen={true}
+        />
+      </div>
+    )
+  }
+
+  // ── REGULAR GM VIEW ───────────────────────────────────────────────────────
+  const activeChars = activeCampaign ? (charactersByCampaign[activeCampaign] || []) : []
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16, maxWidth: 700 }}>
-
-      {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
           <h2 style={{ color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontSize: '1.3rem', marginBottom: 2 }}>GM View</h2>
-          {pendingCount > 0 && (
+          {totalPending > 0 && (
             <div style={{ fontSize: '.78rem', color: '#c9a84c', fontFamily: 'Georgia, serif' }}>
-              {pendingCount} pending approval{pendingCount > 1 ? 's' : ''}
+              {totalPending} pending approval{totalPending > 1 ? 's' : ''}
             </div>
           )}
         </div>
@@ -339,7 +483,7 @@ export default function GMView({ userId, onBack }) {
       {/* Character list */}
       {campaigns.length === 0 ? (
         <div style={{ ...surface, textAlign: 'center', color: 'var(--text3)', fontFamily: 'Georgia, serif' }}>
-          No campaigns found. Create a campaign in Supabase and assign characters to it.
+          No campaigns found. Create a campaign in Supabase and assign yourself as GM.
         </div>
       ) : activeChars.length === 0 ? (
         <div style={{ ...surface, textAlign: 'center', color: 'var(--text3)', fontFamily: 'Georgia, serif' }}>
@@ -347,10 +491,12 @@ export default function GMView({ userId, onBack }) {
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {/* Pending first */}
-          {[...activeChars].sort((a, b) => (b.pendingSkillChanges ? 1 : 0) - (a.pendingSkillChanges ? 1 : 0)).map(char => (
-            <CharacterCard key={char.name} char={char} onUpdate={handleUpdate} />
-          ))}
+          {[...activeChars]
+            .sort((a, b) => (b.pendingSkillChanges ? 1 : 0) - (a.pendingSkillChanges ? 1 : 0))
+            .map(char => (
+              <CharacterCard key={char.name} char={char} onUpdate={handleUpdate} onOpen={onOpenAsGM} />
+            ))
+          }
         </div>
       )}
     </div>

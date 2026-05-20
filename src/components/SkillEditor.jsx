@@ -316,10 +316,10 @@ function getPointsInvested(char, skillName) {
 const TABS = ['General', 'Martial', 'Spiritual', 'Obscure']
 
 // ── MAIN COMPONENT ────────────────────────────────────────────────────────────
-export default function SkillEditor({ character, onSave, onBack, isGM }) {
+export default function SkillEditor({ character, onSave, onBack, gmModeActive, stats }) {
   const [activeTab, setActiveTab] = useState('General')
   const [char, setChar] = useState(() => JSON.parse(JSON.stringify(character)))
-  const [gmMode, setGmMode] = useState(false)
+  const gmMode = !!gmModeActive
   const [showConfirm, setShowConfirm] = useState(false)
   const [confirmModal, setConfirmModal] = useState(null)
   const [lockedPoints, setLockedPoints] = useState(() => {
@@ -502,11 +502,7 @@ const handleSave = () => {
         ))}
         </div>
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          {isGM && (
-            <button onClick={() => setGmMode(!gmMode)} style={{ padding: '8px 16px', background: gmMode ? 'rgba(201,42,42,.2)' : 'var(--surface2)', border: `1px solid ${gmMode ? '#c94a4a' : 'var(--border)'}`, color: gmMode ? '#c94a4a' : 'var(--text3)', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.85rem' }}>
-              {gmMode ? '⚠ GM Mode ON' : 'GM Mode'}
-            </button>
-          )}
+
           <button data-tour="skills-save-btn" onClick={() => setShowConfirm(true)} style={{ padding: '8px 20px', background: 'rgba(74,158,74,.15)', border: '1px solid #4a9e4a', color: '#4a9e4a', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.9rem' }}>
             Save Changes
           </button>
@@ -533,7 +529,7 @@ const handleSave = () => {
 
         {activeTab === 'General' && (
           <div>
-            <RankedSkillTable skills={filterSkills(selfImprovementData)} char={char} sectionLabel="Self Improvement" theme={THEMES.selfImprovement} level={char.level || 1} skillSource="selfImprovement" gmMode={gmMode} lockedPoints={lockedPoints} onUpdate={(name, newPts) => handleUpdate(name, newPts, 'selfImprovement')} unspentPoints={pointTotals.unspent}
+            <RankedSkillTable skills={filterSkills(selfImprovementData)} char={char} stats={stats} sectionLabel="Self Improvement" theme={THEMES.selfImprovement} level={char.level || 1} skillSource="selfImprovement" gmMode={gmMode} lockedPoints={lockedPoints} onUpdate={(name, newPts) => handleUpdate(name, newPts, 'selfImprovement')} unspentPoints={pointTotals.unspent}
               sectionHeaderTourId="skills-self-improvement-header"
               firstSkillTourId="skills-first-skill"
               fourthSkillRightTourId="skills-bodybuilding-right"
@@ -559,7 +555,7 @@ const handleSave = () => {
   key={skill.name}
   skill={skill}
   score={score}
-  stats={null} character={char}
+  stats={undefined} character={char}
   pointsInvested={pts}
   getSkillScore={getSkillScore}
   gmMode={gmMode}
@@ -587,6 +583,7 @@ const handleSave = () => {
                 key={section.key}
                 skills={sectionSkills}
                 char={char}
+                stats={stats}
                 sectionLabel={section.label}
                 theme={section.theme}
                 level={char.level || 1}
@@ -613,6 +610,7 @@ const handleSave = () => {
                 key={category}
                 skills={categorySkills}
                 char={char}
+                stats={stats}
                 sectionLabel={labels[category]}
                 theme={themeMap[category]}
                 level={char.level || 1}

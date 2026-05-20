@@ -286,6 +286,8 @@ export function calculate(char, session = {}) {
     if (armorCode.startsWith('P')) plateCount++
   }
   totalArmorEvasionPenalty += (helm?.evasionPenalty || 0)
+  const armoredCombatRank = skillRank(char, 'Armored Combat')
+  totalArmorEvasionPenalty = Math.max(0, totalArmorEvasionPenalty - armoredCombatRank)
 
   // ── SHIELD ────────────────────────────────
   const shieldCode     = char.armor?.shield?.type || 'None'

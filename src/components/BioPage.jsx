@@ -155,8 +155,8 @@ function LevelUpWizard({ character, stats, onUpdate, onClose }) {
 }
 
 // ── MAIN BIO PAGE ─────────────────────────────────────────────────────────────
-export default function BioPage({ character, onUpdateCharacter, stats, isGM, onRestartTour }) {
- const [gmMode, setGmMode] = useState(false)
+export default function BioPage({ character, onUpdateCharacter, stats, gmModeActive, onRestartTour }) {
+  const gmMode = !!gmModeActive
   const [showLevelUp, setShowLevelUp] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [raceLocked, setRaceLocked] = useState(!!(character.race && character.raceLocked))
@@ -206,17 +206,7 @@ export default function BioPage({ character, onUpdateCharacter, stats, isGM, onR
       )}
       {/* Header row: GM mode + Level Up + Tour */}
       <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
-        {isGM && (
-        <button
-          onClick={() => setGmMode(!gmMode)}
-          style={{
-            padding: '7px 14px', background: gmMode ? 'rgba(201,42,42,.2)' : 'none',
-            border: `1px solid ${gmMode ? '#c94a4a' : 'var(--border)'}`,
-            color: gmMode ? '#c94a4a' : 'var(--text3)',
-            borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.85rem',
-          }}
-        >{gmMode ? '⚠ GM Mode ON' : 'GM Mode'}</button>
-          )}
+
         <button 
           data-tour="bio-levelup-btn"
           onClick={() => setShowLevelUp(true)} 

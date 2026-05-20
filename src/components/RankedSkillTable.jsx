@@ -34,6 +34,7 @@ const IGNORE_PATTERNS = [
 
 const MARTIAL_MARKS = ['Fox Mark', 'Serpent Mark', 'Tiger Mark', 'Heron Mark']
 
+
 function getEffectiveAttrs(char) {
   const raceKey = char.race ? char.race.charAt(0).toLowerCase() + char.race.slice(1).replace(/\s+/g, '') : 'human'
   const race = racesData[raceKey] || {}
@@ -41,7 +42,7 @@ function getEffectiveAttrs(char) {
   const ms = char.martialSkills || {}
   const si = char.selfImprovementSkills || {}
   function base(key) { return attrs[key]?.base || attrs[key] || 0 }
-  function mrank(name) { return parseInt(si[name]?.rank) || parseInt(ms[name]?.rank) || 0 }
+  function mrank(name) { return parseInt(si[name]?.pointsInvested ? Math.floor(parseInt(si[name].pointsInvested) / (si[name].costPerRank || 1)) : 0) || parseInt(ms[name]?.rank) || 0 }
   return {
     STR: base('str') + (race.strModifier || 0) + Math.floor(mrank('Bodybuilding') / 3),
     DEX: base('dex') + Math.floor(mrank('Reflex Training') / 3),
@@ -79,18 +80,14 @@ function calcGeneralScore(skillName, char, attrs) {
   return (pts * mult) + freeBase + racialBonus
 }
 
-function checkUnfettered(char) {
-  const armorLocs = ['rArm', 'lArm', 'torso', 'lLeg', 'rLeg']
-  let totalPenalty = 0, plateCount = 0
-  for (const loc of armorLocs) {
-    const armorType = char.armor?.[loc]?.type || 'None'
-    const a = armorData.bodyArmor.find(x => x.name.toLowerCase() === armorType.toLowerCase()) || armorData.bodyArmor[0]
-    totalPenalty += (a?.evasionPenaltyPerLocation || 0)
-    if (armorType.toLowerCase().includes('plate')) plateCount++
-  }
-  if (Math.floor(totalPenalty) > 1) return { met: false, reason: 'Armor evasion penalty too high for Unfettered' }
-  if (plateCount > 1) return { met: false, reason: 'Too many plate armor locations for Unfettered' }
-  return { met: true, partial: true }
+function checkUnfettered(uc) {
+  // uc = stats.unfetteredConditions — already computed by the calculator
+  if (!uc) return { met: true }  // stats not available, don't block
+  if (!uc.weightOk)        return { met: false, reason: 'Not Unfettered: over half carry weight' }
+  if (!uc.noShield)        return { met: false, reason: 'Not Unfettered: shield equipped' }
+  if (!uc.plateOk)         return { met: false, reason: 'Not Unfettered: too much plate armor' }
+  if (!uc.armorPenaltyOk)  return { met: false, reason: 'Not Unfettered: armor evasion penalty too high' }
+  return { met: true }
 }
 
 function getRankAcrossAllSkills(char, skillName) {
@@ -120,7 +117,7 @@ function parseMarkList(str) {
   return cleaned.split(/,|\bor\b/i).map(s => s.trim()).filter(Boolean)
 }
 
-function checkSinglePrereq(token, char) {
+function checkSinglePrereq(token, char, stats) {
   const str = token.trim()
   if (!str || str.toLowerCase() === 'none') return { met: true }
   if (IGNORE_PATTERNS.some(p => p.test(str))) return { met: true, ignore: true }
@@ -134,11 +131,11 @@ function checkSinglePrereq(token, char) {
   if (FLAG_PATTERNS.some(p => p.test(str))) return { met: true, tag: str }
 
   if (/^unfettered/i.test(str)) {
-    const result = checkUnfettered(char)
+    const result = checkUnfettered(stats?.unfetteredConditions)
     if (!result.met) return result
     const rest = str.replace(/^unfettered[,\s]*(and\s*)?/i, '').trim()
-    if (rest) return checkSinglePrereq(rest, char)
-    return { met: true, partial: result.partial }
+    if (rest) return checkSinglePrereq(rest, char, stats)
+    return { met: true }
   }
 
   // Martial marks — exact match, enforce rank >= 1, no chip
@@ -222,11 +219,10 @@ function checkSinglePrereq(token, char) {
   return { met: true }
 }
 
-function checkPrereq(prereqStr, char) {
+function checkPrereq(prereqStr, char, stats) {
   if (!prereqStr || prereqStr.toLowerCase() === 'none') return { met: true, tags: [], markRequirements: [], capRequirements: [] }
   const tokens = prereqStr.split(/\n/).map(s => s.trim()).filter(Boolean)
   const tags = [], failures = [], markRequirements = [], capRequirements = []
-  let partial = false
 
   for (const token of tokens) {
     // Plain "or" conditions that are not mark lists
@@ -237,7 +233,7 @@ function checkPrereq(prereqStr, char) {
       !/shaman\s+symbol\s+of/i.test(token)
     ) {
       const orParts = token.split(/ or /i).map(s => s.trim())
-      const orResults = orParts.map(p => checkSinglePrereq(p, char))
+      const orResults = orParts.map(p => checkSinglePrereq(p, char, stats))
       if (!orResults.some(r => r.met)) {
         failures.push(orParts.map((p, i) => orResults[i].reason || p).join(' or '))
       }
@@ -245,17 +241,16 @@ function checkPrereq(prereqStr, char) {
       continue
     }
 
-    const result = checkSinglePrereq(token, char)
+    const result = checkSinglePrereq(token, char, stats)
     if (result.ignore) continue
     if (result.tag) tags.push(result.tag)
-    if (result.partial) partial = true
     if (result.markList) markRequirements.push({ list: result.markList, type: result.markType, met: result.met })
     if (result.capSkill) capRequirements.push({ capSkill: result.capSkill, capRank: result.capRank })
     if (!result.met) failures.push(result.reason || token)
   }
 
   if (failures.length > 0) return { met: false, reason: failures.join(' · '), tags, markRequirements, capRequirements }
- return { met: true, tags, partial, markRequirements, capRequirements }
+ return { met: true, tags, markRequirements, capRequirements }
 }
 
 function EditablePoints({ value, onCommit, theme, isActive, locked }) {
@@ -299,7 +294,7 @@ function EditablePoints({ value, onCommit, theme, isActive, locked }) {
   )
 }
 
-function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onUpdate, skillSource, theme, level, char, gmMode, unspentPoints, tourLeftId, tourRightId, tourPtsId }) {
+function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onUpdate, skillSource, theme, level, char, stats, gmMode, unspentPoints, tourLeftId, tourRightId, tourPtsId }) {
   const [expanded, setExpanded] = useState(false)
   const T = theme || THEMES.selfImprovement
   const costPerRank = parseInt(skill.costPerRank) || 1
@@ -310,7 +305,7 @@ function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onUpdate, sk
   const isActive = rank > 0
   const actualMaint = Math.floor(maint * rank)
   const mclLimit = mclRaw ? mclRaw * (parseInt(level) || 1) : null
-  const prereqResult = checkPrereq(skill.prereq, char)
+  const prereqResult = checkPrereq(skill.prereq, char, stats)
   const locked = lockedPoints?.[skill.name] || 0
   const editLocked = !gmMode && !prereqResult.met && pointsInvested === 0
   const maxDisplay = (maxRankRaw === 'any' || !maxRankRaw || maxRankRaw === 'Passive') ? '∞' : maxRankRaw
@@ -346,20 +341,18 @@ const handleCommit = (newPoints) => {
             <span style={{ fontSize: '.58rem', color: 'var(--text3)', opacity: .5, flexShrink: 0 }}>{expanded ? '▲' : '▼'}</span>
           </div>
           {!prereqResult.met && (
-            <div style={{ fontSize: '.65rem', color: isActive ? '#c9a84c' : '#c94a4a', marginTop: 2, fontStyle: 'italic' }}>
-              {isActive ? '⚠ Prereq no longer met' : `⚠ ${prereqResult.reason}`}
+            <div style={{ fontSize: '.65rem', color: '#c94a4a', marginTop: 2, fontStyle: 'italic' }}>
+              {`⚠ ${prereqResult.reason || 'Prereq no longer met'}`}
             </div>
           )}
           {prereqResult.met && skill.prereq && skill.prereq.toLowerCase() !== 'none'
-            && !prereqResult.tags?.length && !prereqResult.partial
+            && !prereqResult.tags?.length
             && !prereqResult.markRequirements?.length && (
             <div style={{ fontSize: '.62rem', color: 'var(--text3)', marginTop: 1, fontStyle: 'italic' }}>
               {skill.prereq.replace(/\n/g, ' · ')}
             </div>
           )}
-          {prereqResult.partial && prereqResult.met && (
-            <div style={{ fontSize: '.62rem', color: 'var(--text3)', marginTop: 1 }}>Unfettered: confirm at table</div>
-          )}
+
         </div>
 
         <div data-tour={tourPtsId || undefined} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '6px 4px', gap: 2 }}>
@@ -411,7 +404,7 @@ const handleCommit = (newPoints) => {
 }
 
 // specialRows: { [skillName]: ReactNode } — rendered below that skill's row
-export function RankedSkillTable({ skills, char, onUpdate, theme, sectionLabel, level, skillSource, gmMode, lockedPoints, specialRows, unspentPoints, sectionHeaderTourId, firstSkillTourId, fourthSkillRightTourId, fourthSkillPtsTourId }) {
+export function RankedSkillTable({ skills, char, stats, onUpdate, theme, sectionLabel, level, skillSource, gmMode, lockedPoints, specialRows, unspentPoints, sectionHeaderTourId, firstSkillTourId, fourthSkillRightTourId, fourthSkillPtsTourId }) {
   const T = theme || THEMES.selfImprovement
 
   const getSkillData = (skillName) => {
@@ -449,7 +442,7 @@ export function RankedSkillTable({ skills, char, onUpdate, theme, sectionLabel, 
             <SkillTableRow
               skill={skill} rank={rank} pointsInvested={pointsInvested}
               lockedPoints={lockedPoints} theme={T} level={level || 1}
-              char={char} gmMode={gmMode} onUpdate={onUpdate}
+              char={char} stats={stats} gmMode={gmMode} onUpdate={onUpdate}
               skillSource={skillSource || 'martial'} unspentPoints={unspentPoints}
               tourLeftId={idx === 0 ? firstSkillTourId : undefined}
               tourRightId={idx === 3 ? fourthSkillRightTourId : undefined}

@@ -326,17 +326,7 @@ function MagicBonusesSection({ bonuses, onChange, tourId }) {
 }
 
 // ── ENCUMBRANCE ───────────────────────────────────────────────────────────────
-function EncumbranceDisplay({ carried, money, stats, tourId }) {
-  const invLbs = (carried || []).reduce((sum, row) => {
-    const qty = parseFloat(row.qty) || 1
-    const lbs = parseFloat(row.lbs) || 0
-    return sum + qty * lbs
-  }, 0)
-
-  const totalCoins = COIN_TYPES.reduce((sum, t) =>
-    sum + (parseInt(money?.[t]?.party || 0) + parseInt(money?.[t]?.mine || 0)), 0)
-  const coinLbs = totalCoins / 50
-  const totalCarried = Math.round((invLbs + coinLbs) * 10) / 10
+function EncumbranceDisplay({ totalCarried, stats, tourId }) {
   const maxWeight = stats?.weightAllowance ?? 0
   const pct = maxWeight > 0 ? totalCarried / maxWeight : 0
   const color = pct >= 1 ? '#c94a4a' : pct > 0.5 ? '#c9a84c' : 'var(--gold2)'
@@ -355,20 +345,29 @@ function EncumbranceDisplay({ carried, money, stats, tourId }) {
 // ── MAIN ──────────────────────────────────────────────────────────────────────
 export default function StuffPage({ character, onUpdateCharacter, stats }) {
   const stuff = character.stuff || {}
-  const update = (field, val) =>
-    onUpdateCharacter({ ...character, stuff: { ...stuff, [field]: val } })
-
   const carried    = stuff.carried    || Array(15).fill(null).map(() => ({ item: '', qty: '', loc: '', lbs: '' }))
   const notCarried = stuff.notCarried || Array(5).fill(null).map(() => ({ item: '', qty: '', loc: '', lbs: '' }))
   const special    = stuff.special    || Array(5).fill(null).map(() => ({ item: '', loc: '', lbs: '' }))
   const money      = stuff.money      || {}
   const bonuses    = stuff.magicBonuses || {}
 
+  const calcWeight = (c, m) => Math.round((
+    (c || []).reduce((sum, r) => sum + (parseFloat(r.qty)||1) * (parseFloat(r.lbs)||0), 0) +
+    COIN_TYPES.reduce((sum, t) => sum + (parseInt(m?.[t]?.party||0) + parseInt(m?.[t]?.mine||0)), 0) / 50
+  ) * 10) / 10
+
+  const update = (field, val) => {
+    const newStuff = { ...stuff, [field]: val }
+    const carryingWeight = calcWeight(newStuff.carried || carried, newStuff.money || money)
+    onUpdateCharacter({ ...character, stuff: newStuff, carryingWeight })
+  }
+
+ 
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14, maxWidth: 900 }}>
 
-      <EncumbranceDisplay carried={carried} money={money} stats={stats} tourId="stuff-encumbrance" />
-
+     <EncumbranceDisplay totalCarried={calcWeight(carried, money)} stats={stats} tourId="stuff-encumbrance" />
       {/* Left: Carried | Right: Not Carried + Special Items stacked */}
       <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'flex-start' }}>
         <InventorySection title="Carried" rows={carried} onChange={v => update('carried', v)} tourId="stuff-carried" />

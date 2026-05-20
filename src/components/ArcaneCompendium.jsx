@@ -385,7 +385,7 @@ export default function ArcaneCompendium({ character, onUpdateCharacter, stats }
                     display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px', cursor: 'pointer',
                     borderBottom: '1px solid #3a2e1e',
                     background: isSelected ? '#261f15' : (isKnown ? 'rgba(201,168,76,.04)' : 'transparent'),
-                    opacity: unlocked ? 1 : 0.38, transition: 'background .12s',
+                    display: unlocked ? 'flex' : 'none', transition: 'background .12s',
                   }}>
                     <input type="checkbox" checked={isKnown} disabled={!actuallyUnlocked && !isKnown}
                       onClick={e => e.stopPropagation()} onChange={() => toggleKnown(spell)}

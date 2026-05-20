@@ -29,7 +29,7 @@
     "costPerRank": 15,
     "maxRank": 1,
     "mcl": "any",
-    "maintenancePerRank": 1.0,
+    "maintenancePerRank": 0.0,
     "strictMCL": false
   },
   {
@@ -40,7 +40,7 @@
     "costPerRank": 20,
     "maxRank": 6,
     "mcl": "20",
-    "maintenancePerRank": 0.34,
+    "maintenancePerRank": 0.0,
     "strictMCL": true
   },
   {
@@ -51,7 +51,7 @@
     "costPerRank": 20,
     "maxRank": 6,
     "mcl": "20",
-    "maintenancePerRank": 0.34,
+    "maintenancePerRank": 0.0,
     "strictMCL": true
   },
   {
@@ -106,7 +106,7 @@
     "costPerRank": 20,
     "maxRank": 6,
     "mcl": "20",
-    "maintenancePerRank": 0.34,
+    "maintenancePerRank": 0.0,
     "strictMCL": false
   },
   {
@@ -117,7 +117,7 @@
     "costPerRank": 5,
     "maxRank": 5,
     "mcl": "5",
-    "maintenancePerRank": 0.5,
+    "maintenancePerRank": 0.0,
     "strictMCL": false
   },
   {
@@ -139,7 +139,7 @@
     "costPerRank": 10,
     "maxRank": 1,
     "mcl": "any",
-    "maintenancePerRank": 0.34,
+    "maintenancePerRank": 0.0,
     "strictMCL": false
   },
   {
@@ -150,7 +150,7 @@
     "costPerRank": 20,
     "maxRank": 6,
     "mcl": "15",
-    "maintenancePerRank": 0.34,
+    "maintenancePerRank": 0.0,
     "strictMCL": true
   },
   {
@@ -161,7 +161,7 @@
     "costPerRank": 10,
     "maxRank": 6,
     "mcl": "10",
-    "maintenancePerRank": 1.0,
+    "maintenancePerRank": 0.0,
     "strictMCL": false
   },
   {
@@ -172,7 +172,7 @@
     "costPerRank": 10,
     "maxRank": 1,
     "mcl": "any",
-    "maintenancePerRank": 1.0,
+    "maintenancePerRank": 0.0,
     "strictMCL": false
   },
   {
@@ -183,7 +183,7 @@
     "costPerRank": 30,
     "maxRank": 1,
     "mcl": "any",
-    "maintenancePerRank": 0.34,
+    "maintenancePerRank": 0.0,
     "strictMCL": false
   },
   {
@@ -194,7 +194,7 @@
     "costPerRank": 10,
     "maxRank": "any",
     "mcl": "any",
-    "maintenancePerRank": 0.25,
+    "maintenancePerRank": 0.0,
     "strictMCL": false
   },
   {
@@ -205,7 +205,7 @@
     "costPerRank": 20,
     "maxRank": 6,
     "mcl": "20",
-    "maintenancePerRank": 1.0,
+    "maintenancePerRank": 0.0,
     "strictMCL": true
   },
   {
@@ -216,7 +216,7 @@
     "costPerRank": 20,
     "maxRank": 5,
     "mcl": "any",
-    "maintenancePerRank": 1.0,
+    "maintenancePerRank": 0.0,
     "strictMCL": false
   },
   {
@@ -227,7 +227,7 @@
     "costPerRank": 10,
     "maxRank": 1,
     "mcl": "any",
-    "maintenancePerRank": 1.0,
+    "maintenancePerRank": 0.0,
     "strictMCL": false
   },
   {

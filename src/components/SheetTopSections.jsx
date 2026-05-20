@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import attributeData from '../data/attributes.json'
 import armorData from '../data/armor.json'
+import martialSkillsData from '../data/martialSkills.json'
 import druidFormsData from '../data/druidForms.json'
 
 // ── MAGIC COLORS ──────────────────────────────────────────────────────────────
@@ -154,19 +155,58 @@ function EditableMana({ value, onChange }) {
 // ── COMPLIANCE ────────────────────────────────────────────────────────────────
 function getIssues(stats, character) {
   const issues = []
-  if ((stats.skillPoints?.unspent??0) < 0) issues.push(`Over budget by ${Math.abs(stats.skillPoints.unspent)} skill pts`)
+
+  // 1. Skill points over budget
+  if ((stats.skillPoints?.unspent??0) < 0)
+    issues.push(`Over budget by ${Math.abs(stats.skillPoints.unspent)} skill pts`)
+
+  // 2. Known spells over limit
   const known = character.knownSpells?.length??0
-  if (known > stats.maxSpellsKnown) issues.push(`${known - stats.maxSpellsKnown} spell(s) over max`)
-  const hasUnfettered = Object.entries({...character.martialSkills,...character.selfImprovementSkills}||{})
-    .some(([n,d]) => n.toLowerCase().includes('unfetter') && (parseInt(d.rank)||0) > 0)
-  if (hasUnfettered) {
-    const carried = character.carryingWeight??0, half = (stats.weightAllowance??0)/2
-    const shieldOn = character.armor?.shield?.type && character.armor.shield.type !== 'None'
-    const plates = ['rArm','lArm','torso','lLeg','rLeg'].filter(loc => (getBodyArmor(character.armor?.[loc]?.type)?.name??'').toLowerCase().includes('plate')).length
-    if (carried > half)  issues.push('Not Unfettered: over half carry weight')
-    else if (shieldOn)   issues.push('Not Unfettered: shield equipped')
-    else if (plates > 1) issues.push('Not Unfettered: too much plate armor')
+  if (known > (stats.maxSpellsKnown??0))
+    issues.push(`${known - stats.maxSpellsKnown} spell(s) over max`)
+
+  // 3. Unfettered conditions — use calculator output directly
+  const hasUnfettered = Object.keys(character.martialSkills || {})
+  .some(name => {
+    const def = martialSkillsData.find(s => s.name === name)
+    return def?.category === 'Unfettered' && (parseInt(character.martialSkills[name].pointsInvested) || 0) > 0
+  })
+  if (hasUnfettered && stats.unfetteredConditions) {
+    console.log('hasUnfettered:', hasUnfettered, 'martialSkills keys:', Object.keys(character.martialSkills || {}))
+    const uc = stats.unfetteredConditions
+    if (!uc.weightOk)       issues.push('Not Unfettered: over half carry weight')
+    else if (!uc.noShield)  issues.push('Not Unfettered: shield equipped')
+    else if (!uc.plateOk)   issues.push('Not Unfettered: too much plate armor')
+    else if (!uc.armorPenaltyOk) issues.push('Not Unfettered: armor evasion penalty too high')
   }
+
+  // 4. Weight over carry limit
+  const carried = character.carryingWeight??0
+  const maxCarry = stats.weightAllowance??0
+  if (carried > maxCarry)
+    issues.push(`Overloaded: carrying ${Math.floor(carried)} / ${maxCarry} lbs`)
+
+  // 5. Shield min STR not met (only when shield is the offhand)
+  if (stats.session?.offHand === 'Shield' && stats.shieldSTRWarning)
+    issues.push(`Shield requires STR ${stats.shieldMinSTR} (you have ${stats.attributes?.str?.effective??0})`)
+
+  // 6. Current HP above max HP (any location)
+  const curHP  = character.hp?.current || {}
+  const maxHPs = stats.hp || {}
+  const hpLocLabels = { torso: 'Torso', rArm: 'R.Arm', lArm: 'L.Arm', rLeg: 'R.Leg', lLeg: 'L.Leg', head: 'Head' }
+  const getLocMax = loc => {
+    if (loc === 'torso' || loc === 'head') return maxHPs[loc] ?? 0
+    if (loc === 'rArm'  || loc === 'lArm') return maxHPs.arm ?? 0
+    if (loc === 'rLeg'  || loc === 'lLeg') return maxHPs.leg ?? 0
+    return 0
+  }
+  for (const [loc, label] of Object.entries(hpLocLabels)) {
+    const cur = curHP[loc]
+    if (cur === undefined || cur === null) continue
+    const max = getLocMax(loc)
+    if (cur > max) issues.push(`${label} HP ${cur} exceeds max ${max}`)
+  }
+
   return issues
 }
 

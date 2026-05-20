@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { supabase } from './supabase'
 import Auth from './components/Auth'
 import ArcaneCompendium from './components/ArcaneCompendium'
@@ -9,7 +9,7 @@ import BioPage from './components/BioPage'
 import CharacterWizard from './components/CharacterWizard'
 import GMView from './components/GMView'
 import { calculate } from './utils/calculator'
-import { loadCharacters, saveCharacter, deleteCharacter, getUserCampaigns } from './characterDB'
+import { loadCharacters, saveCharacter, deleteCharacter, getUserRole } from './characterDB'
 import ConfirmModal from './components/ConfirmModal'
 import NewPlayerTour from './components/NewPlayerTour'
 import './App.css'
@@ -39,7 +39,6 @@ function CharacterToken({ imageUrl, name, size = 36, onClick, isActive, 'data-to
       {imageUrl ? (
         <img src={imageUrl} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
       ) : (
-        // Placeholder silhouette SVG
         <svg viewBox="0 0 36 36" width={size} height={size} xmlns="http://www.w3.org/2000/svg">
           <circle cx="18" cy="13" r="7" fill="var(--text3)" opacity="0.5" />
           <ellipse cx="18" cy="32" rx="11" ry="8" fill="var(--text3)" opacity="0.5" />
@@ -50,7 +49,7 @@ function CharacterToken({ imageUrl, name, size = 36, onClick, isActive, 'data-to
 }
 
 // ── CHARACTER HEADER ──────────────────────────────────────────────────────────
-function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
+function CharacterHeader({ character, currentTab, onNavigate, onHome, gmModeActive }) {
   const tabBtn = (key, label) => (
     <button
       key={key}
@@ -103,6 +102,7 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
         </div>
         <div style={{ fontSize: '.72rem', color: 'var(--text3)', letterSpacing: '.12em', textTransform: 'uppercase', marginTop: 2 }}>
           Level {character.level} {character.race}
+          {gmModeActive && <span style={{ marginLeft: 8, color: '#c94a4a', letterSpacing: '.08em' }}>· GM</span>}
         </div>
       </div>
     </div>
@@ -110,7 +110,7 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
 
   return (
     <div style={{ borderBottom: '1px solid var(--border)', marginBottom: 20, paddingBottom: 14, paddingTop: 14 }}>
-      {/* Desktop: [home+Sheet+Skills] [token+name] [Spells+Stuff] */}
+      {/* Desktop */}
       <div className="header-desktop" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {homeBtn}
@@ -124,7 +124,7 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
         </div>
       </div>
 
-      {/* Mobile: [home+token+name] / [Sheet|Skills|Spells|Stuff] */}
+      {/* Mobile */}
       <div className="header-mobile" style={{ display: 'none', flexDirection: 'column', gap: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {homeBtn}
@@ -137,12 +137,13 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome }) {
             isActive={currentTab === 'bio'}
           />
           <div style={{ flex: 1 }}>
-           <div style={{ fontSize: '1.1rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 'bold', letterSpacing: '.04em', lineHeight: 1.1 }}>
+            <div style={{ fontSize: '1.1rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 'bold', letterSpacing: '.04em', lineHeight: 1.1 }}>
               {character.name}
               {character.hardcore && <span title="Hardcore character" style={{ marginLeft: 6, fontSize: '.7rem', color: '#c94a4a', verticalAlign: 'middle' }}>⚔</span>}
             </div>
             <div style={{ fontSize: '.65rem', color: 'var(--text3)', letterSpacing: '.1em', textTransform: 'uppercase' }}>
               Level {character.level} {character.race}
+              {gmModeActive && <span style={{ marginLeft: 6, color: '#c94a4a' }}>· GM</span>}
             </div>
           </div>
         </div>
@@ -183,22 +184,22 @@ function HomePage({ characters, onSelectCharacter, onDelete, onLogout, onNewChar
         </div>
 
         {characters.length === 0 ? (
-          <div style={{ textAlign: 'center', color: 'var(--text3)', padding: '40px 0', fontSize: '.9rem' }}>No characters yet.</div>
+          <div style={{ textAlign: 'center', color: 'var(--text3)', fontFamily: 'Georgia, serif', padding: '40px 0' }}>
+            No characters yet. Create your first one above.
+          </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {characters.map(char => (
-              <div key={char.id || char.name} onClick={() => onSelectCharacter(char)}
-                style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '14px 18px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'all .2s' }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--gold)'; e.currentTarget.style.background = 'var(--surface2)' }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.background = 'var(--surface)' }}
+              <div key={char.name} onClick={() => onSelectCharacter(char)}
+                style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '12px 16px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, cursor: 'pointer', transition: 'border-color .2s' }}
+                onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--gold)'}
+                onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <CharacterToken imageUrl={char.imageUrl} name={char.name} size={40} onClick={() => onSelectCharacter(char)} />
-                  <div>
-                    <div style={{ fontSize: '1.05rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif' }}>{char.name}</div>
-                    <div style={{ fontSize: '.72rem', color: 'var(--text3)', marginTop: 3, letterSpacing: '.08em' }}>
-                      Level {char.level} {char.race}{char.profession ? ` · ${char.profession}` : ''}
-                    </div>
+                <CharacterToken imageUrl={char.imageUrl} name={char.name} size={44} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: '1.05rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif' }}>{char.name}</div>
+                  <div style={{ fontSize: '.72rem', color: 'var(--text3)', marginTop: 3, letterSpacing: '.08em' }}>
+                    Level {char.level} {char.race}{char.profession ? ` · ${char.profession}` : ''}
                   </div>
                 </div>
                 <button onClick={e => { e.stopPropagation(); onDelete(char.name) }}
@@ -225,11 +226,14 @@ function App() {
   const [characters, setCharacters] = useState([])
   const [currentPage, setCurrentPage] = useState('home')
   const [selectedCharacter, setSelectedCharacter] = useState(null)
-  const [isGM, setIsGM] = useState(false)
+  const [userRole, setUserRole] = useState('player') // 'player' | 'gm' | 'superuser'
+  const [gmModeActive, setGmModeActive] = useState(false)
   const [confirmModal, setConfirmModal] = useState(null)
   const [tourStep, setTourStep] = useState(null)
 
-  // Persist tour step across browser back/refresh
+  const isGM = userRole === 'gm' || userRole === 'superuser'
+  const isSuperuser = userRole === 'superuser'
+
   useEffect(() => {
     const saved = localStorage.getItem('rl_tour_step')
     if (saved !== null) setTourStep(parseInt(saved))
@@ -258,31 +262,70 @@ function App() {
   useEffect(() => {
     if (!user) return
     loadCharacters(user.id).then(({ characters }) => setCharacters(characters || []))
-    getUserCampaigns(user.id).then(campaigns => setIsGM(campaigns.length > 0))
+    getUserRole(user.id).then(role => setUserRole(role))
   }, [user])
 
   if (authLoading) return <div style={{ minHeight: '100vh', background: 'var(--bg)' }} />
   if (!user) return <Auth onAuth={setUser} />
 
   const navigate = (page) => setCurrentPage(page)
-  const handleSelectCharacter = (char) => { setSelectedCharacter(char); setCurrentPage('sheet') }
+
+  const handleSelectCharacter = (char) => {
+    setSelectedCharacter(char)
+    setGmModeActive(false)
+    setCurrentPage('sheet')
+  }
+
+  // Called from GMView — opens a character with GM mode forced on
+  const handleOpenAsGM = (char) => {
+    setSelectedCharacter(char)
+    setGmModeActive(true)
+    navigate('bio')
+  }
+
+  // When leaving a GM-opened character back to home or GM view
+  const handleGoHome = () => {
+    setSelectedCharacter(null)
+    setGmModeActive(false)
+    navigate('home')
+  }
+
+  const handleGoBackToGM = () => {
+    setSelectedCharacter(null)
+    setGmModeActive(false)
+    navigate('gm')
+  }
+
   const handleNewCharacter = () => setCurrentPage('wizard')
+
   const handleWizardComplete = async (newChar) => {
     await saveCharacter({ ...newChar, status: 'active' }, user.id)
     loadCharacters(user.id).then(({ characters }) => {
       setCharacters(characters || [])
       const created = characters?.find(c => c.name === newChar.name) || newChar
       setSelectedCharacter(created)
+      setGmModeActive(false)
       setCurrentPage('bio')
       advanceTour(0)
     })
   }
+
   const handleUpdateCharacter = (updated) => {
     setSelectedCharacter(updated)
-    saveCharacter(updated, user.id).then(() => {
-      loadCharacters(user.id).then(({ characters }) => setCharacters(characters || []))
-    })
+    // If GM is editing someone else's character, save by owner
+    if (gmModeActive && updated._ownerId && updated._ownerId !== user.id) {
+      import('./characterDB').then(({ saveCharacterByOwner }) => {
+        saveCharacterByOwner(updated, updated._ownerId).then(() => {
+          // Don't reload own character list — we're editing someone else's
+        })
+      })
+    } else {
+      saveCharacter(updated, user.id).then(() => {
+        loadCharacters(user.id).then(({ characters }) => setCharacters(characters || []))
+      })
+    }
   }
+
   const refreshSelectedCharacter = () => {
     loadCharacters(user.id).then(({ characters }) => {
       setCharacters(characters || [])
@@ -292,19 +335,26 @@ function App() {
       }
     })
   }
+
   const handleDelete = (name) => {
-  setConfirmModal({
-    message: `Permanently delete ${name}? This cannot be undone.`,
-    dangerous: true,
-    onConfirm: () => {
-      deleteCharacter(name, user.id).then(() => {
-        loadCharacters(user.id).then(({ characters }) => setCharacters(characters || []))
-      })
-      setConfirmModal(null)
-    }
-  })
-}
-  const handleLogout = () => { supabase.auth.signOut(); setSelectedCharacter(null); setCurrentPage('home') }
+    setConfirmModal({
+      message: `Permanently delete ${name}? This cannot be undone.`,
+      dangerous: true,
+      onConfirm: () => {
+        deleteCharacter(name, user.id).then(() => {
+          loadCharacters(user.id).then(({ characters }) => setCharacters(characters || []))
+        })
+        setConfirmModal(null)
+      }
+    })
+  }
+
+  const handleLogout = () => {
+    supabase.auth.signOut()
+    setSelectedCharacter(null)
+    setGmModeActive(false)
+    setCurrentPage('home')
+  }
 
   const selectedCharacterStats = selectedCharacter
     ? (() => { try { return calculate(selectedCharacter, { offHand: selectedCharacter.offHand || 'Empty', stance: selectedCharacter.stance || 'None', unfettered: false }) } catch (e) { return null } })()
@@ -320,24 +370,50 @@ function App() {
             character={selectedCharacter}
             currentTab={currentPage}
             onNavigate={navigate}
-            onHome={() => { setSelectedCharacter(null); navigate('home') }}
+            gmModeActive={gmModeActive}
+            onHome={gmModeActive ? handleGoBackToGM : handleGoHome}
           />
         )}
 
         {currentPage === 'home' && (
-          <HomePage characters={characters} onSelectCharacter={handleSelectCharacter} onDelete={handleDelete} onLogout={handleLogout} onNewCharacter={handleNewCharacter} isGM={isGM} onGMView={() => navigate('gm')} />
+          <HomePage
+            characters={characters}
+            onSelectCharacter={handleSelectCharacter}
+            onDelete={handleDelete}
+            onLogout={handleLogout}
+            onNewCharacter={handleNewCharacter}
+            isGM={isGM}
+            onGMView={() => navigate('gm')}
+          />
         )}
         {currentPage === 'gm' && (
-          <GMView userId={user.id} onBack={() => navigate('home')} />
+          <GMView
+            userId={user.id}
+            isSuperuser={isSuperuser}
+            onBack={() => navigate('home')}
+            onOpenAsGM={handleOpenAsGM}
+          />
         )}
         {currentPage === 'wizard' && (
           <CharacterWizard userId={user.id} onComplete={handleWizardComplete} onCancel={() => setCurrentPage('home')} />
         )}
         {currentPage === 'sheet' && selectedCharacter && (
-          <CharacterSheet character={selectedCharacter} onBack={() => { setSelectedCharacter(null); navigate('home') }} onEditSkills={() => navigate('skillEditor')} onUpdateCharacter={handleUpdateCharacter} onRefresh={refreshSelectedCharacter} />
+          <CharacterSheet
+            character={selectedCharacter}
+            onBack={gmModeActive ? handleGoBackToGM : handleGoHome}
+            onEditSkills={() => navigate('skillEditor')}
+            onUpdateCharacter={handleUpdateCharacter}
+            onRefresh={refreshSelectedCharacter}
+          />
         )}
         {currentPage === 'skillEditor' && selectedCharacter && (
-          <SkillEditor character={selectedCharacter} onBack={() => navigate('sheet')} onSave={(updated) => { handleUpdateCharacter(updated); navigate('sheet') }} isGM={isGM} />
+          <SkillEditor
+            character={selectedCharacter}
+            onBack={() => navigate('sheet')}
+            onSave={(updated) => { handleUpdateCharacter(updated); navigate('sheet') }}
+            gmModeActive={gmModeActive}
+            stats={selectedCharacterStats}
+          />
         )}
         {currentPage === 'spells' && selectedCharacter && (
           <ArcaneCompendium character={selectedCharacter} onUpdateCharacter={handleUpdateCharacter} stats={selectedCharacterStats} />
@@ -346,17 +422,24 @@ function App() {
           <StuffPage character={selectedCharacter} onUpdateCharacter={handleUpdateCharacter} stats={selectedCharacterStats} />
         )}
         {currentPage === 'bio' && selectedCharacter && (
-          <BioPage character={selectedCharacter} onUpdateCharacter={handleUpdateCharacter} stats={selectedCharacterStats} isGM={isGM} onRestartTour={() => advanceTour(0)} />
+          <BioPage
+            character={selectedCharacter}
+            onUpdateCharacter={handleUpdateCharacter}
+            stats={selectedCharacterStats}
+            gmModeActive={gmModeActive}
+            onRestartTour={() => advanceTour(0)}
+          />
         )}
       </main>
-     {confirmModal && (
-  <ConfirmModal
-    message={confirmModal.message}
-    dangerous={confirmModal.dangerous}
-    onConfirm={confirmModal.onConfirm}
-    onCancel={() => setConfirmModal(null)}
-  />
-)}
+
+      {confirmModal && (
+        <ConfirmModal
+          message={confirmModal.message}
+          dangerous={confirmModal.dangerous}
+          onConfirm={confirmModal.onConfirm}
+          onCancel={() => setConfirmModal(null)}
+        />
+      )}
       {tourStep !== null && selectedCharacter && (
         <NewPlayerTour
           step={tourStep}
