@@ -102,6 +102,34 @@ const DIE_UPGRADE = { d3: 'd4', d4: 'd6', d6: 'd8', d8: 'd10', d10: 'd12', d12: 
 const MASTERY_TO_DIE = [null, 'd3', 'd4', 'd4', 'd6', 'd6', 'd8', 'd8', 'd10', 'd10']
 
 // ─────────────────────────────────────────────
+// RUTHLESS TEMPO CRIT NUMBER TABLE
+// Keyed by combat die size, then RT rank (0-4)
+// ─────────────────────────────────────────────
+const RT_CRIT_TABLE = {
+  6:  [12, 12, 11, 11, 10],
+  8:  [16, 16, 15, 14, 13],
+  10: [20, 19, 18, 17, 16],
+  12: [23, 22, 21, 20, 19],
+}
+
+function critNumber(combatDieStr, ruthlessTempoRank) {
+  const size = parseInt(String(combatDieStr).replace(/\D/g, '')) || 10
+  const table = RT_CRIT_TABLE[size] || RT_CRIT_TABLE[10]
+  return table[Math.min(ruthlessTempoRank, 4)]
+}
+
+// ─────────────────────────────────────────────
+// DAMAGE DIE MAX (for crit damage)
+// Parses "1d6", "2d8", "3d6" etc. → max roll
+// ─────────────────────────────────────────────
+function damageDieMax(dieStr) {
+  if (!dieStr || dieStr === '-' || dieStr === '*') return 0
+  const match = String(dieStr).match(/^(\d+)d(\d+)$/)
+  if (!match) return 0
+  return parseInt(match[1]) * parseInt(match[2])
+}
+
+// ─────────────────────────────────────────────
 // HELPER FUNCTIONS
 // ─────────────────────────────────────────────
 
@@ -192,7 +220,7 @@ export function calculate(char, session = {}) {
   const raceKey = char.raceKey ||
     (char.race ? char.race.charAt(0).toLowerCase() + char.race.slice(1).replace(/\s+/g, '') : 'human')
   const race = racesData[raceKey] || racesData.human || {}
-  const items = char.itemBonuses || {}
+  const items = char.stuff?.magicBonuses || char.itemBonuses || {}
 
   // Active druid form
   const form = getActiveForm(char)
@@ -252,12 +280,12 @@ export function calculate(char, session = {}) {
   const helmAwPenalty = -(helm?.awPenalty || 0)
   const gnomeAwBonus = (raceKey === 'gnome') ? 1 : 0
 
-  const strCheck = bbRank - Math.floor(bbRank / 3)
-  const dexCheck = rtData.checkMod
-  const conCheck = condRank - Math.floor(condRank / 3)
-  const awCheck  = otData.checkMod + helmAwPenalty + gnomeAwBonus
-  const chrCheck = persuRank - Math.floor(persuRank / 3)
-  const wpCheck  = hrRank - Math.floor(hrRank / 3)
+  const strCheck = bbRank - Math.floor(bbRank / 3) + (items.strCheck || 0)
+  const dexCheck = rtData.checkMod + (items.dexCheck || 0)
+  const conCheck = condRank - Math.floor(condRank / 3) + (items.conCheck || 0)
+  const awCheck  = otData.checkMod + helmAwPenalty + gnomeAwBonus + (items.awCheck || 0)
+  const chrCheck = persuRank - Math.floor(persuRank / 3) + (items.chrCheck || 0)
+  const wpCheck  = hrRank - Math.floor(hrRank / 3) + (items.wpCheck || 0)
 
   // ── ADVANTAGE / DISADVANTAGE FLAGS ────────
   const advantageFlags = {
@@ -482,6 +510,10 @@ export function calculate(char, session = {}) {
   const antiArmorArcheryRank  = skillRank(char, 'Anti Armor Archery')
   const hurlingKnown          = skillKnown(char, 'Hurling')
   const veryLongRangeKnown    = skillKnown(char, 'Very Long Range')
+  const ruthlessTempoRank     = skillRank(char, 'Ruthless Tempo')
+  const killerAimRank         = skillRank(char, 'Killer Aim')
+  const arcaneMentality       = skillKnown(char, 'Arcane Mentality') ? 1 : 0
+  const hsDamageRate          = Math.round(killerAimRank * 0.34 * 100) / 100
 
   // ── CALCULATE PER MELEE WEAPON SLOT ───────
   function calcMeleeSlot(slot) {
@@ -545,6 +577,7 @@ export function calculate(char, session = {}) {
 
     return {
       name: weapon.name,
+      slotLabel: slot.slotLabel || weapon.name,
       weaponClass: weapon.weaponClass,
       combatDie: weapon.combatDie,
       damageDie,
@@ -556,6 +589,8 @@ export function calculate(char, session = {}) {
       breaches,
       movDamageRate,
       movPrecisionRate,
+      critNumber: critNumber(weapon.combatDie, ruthlessTempoRank),
+      critDamage: damageDieMax(damageDie),
     }
   }
 
@@ -596,6 +631,7 @@ export function calculate(char, session = {}) {
 
     return {
       name: weapon.name,
+      slotLabel: slot.slotLabel || weapon.name,
       weaponClass,
       combatDie: weapon.combatDie,
       damageDie,
@@ -604,9 +640,11 @@ export function calculate(char, session = {}) {
       precision,
       hsPrecisionRate,
       hsArmorBypassRate,
+      hsDamageRate,
       armorBypass: slot.itemAPBonus || 0,
       ranges,
       movDamageRate,
+      critDamage: damageDieMax(damageDie),
     }
   }
 
@@ -664,9 +702,14 @@ export function calculate(char, session = {}) {
     shieldSTRWarning,
     shieldMinSTR,
     totalArmorEvasionPenalty,
-    
+
+    // Armor / natural armor
+    bonusAR:      (items.ar || 0),
+    shieldAR:     (shieldMatData?.ar || 0) + (items.shieldAr || 0),
+    naturalArmor: (form?.naturalArmor || 0) + (items.naturalAr || 0) + (skillKnown(char, 'Divine Guard') ? 5 : 0),
+
     // Form info for UI
     activeForm: form ? form.name : null,
-    formNaturalArmor,
+    arcaneMentality,
   }
 }

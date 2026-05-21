@@ -1,6 +1,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // StuffPage.jsx
 // ─────────────────────────────────────────────────────────────────────────────
+import { useState } from 'react'
 
 const lbl = {
   fontSize: '.6rem',
@@ -296,39 +297,81 @@ function GemsSection({ money, onChange }) {
 }
 
 // ── MAGIC BONUSES ─────────────────────────────────────────────────────────────
-const BONUS_FIELDS = [
+const BONUS_FIELDS_MAIN = [
   { key: 'str',     label: 'STR' },
   { key: 'dex',     label: 'DEX' },
   { key: 'con',     label: 'CON' },
   { key: 'aw',      label: 'AW' },
   { key: 'chr',     label: 'CHR' },
   { key: 'wp',      label: 'WP' },
-  { key: 'ap',      label: 'Arc.P' },
-  { key: 'mana',    label: 'Mana' },
   { key: 'evasion', label: 'Evasion' },
+  { key: 'ar',      label: 'Global AR' },
 ]
 
+const BONUS_FIELDS_MORE = [
+  { key: 'ap',        label: 'Arc.P' },
+  { key: 'mana',      label: 'Mana' },
+  { key: 'hp',        label: 'HP' },
+  { key: 'shieldAr',  label: 'Shield AR' },
+  { key: 'naturalAr', label: 'Natural AR' },
+  { key: 'strCheck',  label: 'STR Check' },
+  { key: 'dexCheck',  label: 'DEX Check' },
+  { key: 'conCheck',  label: 'CON Check' },
+  { key: 'awCheck',   label: 'AW Check' },
+  { key: 'chrCheck',  label: 'CHR Check' },
+  { key: 'wpCheck',   label: 'WP Check' },
+]
+
+function BonusField({ field, bonuses, update }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, minWidth: 52, flex: '1 1 52px', maxWidth: 80 }}>
+      <span style={lbl}>{field.label}</span>
+      <input
+        style={{ ...inputStyle, textAlign: 'center', padding: '4px 6px' }}
+        value={bonuses[field.key] ?? 0}
+        onChange={e => update(field.key, e.target.value)}
+        onFocus={selectAll}
+      />
+    </div>
+  )
+}
+
 function MagicBonusesSection({ bonuses, onChange, tourId }) {
+  const [expanded, setExpanded] = useState(false)
   const update = (key, val) => onChange({ ...bonuses, [key]: val === '' ? 0 : parseInt(val) || 0 })
 
   return (
     <div data-tour={tourId || undefined} style={surface}>
       <div style={sectionTitle}>Magic Item Bonuses</div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-        {BONUS_FIELDS.map(({ key, label }) => (
-          <div key={key} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, minWidth: 52, flex: '1 1 52px', maxWidth: 80 }}>
-            <span style={lbl}>{label}</span>
-            <input
-              style={{ ...inputStyle, textAlign: 'center', padding: '4px 6px' }}
-              value={bonuses[key] ?? 0}
-              onChange={e => update(key, e.target.value)}
-              onFocus={selectAll}
-            />
-          </div>
+        {BONUS_FIELDS_MAIN.map(f => (
+          <BonusField key={f.key} field={f} bonuses={bonuses} update={update} />
         ))}
       </div>
-      <div style={{ marginTop: 8, fontSize: '.7rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
-        These bonuses feed into derived stats on the Sheet tab.
+
+      {expanded && (
+        <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid var(--border)' }}>
+          <div style={{ fontSize: '.6rem', letterSpacing: '.16em', color: 'var(--text3)', textTransform: 'uppercase', fontFamily: 'Georgia, serif', marginBottom: 8 }}>
+            Additional Bonuses
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            {BONUS_FIELDS_MORE.map(f => (
+              <BonusField key={f.key} field={f} bonuses={bonuses} update={update} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div style={{ marginTop: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ fontSize: '.7rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
+          These bonuses feed into derived stats on the Sheet tab.
+        </div>
+        <button
+          onClick={() => setExpanded(e => !e)}
+          style={{ background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 4, padding: '4px 10px', fontFamily: 'Georgia, serif', fontSize: '.85rem', cursor: 'pointer', letterSpacing: '.06em', flexShrink: 0 }}
+        >
+          {expanded ? '▲ Less' : '▼ More'}
+        </button>
       </div>
     </div>
   )

@@ -5,6 +5,7 @@ import racesData from '../data/races.json'
 import ConfirmModal from './ConfirmModal'
 import { supabase } from '../supabase'
 import { loadAllCampaigns } from '../characterDB'
+import armorData from '../data/armor.json'
 
 // ── RACES LIST ────────────────────────────────────────────────────────────────
 const RACE_OPTIONS = Object.entries(racesData).map(([key, r]) => ({ key, name: r.name })).sort((a, b) => a.name.localeCompare(b.name))
@@ -52,6 +53,246 @@ const field = (label, children) => (
     {children}
   </div>
 )
+
+// ── ROLL20 EXPORT ─────────────────────────────────────────────────────────────
+function getBodyArmor(code) {
+  if (!code || code === 'None') return armorData.bodyArmor[0]
+  return armorData.bodyArmor.find(a => a.code === code) || armorData.bodyArmor[0]
+}
+function getHelm(code) {
+  if (!code || code === 'None') return armorData.helms[0]
+  return armorData.helms.find(h => h.code === code) || armorData.helms[0]
+}
+function getShieldMat(code) {
+  if (!code || code === 'None') return null
+  const matMap = { L: 'Leather', W: 'Wood', M: 'Metal' }
+  const mat = matMap[code[1]]
+  return armorData.shieldMaterials.find(m => m.material === mat) || null
+}
+function getShieldSize(code) {
+  if (!code || code === 'None') return null
+  const sizeMap = { S: 'Small', M: 'Medium', L: 'Large', T: 'Tower' }
+  const size = sizeMap[code[0]]
+  return armorData.shieldSizes.find(s => s.size === size) || null
+}
+
+function exportName(character) {
+  const form = character.activeForm && character.activeForm !== 'None' ? character.activeForm : null
+  if (!form) return character.name || 'Unknown'
+  const firstName = (character.name || '').split(/[\s-]/)[0]
+  return `${firstName} the ${form}`
+}
+
+function buildSetAttr(character, stats) {
+  const name = exportName(character)
+  const armor = character.armor || {}
+  const items = character.stuff?.magicBonuses || {}
+
+  // AR per body section (humanoid layout)
+  const helmCode  = armor.head?.type  || 'None'
+  const torsoCode = armor.torso?.type || 'None'
+  const rArmCode  = armor.rArm?.type  || 'None'
+  const lArmCode  = armor.lArm?.type  || 'None'
+  const rLegCode  = armor.rLeg?.type  || 'None'
+  const lLegCode  = armor.lLeg?.type  || 'None'
+  const shieldCode = armor.shield?.type || 'None'
+
+  const BS6AR = getHelm(helmCode)?.arHead ?? 0
+  const BS1AR = getBodyArmor(torsoCode)?.arTorso ?? 0
+  const BS5AR = getBodyArmor(rArmCode)?.arArms ?? 0
+  const BS4AR = getBodyArmor(lArmCode)?.arArms ?? 0
+  const BS3AR = getBodyArmor(rLegCode)?.arArms ?? 0
+  const BS2AR = getBodyArmor(lLegCode)?.arArms ?? 0
+
+  const shieldMat  = getShieldMat(shieldCode)
+  const shieldSize = getShieldSize(shieldCode)
+  const shieldAR   = (shieldMat?.ar ?? 0) + (items.shieldAr || 0)
+  const shieldHP   = shieldMat?.hp ?? 0
+
+  // Check formula strings
+  function checkFormula(attr) {
+    const { checkMod, advantage, disadvantage } = stats.attributes[attr]
+    const die = (advantage && !disadvantage) ? '2d20kh1'
+              : (!advantage && disadvantage)  ? '2d20kl1'
+              : '1d20'
+    const mod = checkMod >= 0 ? `+${checkMod}` : `${checkMod}`
+    return `${die}${mod}`
+  }
+
+  // Weaving dice
+  const dieMap = {
+    chaos: 'White_Die', chi: 'Green_Die', elemental: 'Red_Die',
+    order: 'Black_Die', will: 'Blue_Die',
+  }
+  const weavingPairs = Object.entries(dieMap)
+    .map(([color, attr]) => `--${attr}|${stats.weavingDice?.[color] || 0}`)
+    .join(' ')
+
+  // Weapon slots
+  const meleeSlots  = (stats.meleeSlots  || []).filter(Boolean).slice(0, 4)
+  const rangedSlots = (stats.rangedSlots || []).filter(Boolean).slice(0, 3)
+
+  const slotAttrs = []
+  meleeSlots.forEach((slot, i) => {
+    const n = i + 1
+    slotAttrs.push(`--S${n}_name|${slot.slotLabel || slot.name}`)
+    slotAttrs.push(`--S${n}_combat_die|${slot.combatDie}`)
+    slotAttrs.push(`--S${n}_expertise|${slot.expertise}`)
+    slotAttrs.push(`--S${n}_damage|${slot.damage}`)
+    slotAttrs.push(`--S${n}_precision|${slot.precision}`)
+    slotAttrs.push(`--S${n}_crit_number|${slot.critNumber}`)
+    slotAttrs.push(`--S${n}_crit_damage|${slot.critDamage}`)
+    slotAttrs.push(`--S${n}_ar_bypass|${slot.armorBypass}`)
+    slotAttrs.push(`--S${n}_mov_damage|${slot.movDamageRate}`)
+    slotAttrs.push(`--S${n}_mov_pr|${slot.movPrecisionRate}`)
+    slotAttrs.push(`--S${n}_mov_ap|${slot.movBypassRate}`)
+  })
+  rangedSlots.forEach((slot, i) => {
+    const n = i + 5
+    slotAttrs.push(`--S${n}_name|${slot.slotLabel || slot.name}`)
+    slotAttrs.push(`--S${n}_combat_die|${slot.combatDie}`)
+    slotAttrs.push(`--S${n}_marksmanship|${slot.marksmanship}`)
+    slotAttrs.push(`--S${n}_damage|${slot.damage}`)
+    slotAttrs.push(`--S${n}_precision|${slot.precision}`)
+    slotAttrs.push(`--S${n}_crit_damage|${slot.critDamage}`)
+    slotAttrs.push(`--S${n}_ar_bypass|${slot.armorBypass}`)
+    slotAttrs.push(`--S${n}_hs_damage|${slot.hsDamageRate}`)
+    slotAttrs.push(`--S${n}_hs_pr|${slot.hsPrecisionRate}`)
+    slotAttrs.push(`--S${n}_hs_ap|${slot.hsArmorBypassRate}`)
+    slotAttrs.push(`--S${n}_mov_damage|${slot.movDamageRate}`)
+  })
+
+  const lines = [
+    `!setattr --name ${name}`,
+    `--Strength|${stats.attributes.str.effective}`,
+    `--Dexterity|${stats.attributes.dex.effective}`,
+    `--Constitution|${stats.attributes.con.effective}`,
+    `--Awareness|${stats.attributes.aw.effective}`,
+    `--Charisma|${stats.attributes.chr.effective}`,
+    `--Willpower|${stats.attributes.wp.effective}`,
+    `--StrcheckBonus|${checkFormula('str')}`,
+    `--DexcheckBonus|${checkFormula('dex')}`,
+    `--ConcheckBonus|${checkFormula('con')}`,
+    `--AwcheckBonus|${checkFormula('aw')}`,
+    `--ChrcheckBonus|${checkFormula('chr')}`,
+    `--WPcheckBonus|${checkFormula('wp')}`,
+    `--Evasion|${stats.evasion}`,
+    `--RearEV|${stats.rearEvasion}`,
+    `--initiative_bonus|${stats.initiative}`,
+    `--Arcane_Power|${stats.arcanePower}`,
+    `--ArcaneMentalityRank|${stats.arcaneMentality}`,
+    `--Hooks|${stats.spellHooks}`,
+    `--BonusAR|${stats.bonusAR}`,
+    `--NaturalArmor|${stats.naturalArmor}`,
+    `--ShieldAR|${shieldAR}`,
+    `--ShieldHP|${shieldHP} --ShieldHP^|${shieldHP}`,
+    `--BS1AR|${BS1AR} --BS2AR|${BS2AR} --BS3AR|${BS3AR}`,
+    `--BS4AR|${BS4AR} --BS5AR|${BS5AR} --BS6AR|${BS6AR}`,
+    `--BS1HP^|${stats.hp.torso} --BS2HP^|${stats.hp.leg}`,
+    `--BS3HP^|${stats.hp.leg} --BS4HP^|${stats.hp.arm}`,
+    `--BS5HP^|${stats.hp.arm} --BS6HP^|${stats.hp.head}`,
+    `--Char_Level|${character.level || 1}`,
+    weavingPairs,
+    ...slotAttrs,
+  ]
+
+  return lines.join(' \\\n')
+}
+
+function Roll20ExportModal({ character, stats, onClose }) {
+  const [step, setStep] = useState('confirm')
+  const [copied, setCopied] = useState(false)
+  const name = exportName(character)
+  const offHand = character.offHand || 'Empty'
+  const exportText = step === 'export' ? buildSetAttr(character, stats) : ''
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(exportText).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
+
+  const overlayStyle = {
+    position: 'fixed', inset: 0, background: 'rgba(0,0,0,.75)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    zIndex: 1000, padding: 20,
+  }
+  const boxStyle = {
+    background: 'var(--surface)', border: '1px solid var(--border2)',
+    borderRadius: 10, padding: 24, maxWidth: 560, width: '100%',
+    maxHeight: '85vh', overflowY: 'auto',
+    boxShadow: '0 8px 40px rgba(0,0,0,.7)',
+  }
+  const rowStyle = {
+    display: 'flex', gap: 12, marginBottom: 10, alignItems: 'baseline',
+  }
+  const rowLbl = {
+    fontSize: '.6rem', letterSpacing: '.16em', color: 'var(--text3)',
+    textTransform: 'uppercase', fontFamily: 'Georgia, serif', minWidth: 64,
+  }
+  const rowVal = {
+    fontSize: '1rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600,
+  }
+
+  return (
+    <div style={overlayStyle}>
+      <div style={boxStyle}>
+        <h3 style={{ color: 'var(--gold2)', fontFamily: 'Georgia, serif', marginBottom: 20, fontSize: '1.1rem' }}>
+          Roll20 Export
+        </h3>
+
+        {step === 'confirm' ? (
+          <>
+            <div style={{ marginBottom: 24 }}>
+              <div style={rowStyle}>
+                <span style={rowLbl}>Name</span>
+                <span style={rowVal}>{name}</span>
+              </div>
+              <div style={rowStyle}>
+                <span style={rowLbl}>Offhand</span>
+                <span style={rowVal}>{offHand}</span>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
+              <button onClick={onClose} style={{ padding: '8px 16px', background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.9rem' }}>
+                Cancel
+              </button>
+              <button onClick={() => setStep('export')} style={{ padding: '8px 20px', background: 'rgba(201,168,76,.15)', border: '1px solid var(--gold)', color: 'var(--gold2)', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.9rem', fontWeight: 600 }}>
+                Proceed
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <div style={{ fontSize: '.78rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', marginBottom: 12 }}>
+              Copy the text below and paste it into Roll20 chat.
+            </div>
+            <textarea
+              readOnly
+              value={exportText}
+              style={{
+                width: '100%', boxSizing: 'border-box',
+                background: 'var(--bg2)', border: '1px solid var(--border)',
+                borderRadius: 4, color: 'var(--text2)', fontFamily: 'monospace',
+                fontSize: '.72rem', padding: '10px 12px', minHeight: 200,
+                resize: 'vertical', lineHeight: 1.6,
+              }}
+            />
+            <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 12 }}>
+              <button onClick={onClose} style={{ padding: '8px 16px', background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.9rem' }}>
+                Close
+              </button>
+              <button onClick={handleCopy} style={{ padding: '8px 20px', background: copied ? 'rgba(74,158,74,.15)' : 'rgba(201,168,76,.15)', border: `1px solid ${copied ? '#4a9e4a' : 'var(--gold)'}`, color: copied ? '#4a9e4a' : 'var(--gold2)', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.9rem', fontWeight: 600, transition: 'all .2s' }}>
+                {copied ? '✓ Copied!' : 'Copy'}
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
 
 // ── LEVEL UP WIZARD ───────────────────────────────────────────────────────────
 function LevelUpWizard({ character, stats, onUpdate, onClose }) {
@@ -158,6 +399,7 @@ function LevelUpWizard({ character, stats, onUpdate, onClose }) {
 export default function BioPage({ character, onUpdateCharacter, stats, gmModeActive, onRestartTour }) {
   const gmMode = !!gmModeActive
   const [showLevelUp, setShowLevelUp] = useState(false)
+  const [showExport, setShowExport] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [raceLocked, setRaceLocked] = useState(!!(character.race && character.raceLocked))
   const [showMaintBreakdown, setShowMaintBreakdown] = useState(false)
@@ -204,6 +446,14 @@ export default function BioPage({ character, onUpdateCharacter, stats, gmModeAct
           onClose={() => setShowLevelUp(false)}
         />
       )}
+      {/* Roll20 Export Modal */}
+      {showExport && gmMode && (
+        <Roll20ExportModal
+          character={character}
+          stats={stats}
+          onClose={() => setShowExport(false)}
+        />
+      )}
       {/* Header row: GM mode + Level Up + Tour */}
       <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
 
@@ -215,6 +465,14 @@ export default function BioPage({ character, onUpdateCharacter, stats, gmModeAct
         >
           {character.levelUpAuthorized ? 'Level Up →' : gmMode ? 'Level Up (GM) →' : '🔒 Level Up'}
         </button>
+        {gmMode && (
+          <button
+            onClick={() => setShowExport(true)}
+            style={{ padding: '8px 20px', background: 'rgba(74,144,217,.1)', border: '1px solid #4a90d9', color: '#4a90d9', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.9rem' }}
+          >
+            Roll20 Export
+          </button>
+        )}
         <button
   data-tour="bio-handbook-btn"
   onClick={() => window.open('https://docs.google.com/document/d/1qD5UADHYXfC_W0bHLyy_Z_ZEkz_gZi8IgBeZMPLBnKI/edit?tab=t.0', '_blank')}
