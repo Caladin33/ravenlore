@@ -774,7 +774,7 @@
     "maintenanceCost": 0
   },
   {
-    "name": "Distilation",
+    "name": "Distillation",
     "prereq": "special",
     "description": "Making alchohol in myriad ways.",
     "freeBase": "2Aw",

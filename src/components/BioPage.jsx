@@ -86,9 +86,9 @@ function exportName(character) {
 function buildSetAttr(character, stats) {
   const name = exportName(character)
   const armor = character.armor || {}
-  const items = character.stuff?.magicBonuses || {}
 
   // AR per body section (humanoid layout)
+  // BS1=Torso, BS2=R.Leg, BS3=L.Leg, BS4=R.Arm, BS5=L.Arm, BS6=Head
   const helmCode  = armor.head?.type  || 'None'
   const torsoCode = armor.torso?.type || 'None'
   const rArmCode  = armor.rArm?.type  || 'None'
@@ -99,15 +99,19 @@ function buildSetAttr(character, stats) {
 
   const BS6AR = getHelm(helmCode)?.arHead ?? 0
   const BS1AR = getBodyArmor(torsoCode)?.arTorso ?? 0
-  const BS5AR = getBodyArmor(rArmCode)?.arArms ?? 0
-  const BS4AR = getBodyArmor(lArmCode)?.arArms ?? 0
-  const BS3AR = getBodyArmor(rLegCode)?.arArms ?? 0
-  const BS2AR = getBodyArmor(lLegCode)?.arArms ?? 0
+  const BS4AR = getBodyArmor(rArmCode)?.arArms ?? 0
+  const BS5AR = getBodyArmor(lArmCode)?.arArms ?? 0
+  const BS2AR = getBodyArmor(rLegCode)?.arArms ?? 0
+  const BS3AR = getBodyArmor(lLegCode)?.arArms ?? 0
 
-  const shieldMat  = getShieldMat(shieldCode)
-  const shieldSize = getShieldSize(shieldCode)
-  const shieldAR   = (shieldMat?.ar ?? 0) + (items.shieldAr || 0)
-  const shieldHP   = shieldMat?.hp ?? 0
+  const shieldMat = getShieldMat(shieldCode)
+  const shieldHP  = shieldMat?.hp ?? 0
+
+  // Helper: coerce undefined/null to 0
+  const v = (x) => x ?? 0
+
+  // Combat die: strip leading 'd' to get plain number
+  const cd = (dieStr) => parseInt(String(dieStr ?? '0').replace(/\D/g, '')) || 0
 
   // Check formula strings
   function checkFormula(attr) {
@@ -119,84 +123,75 @@ function buildSetAttr(character, stats) {
     return `${die}${mod}`
   }
 
-  // Weaving dice
+  // Weaving dice — export as plain number (e.g. 6 for d6, 0 if none)
   const dieMap = {
     chaos: 'White_Die', chi: 'Green_Die', elemental: 'Red_Die',
     order: 'Black_Die', will: 'Blue_Die',
   }
-  const weavingPairs = Object.entries(dieMap)
-    .map(([color, attr]) => `--${attr}|${stats.weavingDice?.[color] || 0}`)
-    .join(' ')
+  const weavingParts = Object.entries(dieMap).map(([color, attr]) => {
+    const dieStr = stats.weavingDice?.[color] || '0'
+    const num = parseInt(String(dieStr).replace(/\D/g, '')) || 0
+    return `--${attr}|${num}`
+  })
 
-  // Weapon slots
-  const meleeSlots  = (stats.meleeSlots  || []).filter(Boolean).slice(0, 4)
-  const rangedSlots = (stats.rangedSlots || []).filter(Boolean).slice(0, 3)
+  // Melee slots S1–S4, pad to 4 with empty slots
+  const meleeSlots = (stats.meleeSlots || []).filter(Boolean).slice(0, 4)
+  const slotParts = []
 
-  const slotAttrs = []
-  meleeSlots.forEach((slot, i) => {
+  for (let i = 0; i < 4; i++) {
     const n = i + 1
-    slotAttrs.push(`--S${n}_name|${slot.slotLabel || slot.name}`)
-    slotAttrs.push(`--S${n}_combat_die|${slot.combatDie}`)
-    slotAttrs.push(`--S${n}_expertise|${slot.expertise}`)
-    slotAttrs.push(`--S${n}_damage|${slot.damage}`)
-    slotAttrs.push(`--S${n}_precision|${slot.precision}`)
-    slotAttrs.push(`--S${n}_crit_number|${slot.critNumber}`)
-    slotAttrs.push(`--S${n}_crit_damage|${slot.critDamage}`)
-    slotAttrs.push(`--S${n}_ar_bypass|${slot.armorBypass}`)
-    slotAttrs.push(`--S${n}_mov_damage|${slot.movDamageRate}`)
-    slotAttrs.push(`--S${n}_mov_pr|${slot.movPrecisionRate}`)
-    slotAttrs.push(`--S${n}_mov_ap|${slot.movBypassRate}`)
-  })
-  rangedSlots.forEach((slot, i) => {
-    const n = i + 5
-    slotAttrs.push(`--S${n}_name|${slot.slotLabel || slot.name}`)
-    slotAttrs.push(`--S${n}_combat_die|${slot.combatDie}`)
-    slotAttrs.push(`--S${n}_marksmanship|${slot.marksmanship}`)
-    slotAttrs.push(`--S${n}_damage|${slot.damage}`)
-    slotAttrs.push(`--S${n}_precision|${slot.precision}`)
-    slotAttrs.push(`--S${n}_crit_damage|${slot.critDamage}`)
-    slotAttrs.push(`--S${n}_ar_bypass|${slot.armorBypass}`)
-    slotAttrs.push(`--S${n}_hs_damage|${slot.hsDamageRate}`)
-    slotAttrs.push(`--S${n}_hs_pr|${slot.hsPrecisionRate}`)
-    slotAttrs.push(`--S${n}_hs_ap|${slot.hsArmorBypassRate}`)
-    slotAttrs.push(`--S${n}_mov_damage|${slot.movDamageRate}`)
+    const slot = meleeSlots[i]
+    if (slot) {
+      slotParts.push(`--S${n}_name|${slot.slotLabel || slot.name} --S${n}_combat_die|${cd(slot.combatDie)} --S${n}_expertise|${v(slot.expertise)} --S${n}_damage|${v(slot.damage)} --S${n}_precision|${v(slot.precision)} --S${n}_crit_number|${v(slot.critNumber)} --S${n}_crit_damage|${v(slot.critDamage)} --S${n}_ar_bypass|${v(slot.armorBypass)} --S${n}_mov_ap|${v(slot.movBypassRate)}`)
+    } else {
+      slotParts.push(`--S${n}_name| --S${n}_combat_die|0 --S${n}_expertise|0 --S${n}_damage|0 --S${n}_precision|0 --S${n}_crit_number|0 --S${n}_crit_damage|0 --S${n}_ar_bypass|0 --S${n}_mov_ap|0`)
+    }
+  }
+
+  // Shield slot S5
+  const s5 = stats.shieldSlot
+  if (s5) {
+    slotParts.push(`--S5_name|${s5.slotLabel || s5.name} --S5_combat_die|${cd(s5.combatDie)} --S5_expertise|${v(s5.expertise)} --S5_damage|${v(s5.damage)} --S5_precision|${v(s5.precision)} --S5_crit_number|${v(s5.critNumber)} --S5_crit_damage|${v(s5.critDamage)} --S5_ar_bypass|${v(s5.armorBypass)} --S5_mov_ap|${v(s5.movBypassRate)}`)
+  } else {
+    slotParts.push(`--S5_name| --S5_combat_die|0 --S5_expertise|0 --S5_damage|0 --S5_precision|0 --S5_crit_number|0 --S5_crit_damage|0 --S5_ar_bypass|0 --S5_mov_ap|0`)
+  }
+
+  // Ranged slots S6–S7, pad to 2 with empty slots
+  const rangedSlots = (stats.rangedSlots || []).filter(Boolean).slice(0, 2)
+  for (let i = 0; i < 2; i++) {
+    const n = i + 6
+    const slot = rangedSlots[i]
+    if (slot) {
+      const ranges = slot.ranges || {}
+      const rangeStr = [ranges.short, ranges.medium, ranges.long, ranges.veryLong].filter(Boolean).join('/')
+      slotParts.push(`--S${n}_name|${slot.slotLabel || slot.name} --S${n}_combat_die|${cd(slot.combatDie)} --S${n}_marksmanship|${v(slot.marksmanship)} --S${n}_damage|${v(slot.damage)} --S${n}_precision|${v(slot.precision)} --S${n}_crit_damage|${v(slot.critDamage)} --S${n}_ar_bypass|${v(slot.armorBypass)} --S${n}_hs_damage|${v(slot.hsDamageRate)} --S${n}_hs_pr|${v(slot.hsPrecisionRate)} --S${n}_hs_ap|${v(slot.hsArmorBypassRate)} --S${n}_range|${rangeStr}`)
+    } else {
+      slotParts.push(`--S${n}_name| --S${n}_combat_die|0 --S${n}_marksmanship|0 --S${n}_damage|0 --S${n}_precision|0 --S${n}_crit_damage|0 --S${n}_ar_bypass|0 --S${n}_hs_damage|0 --S${n}_hs_pr|0 --S${n}_hs_ap|0 --S${n}_range|`)
+    }
+  }
+
+  // General skill scores — undefined → 0, fix capitalisation for Transformed_Acrobatics
+  const skillParts = Object.entries(stats.generalSkillScores || {}).map(([key, val]) => {
+    const fixedKey = key.replace('Skill_transformed_acrobatics', 'Skill_Transformed_Acrobatics')
+    return `--${fixedKey}|${v(val)}`
   })
 
-  const lines = [
+  const parts = [
     `!setattr --name ${name}`,
-    `--Strength|${stats.attributes.str.effective}`,
-    `--Dexterity|${stats.attributes.dex.effective}`,
-    `--Constitution|${stats.attributes.con.effective}`,
-    `--Awareness|${stats.attributes.aw.effective}`,
-    `--Charisma|${stats.attributes.chr.effective}`,
-    `--Willpower|${stats.attributes.wp.effective}`,
-    `--StrcheckBonus|${checkFormula('str')}`,
-    `--DexcheckBonus|${checkFormula('dex')}`,
-    `--ConcheckBonus|${checkFormula('con')}`,
-    `--AwcheckBonus|${checkFormula('aw')}`,
-    `--ChrcheckBonus|${checkFormula('chr')}`,
-    `--WPcheckBonus|${checkFormula('wp')}`,
-    `--Evasion|${stats.evasion}`,
-    `--RearEV|${stats.rearEvasion}`,
-    `--initiative_bonus|${stats.initiative}`,
-    `--Arcane_Power|${stats.arcanePower}`,
-    `--ArcaneMentalityRank|${stats.arcaneMentality}`,
-    `--Hooks|${stats.spellHooks}`,
-    `--BonusAR|${stats.bonusAR}`,
-    `--NaturalArmor|${stats.naturalArmor}`,
-    `--ShieldAR|${shieldAR}`,
-    `--ShieldHP|${shieldHP} --ShieldHP^|${shieldHP}`,
-    `--BS1AR|${BS1AR} --BS2AR|${BS2AR} --BS3AR|${BS3AR}`,
-    `--BS4AR|${BS4AR} --BS5AR|${BS5AR} --BS6AR|${BS6AR}`,
-    `--BS1HP^|${stats.hp.torso} --BS2HP^|${stats.hp.leg}`,
-    `--BS3HP^|${stats.hp.leg} --BS4HP^|${stats.hp.arm}`,
-    `--BS5HP^|${stats.hp.arm} --BS6HP^|${stats.hp.head}`,
+    `--Strength|${v(stats.attributes?.str?.effective)} --Dexterity|${v(stats.attributes?.dex?.effective)} --Constitution|${v(stats.attributes?.con?.effective)} --Awareness|${v(stats.attributes?.aw?.effective)} --Charisma|${v(stats.attributes?.chr?.effective)} --Willpower|${v(stats.attributes?.wp?.effective)}`,
+    `--StrcheckBonus|${checkFormula('str')} --DexcheckBonus|${checkFormula('dex')} --ConcheckBonus|${checkFormula('con')} --AwcheckBonus|${checkFormula('aw')} --ChrcheckBonus|${checkFormula('chr')} --WPcheckBonus|${checkFormula('wp')}`,
+    `--Evasion|${v(stats.evasionNoShield)} --Evasion_Shield|${v(stats.evasion)} --RearEV|${v(stats.rearEvasion)} --initiative_bonus|${v(stats.initiative)} --Damage_Bonus|${v(stats.damageBonus)} --Committed_Strikes|${v(stats.committedStrikesRank)} --MoV_Damage_Rate|${v(stats.movDamageRate)} --MoV_PR_Rate|${v(stats.movPrecisionRate)} --Move|${v(stats.movement)}`,
+    `--BonusAR|${v(stats.bonusAR)} --NaturalArmor|${v(stats.naturalArmor)} --ShieldAR|${v(stats.shieldAR)} --ShieldHP|${shieldHP}`,
+    `--BS1AR|${BS1AR} --BS2AR|${BS2AR} --BS3AR|${BS3AR} --BS4AR|${BS4AR} --BS5AR|${BS5AR} --BS6AR|${BS6AR}`,
+    `--BS1HP|${v(stats.hp?.torso)} --BS2HP|${v(stats.hp?.leg)} --BS3HP|${v(stats.hp?.leg)} --BS4HP|${v(stats.hp?.arm)} --BS5HP|${v(stats.hp?.arm)} --BS6HP|${v(stats.hp?.head)}`,
     `--Char_Level|${character.level || 1}`,
-    weavingPairs,
-    ...slotAttrs,
+    `--Arcane_Power|${v(stats.arcanePower)} --ArcaneMentalityRank|${v(stats.arcaneMentality)} --Mana_mean|${v(stats.manaMean)}`,
+    ...weavingParts,
+    ...slotParts,
+    ...skillParts,
   ]
 
-  return lines.join(' \\\n')
+  return parts.join(' ')
 }
 
 function Roll20ExportModal({ character, stats, onClose }) {
