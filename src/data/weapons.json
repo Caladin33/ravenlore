@@ -147,7 +147,7 @@
     "isRanged": false
   },
   {
-    "name": "1-H Bastard Sw",
+    "name": "Bastard Sword",
     "combatDie": "d8",
     "damage": "1d10",
     "range": {
@@ -166,30 +166,6 @@
       "noDamageBonus": false,
       "halfDamageBonus": false,
       "commitedStrikes": false,
-      "lance": false
-    },
-    "isRanged": false
-  },
-  {
-    "name": "2-H Bastard Sw",
-    "combatDie": "d10",
-    "damage": "1d10",
-    "range": {
-      "type": "melee"
-    },
-    "precisionMod": -1,
-    "evasionMod": 0,
-    "specialRules": "Requires 2-Hands, CS.",
-    "weaponClass": "Melee",
-    "breaches": 2,
-    "flags": {
-      "piercing": false,
-      "blunt": false,
-      "twoHanded": true,
-      "rounding": false,
-      "noDamageBonus": false,
-      "halfDamageBonus": false,
-      "commitedStrikes": true,
       "lance": false
     },
     "isRanged": false
@@ -270,7 +246,7 @@
     "isRanged": false
   },
   {
-    "name": "1-H Battle Axe",
+    "name": "Battle Axe",
     "combatDie": "d8",
     "damage": "1d10",
     "range": {
@@ -294,31 +270,7 @@
     "isRanged": false
   },
   {
-    "name": "2-H Battle Axe",
-    "combatDie": "d8",
-    "damage": "1d10",
-    "range": {
-      "type": "melee"
-    },
-    "precisionMod": -1,
-    "evasionMod": 0,
-    "specialRules": "Requires 2-Hands, CS.",
-    "weaponClass": "Melee",
-    "breaches": 2,
-    "flags": {
-      "piercing": false,
-      "blunt": false,
-      "twoHanded": true,
-      "rounding": false,
-      "noDamageBonus": false,
-      "halfDamageBonus": false,
-      "commitedStrikes": true,
-      "lance": false
-    },
-    "isRanged": false
-  },
-  {
-    "name": "1-H Spear",
+    "name": "Spear",
     "combatDie": "d10",
     "damage": "1d8",
     "range": {
@@ -337,30 +289,6 @@
       "noDamageBonus": false,
       "halfDamageBonus": false,
       "commitedStrikes": false,
-      "lance": false
-    },
-    "isRanged": false
-  },
-  {
-    "name": "2-H Spear",
-    "combatDie": "d10",
-    "damage": "1d8",
-    "range": {
-      "type": "melee"
-    },
-    "precisionMod": 1,
-    "evasionMod": 0,
-    "specialRules": "piercing, Requires 2-Hands, CS.",
-    "weaponClass": "Long",
-    "breaches": 1,
-    "flags": {
-      "piercing": true,
-      "blunt": false,
-      "twoHanded": true,
-      "rounding": false,
-      "noDamageBonus": false,
-      "halfDamageBonus": false,
-      "commitedStrikes": true,
       "lance": false
     },
     "isRanged": false
@@ -516,7 +444,7 @@
     "isRanged": false
   },
   {
-    "name": "1-H Warhammer",
+    "name": "Warhammer",
     "combatDie": "d8",
     "damage": "1d8",
     "range": {
@@ -535,30 +463,6 @@
       "noDamageBonus": false,
       "halfDamageBonus": false,
       "commitedStrikes": false,
-      "lance": false
-    },
-    "isRanged": false
-  },
-  {
-    "name": "2-H Warhammer",
-    "combatDie": "d8",
-    "damage": "1d8",
-    "range": {
-      "type": "melee"
-    },
-    "precisionMod": -1,
-    "evasionMod": 0,
-    "specialRules": "Blunt, Requires 2-Hands, CS.",
-    "weaponClass": "Melee",
-    "breaches": 1,
-    "flags": {
-      "piercing": false,
-      "blunt": true,
-      "twoHanded": true,
-      "rounding": false,
-      "noDamageBonus": false,
-      "halfDamageBonus": false,
-      "commitedStrikes": true,
       "lance": false
     },
     "isRanged": false

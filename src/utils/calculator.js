@@ -632,6 +632,7 @@ export function calculate(char, session = {}) {
       armorBypass: slot.itemAPBonus || 0,
       ranges,
       movDamageRate,
+      breaches: weapon.breaches || 0,
       slotLabel: slot.slotLabel || weapon.name,
       hsDamageRate,
       critDamage: damageDieMax(damageDie),

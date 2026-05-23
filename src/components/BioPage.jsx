@@ -142,9 +142,9 @@ function buildSetAttr(character, stats) {
     const n = i + 1
     const slot = meleeSlots[i]
     if (slot) {
-      slotParts.push(`--S${n}_name|${slot.slotLabel || slot.name} --S${n}_combat_die|${cd(slot.combatDie)} --S${n}_expertise|${v(slot.expertise)} --S${n}_damage|${v(slot.damage)} --S${n}_precision|${v(slot.precision)} --S${n}_crit_number|${v(slot.critNumber)} --S${n}_crit_damage|${v(slot.critDamage)} --S${n}_ar_bypass|${v(slot.armorBypass)} --S${n}_mov_ap|${v(slot.movBypassRate)}`)
+      slotParts.push(`--S${n}_name|${slot.slotLabel || slot.name} --S${n}_combat_die|${cd(slot.combatDie)} --S${n}_expertise|${v(slot.expertise)} --S${n}_damage_die|${slot.damageDie || '-'} --S${n}_totalDamage|${v(slot.damage)} --S${n}_precision|${v(slot.precision)} --S${n}_crit_number|${v(slot.critNumber)} --S${n}_crit_damage|${v(slot.critDamage)} --S${n}_Breeches|${v(slot.breaches)} --S${n}_ar_bypass|${v(slot.armorBypass)} --S${n}_mov_ap|${v(slot.movBypassRate)}`)
     } else {
-      slotParts.push(`--S${n}_name| --S${n}_combat_die|0 --S${n}_expertise|0 --S${n}_damage|0 --S${n}_precision|0 --S${n}_crit_number|0 --S${n}_crit_damage|0 --S${n}_ar_bypass|0 --S${n}_mov_ap|0`)
+      slotParts.push(`--S${n}_name| --S${n}_combat_die|0 --S${n}_expertise|0 --S${n}_damage_die|- --S${n}_totalDamage|0 --S${n}_precision|0 --S${n}_crit_number|0 --S${n}_crit_damage|0 --S${n}_Breeches|0 --S${n}_ar_bypass|0 --S${n}_mov_ap|0`)
     }
   }
 
@@ -164,9 +164,9 @@ function buildSetAttr(character, stats) {
     if (slot) {
       const ranges = slot.ranges || {}
       const rangeStr = [ranges.short, ranges.medium, ranges.long, ranges.veryLong].filter(Boolean).join('/')
-      slotParts.push(`--S${n}_name|${slot.slotLabel || slot.name} --S${n}_combat_die|${cd(slot.combatDie)} --S${n}_marksmanship|${v(slot.marksmanship)} --S${n}_damage|${v(slot.damage)} --S${n}_precision|${v(slot.precision)} --S${n}_crit_damage|${v(slot.critDamage)} --S${n}_ar_bypass|${v(slot.armorBypass)} --S${n}_hs_damage|${v(slot.hsDamageRate)} --S${n}_hs_pr|${v(slot.hsPrecisionRate)} --S${n}_hs_ap|${v(slot.hsArmorBypassRate)} --S${n}_range|${rangeStr}`)
+      slotParts.push(`--S${n}_name|${slot.slotLabel || slot.name} --S${n}_combat_die|${cd(slot.combatDie)} --S${n}_marksmanship|${v(slot.marksmanship)} --S${n}_damage_die|${slot.damageDie || '-'} --S${n}_totalDamage|${v(slot.damage)} --S${n}_Breeches|${v(slot.breaches)} --S${n}_precision|${v(slot.precision)} --S${n}_crit_damage|${v(slot.critDamage)} --S${n}_ar_bypass|${v(slot.armorBypass)} --S${n}_hs_damage|${v(slot.hsDamageRate)} --S${n}_hs_pr|${v(slot.hsPrecisionRate)} --S${n}_hs_ap|${v(slot.hsArmorBypassRate)} --S${n}_range|${rangeStr}`)
     } else {
-      slotParts.push(`--S${n}_name| --S${n}_combat_die|0 --S${n}_marksmanship|0 --S${n}_damage|0 --S${n}_precision|0 --S${n}_crit_damage|0 --S${n}_ar_bypass|0 --S${n}_hs_damage|0 --S${n}_hs_pr|0 --S${n}_hs_ap|0 --S${n}_range|`)
+      slotParts.push(`--S${n}_name| --S${n}_combat_die|0 --S${n}_marksmanship|0 --S${n}_damage_die|- --S${n}_totalDamage|0 --S${n}_precision|0 --S${n}_crit_damage|0 --S${n}_ar_bypass|0 --S${n}_hs_damage|0 --S${n}_Breeches|0 --S${n}_hs_pr|0 --S${n}_hs_ap|0 --S${n}_range|`)
     }
   }
 
