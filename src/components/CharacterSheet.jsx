@@ -59,7 +59,7 @@ function getFormData(formName) {
 }
 
 // ── WEAPON SLOT EDITOR ────────────────────────────────────────────────────────
-function WeaponSlotEditor({ slot, onSave, onClose, char, isRanged }) {
+function WeaponSlotEditor({ slot, onSave, onClose, char, isRanged, isShield }) {
   const [name, setName] = useState(slot.name || '')
   const [slotLabel, setSlotLabel] = useState(slot.slotLabel || slot.name || '')
   const [mark, setMark] = useState(slot.mark || 'none')
@@ -72,7 +72,7 @@ function WeaponSlotEditor({ slot, onSave, onClose, char, isRanged }) {
 
   const weapons = weaponsData.filter(w => isRanged ? w.isRanged : !w.isRanged)
   const markOptions = getAvailableMarks(char, isRanged ? RANGED_MARK_OPTIONS : MELEE_MARK_OPTIONS)
-  const selectedWeapon = weaponsData.find(w => w.name === name)
+  const selectedWeapon = isShield ? null : weaponsData.find(w => w.name === name)
 
   const numInput = (value, setter, lbl) => (
     <div style={{ flex: '1 1 80px' }}>
@@ -88,9 +88,10 @@ function WeaponSlotEditor({ slot, onSave, onClose, char, isRanged }) {
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.75)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16 }}>
       <div style={{ background: 'var(--surface)', border: '1px solid var(--border2)', borderRadius: 10, padding: 22, maxWidth: 480, width: '100%', maxHeight: '85vh', overflowY: 'auto', boxShadow: '0 8px 40px rgba(0,0,0,.7)' }}>
         <h3 style={{ color: 'var(--gold2)', fontFamily: 'Georgia, serif', marginBottom: 16, fontSize: '1.1rem' }}>
-          {isRanged ? 'Ranged' : 'Melee'} Weapon Slot
+          {isShield ? 'Shield Slot (Weapon Bonuses)' : isRanged ? 'Ranged' : 'Melee'} {isShield ? '' : 'Weapon Slot'}
         </h3>
 
+        {!isShield && (
         <div style={{ marginBottom: 14 }}>
           <div style={{ ...label, marginBottom: 4 }}>Slot Name</div>
           <input value={slotLabel} onChange={e => setSlotLabel(e.target.value)}
@@ -98,7 +99,9 @@ function WeaponSlotEditor({ slot, onSave, onClose, char, isRanged }) {
             style={{ width: '100%', boxSizing: 'border-box', background: 'var(--bg2)', border: '1px solid var(--border)', color: 'var(--text)', borderRadius: 4, padding: '6px 8px', fontFamily: 'Georgia, serif', fontSize: '.9rem' }}
           />
         </div>
+        )}
 
+        {!isShield && (
         <div style={{ marginBottom: 14 }}>
           <div style={{ ...label, marginBottom: 4 }}>Weapon</div>
           <select value={name} onChange={e => setName(e.target.value)}
@@ -107,6 +110,7 @@ function WeaponSlotEditor({ slot, onSave, onClose, char, isRanged }) {
             {weapons.map(w => <option key={w.name} value={w.name}>{w.name}</option>)}
           </select>
         </div>
+        )}
 
         {selectedWeapon && (
           <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 6, padding: '10px 12px', marginBottom: 14, fontSize: '.8rem', color: 'var(--text2)', fontFamily: 'Georgia, serif' }}>
@@ -155,8 +159,8 @@ function WeaponSlotEditor({ slot, onSave, onClose, char, isRanged }) {
           <button onClick={() => {
             onSave({ name, slotLabel: slotLabel || name, mark, itemExpertiseBonus, itemDamageBonus, itemPrecisionBonus, itemAPBonus, itemMarksmanshipBonus, isCursed })
             onClose()
-          }} disabled={!name}
-            style={{ padding: '8px 20px', background: name ? 'rgba(74,158,74,.15)' : 'var(--bg2)', border: `1px solid ${name ? '#4a9e4a' : 'var(--border)'}`, color: name ? '#4a9e4a' : 'var(--text3)', borderRadius: 5, cursor: name ? 'pointer' : 'not-allowed', fontFamily: 'Georgia, serif' }}>
+          }} disabled={!isShield && !name}
+            style={{ padding: '8px 20px', background: (isShield || name) ? 'rgba(74,158,74,.15)' : 'var(--bg2)', border: `1px solid ${(isShield || name) ? '#4a9e4a' : 'var(--border)'}`, color: (isShield || name) ? '#4a9e4a' : 'var(--text3)', borderRadius: 5, cursor: (isShield || name) ? 'pointer' : 'not-allowed', fontFamily: 'Georgia, serif' }}>
             Save
           </button>
         </div>
@@ -264,7 +268,7 @@ function WeaponSlotRow({ slot, calcSlot, onEdit, onRemove, isRanged, activeFormD
               [
                 ['Combat Die', calcSlot.combatDie],
                 ['Weapon Class', calcSlot.weaponClass],
-                ['Breaches', calcSlot.breaches],
+                ['Breaches Caused', calcSlot.breaches],
                 ...(isRanged ? [['Ranges', (() => {
                   const r = calcSlot.ranges
                   return r?.type === 'ranged' ? [r.short, r.medium, r.long, r.veryLong].filter(Boolean).join('/') : 'Melee'
@@ -290,7 +294,9 @@ function WeaponSlotRow({ slot, calcSlot, onEdit, onRemove, isRanged, activeFormD
           )}
           <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
             <button onClick={onEdit} style={{ padding: '5px 14px', background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.8rem' }}>Edit Slot</button>
-            <button onClick={onRemove} style={{ padding: '5px 14px', background: 'none', border: '1px solid #c94a4a', color: '#c94a4a', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.8rem' }}>Remove</button>
+            {onRemove && (
+              <button onClick={onRemove} style={{ padding: '5px 14px', background: 'none', border: '1px solid #c94a4a', color: '#c94a4a', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.8rem' }}>Remove</button>
+            )}
           </div>
         </div>
       )}
@@ -302,26 +308,36 @@ function WeaponSlotRow({ slot, calcSlot, onEdit, onRemove, isRanged, activeFormD
 function WeaponSlots({ character, onUpdateCharacter, stats }) {
   const [editingSlot, setEditingSlot] = useState(null)
 
-  const meleeSlots = character.weapons?.melee || [null, null]
-  const rangedSlots = character.weapons?.ranged || [null]
+  // Fixed slots: 4 melee, 1 shield, 2 ranged
+  const meleeSlots  = Array.from({ length: 4 }, (_, i) => (character.weapons?.melee || [])[i] || null)
+  const rangedSlots = Array.from({ length: 2 }, (_, i) => (character.weapons?.ranged || [])[i] || null)
+  const shieldSlotData = character.weapons?.shield || {}
   const activeFormData = getFormData(character.activeForm)
+
+  const shieldCode = character.armor?.shield?.type || 'None'
+  const shieldName = shieldCode !== 'None'
+    ? (() => {
+        const sizeMap = { S: 'Small', M: 'Medium', L: 'Large', T: 'Tower' }
+        const size = sizeMap[shieldCode[0]] || 'Small'
+        return `${size} Shield`
+      })()
+    : 'Small Shield (default)'
 
   const updateSlots = (type, newSlots) => {
     onUpdateCharacter({ ...character, weapons: { ...character.weapons, [type]: newSlots } })
   }
   const saveSlot = (type, index, slotData) => {
+    if (type === 'shield') {
+      onUpdateCharacter({ ...character, weapons: { ...character.weapons, shield: slotData } })
+      return
+    }
     const slots = type === 'melee' ? [...meleeSlots] : [...rangedSlots]
     slots[index] = slotData
     updateSlots(type, slots)
   }
-  const removeSlot = (type, index) => {
+  const clearSlot = (type, index) => {
     const slots = type === 'melee' ? [...meleeSlots] : [...rangedSlots]
     slots[index] = null
-    updateSlots(type, slots)
-  }
-  const addSlot = (type) => {
-    const slots = type === 'melee' ? [...meleeSlots] : [...rangedSlots]
-    slots.push(null)
     updateSlots(type, slots)
   }
 
@@ -333,9 +349,16 @@ function WeaponSlots({ character, onUpdateCharacter, stats }) {
     <div style={surface}>
       {editingSlot && (
         <WeaponSlotEditor
-          slot={(editingSlot.type === 'melee' ? meleeSlots : rangedSlots)[editingSlot.index] || {}}
+          slot={
+            editingSlot.type === 'shield'
+              ? shieldSlotData
+              : editingSlot.type === 'melee'
+                ? meleeSlots[editingSlot.index] || {}
+                : rangedSlots[editingSlot.index] || {}
+          }
           char={character}
           isRanged={editingSlot.type === 'ranged'}
+          isShield={editingSlot.type === 'shield'}
           onSave={(data) => saveSlot(editingSlot.type, editingSlot.index, data)}
           onClose={() => setEditingSlot(null)}
         />
@@ -350,17 +373,28 @@ function WeaponSlots({ character, onUpdateCharacter, stats }) {
             isRanged={false}
             activeFormData={activeFormData}
             onEdit={() => setEditingSlot({ type: 'melee', index: i })}
-            onRemove={() => removeSlot('melee', i)}
+            onRemove={() => clearSlot('melee', i)}
           />
         </div>
       ))}
-      <button onClick={() => addSlot('melee')}
-        style={{ marginTop: 8, padding: '4px 12px', background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.78rem' }}>
-        + Add Melee Slot
-      </button>
 
       <div style={{ marginTop: 16 }}>
-        {sectionHdr('Ranged Weapons')}
+        {sectionHdr('Shield')}
+        <div style={{ fontSize: '.72rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', fontStyle: 'italic', marginBottom: 6 }}>
+          Weapon: {shieldName} · Combat stats use this weapon, defensive stats exported separately
+        </div>
+        <WeaponSlotRow
+          slot={{ ...shieldSlotData, name: shieldSlotData.name || shieldName.replace(' (default)', ''), slotLabel: 'Shield' }}
+          calcSlot={stats.shieldSlot}
+          isRanged={false}
+          activeFormData={null}
+          onEdit={() => setEditingSlot({ type: 'shield', index: 0 })}
+          onRemove={null}
+        />
+      </div>
+
+      <div style={{ marginTop: 16 }}>
+       {sectionHdr('Ranged Weapons')}
         {rangedSlots.map((slot, i) => (
           <WeaponSlotRow
             key={i}
@@ -368,13 +402,9 @@ function WeaponSlots({ character, onUpdateCharacter, stats }) {
             calcSlot={stats.rangedSlots[i]}
             isRanged={true}
             onEdit={() => setEditingSlot({ type: 'ranged', index: i })}
-            onRemove={() => removeSlot('ranged', i)}
+            onRemove={() => clearSlot('ranged', i)}
           />
         ))}
-        <button onClick={() => addSlot('ranged')}
-          style={{ marginTop: 8, padding: '4px 12px', background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.78rem' }}>
-          + Add Ranged Slot
-        </button>
       </div>
     </div>
   )
@@ -382,17 +412,12 @@ function WeaponSlots({ character, onUpdateCharacter, stats }) {
 
 // ── MAIN COMPONENT ────────────────────────────────────────────────────────────
 export default function CharacterSheet({ character, onBack, onEditSkills, onUpdateCharacter, onRefresh }) {
-  const [offHand, setOffHand] = useState(character.offHand || 'Empty')
-  const [stance, setStance] = useState(character.stance || 'None')
   const [unfettered, setUnfettered] = useState(false)
 
-  const handleOffHandChange = (val) => { setOffHand(val); onUpdateCharacter({ ...character, offHand: val }) }
-  const handleStanceChange = (val) => { setStance(val); onUpdateCharacter({ ...character, stance: val }) }
-
   const stats = useMemo(() => {
-    try { return calculate(character, { offHand, stance, unfettered }) }
+    try { return calculate(character, { unfettered }) }
     catch (e) { console.error('Calculator error:', e); return null }
-  }, [character, offHand, stance, unfettered])
+  }, [character, unfettered])
 
   const currentMaintenance = useMemo(() => {
     return [
@@ -434,8 +459,6 @@ export default function CharacterSheet({ character, onBack, onEditSkills, onUpda
 
       <AttributeBlock
         stats={stats} character={character} onUpdateCharacter={onUpdateCharacter}
-        offHand={offHand} stance={stance}
-        onOffHandChange={handleOffHandChange} onStanceChange={handleStanceChange}
       />
 
       <ArmorHPTable stats={stats} character={character} onUpdateCharacter={onUpdateCharacter} />

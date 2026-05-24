@@ -242,6 +242,17 @@
     "strictMCL": false
   },
   {
+    "name": "Tireless",
+    "category": "Self Improvement",
+    "prereq": "none",
+    "description": "Increase your weight allowance by 50%.",
+    "costPerRank": 15,
+    "maxRank": 1,
+    "mcl": "20",
+    "maintenancePerRank": 0.0,
+    "strictMCL": false
+  },
+  {
     "name": "Zen in Motion",
     "category": "Self Improvement",
     "prereq": "Inner Focus 80+",

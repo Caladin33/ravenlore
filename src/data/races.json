@@ -185,6 +185,17 @@
     "advantages": [], "specialRules": "Huge, Pacifist, Steading-Linked, +4 STR, +4 CON, +10 General skill maximums",
     "attrMin": { "str": 12, "con": 14 }, "attrMax": {}
   },
+  "cerditos": {
+    "name": "Cerditos",
+    "description": "Cerditos are tied to the Father Tree, where time has no meaning.",
+    "move": 8, "vision": "None", "visionRange": 0,
+     "heightRange": "3' to 5'",
+    "hpModifier": 0, "skillPointsPerLevelModifier": 0, "firstLevelBonus": true,
+    "strModifier": 3, "conModifier": 3, "apModifier": 0, "precisionModifier": 0,
+    "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 0,
+    "advantages": [], "specialRules": "Small, Pacifist, Father Tree-Linked, +3 STR, +3 CON, Cant wear metal armor",
+    "attrMin": { "str": 12, "con": 14 }, "attrMax": {}
+  }, 
   "undeadHuman": {
     "name": "Undead Human",
     "description": "Zombies are generally mindless creatures, but there is a lot of magic out there and strange things happen.",

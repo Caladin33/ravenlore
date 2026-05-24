@@ -336,8 +336,8 @@ function buildSteps(character) {
       page: 'sheet',
       navigateTo: 'sheet',
       target: null,
-      title: 'Character Sheet',
-      body: "This is the Main Character Sheet. It shows your stats including all penalties and bonuses.",
+      title: 'Stats Page',
+      body: "This is the Stats Page. It is also where you set your armor and weapons.",
       cta: 'Next →',
     },
     {

@@ -175,7 +175,6 @@ function getIssues(stats, character) {
     console.log('hasUnfettered:', hasUnfettered, 'martialSkills keys:', Object.keys(character.martialSkills || {}))
     const uc = stats.unfetteredConditions
     if (!uc.weightOk)       issues.push('Not Unfettered: over half carry weight')
-    else if (!uc.noShield)  issues.push('Not Unfettered: shield equipped')
     else if (!uc.plateOk)   issues.push('Not Unfettered: too much plate armor')
     else if (!uc.armorPenaltyOk) issues.push('Not Unfettered: armor evasion penalty too high')
   }
@@ -186,8 +185,8 @@ function getIssues(stats, character) {
   if (carried > maxCarry)
     issues.push(`Overloaded: carrying ${Math.floor(carried)} / ${maxCarry} lbs`)
 
-  // 5. Shield min STR not met (only when shield is the offhand)
-  if (stats.session?.offHand === 'Shield' && stats.shieldSTRWarning)
+  // 5. Shield min STR not met (only when shield is equipped)
+  if (stats.shieldSTRWarning)
     issues.push(`Shield requires STR ${stats.shieldMinSTR} (you have ${stats.attributes?.str?.effective??0})`)
 
   // 6. Current HP above max HP (any location)
@@ -281,7 +280,7 @@ function MagicRows({ ranks, weavingDice }) {
 }
 
 // ── SESSION ROW ───────────────────────────────────────────────────────────────
-function SessionRow({ stats, character, offHand, stance, onOffHandChange, onStanceChange, activeForm, onFormChange }) {
+function SessionRow({ stats, character, activeForm, onFormChange }) {
   const druidOptions = getDruidFormOptions(character)
   const hasDruidForms = druidOptions.length > 1
   const formData = getFormData(activeForm)
@@ -289,19 +288,9 @@ function SessionRow({ stats, character, offHand, stance, onOffHandChange, onStan
   return (
     <div style={{ display:'flex', gap:10, flexWrap:'wrap', alignItems:'center', padding:'8px 12px', background: activeForm && activeForm !== 'None' ? 'rgba(74,158,74,.06)' : 'var(--bg2)', borderTop: activeForm && activeForm !== 'None' ? '1px solid rgba(74,158,74,.3)' : 'none' }}>
       <div data-tour="sheet-session-row" style={{ display:'inline-flex', gap:10, alignItems:'center' }}>
-      {[['Off-hand', offHand, onOffHandChange, ['Empty','2-Handed','Dual Wield','Shield']],
-        ['Stance', stance, onStanceChange, ['None','Wind','Wave','Stone','Flame']]
-      ].map(([label, v, fn, opts]) => (
-        <div key={label} style={{ display:'flex', flexDirection:'column', gap:2 }}>
-          <span style={lbl}>{label}</span>
-          <select value={v} onChange={e=>fn(e.target.value)} style={selectSt}>
-            {opts.map(o=><option key={o} value={o}>{o}</option>)}
-          </select>
-        </div>
-      ))}
-      </div>
 
       {/* Druid transform dropdown */}
+
       {hasDruidForms && (
         <div style={{ display:'flex', flexDirection:'column', gap:2 }}>
           <span style={{ ...lbl, color: activeForm && activeForm !== 'None' ? '#4a9e4a' : 'var(--text3)' }}>🐾 Form</span>
@@ -337,11 +326,12 @@ function SessionRow({ stats, character, offHand, stance, onOffHandChange, onStan
         </div>
       )}
     </div>
+    </div>
   )
 }
 
 // ── ATTRIBUTE BLOCK ───────────────────────────────────────────────────────────
-export function AttributeBlock({ stats, character, onUpdateCharacter, offHand, stance, onOffHandChange, onStanceChange }) {
+export function AttributeBlock({ stats, character, onUpdateCharacter }) {
   const attrs = stats.attributes
   const arcane = character?.arcaneSkills || {}
   const ranks = {
@@ -441,8 +431,6 @@ export function AttributeBlock({ stats, character, onUpdateCharacter, offHand, s
 
       <SessionRow
         stats={stats} character={character}
-        offHand={offHand} stance={stance}
-        onOffHandChange={onOffHandChange} onStanceChange={onStanceChange}
         activeForm={activeForm} onFormChange={onFormChange}
       />
     </div>

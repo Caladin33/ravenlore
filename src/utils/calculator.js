@@ -102,26 +102,6 @@ const MANA_MEANS = {
 const DIE_UPGRADE = { d3: 'd4', d4: 'd6', d6: 'd8', d8: 'd10', d10: 'd12', d12: 'd12' }
 const MASTERY_TO_DIE = [null, 'd3', 'd4', 'd4', 'd6', 'd6', 'd8', 'd8', 'd10', 'd10']
 
-// ── RUTHLESS TEMPO CRIT NUMBER TABLE ──────────
-const RT_CRIT_TABLE = {
-  6:  [12, 12, 11, 11, 10],
-  8:  [16, 16, 15, 14, 13],
-  10: [20, 19, 18, 17, 16],
-  12: [23, 22, 21, 20, 19],
-}
-
-function critNumber(combatDieStr, ruthlessTempoRank) {
-  const size = parseInt(String(combatDieStr).replace(/\D/g, '')) || 10
-  const table = RT_CRIT_TABLE[size] || RT_CRIT_TABLE[10]
-  return table[Math.min(Math.max(ruthlessTempoRank || 0, 0), 4)]
-}
-
-function damageDieMax(dieStr) {
-  if (!dieStr || dieStr === '-' || dieStr === '*') return 0
-  const match = String(dieStr).match(/^(\d+)d(\d+)$/)
-  if (!match) return 0
-  return parseInt(match[1]) * parseInt(match[2])
-}
 // ─────────────────────────────────────────────
 // HELPER FUNCTIONS
 // ─────────────────────────────────────────────
@@ -205,8 +185,6 @@ function getActiveForm(char) {
 
 export function calculate(char, session = {}) {
 
-  const offHand    = session.offHand    || 'Empty'
-  const stance     = session.stance     || 'None'
   const unfettered = session.unfettered || false
 
   // Use raceKey if stored, otherwise derive from race name
@@ -313,7 +291,7 @@ export function calculate(char, session = {}) {
 
   // ── SHIELD ────────────────────────────────
   const shieldCode     = char.armor?.shield?.type || 'None'
-  const shieldEquipped = offHand === 'Shield' && shieldCode !== 'None'
+  const shieldEquipped = shieldCode !== 'None'
   const shieldSizeData = getShieldSize(shieldCode)
   const shieldMatData  = getShieldMaterial(shieldCode)
   const shieldMinSTR   = shieldMatData?.minStr?.[shieldSizeData?.size] || 0
@@ -324,7 +302,6 @@ export function calculate(char, session = {}) {
   const carryingWeight  = char.carryingWeight || 0
   const unfetteredConditions = {
     weightOk:         carryingWeight < (weightAllowance / 2),
-    noShield:         !shieldEquipped,
     plateOk:          plateCount <= 1,
     armorPenaltyOk:   totalArmorEvasionPenalty <= 1,
   }
@@ -359,11 +336,10 @@ export function calculate(char, session = {}) {
 
   // ── MOVEMENT ──────────────────────────────
   const alacrityRank   = skillRank(char, 'Alacrity')
-  const windStanceRank = stance === 'Wind' ? skillRank(char, 'Wind Stance') : 0
   // Druid form movement replaces character movement
   const movement = formMovement !== null
     ? formMovement
-    : (race.move || 10) + alacrityRank + windStanceRank
+    : (race.move || 10) + alacrityRank
 
   // ── EVASION ───────────────────────────────
   const evasiveMotionRank  = skillRank(char, 'Evasive Motion')
@@ -380,7 +356,6 @@ export function calculate(char, session = {}) {
     + expertShieldBonus
     + shieldEvasion
     + windsWhisperRank
-    + windStanceRank
     + symbolWisdomBonus
     + formEVBonus
     + (items.evasion || 0)
@@ -395,7 +370,7 @@ export function calculate(char, session = {}) {
 
   const rearEvasionRaw = Math.floor(
     (windsWhisperRank + evasiveMotionRank) * leafMult
-    + (awEvasion(AW) + otData.evasionBonus + windStanceRank + formEVBonus + (items.evasion || 0) - Math.floor(totalArmorEvasionPenalty)) / 2
+    + (awEvasion(AW) + otData.evasionBonus + formEVBonus + (items.evasion || 0) - Math.floor(totalArmorEvasionPenalty)) / 2
   )
   const rearEvasion = Math.max(0, Math.min(20, rearEvasionRaw))
 
@@ -482,17 +457,13 @@ export function calculate(char, session = {}) {
   const rendArmor            = skillKnown(char, 'Rend Armor')
   const antiArmoredBlunt     = skillRank(char, 'Anti-Armored Combat: Blunt')
   const cursedBladeRank      = skillRank(char, 'Cursed Blade')
-  const waveStanceRank       = stance === 'Wave' ? skillRank(char, 'Wave Stance') : 0
-  const stoneStanceRank      = stance === 'Stone' ? skillRank(char, 'Stone Stance') : 0
 
   const racialPrecision      = (raceKey === 'elfWood' || raceKey === 'lizardfolk') ? 3 : 0
   const mischievousPrecision = hasSymbol(char, 'Mischief') ? 3 : 0
 
   const dexExp  = guidedWrath ? AP : dexExpertise(DEX)
   const dexPrec = dexPrecision(DEX)
-  const ruthlessTempoRank = skillRank(char, 'Ruthless Tempo')
-  const killerAimRank     = skillRank(char, 'Killer Aim')
-  const hsDamageRate      = Math.round(killerAimRank * 0.34 * 100) / 100
+
   const movDamageRate    = Math.round((victoriousDamageRank * 0.1 + cascadingStrikesRank * 0.1) * 10) / 10
   const movPrecisionRate = Math.round((victoriousPrecisionRank * 0.1 + (isUnfettered ? cascadingStrikesRank * 0.1 : 0)) * 10) / 10
 
@@ -520,13 +491,17 @@ export function calculate(char, session = {}) {
     const isPiercing  = weapon.flags?.piercing || false
     const isCursed    = slot.isCursed || false
 
+    // DOW bonus (Dueling / Offensive Shielding / Wardancing — best applicable)
+    const isTwoHanded = weapon.flags?.twoHanded || false
+    const dowBonus = isTwoHanded ? 0
+      : (isQuickLight && isUnfettered)
+        ? Math.max(offShieldRank, wardancingRank, duelingRank)
+        : Math.max(offShieldRank, wardancingRank)
+
     // Expertise
     let expertise = dexExp + wellTrainedRank + meleeMasteryRank + mark.expertise + (slot.itemExpertiseBonus || 0)
     if (hardHitting) expertise += damageBonus
-    if (offHand === 'Shield') expertise += offShieldRank
-    else if (offHand === 'Dual Wield' || isUnarmed) expertise += wardancingRank
-    else if (offHand === 'Empty' && isQuickLight && isUnfettered) expertise += duelingRank
-    expertise += waveStanceRank
+    expertise += dowBonus
 
     // Applicable damage bonus
     let applicableDB = damageBonus
@@ -543,13 +518,13 @@ export function calculate(char, session = {}) {
     if (isUnarmed && martialArtist) damageDie = '1d4'
 
     // Total fixed damage
-    const totalDamage = applicableDB + mark.damage + (slot.itemDamageBonus || 0) + stoneStanceRank
+    const totalDamage = applicableDB + mark.damage + (slot.itemDamageBonus || 0)
 
     // Precision — add form PR bonus to unarmed (natural attack) slot
     let precision = dexPrec + preciseStrikesRank + wellTrainedRank + mark.precision
-      + mischievousPrecision + windsWhisperRank + waveStanceRank
+      + mischievousPrecision + windsWhisperRank
       + racialPrecision + (slot.itemPrecisionBonus || 0) + (items.precision || 0)
-    if (offHand === 'Empty' && isQuickLight && isUnfettered) precision += duelingRank
+    if (isQuickLight && isUnfettered) precision += duelingRank
     // Apply form PR bonus to unarmed slot when transformed
     if (isUnarmed && form) precision += formPRBonus
 
@@ -578,9 +553,6 @@ export function calculate(char, session = {}) {
       breaches,
       movDamageRate,
       movPrecisionRate,
-      slotLabel: slot.slotLabel || weapon.name,
-      critNumber: critNumber(weapon.combatDie, ruthlessTempoRank),
-      critDamage: damageDieMax(damageDie),
     }
   }
 
@@ -632,21 +604,21 @@ export function calculate(char, session = {}) {
       armorBypass: slot.itemAPBonus || 0,
       ranges,
       movDamageRate,
-      breaches: weapon.breaches || 0,
-      slotLabel: slot.slotLabel || weapon.name,
-      hsDamageRate,
-      critDamage: damageDieMax(damageDie),
     }
   }
 
-  // Calculate all weapon slots
-  const meleeSlots  = (char.weapons?.melee  || []).map(calcMeleeSlot)
-  const rangedSlots = (char.weapons?.ranged || []).map(calcRangedSlot)
+  // Calculate all weapon slots — fixed 7: 4 melee, 1 shield, 2 ranged
+  const meleeSlots  = (char.weapons?.melee  || []).slice(0, 4).map(calcMeleeSlot)
+  const rangedSlots = (char.weapons?.ranged || []).slice(0, 2).map(calcRangedSlot)
 
-  // ── SHIELD SLOT ───────────────────────────
-  const shieldSlot = shieldEquipped
-    ? calcMeleeSlot({ name: 'Shield', slotLabel: 'Shield' })
-    : null
+  // ── SHIELD SLOT (slot 5) ──────────────────
+  // Derives weapon name from equipped shield size, defaulting to Small Shield
+  const shieldSizeToWeapon = { Small: 'Small Shield', Medium: 'Medium Shield', Large: 'Large Shield', Tower: 'Tower Shield' }
+  const shieldSlotWeaponName = shieldEquipped
+    ? (shieldSizeToWeapon[shieldSizeData?.size] || 'Small Shield')
+    : 'Small Shield'
+  const shieldSlotData = char.weapons?.shield || {}
+  const shieldSlot = calcMeleeSlot({ ...shieldSlotData, name: shieldSlotWeaponName, slotLabel: 'Shield' })
 
   // ── GENERAL SKILL SCORES ──────────────────
   const effectiveAttrs = { STR, DEX, CON, AW, CHR, WP }
@@ -723,7 +695,7 @@ export function calculate(char, session = {}) {
       maintenancePaid: maintenancePaid,
     },
 
-    session: { offHand, stance, unfettered: isUnfettered, canBeUnfettered },
+    session: { unfettered: isUnfettered, canBeUnfettered },
     unfetteredConditions,
 
     movDamageRate,

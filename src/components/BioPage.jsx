@@ -198,7 +198,6 @@ function Roll20ExportModal({ character, stats, onClose }) {
   const [step, setStep] = useState('confirm')
   const [copied, setCopied] = useState(false)
   const name = exportName(character)
-  const offHand = character.offHand || 'Empty'
   const exportText = step === 'export' ? buildSetAttr(character, stats) : ''
 
   const handleCopy = () => {
@@ -243,10 +242,6 @@ function Roll20ExportModal({ character, stats, onClose }) {
               <div style={rowStyle}>
                 <span style={rowLbl}>Name</span>
                 <span style={rowVal}>{name}</span>
-              </div>
-              <div style={rowStyle}>
-                <span style={rowLbl}>Offhand</span>
-                <span style={rowVal}>{offHand}</span>
               </div>
             </div>
             <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
@@ -679,18 +674,23 @@ export default function BioPage({ character, onUpdateCharacter, stats, gmModeAct
             </div>
             <div data-tour="bio-campaign" style={{ gridColumn: '1 / -1' }}>
               {field('Campaign',
-                character.campaignLocked && !gmMode
-                  ? <div style={{ fontSize: '1rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600, padding: '6px 0' }}>
-                      {campaigns.find(c => c.id === character.campaignId)?.name || 'Unknown Campaign'}
-                    </div>
+                character.campaignLocked
+                  ? <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+    <div style={{ fontSize: '1rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600, padding: '6px 0' }}>
+      {campaigns.find(c => c.id === character.campaignId)?.name || 'Unknown Campaign'}
+    </div>
+    {gmMode && (
+      <button
+        onClick={() => onUpdateCharacter({ ...character, campaignLocked: false })}
+        style={{ padding: '5px 10px', background: 'none', border: '1px solid #c94a4a', color: '#c94a4a', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.8rem' }}
+      >Unlock (GM)</button>
+    )}
+  </div>
                   : <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                       <select
                         value={character.campaignId || ''}
                         onChange={e => {
-                          const updated = { ...character, campaignId: e.target.value }
-                          onUpdateCharacter(updated)
-                          // Also update campaign_id column in DB
-                          import('../characterDB').then(({ saveCharacter }) => saveCharacter(updated, character.createdBy))
+                          onUpdateCharacter({ ...character, campaignId: e.target.value })
                         }}
                         style={selectStyle}
                       >
@@ -699,7 +699,16 @@ export default function BioPage({ character, onUpdateCharacter, stats, gmModeAct
                       </select>
                       {!character.campaignLocked && character.campaignId && (
                         <button
-                          onClick={() => setConfirmModal({ message: 'Lock campaign? This cannot be changed without GM mode.', onConfirm: () => { onUpdateCharacter({ ...character, campaignLocked: true }); setConfirmModal(null) } })}
+                         onClick={() => setConfirmModal({ message: 'Lock campaign? This cannot be changed without GM mode.', onConfirm: () => {
+                           const updated = { ...character, campaignLocked: true }
+                          onUpdateCharacter(updated)
+                          if (gmMode) {
+                          import('../characterDB').then(({ saveCharacterByOwner }) => saveCharacterByOwner(updated, updated._ownerId || updated.createdBy))
+                          } else {
+                           import('../characterDB').then(({ saveCharacter }) => saveCharacter(updated, updated.createdBy))
+                          }
+                           setConfirmModal(null)
+                        } })}
                           style={{ padding: '5px 10px', background: 'rgba(201,168,76,.12)', border: '1px solid var(--gold)', color: 'var(--gold2)', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.8rem', whiteSpace: 'nowrap' }}
                         >Lock</button>
                       )}

@@ -46,15 +46,17 @@ export async function saveCharacterByOwner(character, ownerId) {
   const { _ownerId, _rowId, ...cleanChar } = character
 
   const { error } = await supabase.rpc('gm_save_character', {
-    p_owner_id: ownerId,
-    p_name:     cleanChar.name,
-    p_data:     cleanChar,
+    p_owner_id:    ownerId,
+    p_name:        cleanChar.name,
+    p_data:        cleanChar,
+    p_campaign_id: cleanChar.campaignId || null,
   })
 
   if (error) {
     console.error('Error saving character as GM:', error)
     return { error }
   }
+
   return { success: true }
 }
 

@@ -114,7 +114,7 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome, gmModeActi
       <div className="header-desktop" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {homeBtn}
-          {tabBtn('sheet', 'Sheet')}
+          {tabBtn('sheet', 'Stats')}
           {tabBtn('skillEditor', 'Skills')}
         </div>
         {charInfo}
@@ -148,7 +148,7 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome, gmModeActi
           </div>
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-          {tabBtn('sheet', 'Sheet')}
+          {tabBtn('sheet', 'Stats')}
           {tabBtn('skillEditor', 'Skills')}
           {tabBtn('spells', 'Spells')}
           {tabBtn('stuff', 'Stuff')}
@@ -357,7 +357,7 @@ function App() {
   }
 
   const selectedCharacterStats = selectedCharacter
-    ? (() => { try { return calculate(selectedCharacter, { offHand: selectedCharacter.offHand || 'Empty', stance: selectedCharacter.stance || 'None', unfettered: false }) } catch (e) { return null } })()
+    ? (() => { try { return calculate(selectedCharacter, { unfettered: false }) } catch (e) { return null } })()
     : null
 
   const isCharacterPage = selectedCharacter && ['sheet', 'skillEditor', 'spells', 'stuff', 'bio'].includes(currentPage)
