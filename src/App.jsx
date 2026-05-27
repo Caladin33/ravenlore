@@ -50,19 +50,20 @@ function CharacterToken({ imageUrl, name, size = 36, onClick, isActive, 'data-to
 
 // ── CHARACTER HEADER ──────────────────────────────────────────────────────────
 function CharacterHeader({ character, currentTab, onNavigate, onHome, gmModeActive }) {
-  const tabBtn = (key, label) => (
+ const tabBtn = (key, label) => (
     <button
       key={key}
       data-tour="nav-tab-btn"
       onClick={() => onNavigate(key)}
       style={{
-        background: currentTab === key ? 'rgba(201,168,76,.12)' : 'none',
-        border: `1px solid ${currentTab === key ? 'var(--gold2)' : 'var(--border)'}`,
-        color: currentTab === key ? 'var(--gold2)' : 'var(--text2)',
+        background: currentTab === key ? '#1f160d' : '#12100c',
+        border: `1px solid ${currentTab === key ? '#c99a36' : '#3a2c18'}`,
+        color: currentTab === key ? '#ffd36a' : '#b89b68',
         padding: '6px 14px', borderRadius: 4, cursor: 'pointer',
         fontFamily: 'Georgia, serif', fontSize: '.85rem',
         letterSpacing: '.05em', transition: 'all .2s',
         whiteSpace: 'nowrap', flex: '1 1 auto', textAlign: 'center',
+        boxShadow: currentTab === key ? '0 0 10px rgba(201,154,54,.25)' : 'none',
       }}
     >{label}</button>
   )

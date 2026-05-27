@@ -389,6 +389,17 @@
       "maintenancePerRank": 0.0
     },
     {
+      "name": "Divine Auras",
+      "category": "divine",
+      "prereq": "Any Mark",
+      "description": "You learn to emanate power from your person.  The specific Aura determines the effects. The Aura extends for 30 Feet and costs 1 action to call and to maintain.  If two actions per turn are used the radius increases to 100 Feet.  If three actions per turn are used the radius is increased to 300 Feet. You may only learn 4 Auras, unless you receive a Mark of Favour at high level.",
+      "costPerRank": 20,
+      "maxRank": "1",
+     "mcl": "any",
+      "range": "30,100 or 300",
+      "maintenancePerRank": 0.0
+    },
+    {
       "name": "Guided Wrath",
       "category": "divine",
       "prereq": "Mark or Shaman Symbol of Death, Iron, Light, Mischief, Passion, Storms, War or Wisdom",
@@ -507,17 +518,6 @@
       "maxRank": "1",
       "mcl": "any",
       "range": "self",
-      "maintenancePerRank": 0.0
-    },
-    {
-      "name": "Divine Auras",
-      "category": "divine",
-      "prereq": "Any Mark",
-      "description": "You learn to emanate power from your person.  The specific Aura determines the effects. The Aura extends for 30 Feet and costs 1 action to call and to maintain.  If two actions per turn are used the radius increases to 100 Feet.  If three actions per turn are used the radius is increased to 300 Feet. You may only learn 4 Auras, unless you receive a Mark of Favour at high level.",
-      "costPerRank": 20,
-      "maxRank": "1",
-     "mcl": "any",
-      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {

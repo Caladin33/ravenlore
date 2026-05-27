@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { Shield, Sun, Flame, HeartPlus, Sword, Star } from 'lucide-react'
 import martialSkillsData from '../data/martialSkills.json'
 import generalSkillsData from '../data/generalSkills.json'
 import arcaneSkillsData from '../data/arcaneSkills.json'
@@ -644,7 +645,8 @@ const DIVINE_GROUPS = [
   {
     key: 'defence',
     label: 'Divine Defence',
-    accent: '#8a9aa0',
+    accent: '#4f9ed8',
+    icon: Shield,
     collapsesWith: [],
     skills: [
       'Divine Affinity', 'Divine Armor', 'Divine Guard', 'Divine Protection',
@@ -654,21 +656,24 @@ const DIVINE_GROUPS = [
   {
     key: 'benedictions',
     label: 'Benedictions',
-    accent: '#8a9aa0',
+    accent: '#b15bb3',
+    icon: Flame,
     collapsesWith: ['Exalted Benedictions', 'Prayer', 'Exalted Prayer', 'Amplify curse'],
     skills: ['Bless', 'Curse', 'Exhort', 'Hallow', 'Becalm'],
   },
   {
     key: 'healing',
     label: 'Divine Healing',
-    accent: '#01411C',
+    accent: '#5aa84f',
+    icon: HeartPlus,
     collapsesWith: [],
     skills: ['Blood Rune', 'Grafting Glyph', 'Rain of Renewal'],
   },
   {
     key: 'offence',
     label: 'Divine Offence',
-    accent: '#8a9aa0',
+    accent: '#d45a3a',
+    icon: Sword,
     collapsesWith: ['Exalted Offence', 'Enhanced Projection'],
     skills: [
       'Blade of shadow', 'Blight/Smite', 'Project', 'Glyph of Union',
@@ -678,7 +683,7 @@ const DIVINE_GROUPS = [
 ]
 
 // Mark of Favour skill group — contiguous block, Mark of Favour skill is the visual header
-const MARK_OF_FAVOUR_ACCENT = '#3a4a6a'
+const MARK_OF_FAVOUR_ACCENT = '#4f7fc8'
 const MARK_OF_FAVOUR_SKILLS = [
   "Mark of Favour", 'Aura of Purity.', 'Ordination', 'Favoured Aura',
   'Glorious Hammer', 'Glorious Blessings', "Champion's Choice", "Champion's Charge",
@@ -733,7 +738,7 @@ function makeDarkAccentTheme(base, accent) {
 
 // Skills that collapse with the aura block
 const AURA_COLLAPSES_WITH = ['Exalted Auras', 'Extended Auras', 'Exalted Focus']
-const AURA_ACCENT = '#01411C'
+const AURA_ACCENT = '#43b7a8'
 // All individual aura skills (excludes Divine Auras unlock skill itself,
 // and excludes Exalted Auras / Extended Auras / Favoured Aura / Exalted Focus
 // which are normal skills that don't fill aura slots)
@@ -940,10 +945,11 @@ const handleSave = () => {
 
   const tabBtn = (tab) => ({
     padding: '7px 18px',
-    background: activeTab === tab ? 'rgba(201,168,76,.15)' : 'var(--surface)',
-    border: `1px solid ${activeTab === tab ? 'var(--gold)' : 'var(--border)'}`,
-    color: activeTab === tab ? 'var(--gold2)' : 'var(--text2)',
+    background: activeTab === tab ? '#1f160d' : '#12100c',
+    border: `1px solid ${activeTab === tab ? '#c99a36' : '#3a2c18'}`,
+    color: activeTab === tab ? '#ffd36a' : '#b89b68',
     borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.85rem',
+    boxShadow: activeTab === tab ? '0 0 10px rgba(201,154,54,.25)' : 'none',
   })
 
   // Build specialRows for Divine — Patron's Mark panel appears below that skill row
@@ -990,7 +996,33 @@ const handleSave = () => {
     })
     setBuyAuraOpen(false)
   }
+const divineAccordionHeader = (accentColor) => ({
+  background: 'linear-gradient(180deg, #18130d 0%, #100d09 100%)',
+  border: `1px solid rgba(201,154,54,.35)`,
+  borderRadius: 6,
+  padding: '12px 14px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  boxShadow: 'inset 0 0 18px rgba(0,0,0,.45)',
+  gap: 8,
+  cursor: 'pointer',
+  userSelect: 'none',
+  marginBottom: 2,
+})
 
+const divineBuyBtn = (disabled = false) => ({
+  padding: '4px 14px',
+  background: '#16110c',
+  border: `1px solid ${disabled ? 'var(--border)' : 'rgba(216,191,122,.55)'}`,
+  color: disabled ? 'var(--text3)' : '#e6cf91',
+  borderRadius: 4,
+  cursor: disabled ? 'not-allowed' : 'pointer',
+  fontFamily: 'Georgia, serif',
+  fontSize: '.8rem',
+  fontWeight: 600,
+  opacity: disabled ? 0.45 : 1,
+})
   // Render the full divine section with pick-1 group headers
   const renderDivineSection = (categorySkills) => {
     const T = THEMES.divine
@@ -1030,48 +1062,49 @@ const handleSave = () => {
         const GT = group.accent ? makeAccentTheme(T, group.accent) : T
 
         rows.push(
-          <div key={`group-header-${groupKey}`} style={{
-            marginTop: 1,
-            borderLeft: `3px solid ${GT.primary}`,
-            borderRight: `3px solid ${GT.primary}`,
-          }}>
-            {/* Group header row — click to collapse/expand */}
+          <div key={`group-header-${groupKey}`} style={{ marginTop: 8, margin: '8px 8px 0' }}>
+            {/* Accordion header — click to collapse/expand */}
             <div onClick={() => toggleGroup(groupKey)} style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              padding: '7px 12px', background: `${GT.primary}38`,
-              borderBottom: `1px solid ${GT.border}`, borderTop: `2px solid ${GT.primary}`,
-              gap: 8, cursor: 'pointer', userSelect: 'none',
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: '.65rem', color: GT.primary2, opacity: .7 }}>{collapsedGroups[groupKey] ? '▶' : '▼'}</span>
-                <span style={{ fontSize: '.8rem', letterSpacing: '.15em', color: GT.primary2, textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 600 }}>
-                  {group.label}
-                </span>
-                {pickedNames.length > 0 && (
-                  <span style={{ fontSize: '.75rem', color: GT.primary2, fontFamily: 'Georgia, serif', marginLeft: 2, fontStyle: 'italic', opacity: .8 }}>
-                    — {pickedNames.join(', ')}
-                    {showSecondSlot && pickCount < 2 && ' (1st choice)'}
-                  </span>
-                )}
-                {pickedNames.length === 0 && (
-                  <span style={{ fontSize: '.7rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
-                    Pick one
-                  </span>
-                )}
-              </div>
-              <div style={{ display: 'flex', gap: 6 }} onClick={e => e.stopPropagation()}>
-                {(!atLimit) && (
+  background: 'linear-gradient(180deg, #18130d 0%, #100d09 100%)',
+  border: `1px solid ${GT.primary}55`,
+  borderLeft: `4px solid ${GT.primary}`,
+  borderRadius: collapsedGroups[groupKey] ? 6 : '6px 6px 0 0',
+  padding: '12px 14px',
+  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+  boxShadow: 'inset 0 0 18px rgba(0,0,0,.45)',
+  gap: 8, cursor: 'pointer', userSelect: 'none',
+}}>
+  <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1 }}>
+    <span style={{ fontSize: '.65rem', color: '#a99362', opacity: .7 }}>{collapsedGroups[groupKey] ? '▶' : '▼'}</span>
+    {group.icon && <group.icon size={15} color={GT.primary} style={{ flexShrink: 0 }} />}
+    <span style={{ fontSize: '.8rem', letterSpacing: '.14em', color: '#d8bf7a', textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 700 }}>
+      {group.label}
+    </span>
+    {pickedNames.length > 0 ? (
+      <span style={{ fontSize: '.72rem', color: '#a99362', fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
+        — {pickedNames.join(', ')}{showSecondSlot && pickCount < 2 && ' (1st choice)'}
+      </span>
+    ) : (
+      <span style={{ fontSize: '.72rem', color: '#a99362', fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
+        Pick one
+      </span>
+    )}
+  </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={e => e.stopPropagation()}>
+                {!atLimit && (
                   <button
                     onClick={() => setActiveBuyGroup(group)}
                     style={{
-                      padding: '4px 14px', background: `${GT.primary}20`,
-                      border: `1px solid ${GT.primary}`, color: GT.primary2,
+                      padding: '4px 14px', background: '#16110c',
+                      border: `1px solid ${GT.primary}88`, color: GT.primary2,
                       borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.8rem', fontWeight: 600,
-                    }}>
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = GT.primary; e.currentTarget.style.boxShadow = `0 0 8px ${GT.primary}44` }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = GT.primary + '88'; e.currentTarget.style.boxShadow = 'none' }}>
                     Buy
                   </button>
                 )}
-              </div>
+               </div>
             </div>
 
             {/* Group skill rows — hidden when collapsed */}
@@ -1130,23 +1163,9 @@ const handleSave = () => {
       if (collapsedSkills.has(skill.name)) { i++; continue }
 
       // ── AURA BLOCK: Divine Auras unlock triggers the whole contiguous aura block ──
-      if (isDivineAurasUnlock) {
-        const auraCap = calcAuraCap(char)
-        const ownedAuras = getOwnedAuras(char)
-        const hasUnlock = rank >= 1
-        const hasShamanSymbol = (char.shamanSymbols || []).length > 0
-        // Collect all aura skills that follow consecutively
-        const auraSkillsInBlock = []
-        let j = i + 1
-        while (j < categorySkills.length && AURA_SKILLS.includes(categorySkills[j].name)) {
-          auraSkillsInBlock.push(categorySkills[j])
-          j++
-        }
-
+     if (isDivineAurasUnlock) {
         rows.push(
-          <div key="aura-block" style={{ marginTop: 1, border: `3px solid ${AT.primary}` }}>
-            {/* Divine Auras — normal skill row, background always shown */}
-            <div style={{ background: AT.dim }}>
+          <div key={skill.name}>
             <SkillTableRow
               skill={skill}
               rank={rank}
@@ -1161,41 +1180,64 @@ const handleSave = () => {
               skillSource="arcane"
               unspentPoints={pointTotals.unspent}
             />
-            </div>
+          </div>
+        )
+        i++
+        continue
+      }
+
+      if (isAuraSkill && !rows.find(r => r.key === 'aura-block')) {
+        const auraCap = calcAuraCap(char)
+        const ownedAuras = getOwnedAuras(char)
+        // Collect all consecutive aura skills from this point
+        const auraSkillsInBlock = []
+        let j = i
+        while (j < categorySkills.length && AURA_SKILLS.includes(categorySkills[j].name)) {
+          auraSkillsInBlock.push(categorySkills[j])
+          j++
+        }
+
+        rows.push(
+          <div key="aura-block" style={{ margin: '8px 8px 0' }}>
             {/* Auras Known header bar — click to collapse/expand */}
             {auraCap > 0 && (
               <div onClick={() => toggleGroup('auras')} style={{
+                background: 'linear-gradient(180deg, #18130d 0%, #100d09 100%)',
+                border: `1px solid ${AT.primary}55`,
+                borderLeft: `4px solid ${AT.primary}`,
+                borderRadius: collapsedGroups.auras ? 6 : '6px 6px 0 0',
+                padding: '12px 14px',
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                padding: '7px 12px', background: `${AT.primary}38`,
-                borderBottom: `1px solid ${AT.border}`, borderTop: `2px solid ${AT.primary}`,
+                boxShadow: 'inset 0 0 18px rgba(0,0,0,.45)',
                 gap: 8, cursor: 'pointer', userSelect: 'none',
               }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ fontSize: '.65rem', color: AT.primary2, opacity: .7 }}>{collapsedGroups.auras ? '▶' : '▼'}</span>
-                  <span style={{ fontSize: '.8rem', letterSpacing: '.15em', color: AT.primary2, textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 600 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1 }}>
+                  <span style={{ fontSize: '.65rem', color: '#a99362', opacity: .7 }}>{collapsedGroups.auras ? '▶' : '▼'}</span>
+                  <Sun size={15} color={AT.primary} style={{ flexShrink: 0 }} />
+                  <span style={{ fontSize: '.8rem', letterSpacing: '.14em', color: '#d8bf7a', textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 700 }}>
                     Auras Known
                   </span>
-                  <span style={{ fontSize: '.8rem', color: ownedAuras.length >= auraCap ? '#c94a4a' : AT.primary2, fontFamily: 'Georgia, serif', fontWeight: 600 }}>
+                  <span style={{ fontSize: '.8rem', color: ownedAuras.length >= auraCap ? '#c94a4a' : AT.primary, fontFamily: 'Georgia, serif', fontWeight: 600 }}>
                     {ownedAuras.length} / {auraCap}
                   </span>
                   {ownedAuras.length > 0 && (
-                    <span style={{ fontSize: '.7rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
+                    <span style={{ fontSize: '.7rem', color: '#a99362', fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
                       — {ownedAuras.map(n => n.replace('Aura of ', '')).join(', ')}
                     </span>
                   )}
                 </div>
                 <div onClick={e => e.stopPropagation()}>
-                  <button
-                    onClick={() => setBuyAuraOpen(true)}
-                    disabled={ownedAuras.length >= auraCap}
+                  <button onClick={() => setBuyAuraOpen(true)} disabled={ownedAuras.length >= auraCap}
                     style={{
-                      padding: '4px 14px',
-                      background: ownedAuras.length >= auraCap ? 'none' : `${AT.primary}20`,
-                      border: `1px solid ${ownedAuras.length >= auraCap ? 'var(--border)' : AT.primary}`,
+                      padding: '4px 14px', background: '#16110c',
+                      border: `1px solid ${ownedAuras.length >= auraCap ? 'var(--border)' : AT.primary + '88'}`,
                       color: ownedAuras.length >= auraCap ? 'var(--text3)' : AT.primary2,
                       borderRadius: 4, cursor: ownedAuras.length >= auraCap ? 'not-allowed' : 'pointer',
-                      fontFamily: 'Georgia, serif', fontSize: '.8rem', fontWeight: 600, opacity: ownedAuras.length >= auraCap ? 0.45 : 1,
-                    }}>
+                      fontFamily: 'Georgia, serif', fontSize: '.8rem', fontWeight: 600,
+                      opacity: ownedAuras.length >= auraCap ? 0.45 : 1,
+                    }}
+                    onMouseEnter={e => { if (ownedAuras.length < auraCap) { e.currentTarget.style.borderColor = AT.primary; e.currentTarget.style.boxShadow = `0 0 8px ${AT.primary}44` }}}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = AT.primary + '88'; e.currentTarget.style.boxShadow = 'none' }}>
                     Buy Aura
                   </button>
                 </div>
@@ -1228,7 +1270,7 @@ const handleSave = () => {
             })}
           </div>
         )
-        i = j  // skip past all aura skills
+        i = j
         continue
       }
 
@@ -1247,21 +1289,26 @@ const handleSave = () => {
         const mofHeaderRank = parseInt(char.arcaneSkills?.["Mark of Favour"]?.rank) || 0
 
         rows.push(
-          <div key="mof-block" style={{ marginTop: 1, border: `3px solid ${MoFT.primary}` }}>
+         <div key="mof-block" style={{ margin: '8px 8px 0' }}>
             {/* Mark of Favour header — click to collapse/expand */}
             <div onClick={() => toggleGroup('mof')} style={{
+              background: 'linear-gradient(180deg, #18130d 0%, #100d09 100%)',
+              border: `1px solid ${MoFT.primary}55`,
+              borderLeft: `4px solid ${MoFT.primary}`,
+              borderRadius: collapsedGroups.mof ? 6 : '6px 6px 0 0',
+              padding: '12px 14px',
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              padding: '7px 12px', background: `${MoFT.primary}38`,
-              borderBottom: `1px solid ${MoFT.border}`,
+              boxShadow: 'inset 0 0 18px rgba(0,0,0,.45)',
               gap: 8, cursor: 'pointer', userSelect: 'none',
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: '.65rem', color: MoFT.primary2, opacity: .7 }}>{collapsedGroups.mof ? '▶' : '▼'}</span>
-                <span style={{ fontSize: '.8rem', letterSpacing: '.15em', color: MoFT.primary2, textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 600 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1 }}>
+                <span style={{ fontSize: '.65rem', color: '#a99362', opacity: .7 }}>{collapsedGroups.mof ? '▶' : '▼'}</span>
+                <Star size={15} color={MoFT.primary} style={{ flexShrink: 0 }} />
+                <span style={{ fontSize: '.8rem', letterSpacing: '.14em', color: '#d8bf7a', textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 700 }}>
                   Mark of Favour
                 </span>
                 {mofHeaderRank > 0 && (
-                  <span style={{ fontSize: '.75rem', color: MoFT.primary2, fontFamily: 'Georgia, serif', fontStyle: 'italic', opacity: .8 }}>
+                  <span style={{ fontSize: '.72rem', color: '#a99362', fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
                     — Rank {mofHeaderRank}
                   </span>
                 )}
@@ -1383,7 +1430,9 @@ const handleSave = () => {
             <div style={{ fontSize: '.7rem', letterSpacing: '.08em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Max</div>
           </div>
         </div>
-        {rows}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, padding: '16px 0' }}>
+          {rows}
+        </div>
       </div>
     )
   }
