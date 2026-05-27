@@ -378,7 +378,7 @@ function WeaponSlots({ character, onUpdateCharacter, stats }) {
         </div>
       ))}
 
-      <div style={{ marginTop: 16 }}>
+      <div data-tour="sheet-weapon-slot-4" style={{ marginTop: 16 }}>
         {sectionHdr('Shield')}
         <div style={{ fontSize: '.72rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', fontStyle: 'italic', marginBottom: 6 }}>
           Weapon: {shieldName} · Combat stats use this weapon, defensive stats exported separately
@@ -394,18 +394,19 @@ function WeaponSlots({ character, onUpdateCharacter, stats }) {
       </div>
 
       <div style={{ marginTop: 16 }}>
-       {sectionHdr('Ranged Weapons')}
-        {rangedSlots.map((slot, i) => (
-          <WeaponSlotRow
-            key={i}
-            slot={slot}
-            calcSlot={stats.rangedSlots[i]}
-            isRanged={true}
-            onEdit={() => setEditingSlot({ type: 'ranged', index: i })}
-            onRemove={() => clearSlot('ranged', i)}
-          />
-        ))}
-      </div>
+  {sectionHdr('Ranged Weapons')}
+  {rangedSlots.map((slot, i) => (
+    <div key={i} data-tour={i === 0 ? 'sheet-weapon-slot-5' : i === 1 ? 'sheet-weapon-slot-6' : undefined}>
+      <WeaponSlotRow
+        slot={slot}
+        calcSlot={stats.rangedSlots[i]}
+        isRanged={true}
+        onEdit={() => setEditingSlot({ type: 'ranged', index: i })}
+        onRemove={() => clearSlot('ranged', i)}
+      />
+    </div>
+  ))}
+</div>
     </div>
   )
 }

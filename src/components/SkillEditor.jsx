@@ -1062,7 +1062,7 @@ const divineBuyBtn = (disabled = false) => ({
         const GT = group.accent ? makeAccentTheme(T, group.accent) : T
 
         rows.push(
-          <div key={`group-header-${groupKey}`} style={{ marginTop: 8, margin: '8px 8px 0' }}>
+         <div key={`group-header-${groupKey}`} data-tour={groupKey === 'defence' ? 'skills-divine-defence-header' : undefined} style={{ marginTop: 8, margin: '8px 8px 0' }}>
             {/* Accordion header — click to collapse/expand */}
             <div onClick={() => toggleGroup(groupKey)} style={{
   background: 'linear-gradient(180deg, #18130d 0%, #100d09 100%)',
@@ -1502,19 +1502,19 @@ const divineBuyBtn = (disabled = false) => ({
       </div>
 
       {/* Sub-tab bar */}
-      <div style={{ display: 'flex', gap: 4, padding: '0 16px 8px', borderBottom: '1px solid var(--border)' }}>
+      <div data-tour="skills-subtab-bar" style={{ display: 'flex', gap: 4, padding: '0 16px 8px', borderBottom: '1px solid var(--border)' }}>
         {SUB_TABS[activeTab].map(sub => {
           const c = SUB_TAB_COLORS[sub] || { primary: 'var(--gold)', primary2: 'var(--gold2)' }
           const isActive = activeSubTab === sub
           return (
-            <button key={sub} onClick={() => handleSubTabChange(sub)} style={{
-              padding: '6px 14px',
-              background: isActive ? `${c.primary}22` : `${c.primary}0a`,
-              border: `1px solid ${isActive ? c.primary : `${c.primary}55`}`,
-              color: isActive ? c.primary2 : `${c.primary}99`,
-              borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.82rem',
-              transition: 'all .15s',
-            }}>{sub}</button>
+           <button key={sub} data-tour={`skills-subtab-${sub.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`} onClick={() => handleSubTabChange(sub)} style={{
+  padding: '6px 14px',
+  background: isActive ? `${c.primary}22` : `${c.primary}0a`,
+  border: `1px solid ${isActive ? c.primary : `${c.primary}55`}`,
+  color: isActive ? c.primary2 : `${c.primary}99`,
+  borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.82rem',
+  transition: 'all .15s',
+}}>{sub}</button>
           )
         })}
       </div>

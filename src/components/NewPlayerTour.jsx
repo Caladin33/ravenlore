@@ -384,8 +384,8 @@ function buildSteps(character) {
       page: 'sheet',
       navigateTo: null,
       target: 'sheet-session-row',
-      title: 'Off-hand & Stance',
-      body: "Set your off-hand weapon and stance here. Other options, such as Druid Form, will appear when you unlock them.",
+      title: 'Special Abilities',
+      body: "Special abilities. Other options, such as Druid Form, will appear when you unlock them.",
       cta: 'Next →',
     },
 
@@ -421,7 +421,7 @@ function buildSteps(character) {
       navigateTo: null,
       target: 'sheet-weapon-slot-0',
       title: 'Weapon Slots',
-      body: "This is a Melee weapon slot. Use the Assign button to set it up.",
+      body: "This is a weapon slot, the first four are melee, slot five is your shield and slots 6 and 7 are for ranged weapons. Use the Assign button to set it up.",
       cta: 'Next →',
     },
     {
@@ -441,7 +441,7 @@ function buildSteps(character) {
       body: <FakeWeaponSlot />,
       cta: 'Next →',
     },
-
+    
     // ── SPELLS ───────────────────────────────────────────────────────────────
     {
       page: 'spells',
@@ -517,7 +517,7 @@ function buildSteps(character) {
       page: 'skillEditor',
       navigateTo: null,
       tab: 'General',
-      target: 'skills-self-improvement-header',
+      target: 'skills-self-improvement-subtab',
       title: 'Self Improvement',
       body: "The Self Improvement section is mostly permanent passive effects. Click or Tap on a skill for a detailed description.",
       cta: 'Next →',
@@ -554,7 +554,8 @@ function buildSteps(character) {
       page: 'skillEditor',
       navigateTo: null,
       tab: 'General',
-      target: 'skills-acting',
+      subtab: 'trades-talents',
+      target: 'skills-subtab-trades-talents',
       title: 'Trades & Talents',
       body: "Trades & Talents work differently. Each skill shows your current score over the maximum, based on your attributes, and your points invested over the multiple. Each point you spend in Acting raises your score by 4, the skill's multiple.",
       cta: 'Next →',
@@ -563,7 +564,7 @@ function buildSteps(character) {
       page: 'skillEditor',
       navigateTo: null,
       tab: 'Martial',
-      target: 'skills-tabs',
+      target: 'skills-subtab-bar',
       title: 'Martial Tab',
       body: "The Martial Tab holds the Melee, Unfettered, Ranged and Leadership sections. Skills here are ranked and work like the Self Improvement skills.",
       cta: 'Next →',
@@ -581,16 +582,28 @@ function buildSteps(character) {
       page: 'skillEditor',
       navigateTo: null,
       tab: 'Spiritual',
-      target: 'skills-divine-header',
+      subtab: 'divine',
+      target: 'skills-subtab-divine',
       title: 'Divine',
-      body: "The Divine section holds powers granted by great powers in exchange for sacrifices, and",
+      body: "The Divine section holds powers granted by great powers in exchange for sacrifices. They are ranked and work like the Self Improvement skills.",
       cta: 'Next →',
     },
     {
       page: 'skillEditor',
       navigateTo: null,
       tab: 'Spiritual',
-      target: 'skills-balance-header',
+      subtab: 'divine',
+      target: 'skills-divine-defence-header',
+      title: 'Divine Defence',
+      body: "You may only learn one of these skills. Click Buy to see your options. The other categories work in a similar way, except Mark of Favour which is for special, high level characters. (not you)",
+      cta: 'Next →',
+    },
+    {
+      page: 'skillEditor',
+      navigateTo: null,
+      tab: 'Spiritual',
+      subtab: 'balance',
+      target: 'skills-subtab-balance',
       title: 'Balance',
       body: "The way of Balance requires forsaking all armor and weapons.",
       cta: 'Next →',
@@ -778,6 +791,10 @@ export default function NewPlayerTour({ step, character, currentPage, onNavigate
         const tabEl = document.querySelector(`[data-skills-tab="${def.tab}"]`)
         if (tabEl) { tabEl.click(); await new Promise(r => setTimeout(r, 250)) }
       }
+      if (def.subtab) {
+  const subEl = document.querySelector(`[data-tour="skills-subtab-${def.subtab}"]`)
+  if (subEl) { subEl.click(); await new Promise(r => setTimeout(r, 250)) }
+}
       await scrollToTarget(def.target)
       setHighlight(def.target)
       setPosReady(true)
