@@ -609,6 +609,21 @@ const SUB_TABS = {
   Obscure:   ['Infernal', 'Lycanthropy'], // Animal added when ready
 }
 
+// Colors per sub-tab — matches the section's THEMES primary/primary2
+const SUB_TAB_COLORS = {
+  'Self-Improvement': { primary: '#c9a84c', primary2: '#e8c96a' },
+  'Trades & Talents': { primary: '#4a9e4a', primary2: '#6acc6a' },
+  'Melee':            { primary: '#8a8a9a', primary2: '#c0c0d0' },
+  'Unfettered':       { primary: '#9a7a5a', primary2: '#c8a07a' },
+  'Ranged':           { primary: '#5a8a5a', primary2: '#7acc7a' },
+  'Leadership':       { primary: '#3a5a8a', primary2: '#6a90cc' },
+  'Arcane':           { primary: '#7a5a9a', primary2: '#aa80dd' },
+  'Divine':           { primary: '#9a8a3a', primary2: '#ccbb60' },
+  'Balance':          { primary: '#9a8a6a', primary2: '#c8b890' },
+  'Infernal':         { primary: '#8a2a2a', primary2: '#cc5050' },
+  'Lycanthropy':      { primary: '#5a5a6a', primary2: '#909090' },
+}
+
 // Map sub-tab label → data category/key
 const SUB_TAB_CATEGORY = {
   'Self-Improvement': 'selfImprovement',
@@ -1378,17 +1393,20 @@ const handleSave = () => {
 
       {/* Sub-tab bar */}
       <div style={{ display: 'flex', gap: 4, padding: '0 16px 8px', borderBottom: '1px solid var(--border)' }}>
-        {SUB_TABS[activeTab].map(sub => (
-          <button key={sub} onClick={() => handleSubTabChange(sub)} style={{
-            flex: 1, padding: '6px 10px',
-            background: activeSubTab === sub ? 'rgba(201,168,76,.15)' : 'var(--bg)',
-            border: `1px solid ${activeSubTab === sub ? 'var(--gold)' : 'var(--border)'}`,
-            borderBottom: activeSubTab === sub ? '1px solid var(--gold)' : '1px solid var(--border)',
-            color: activeSubTab === sub ? 'var(--gold2)' : 'var(--text3)',
-            borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.82rem',
-            transition: 'all .15s',
-          }}>{sub}</button>
-        ))}
+        {SUB_TABS[activeTab].map(sub => {
+          const c = SUB_TAB_COLORS[sub] || { primary: 'var(--gold)', primary2: 'var(--gold2)' }
+          const isActive = activeSubTab === sub
+          return (
+            <button key={sub} onClick={() => handleSubTabChange(sub)} style={{
+              padding: '6px 14px',
+              background: isActive ? `${c.primary}22` : `${c.primary}0a`,
+              border: `1px solid ${isActive ? c.primary : `${c.primary}55`}`,
+              color: isActive ? c.primary2 : `${c.primary}99`,
+              borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.82rem',
+              transition: 'all .15s',
+            }}>{sub}</button>
+          )
+        })}
       </div>
 
       {/* Search + filter */}

@@ -356,7 +356,11 @@ const handleCommit = (newPoints) => {
               {skill.prereq.replace(/\n/g, ' · ')}
             </div>
           )}
-
+          {skill.flavourText && (
+            <div style={{ fontSize: '.62rem', color: 'var(--text3)', marginTop: 1, fontStyle: 'italic' }}>
+              {skill.flavourText}
+            </div>
+        )}
         </div>
 
         <div data-tour={tourPtsId || undefined} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '6px 4px', gap: 2 }}>

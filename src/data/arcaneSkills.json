@@ -1295,7 +1295,8 @@
     {
       "name": "Demonic Contract",
       "category": "infernal",
-      "prereq": "Better read the fine print.",
+      "prereq": "none",
+      "flavourText": "Better read the fine print",
       "description": "Form an unholy pact with a Demon, trusting in your strength of will to resist corruption.",
       "costPerRank": 1,
       "maxRank": "1",
