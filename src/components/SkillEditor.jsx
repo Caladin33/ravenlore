@@ -645,6 +645,7 @@ const DIVINE_GROUPS = [
     key: 'defence',
     label: 'Divine Defence',
     accent: '#8a9aa0',
+    collapsesWith: [],
     skills: [
       'Divine Affinity', 'Divine Armor', 'Divine Guard', 'Divine Protection',
       'Divine resilience', 'Divine Transfer', 'Divine Repose', 'Divine Appeal',
@@ -653,19 +654,22 @@ const DIVINE_GROUPS = [
   {
     key: 'benedictions',
     label: 'Benedictions',
-    accent: '#5A2140',
+    accent: '#8a9aa0',
+    collapsesWith: ['Exalted Benedictions', 'Prayer', 'Exalted Prayer', 'Amplify curse'],
     skills: ['Bless', 'Curse', 'Exhort', 'Hallow', 'Becalm'],
   },
   {
     key: 'healing',
     label: 'Divine Healing',
     accent: '#01411C',
+    collapsesWith: [],
     skills: ['Blood Rune', 'Grafting Glyph', 'Rain of Renewal'],
   },
   {
     key: 'offence',
     label: 'Divine Offence',
-    accent: '#5E1914',
+    accent: '#8a9aa0',
+    collapsesWith: ['Exalted Offence', 'Enhanced Projection'],
     skills: [
       'Blade of shadow', 'Blight/Smite', 'Project', 'Glyph of Union',
       'Kettle Vine', 'Spiritual Hammer', 'Flash', 'Consuming Kiss', 'Highlight',
@@ -727,8 +731,9 @@ function makeDarkAccentTheme(base, accent) {
   return { ...base, primary: accent, primary2: light, dim: `${accent}38`, border: `${accent}55` }
 }
 
-// ── AURA CONSTANTS & HELPERS ──────────────────────────────────────────────────
-const AURA_ACCENT = '#2a5a5a'
+// Skills that collapse with the aura block
+const AURA_COLLAPSES_WITH = ['Exalted Auras', 'Extended Auras', 'Exalted Focus']
+const AURA_ACCENT = '#01411C'
 // All individual aura skills (excludes Divine Auras unlock skill itself,
 // and excludes Exalted Auras / Extended Auras / Favoured Aura / Exalted Focus
 // which are normal skills that don't fill aura slots)
@@ -787,6 +792,10 @@ export default function SkillEditor({ character, onSave, onBack, gmModeActive, s
   const [activeBuyGroup, setActiveBuyGroup] = useState(null)       // group object for Pick1GroupModal
   const [championChoiceModalOpen, setChampionChoiceModalOpen] = useState(false)
   const [buyAuraOpen, setBuyAuraOpen] = useState(false)            // BuyAuraModal
+  const [collapsedGroups, setCollapsedGroups] = useState({
+    defence: true, benedictions: true, healing: true, offence: true, auras: true, mof: true,
+  })
+  const toggleGroup = (key) => setCollapsedGroups(prev => ({ ...prev, [key]: !prev[key] }))
 
   const arcaneSkills = useMemo(() => getAllArcaneSkills(arcaneSkillsData), [])
   const effectiveAttrs = useMemo(() => getEffectiveAttributes(char), [char])
@@ -987,6 +996,17 @@ const handleSave = () => {
     const T = THEMES.divine
     const allDivineGroupSkillNames = new Set(DIVINE_GROUPS.flatMap(g => g.skills))
 
+    // Build set of skill names hidden due to their group being collapsed
+    const collapsedSkills = new Set()
+    for (const g of DIVINE_GROUPS) {
+      if (collapsedGroups[g.key]) {
+        g.collapsesWith.forEach(name => collapsedSkills.add(name))
+      }
+    }
+    if (collapsedGroups.auras) {
+      AURA_COLLAPSES_WITH.forEach(name => collapsedSkills.add(name))
+    }
+
     // Collect skills NOT in any group (rendered normally via RankedSkillTable-style rows)
     // Group skills are rendered inside their group blocks
     const rows = []
@@ -1015,30 +1035,31 @@ const handleSave = () => {
             borderLeft: `3px solid ${GT.primary}`,
             borderRight: `3px solid ${GT.primary}`,
           }}>
-            {/* Group header row */}
-            <div style={{
+            {/* Group header row — click to collapse/expand */}
+            <div onClick={() => toggleGroup(groupKey)} style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
               padding: '7px 12px', background: `${GT.primary}38`,
               borderBottom: `1px solid ${GT.border}`, borderTop: `2px solid ${GT.primary}`,
-              gap: 8,
+              gap: 8, cursor: 'pointer', userSelect: 'none',
             }}>
-              <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: '.65rem', color: GT.primary2, opacity: .7 }}>{collapsedGroups[groupKey] ? '▶' : '▼'}</span>
                 <span style={{ fontSize: '.8rem', letterSpacing: '.15em', color: GT.primary2, textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 600 }}>
                   {group.label}
                 </span>
                 {pickedNames.length > 0 && (
-                  <span style={{ fontSize: '.75rem', color: GT.primary, fontFamily: 'Georgia, serif', marginLeft: 10, fontStyle: 'italic' }}>
+                  <span style={{ fontSize: '.75rem', color: GT.primary2, fontFamily: 'Georgia, serif', marginLeft: 2, fontStyle: 'italic', opacity: .8 }}>
                     — {pickedNames.join(', ')}
                     {showSecondSlot && pickCount < 2 && ' (1st choice)'}
                   </span>
                 )}
                 {pickedNames.length === 0 && (
-                  <span style={{ fontSize: '.7rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', marginLeft: 8, fontStyle: 'italic' }}>
+                  <span style={{ fontSize: '.7rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
                     Pick one
                   </span>
                 )}
               </div>
-              <div style={{ display: 'flex', gap: 6 }}>
+              <div style={{ display: 'flex', gap: 6 }} onClick={e => e.stopPropagation()}>
                 {(!atLimit) && (
                   <button
                     onClick={() => setActiveBuyGroup(group)}
@@ -1053,35 +1074,39 @@ const handleSave = () => {
               </div>
             </div>
 
-            {/* Group skill rows */}
-            <div>
-            {groupSkillsInList.map(s => {
-              const pts = parseInt(char.arcaneSkills?.[s.name]?.pointsInvested) || 0
-              const rank = parseInt(char.arcaneSkills?.[s.name]?.rank) || 0
-              const isOwned = rank > 0
-              return (
-                <div key={s.name} style={{ opacity: (!isOwned && atLimit) ? 0.45 : 1 }}>
-                  <SkillTableRow
-                    skill={s}
-                    rank={rank}
-                    pointsInvested={pts}
-                    lockedPoints={lockedPoints}
-                    theme={GT}
-                    level={char.level || 1}
-                    char={char}
-                    stats={stats}
-                    gmMode={gmMode}
-                    onUpdate={gmMode ? (name, newPts) => handleUpdate(name, newPts, 'arcane') : undefined}
-                    skillSource="arcane"
-                    unspentPoints={pointTotals.unspent}
-                    forcePtsReadOnly={!gmMode}
-                  />
-                </div>
-              )
-            })}
-            </div>
+            {/* Group skill rows — hidden when collapsed */}
+            {!collapsedGroups[groupKey] && (
+              <div>
+              {groupSkillsInList.map(s => {
+                const pts = parseInt(char.arcaneSkills?.[s.name]?.pointsInvested) || 0
+                const rank = parseInt(char.arcaneSkills?.[s.name]?.rank) || 0
+                const isOwned = rank > 0
+                return (
+                  <div key={s.name} style={{ opacity: (!isOwned && atLimit) ? 0.45 : 1 }}>
+                    <SkillTableRow
+                      skill={s}
+                      rank={rank}
+                      pointsInvested={pts}
+                      lockedPoints={lockedPoints}
+                      theme={GT}
+                      level={char.level || 1}
+                      char={char}
+                      stats={stats}
+                      gmMode={gmMode}
+                      onUpdate={gmMode ? (name, newPts) => handleUpdate(name, newPts, 'arcane') : undefined}
+                      skillSource="arcane"
+                      unspentPoints={pointTotals.unspent}
+                      forcePtsReadOnly={!gmMode}
+                    />
+                  </div>
+                )
+              })}
+              </div>
+            )}
             {/* Group closing border */}
-            <div style={{ height: 3, background: `linear-gradient(to right, ${GT.primary}55, transparent)`, borderBottom: `1px solid ${GT.primary}` }} />
+            {!collapsedGroups[groupKey] && (
+              <div style={{ height: 3, background: `linear-gradient(to right, ${GT.primary}55, transparent)`, borderBottom: `1px solid ${GT.primary}` }} />
+            )}
           </div>
         )
 
@@ -1100,6 +1125,9 @@ const handleSave = () => {
       const isMoFHeader = skill.name === 'Mark of Favour'
       const MoFT = { ...T, primary: MARK_OF_FAVOUR_ACCENT, primary2: MARK_OF_FAVOUR_ACCENT, dim: `${MARK_OF_FAVOUR_ACCENT}38`, border: `${MARK_OF_FAVOUR_ACCENT}55` }
       const AT = makeAccentTheme(T, AURA_ACCENT)
+
+      // Skip skills that are hidden because their group is collapsed
+      if (collapsedSkills.has(skill.name)) { i++; continue }
 
       // ── AURA BLOCK: Divine Auras unlock triggers the whole contiguous aura block ──
       if (isDivineAurasUnlock) {
@@ -1134,44 +1162,47 @@ const handleSave = () => {
               unspentPoints={pointTotals.unspent}
             />
             </div>
-            {/* Auras Known header bar — shown whenever character has an aura cap */}
+            {/* Auras Known header bar — click to collapse/expand */}
             {auraCap > 0 && (
-              <div style={{
+              <div onClick={() => toggleGroup('auras')} style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                 padding: '7px 12px', background: `${AT.primary}38`,
                 borderBottom: `1px solid ${AT.border}`, borderTop: `2px solid ${AT.primary}`,
-                gap: 8,
+                gap: 8, cursor: 'pointer', userSelect: 'none',
               }}>
-                <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ fontSize: '.65rem', color: AT.primary2, opacity: .7 }}>{collapsedGroups.auras ? '▶' : '▼'}</span>
                   <span style={{ fontSize: '.8rem', letterSpacing: '.15em', color: AT.primary2, textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 600 }}>
                     Auras Known
                   </span>
-                  <span style={{ fontSize: '.8rem', color: ownedAuras.length >= auraCap ? '#c94a4a' : AT.primary2, fontFamily: 'Georgia, serif', marginLeft: 10, fontWeight: 600 }}>
+                  <span style={{ fontSize: '.8rem', color: ownedAuras.length >= auraCap ? '#c94a4a' : AT.primary2, fontFamily: 'Georgia, serif', fontWeight: 600 }}>
                     {ownedAuras.length} / {auraCap}
                   </span>
                   {ownedAuras.length > 0 && (
-                    <span style={{ fontSize: '.7rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', marginLeft: 8, fontStyle: 'italic' }}>
+                    <span style={{ fontSize: '.7rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
                       — {ownedAuras.map(n => n.replace('Aura of ', '')).join(', ')}
                     </span>
                   )}
                 </div>
-                <button
-                  onClick={() => setBuyAuraOpen(true)}
-                  disabled={ownedAuras.length >= auraCap}
-                  style={{
-                    padding: '4px 14px',
-                    background: ownedAuras.length >= auraCap ? 'none' : `${AT.primary}20`,
-                    border: `1px solid ${ownedAuras.length >= auraCap ? 'var(--border)' : AT.primary}`,
-                    color: ownedAuras.length >= auraCap ? 'var(--text3)' : AT.primary2,
-                    borderRadius: 4, cursor: ownedAuras.length >= auraCap ? 'not-allowed' : 'pointer',
-                    fontFamily: 'Georgia, serif', fontSize: '.8rem', fontWeight: 600, opacity: ownedAuras.length >= auraCap ? 0.45 : 1,
-                  }}>
-                  Buy Aura
-                </button>
+                <div onClick={e => e.stopPropagation()}>
+                  <button
+                    onClick={() => setBuyAuraOpen(true)}
+                    disabled={ownedAuras.length >= auraCap}
+                    style={{
+                      padding: '4px 14px',
+                      background: ownedAuras.length >= auraCap ? 'none' : `${AT.primary}20`,
+                      border: `1px solid ${ownedAuras.length >= auraCap ? 'var(--border)' : AT.primary}`,
+                      color: ownedAuras.length >= auraCap ? 'var(--text3)' : AT.primary2,
+                      borderRadius: 4, cursor: ownedAuras.length >= auraCap ? 'not-allowed' : 'pointer',
+                      fontFamily: 'Georgia, serif', fontSize: '.8rem', fontWeight: 600, opacity: ownedAuras.length >= auraCap ? 0.45 : 1,
+                    }}>
+                    Buy Aura
+                  </button>
+                </div>
               </div>
             )}
-            {/* All individual aura skill rows */}
-            {auraSkillsInBlock.map(s => {
+            {/* Individual aura skill rows — hidden when collapsed */}
+            {!collapsedGroups.auras && auraSkillsInBlock.map(s => {
               const aPts = parseInt(char.arcaneSkills?.[s.name]?.pointsInvested) || 0
               const aRank = parseInt(char.arcaneSkills?.[s.name]?.rank) || 0
               const atCap = ownedAuras.length >= auraCap
@@ -1217,22 +1248,28 @@ const handleSave = () => {
 
         rows.push(
           <div key="mof-block" style={{ marginTop: 1, border: `3px solid ${MoFT.primary}` }}>
-            {/* Mark of Favour header row — styled like a group header */}
-            <div style={{
+            {/* Mark of Favour header — click to collapse/expand */}
+            <div onClick={() => toggleGroup('mof')} style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
               padding: '7px 12px', background: `${MoFT.primary}38`,
               borderBottom: `1px solid ${MoFT.border}`,
-              gap: 8,
+              gap: 8, cursor: 'pointer', userSelect: 'none',
             }}>
-              <span style={{ fontSize: '.8rem', letterSpacing: '.15em', color: MoFT.primary2, textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 600 }}>
-                Mark of Favour
-              </span>
-              {mofHeaderRank > 0 && (
-                <span style={{ fontSize: '.75rem', color: MoFT.primary, fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
-                  Rank {mofHeaderRank}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: '.65rem', color: MoFT.primary2, opacity: .7 }}>{collapsedGroups.mof ? '▶' : '▼'}</span>
+                <span style={{ fontSize: '.8rem', letterSpacing: '.15em', color: MoFT.primary2, textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 600 }}>
+                  Mark of Favour
                 </span>
-              )}
+                {mofHeaderRank > 0 && (
+                  <span style={{ fontSize: '.75rem', color: MoFT.primary2, fontFamily: 'Georgia, serif', fontStyle: 'italic', opacity: .8 }}>
+                    — Rank {mofHeaderRank}
+                  </span>
+                )}
+              </div>
             </div>
+            {/* Mark of Favour content — hidden when collapsed */}
+            {!collapsedGroups.mof && (
+              <div>
             {/* Mark of Favour skill row itself */}
             <SkillTableRow
               skill={skill}
@@ -1291,6 +1328,8 @@ const handleSave = () => {
                 </div>
               )
             })}
+              </div>
+            )}
           </div>
         )
         i = j
@@ -1350,12 +1389,27 @@ const handleSave = () => {
   }
 
 
-  // Build specialRows for Guild — Shaman's Symbol panel appears below that skill row
-  const buildGuildSpecialRows = () => {
+  // Build detailRows and inlineRows for Guild — Shaman's Symbol panel in detail view
+  const buildGuildRows = () => {
     const shamanRank = parseInt(char.arcaneSkills?.["Shaman's Symbol"]?.rank) || 0
-    if (shamanRank < 1) return {}
+    const symbols = char.shamanSymbols || []
+    if (shamanRank < 1) return { detailRows: {}, inlineRows: {} }
+
+    const inlineSummary = symbols.length > 0
+      ? (
+        <div style={{ fontSize: '.7rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', fontStyle: 'italic', marginTop: 2 }}>
+          {symbols.map(s => s.symbol).join(' · ')}
+        </div>
+      )
+      : null
+
     return {
-      "Shaman's Symbol": <ShamanSymbolsPanel char={char} onUpdate={handleShamanSymbolsUpdate} gmMode={gmMode} />
+      detailRows: {
+        "Shaman's Symbol": <ShamanSymbolsPanel char={char} onUpdate={handleShamanSymbolsUpdate} gmMode={gmMode} />
+      },
+      inlineRows: {
+        "Shaman's Symbol": inlineSummary
+      },
     }
   }
 
@@ -1486,18 +1540,19 @@ const handleSave = () => {
         {activeTab === 'Spiritual' && (() => {
           const themeMap = { spellcaster: THEMES.arcane, guild: THEMES.guild, divine: THEMES.divine, balance: THEMES.balance }
           if (activeSubTab === 'Arcane') {
-            // Arcane includes both spellcaster and guild categories
+            const { detailRows: guildDetailRows, inlineRows: guildInlineRows } = buildGuildRows()
             return ['spellcaster', 'guild'].map(category => {
               const categorySkills = filterSkills((arcaneSkillsData[category] || []).map(s => ({ ...s, category })))
               if (categorySkills.length === 0) return null
-              const specialRows = category === 'guild' ? buildGuildSpecialRows() : undefined
               return (
                 <RankedSkillTable key={category} skills={categorySkills} char={char} stats={stats}
                   sectionLabel={category === 'spellcaster' ? 'Arcane' : 'Guild'}
-                  theme={themeMap[category]} level={char.level || 1} skillSource="arcane"
+                  theme={category === 'spellcaster' ? THEMES.arcane : THEMES.guild} level={char.level || 1} skillSource="arcane"
                   gmMode={gmMode} lockedPoints={lockedPoints}
                   onUpdate={(name, newPts) => handleUpdate(name, newPts, 'arcane')}
-                  specialRows={specialRows} unspentPoints={pointTotals.unspent}
+                  detailRows={category === 'guild' ? guildDetailRows : undefined}
+                  inlineRows={category === 'guild' ? guildInlineRows : undefined}
+                  unspentPoints={pointTotals.unspent}
                   sectionHeaderTourId={category === 'spellcaster' ? 'skills-arcane-header' : undefined}
                 />
               )

@@ -13,7 +13,7 @@ export const THEMES = {
   leadership:      { primary: '#3a5a8a', primary2: '#6a90cc', dim: 'rgba(58,90,138,.1)',   border: 'rgba(58,90,138,.25)'   },
   arcane:          { primary: '#7a5a9a', primary2: '#aa80dd', dim: 'rgba(122,90,154,.1)',  border: 'rgba(122,90,154,.25)'  },
   guild:           { primary: '#6a4a8a', primary2: '#9a70bb', dim: 'rgba(106,74,138,.1)',  border: 'rgba(106,74,138,.25)'  },
-  divine:          { primary: '#9a8a3a', primary2: '#ccbb60', dim: 'rgba(154,138,58,.1)',  border: 'rgba(154,138,58,.25)'  },
+ divine:          { primary: '#9a8a3a', primary2: '#ccbb60', dim: 'rgba(154,138,58,.1)',  border: 'rgba(154,138,58,.25)'  },
   balance:         { primary: '#9a8a6a', primary2: '#c8b890', dim: 'rgba(154,138,106,.1)', border: 'rgba(154,138,106,.25)' },
   infernal:        { primary: '#8a2a2a', primary2: '#cc5050', dim: 'rgba(138,42,42,.1)',   border: 'rgba(138,42,42,.25)'   },
   lycanthropy:     { primary: '#5a5a6a', primary2: '#909090', dim: 'rgba(90,90,106,.1)',   border: 'rgba(90,90,106,.25)'   },
@@ -298,9 +298,9 @@ function EditablePoints({ value, onCommit, theme, isActive, locked }) {
 
 export { checkPrereq }
 
-export function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onUpdate, skillSource, theme, level, char, stats, gmMode, unspentPoints, tourLeftId, tourRightId, tourPtsId, forcePtsReadOnly }) {
-  const [expanded, setExpanded] = useState(false)
-  const T = theme || THEMES.selfImprovement
+export function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onUpdate, skillSource, theme, level, char, stats, gmMode, unspentPoints, tourLeftId, tourRightId, tourPtsId, forcePtsReadOnly, autoExpand, detailExtra, inlineExtra }) {
+  const [expanded, setExpanded] = useState(!!autoExpand)
+ const T = theme || THEMES.selfImprovement
   const costPerRank = parseInt(skill.costPerRank) || 1
   const maxRankRaw = skill.maxRank
   const maxRankNum = (maxRankRaw === 'any' || !maxRankRaw || isNaN(parseInt(maxRankRaw))) ? Infinity : parseInt(maxRankRaw)
@@ -356,11 +356,7 @@ const handleCommit = (newPoints) => {
               {skill.prereq.replace(/\n/g, ' · ')}
             </div>
           )}
-          {skill.flavourText && (
-            <div style={{ fontSize: '.62rem', color: 'var(--text3)', marginTop: 1, fontStyle: 'italic' }}>
-              {skill.flavourText}
-            </div>
-        )}
+          {inlineExtra || null}
         </div>
 
         <div data-tour={tourPtsId || undefined} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '6px 4px', gap: 2 }}>
@@ -405,6 +401,7 @@ const handleCommit = (newPoints) => {
           {skill.description && (
   <FormattedSkillDescription skillName={skill.name} fallback={skill.description} />
 )}
+          {detailExtra || null}
         </div>
       )}
     </>
@@ -412,7 +409,9 @@ const handleCommit = (newPoints) => {
 }
 
 // specialRows: { [skillName]: ReactNode } — rendered below that skill's row
-export function RankedSkillTable({ skills, char, stats, onUpdate, theme, sectionLabel, level, skillSource, gmMode, lockedPoints, specialRows, unspentPoints, sectionHeaderTourId, firstSkillTourId, fourthSkillRightTourId, fourthSkillPtsTourId }) {
+// detailRows:  { [skillName]: ReactNode } — rendered inside the expanded detail view
+// inlineRows:  { [skillName]: ReactNode } — rendered inline in the skill row header (below prereq)
+export function RankedSkillTable({ skills, char, stats, onUpdate, theme, sectionLabel, level, skillSource, gmMode, lockedPoints, specialRows, detailRows, inlineRows, unspentPoints, sectionHeaderTourId, firstSkillTourId, fourthSkillRightTourId, fourthSkillPtsTourId }) {
   const T = theme || THEMES.selfImprovement
 
   const getSkillData = (skillName) => {
@@ -455,6 +454,9 @@ export function RankedSkillTable({ skills, char, stats, onUpdate, theme, section
               tourLeftId={idx === 0 ? firstSkillTourId : undefined}
               tourRightId={idx === 3 ? fourthSkillRightTourId : undefined}
               tourPtsId={idx === 3 ? fourthSkillPtsTourId : undefined}
+              detailExtra={detailRows?.[skill.name] || null}
+              autoExpand={detailRows?.[skill.name] ? (rank === 1 && !char.shamanSymbols?.length) : false}
+              inlineExtra={inlineRows?.[skill.name] || null}
             />
             {specialRows?.[skill.name] || null}
           </div>

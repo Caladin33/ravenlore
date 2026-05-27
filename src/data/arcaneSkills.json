@@ -345,6 +345,83 @@
   "maintenancePerRank": 0.0
 },
     {
+      "name": "Banish",
+      "category": "divine",
+      "prereq": "Marks Death, Storms, War or Wisdom",
+      "description": "Instigate a test of wills with a creature native to the following Planes: Astral,  Elemental, Outer or any Divine. Roll a Willpower check and add your Arcane Power once for each action you spend focusing on this attempt in the turn. The Target does as well, if able. The difference accrues as expulsion points. If the total expulsion points ever drops below zero the Banishment has failed. If they exceed the current total hit points from all body sections the Banishment suceeds and the target is returned instantly to their native plane. The contest continues until resolved, or the range is exceeded. Both paties choose each round how many actions to devote to the contest. A banished creature cannot return to the Prime Material Plane until 3 full moons have passed.",
+      "costPerRank": 10,
+      "maxRank": "1",
+      "mcl": "any",
+      "range": "Self",
+      "maintenancePerRank": 0.0
+    },    
+    {
+      "name": "Commune",
+      "category": "divine",
+      "prereq": "Level 5",
+      "description": "Meditate for 1-100 min, (you never know how long it will take). Ask your Deity a yes or no question. The GM will roll d20: On a roll of 3-20 the GM will tell you the real answer. On a roll of 2 the GM will always say No, and on a roll of 1 the GM will always say yes. (This gives the right answer 95% of the time) Repeated or excessive questions may anger your god.",
+      "costPerRank": 10,
+      "maxRank": "1",
+      "mcl": "any",
+      "range": "self",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Dispel Evil",
+      "category": "divine",
+      "prereq": "Mark of Light or Passion or Wisdom",
+      "description": "Instigate a test of wills with target item or spellcaster using an unholy power. Roll a Willpower check and add your Arcane Power once for each action you spend focusing on this attempt in the turn. The Target does as well, if able. If successful an item is cleansed of all unholy power. An evil priest or spellcaster  is cut off from their unholy powers for a duration of 1 action per point they lost the contest by. Failure has no consequences for the caster. Curses are removed on a roll of 40 or higher.",
+      "costPerRank": 20,
+      "maxRank": "1",
+      "mcl": "any",
+      "range": "50",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Dispel Magic",
+      "category": "divine",
+      "prereq": "Mark of Death, Iron, Light, or Wisdom",
+      "description": "Instigate a test of wills with target magical item or spellcaster. Roll a Willpower check and add your Arcane Power once for each action you spend focusing on this attempt in the turn. The Target does as well, if able. Success ends the effect or removes all magic from the item. Very powerful items will only be temporarily suppressed.",
+      "costPerRank": 20,
+      "maxRank": "1",
+      "mcl": "any",
+      "range": "50",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Guided Wrath",
+      "category": "divine",
+      "prereq": "Mark or Shaman Symbol of Death, Iron, Light, Mischief, Passion, Storms, War or Wisdom",
+      "description": "Open yourself to Divine guidance in battle. Replace your Dexterity based Expertise bonus with your Willpower based Arcane Power in all combat situations. Also replace your Strength damage bonus with half of your Arcane Power.",
+      "costPerRank": 15,
+      "maxRank": "1",
+      "mcl": "any",
+      "range": "Self",
+      "maintenancePerRank": 1.0
+    },
+    {
+      "name": "Prayer of Renewal",
+      "category": "divine",
+      "prereq": "Any Mark",
+      "description": "Meditate for 15 minutes. Restore all your daily divine ability uses. 1/week.",
+      "costPerRank": 10,
+      "maxRank": "1",
+      "mcl": "any",
+      "range": "Self",
+      "maintenancePerRank": 0.0
+    },
+    {
+      "name": "Undertake Affliction",
+      "category": "divine",
+      "prereq": "Mark of Blood, Death, Life, Light, Passion, Storms or War.",
+      "description": "Cure disease, curse, blindness or even some corruption by taking it upon yourself.",
+      "costPerRank": 5,
+      "maxRank": "1",
+      "mcl": "any",
+      "range": "Touch",
+      "maintenancePerRank": 0.0
+    },
+    {
       "name": "Divine Affinity",
       "category": "divine",
       "prereq": "Mark of Life, Light or Mischief",
@@ -851,72 +928,6 @@
       "maintenancePerRank": 0.0
     },
     {
-      "name": "Commune",
-      "category": "divine",
-      "prereq": "Level 5",
-      "description": "Meditate for 1-100 min, (you never know how long it will take). Ask your Deity a yes or no question. The GM will roll d20: On a roll of 3-20 the GM will tell you the real answer. On a roll of 2 the GM will always say No, and on a roll of 1 the GM will always say yes. (This gives the right answer 95% of the time) Repeated or excessive questions may anger your god.",
-      "costPerRank": 10,
-      "maxRank": "1",
-      "mcl": "any",
-      "range": "self",
-      "maintenancePerRank": 0.0
-    },
-    {
-      "name": "Dispel Evil",
-      "category": "divine",
-      "prereq": "Mark of Light or Passion or Wisdom",
-      "description": "Instigate a test of wills with target item or spellcaster using an unholy power. Roll a Willpower check and add your Arcane Power once for each action you spend focusing on this attempt in the turn. The Target does as well, if able. If successful an item is cleansed of all unholy power. An evil priest or spellcaster  is cut off from their unholy powers for a duration of 1 action per point they lost the contest by. Failure has no consequences for the caster. Curses are removed on a roll of 40 or higher.",
-      "costPerRank": 20,
-      "maxRank": "1",
-      "mcl": "any",
-      "range": "50",
-      "maintenancePerRank": 0.0
-    },
-    {
-      "name": "Dispel Magic",
-      "category": "divine",
-      "prereq": "Mark of Death, Iron, Light, or Wisdom",
-      "description": "Instigate a test of wills with target magical item or spellcaster. Roll a Willpower check and add your Arcane Power once for each action you spend focusing on this attempt in the turn. The Target does as well, if able. Success ends the effect or removes all magic from the item. Very powerful items will only be temporarily suppressed.",
-      "costPerRank": 20,
-      "maxRank": "1",
-      "mcl": "any",
-      "range": "50",
-      "maintenancePerRank": 0.0
-    },
-    {
-      "name": "Banish",
-      "category": "divine",
-      "prereq": "Marks Death, Storms, War or Wisdom",
-      "description": "Instigate a test of wills with a creature native to the following Planes: Astral,  Elemental, Outer or any Divine. Roll a Willpower check and add your Arcane Power once for each action you spend focusing on this attempt in the turn. The Target does as well, if able. The difference accrues as expulsion points. If the total expulsion points ever drops below zero the Banishment has failed. If they exceed the current total hit points from all body sections the Banishment suceeds and the target is returned instantly to their native plane. The contest continues until resolved, or the range is exceeded. Both paties choose each round how many actions to devote to the contest. A banished creature cannot return to the Prime Material Plane until 3 full moons have passed.",
-      "costPerRank": 10,
-      "maxRank": "1",
-      "mcl": "any",
-      "range": "Self",
-      "maintenancePerRank": 0.0
-    },
-    {
-      "name": "Guided Wrath",
-      "category": "divine",
-      "prereq": "Mark or Shaman Symbol of Death, Iron, Light, Mischief, Passion, Storms, War or Wisdom",
-      "description": "Open yourself to Divine guidance in battle. Replace your Dexterity based Expertise bonus with your Willpower based Arcane Power in all combat situations. Also replace your Strength damage bonus with half of your Arcane Power.",
-      "costPerRank": 15,
-      "maxRank": "1",
-      "mcl": "any",
-      "range": "Self",
-      "maintenancePerRank": 1.0
-    },
-    {
-      "name": "Prayer of Renewal",
-      "category": "divine",
-      "prereq": "Any Mark",
-      "description": "Meditate for 15 minutes. Restore all your daily divine ability uses. 1/week.",
-      "costPerRank": 10,
-      "maxRank": "1",
-      "mcl": "any",
-      "range": "Self",
-      "maintenancePerRank": 0.0
-    },
-    {
       "name": "Blood Rune",
       "category": "divine",
       "prereq": "Mark of Blood, Passion, War or Wisdom",
@@ -1056,17 +1067,6 @@
       "maxRank": "1",
       "mcl": "any",
       "range": "75",
-      "maintenancePerRank": 0.0
-    },
-    {
-      "name": "Undertake Affliction",
-      "category": "divine",
-      "prereq": "Mark of Blood, Death, Life, Light, Passion, Storms or War.",
-      "description": "Cure disease, curse, blindness or even some corruption by taking it upon yourself.",
-      "costPerRank": 5,
-      "maxRank": "1",
-      "mcl": "any",
-      "range": "Touch",
       "maintenancePerRank": 0.0
     },
     {
