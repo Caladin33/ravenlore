@@ -134,6 +134,12 @@ function checkSinglePrereq(token, char, stats) {
     return { met: true }
   }
 
+  // "Any Mark" — met if character has any Patron's Mark
+  if (/^any\s+mark$/i.test(str)) {
+    const hasMark = !!(char.patronMark?.mark)
+    return hasMark ? { met: true } : { met: false, reason: "Patron's Mark required" }
+  }
+
   // Martial marks — exact match, enforce rank >= 1, no chip
   const martialMark = MARTIAL_MARKS.find(m => str.toLowerCase() === m.toLowerCase())
   if (martialMark) {
