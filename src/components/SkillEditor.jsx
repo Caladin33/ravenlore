@@ -1386,7 +1386,9 @@ const divineBuyBtn = (disabled = false) => ({
       // Skip MoF skills already consumed
       if (MARK_OF_FAVOUR_SKILLS.includes(skill.name)) { i++; continue }
 
-      // All other divine skills — normal rendering
+     // All other divine skills — normal rendering
+      const isPatronMark = skill.name === "Patron's Mark"
+      const pm = char.patronMark || {}
       rows.push(
         <div key={skill.name}>
           <SkillTableRow
@@ -1402,10 +1404,15 @@ const divineBuyBtn = (disabled = false) => ({
             onUpdate={(name, newPts) => handleUpdate(name, newPts, 'arcane')}
             skillSource="arcane"
             unspentPoints={pointTotals.unspent}
+            inlineExtra={isPatronMark && rank >= 1 && pm.mark ? (
+              <span style={{ fontSize: '.72rem', color: '#a99362', fontFamily: 'Georgia, serif', fontStyle: 'italic', marginLeft: 6 }}>
+                — Mark of {pm.mark}
+              </span>
+            ) : null}
+            detailExtra={isPatronMark && rank >= 1 ? (
+              <PatronMarkPanel char={char} onUpdate={handlePatronMarkUpdate} gmMode={gmMode} />
+            ) : null}
           />
-          {skill.name === "Patron's Mark" && rank >= 1 && (
-            <PatronMarkPanel char={char} onUpdate={handlePatronMarkUpdate} gmMode={gmMode} />
-          )}
         </div>
       )
       i++

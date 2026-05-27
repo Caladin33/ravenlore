@@ -335,14 +335,14 @@ const handleCommit = (newPoints) => {
 
   return (
     <>
-      <div style={{ display: 'grid', gridTemplateColumns: GRID, alignItems: 'center', borderBottom: '1px solid var(--border)', background: isActive ? T.dim : 'transparent', minHeight: 56, opacity: editLocked ? 0.55 : 1 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: GRID, alignItems: 'center', background: isActive ? T.dim : 'transparent', minHeight: 56, opacity: editLocked ? 0.55 : 1, borderRadius: 4, border: `1px solid ${isActive ? T.primary + '55' : 'rgba(255,255,255,.04)'}`, borderLeft: `3px solid ${isActive ? T.primary : 'rgba(255,255,255,.06)'}`, marginBottom: 3 }}>
         <div data-tour={tourLeftId || undefined} style={{ padding: '10px 12px', cursor: 'pointer', minWidth: 0 }} onClick={() => setExpanded(!expanded)}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexWrap: 'wrap', fontSize: '.92rem', fontFamily: 'Georgia, serif', color: isActive ? T.primary2 : (editLocked ? 'var(--text3)' : 'var(--text)'), fontWeight: isActive ? 600 : 400 }}>
+            <span style={{ fontSize: '.58rem', color: 'var(--text3)', opacity: .5, flexShrink: 0 }}>{expanded ? '▲' : '▼'}</span>
             <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{skill.name}</span>
             {prereqResult.tags?.map(tag => (
               <span key={tag} style={{ fontSize: '.6rem', color: 'rgba(255,255,255,.6)', background: 'rgba(255,255,255,.08)', borderRadius: 3, padding: '1px 5px', whiteSpace: 'nowrap', flexShrink: 0 }}>{tag}</span>
             ))}
-            <span style={{ fontSize: '.58rem', color: 'var(--text3)', opacity: .5, flexShrink: 0 }}>{expanded ? '▲' : '▼'}</span>
           </div>
           {!prereqResult.met && (
             <div style={{ fontSize: '.65rem', color: '#c94a4a', marginTop: 2, fontStyle: 'italic' }}>
