@@ -350,8 +350,9 @@
       "prereq": "Mark of Life, Light or Mischief",
       "description": "Your Charisma is increased to match your highest attribute. Cannot be shared.",
       "costPerRank": 15,
-      "maxRank": "Passive",
-      "mcl": "Self",
+      "maxRank": "1",
+      "mcl": "any",
+      "range": "self",
       "maintenancePerRank": 0.0
     },
     {
@@ -360,8 +361,9 @@
       "prereq": "Mark of Iron, War or Wisdom",
       "description": "Your armor cannot be bypassed. This includes skills like armor piercing and spells like lightning bolt. Permanent passive",
       "costPerRank": 20,
-      "maxRank": "Passive",
-      "mcl": "Self",
+      "maxRank": "1",
+      "mcl": "any",
+      "range": "self",
       "maintenancePerRank": 0.0
     },
     {
@@ -370,8 +372,9 @@
       "prereq": "Mark of Death, Iron, Life, Passion, Storms or War",
       "description": "You are protected, increasing your Natural Armor by 5. Cannot Be Shared",
       "costPerRank": 15,
-      "maxRank": "Passive",
-      "mcl": "Self",
+      "maxRank": "1",
+      "mcl": "any",
+      "range": "self",
       "maintenancePerRank": 0.0
     },
     {
@@ -380,8 +383,9 @@
       "prereq": "Mark of Death, Light, Mischief, Storms, War or Wisdom",
       "description": "As a chosen favorite you are granted Immunity from Magical Fear, Mind Control, Charm, Sleep, and Paralysis. Chemical or other non magical versions of these affect you normally.",
       "costPerRank": 15,
-      "maxRank": "Passive",
-      "mcl": "Self",
+      "maxRank": "1",
+      "mcl": "any",
+      "range": "self",
       "maintenancePerRank": 0.0
     },
     {
@@ -390,8 +394,9 @@
       "prereq": "Mark of Blood, Life, Light, Storms or Wisdom",
       "description": "As a chosen favorite you are granted Immunity from mind control and charm. You can also be safely magically healed even when critical.",
       "costPerRank": 15,
-      "maxRank": "Passive",
-      "mcl": "Self",
+      "maxRank": "1",
+      "mcl": "any",
+      "range": "self",
       "maintenancePerRank": 0.0
     },
     {
@@ -401,7 +406,8 @@
       "description": "You may move 2 Hit Points from your Torso to another body section for every action spent.",
       "costPerRank": 15,
       "maxRank": "1",
-      "mcl": "Self",
+      "mcl": "any",
+      "range": "self",
       "maintenancePerRank": 0.0
     },
     {
@@ -410,8 +416,9 @@
       "prereq": "Mark of Death, Iron or Wisdom",
       "description": "You are immune to slowing effects and cold damage.",
       "costPerRank": 10,
-      "maxRank": "Passive",
-      "mcl": "Self",
+      "maxRank": "1",
+      "mcl": "any",
+      "range": "self",
       "maintenancePerRank": 0.0
     },
     {
@@ -420,8 +427,9 @@
       "prereq": "Mark of Mischief or Passion",
       "description": "Any creature targeting you must pass a Willpower check equal to double your Charisma. (If shared through aura each affected ally's charisma is used for them.)",
       "costPerRank": 10,
-      "maxRank": "Passive",
-      "mcl": "Self",
+      "maxRank": "1",
+      "mcl": "any",
+      "range": "self",
       "maintenancePerRank": 0.0
     },
     {
@@ -430,18 +438,20 @@
       "prereq": "Any Mark",
       "description": "You learn to emanate power from your person.  The specific Aura determines the effects. The Aura extends for 30 Feet and costs 1 action to call and to maintain.  If two actions per turn are used the radius increases to 100 Feet.  If three actions per turn are used the radius is increased to 300 Feet. You may only learn 4 Auras, unless you receive a Mark of Favour at high level.",
       "costPerRank": 20,
-      "maxRank": "1,2 or 3 each round",
-      "mcl": "30,100 or 300",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {
       "name": "Aura of Alacrity",
       "category": "divine",
-      "prereq": "Divine Auras\nMark or Shaman Symbol of Iron, Mischief, Passion, Storms or Wisdom.",
+     "prereq": "Divine Auras or Shaman's Symbol\nMark or Shaman Symbol of Iron, Mischief, Passion, Storms or Wisdom.",
       "description": "+10 Initiative for all affected allies",
       "costPerRank": 10,
-      "maxRank": "1,2 or 3 each round",
-      "mcl": "30,100 or 300",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {
@@ -450,18 +460,20 @@
       "prereq": "Divine Auras\nMark of Mischief or Passion",
       "description": "An invisible, subtle effect that enhances any and all emotions present in affected creatures. This effect tends to accumulate.",
       "costPerRank": 10,
-      "maxRank": "1,2 or 3 each round",
-      "mcl": "30,100 or 300",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {
       "name": "Aura of Blood",
       "category": "divine",
-      "prereq": "Divine Auras\nMark or Shaman Symbol of Blood",
+      "prereq": "Divine Auras or Shaman's Symbol\nMark or Shaman Symbol of Blood",
       "description": "A pulsating, scarlet light. All wounded allies (less than full HP), gain +1 Crit on all melee attacks.",
       "costPerRank": 10,
-      "maxRank": "1,2 or 3 each round",
-      "mcl": "30,100 or 300",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {
@@ -470,8 +482,9 @@
       "prereq": "Divine Auras\nMark of Iron, Mischief, Passion or Wisdom",
       "description": "An invisible, subtle effect granting +10 to all skill checks made by affected creatures.",
       "costPerRank": 10,
-      "maxRank": "1,2 or 3 each round",
-      "mcl": "30,100 or 300",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {
@@ -480,8 +493,9 @@
       "prereq": "Divine Auras\nMark or Shaman Symbol of Iron, Life, or Wisdom",
       "description": "An invisible, subtle effect. All concentration costs by affected creatures are increased by (1).",
       "costPerRank": 10,
-      "maxRank": "1,2 or 3 each round",
-      "mcl": "30,100 or 300",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {
@@ -490,8 +504,9 @@
       "prereq": "Divine Auras\nMark or Shaman Symbol of Death or War",
       "description": "No healing can occur within the Aura.",
       "costPerRank": 10,
-      "maxRank": "1,2 or 3 each round",
-      "mcl": "30,100 or 300",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {
@@ -500,8 +515,9 @@
       "prereq": "Divine Auras\nMark or Shaman Symbol of Death, Iron, Life or Mischief",
       "description": "An invisible, subtle effect that adds disadvantage to all Willpower, Awareness and Charisma  checks made by non allies within the aura.",
       "costPerRank": 10,
-      "maxRank": "1,2 or 3 each round",
-      "mcl": "30,100 or 300",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {
@@ -510,8 +526,9 @@
       "prereq": "Divine Auras\nMark of Life, Passion or Wisdom",
       "description": "A warm, orange tinted light emanates from you. You become aware of the the strongest emotion in every affected person, and how strong it is.",
       "costPerRank": 10,
-      "maxRank": "1,2 or 3 each round",
-      "mcl": "30,100 or 300",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {
@@ -520,8 +537,9 @@
       "prereq": "Divine Auras\nMark of or Shaman Symbol  Iron, Storms or War",
       "description": "All ranged attacks into, within or out of the Aura suffer an extra -4 penalty to hit.",
       "costPerRank": 10,
-      "maxRank": "1,2 or 3 each round",
-      "mcl": "30,100 or 300",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {
@@ -530,8 +548,9 @@
       "prereq": "Divine Auras\nMark of Iron, Light, Passion, Storms War or Wisdom",
       "description": "An invisible, subtle effect that is strangely invigorating to you and your allies. +1 to the final combat or to hit roll. This can cause a melee critical or prevent a fumble, and increase Hit Surplus.",
       "costPerRank": 10,
-      "maxRank": "1,2 or 3 each round",
-      "mcl": "30,100 or 300",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {
@@ -540,18 +559,20 @@
       "prereq": "Divine Auras\nMark of Blood, Mischief, Passion or War",
       "description": "Anyone moving into combat gains +1 crit on their damage rolls that turn. (Friend and Foe)",
       "costPerRank": 10,
-      "maxRank": "1,2 or 3 each round",
-      "mcl": "30,100 or 300",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {
       "name": "Aura of Fury",
       "category": "divine",
-      "prereq": "Divine Auras\nMark or Shaman Symbol of Blood, Mischief, Passion, Storms or War",
+      "prereq": "Divine Auras or Shaman's Symbol\nMark or Shaman Symbol of Blood, Mischief, Passion, Storms or War",
       "description": "An invisible, subtle effect that adds +5 to all Margins of Victory within the aura.",
       "costPerRank": 10,
-      "maxRank": "1,2 or 3 each round",
-      "mcl": "30,100 or 300",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {
@@ -560,8 +581,9 @@
       "prereq": "Divine Auras\nMark of Light, Mischief, Passion War or Wisdom",
       "description": "An subtle, audible effect. To all affected creatures your voice is richer, your tone pure, and is almost audible music underscoring your actions and speech. You gain +3 Charisma in the view of all affected sentient creatures.",
       "costPerRank": 10,
-      "maxRank": "1,2 or 3 each round",
-      "mcl": "30,100 or 300",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {
@@ -570,28 +592,31 @@
       "prereq": "Divine Auras\nMark of Life",
       "description": "One random affected ally gains 1 hit point each melee round and all (other) healing is increased by 1.",
       "costPerRank": 10,
-      "maxRank": "1,2 or 3 each round",
-      "mcl": "30,100 or 300",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {
       "name": "Aura of Health",
       "category": "divine",
-      "prereq": "Divine Auras\nMark or Shaman Symbol of Blood, Life, Light or Passion",
+      "prereq": "Divine Auras or Shaman's Symbol\nMark or Shaman Symbol of Blood, Life, Light or Passion",
       "description": "Adds advantage to all Strength, Constitution and Charisma  checks made by allies within the aura.",
       "costPerRank": 10,
-      "maxRank": "1,2 or 3 each round",
-      "mcl": "30,100 or 300",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {
       "name": "Aura of Holy Wrath",
       "category": "divine",
-      "prereq": "Divine Auras\nMark or Shaman Symbol of Light",
+     "prereq": "Divine Auras or Shaman's Symbol\nMark or Shaman Symbol of Light",
       "description": "A harsh white light shines forth, excruciating the unholy. All affected Undead, Demonic and Evil creatures lose 1 action/round and take 1 Torso damage/round.",
       "costPerRank": 10,
-      "maxRank": "1,2 or 3 each round",
-      "mcl": "30,100 or 300",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {
@@ -600,8 +625,9 @@
       "prereq": "Divine Auras\nMark of Iron, Life, Light, Passion, Storms or Wisdom",
       "description": "A bright warm white light shines forth all around you. All affected allies share the benefits of your Divine Defence.",
       "costPerRank": 10,
-      "maxRank": "1,2 or 3 each round",
-      "mcl": "30,100 or 300",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {
@@ -610,8 +636,9 @@
       "prereq": "Divine Auras\nMark of Mischief or Wisdom",
       "description": "An invisible, subtle effect causes all Holy, Righteous and morally superior creatures lose 1 action/round. Any creature proud of itself, it's actions or it's endeavor will be affected.",
       "costPerRank": 10,
-      "maxRank": "1,2 or 3 each round",
-      "mcl": "30,100 or 300",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {
@@ -620,8 +647,9 @@
       "prereq": "Divine Auras\nMark of Blood,Death, Life Mischief or Wisdom",
       "description": "An invisible, subtle effect that completes erases all fatigue from all effected creatures. Fatigue will begin to accrue normally when leaving the effect. Note that going without sleep will eventually have consequences other than fatigue.",
       "costPerRank": 10,
-      "maxRank": "1,2 or 3 each round",
-      "mcl": "30,100 or 300",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {
@@ -630,18 +658,20 @@
       "prereq": "Divine Auras\nMark of Blood, Death, Iron, Life, Mischief, Passion, War or Wisdom",
       "description": "Light dims and shadows deepen around you. Advantage on all sneaking checks made within the aura and grants your Divine Defence to all affected allies",
       "costPerRank": 10,
-      "maxRank": "1,2 or 3 each round",
-      "mcl": "30,100 or 300",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {
       "name": "Aura of Silence",
       "category": "divine",
-      "prereq": "Divine Auras\nMark or Shaman Symbol of Iron, Light, Mischief, Shadow or Wisdom",
+      "prereq": "Divine Auras or Shaman's Symbol\nMark or Shaman Symbol of Iron, Light, Mischief, Shadow or Wisdom",
       "description": "All sound is prevented within the aura.",
       "costPerRank": 10,
-      "maxRank": "1,2 or 3 each round",
-      "mcl": "30,100 or 300",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {
@@ -650,18 +680,20 @@
       "prereq": "Divine Auras\nMark of Death, Iron, Light, Mischief, War or Wisdom",
       "description": "An invisible, subtle effect that grants  a clarity of focus to you and your allies. Any Spells cast by affected allies gain +50% range or duration. (caster's choice.)",
       "costPerRank": 10,
-      "maxRank": "1,2 or 3 each round",
-      "mcl": "30,100 or 300",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {
       "name": "Aura of Truth",
       "category": "divine",
-      "prereq": "Divine Auras\nMark of or Shaman Symbol Death, Light, Mischief, Storms or Wisdom",
+     "prereq": "Divine Auras or Shaman's Symbol\nMark or Shaman Symbol of Death, Light, Mischief, Storms or Wisdom",
       "description": "A pale light that dispels all illusions only so long as they are affected by the aura. Any Awarneess checks gain advantage.",
       "costPerRank": 10,
-      "maxRank": "1,2 or 3 each round",
-      "mcl": "30,100 or 300",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {
@@ -670,18 +702,20 @@
       "prereq": "Divine Auras\nMark of Death, War or Wisdom",
       "description": "An invisible, subtle effect. All affected allies cannot be surprised or flanked.",
       "costPerRank": 10,
-      "maxRank": "1,2 or 3 each round",
-      "mcl": "30,100 or 300",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {
       "name": "Aura of Winds",
       "category": "divine",
-      "prereq": "Divine Auras\nMark or Shaman Symbol of Storms",
+      "prereq": "Divine Auras or Shaman's Symbol\nMark or Shaman Symbol of Storms",
       "description": "Wind is created or increased gradually over time, adding 1 mph every melee round, up to a maximum of one hundred mph. The size of aura chosen determines the type of effect. 1 action version moves air around the perimeter of the aura. The 2 action version moves air in the direction you are facing across the width of the aura. The three action version moves air at a steady 10mph upward in the whole area. Outdoors this will affect the weather for miles around. It takes 1 minute to change each category above the aura: Clear, some clouds,overcast,dark clouds, rain,rainstorm,thunderstorm. The surrounding area will be slower depending on distance. How quickly the new weather dissipates is situational and hard to predict.",
       "costPerRank": 10,
-      "maxRank": "1,2 or 3 each round",
-      "mcl": "30,100 or 300",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {
@@ -690,7 +724,7 @@
       "prereq": "Divine Auras",
       "description": "Your Auras require 1 fewer action/round to maintain, but it still costs 1 action to change auras.",
       "costPerRank": 15,
-      "maxRank": "Passive",
+      "maxRank": "1",
       "mcl": "Self",
       "maintenancePerRank": 0.0
     },
@@ -700,7 +734,7 @@
       "prereq": "Divine Auras",
       "description": "Your Auras extend 50% farther. (usually 45 Feet, 150 Feet, 450 Feet.)",
       "costPerRank": 15,
-      "maxRank": "Passive",
+      "maxRank": "1",
       "mcl": "Self",
       "maintenancePerRank": 0.0
     },
@@ -710,8 +744,9 @@
       "prereq": "Aura of Focus",
       "description": "Your Aura of Focus is improved. +2 to the final combat or to hit roll instead of +1.",
       "costPerRank": 10,
-      "maxRank": "Passive",
-      "mcl": "Self",
+      "maxRank": "1",
+      "mcl": "1",
+      "range":"self",
       "maintenancePerRank": 0.0
     },
     {
@@ -720,8 +755,9 @@
       "prereq": "Mark of Iron, Life, Light, Storms, War or Wisdom",
       "description": "Target willing creature gains +1 on any die roll of their choice within 10 minutes. No creature can receive more than 1 blessing each day.  Costs 1 action per target.",
       "costPerRank": 15,
-      "maxRank": "1/target",
-      "mcl": "50",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "50",
       "maintenancePerRank": 0.0
     },
     {
@@ -730,8 +766,9 @@
       "prereq": "Mark of Blood, Death, Iron, Passion or Wisdom",
       "description": "Target creature suffers -2 on it's next die roll. No creature can be cursed more than once per day.",
       "costPerRank": 15,
-      "maxRank": "1/target",
-      "mcl": "50",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "50",
       "maintenancePerRank": 0.0
     },
     {
@@ -741,7 +778,8 @@
       "description": "Target creature gains 1 action. No creature can be Exhorted more than once per day.",
       "costPerRank": 10,
       "maxRank": "0",
-      "mcl": "50",
+      "mcl": "1",
+      "range": "50",
       "maintenancePerRank": 0.0
     },
     {
@@ -750,8 +788,9 @@
       "prereq": "Mark of Death, Life, Light, Mischief or Passion",
       "description": "The next damage taken by target creature today will almost certainly (95%) be prevented by a twist of fate. You may only bestow this on a single creature, once a day. You may use it on yourself.",
       "costPerRank": 25,
-      "maxRank": "2",
-      "mcl": "30",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30",
       "maintenancePerRank": 0.0
     },
     {
@@ -760,8 +799,9 @@
       "prereq": "Mark of Death, Light, War or Wisdom",
       "description": "Target creature will pass their next Willpower check within 1 hour. No given creature can be Becalmed more than once/day.",
       "costPerRank": 20,
-      "maxRank": "2",
-      "mcl": "30",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30",
       "maintenancePerRank": 0.0
     },
     {
@@ -770,8 +810,9 @@
       "prereq": "Bless, Exhort or Hallow",
       "description": "Your benedictions now also grants 1 point of healing.",
       "costPerRank": 10,
-      "maxRank": "Passive",
-      "mcl": "Self",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "self",
       "maintenancePerRank": 0.0
     },
     {
@@ -780,8 +821,9 @@
       "prereq": "Level 5 and\nBless, Exhort or Becalm",
       "description": "Grants your Benediction to all Allies within 30 Feet who can hear it, even if they have already received it today. Costs 2 actions. Can only be used once per day.",
       "costPerRank": 20,
-      "maxRank": "2",
-      "mcl": "30",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30",
       "maintenancePerRank": 0.0
     },
     {
@@ -790,8 +832,9 @@
       "prereq": "Prayer",
       "description": "Your Prayer affects allies within 75 Feet",
       "costPerRank": 10,
-      "maxRank": "Passive",
-      "mcl": "Self",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "Self",
       "maintenancePerRank": 0.0
     },
     {
@@ -800,8 +843,9 @@
       "prereq": "Curse",
       "description": "Your curses cause -4 instead of -2.",
       "costPerRank": 10,
-      "maxRank": "Passive",
-      "mcl": "Self",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "self",
       "maintenancePerRank": 0.0
     },
     {
@@ -810,8 +854,9 @@
       "prereq": "Level 5",
       "description": "Meditate for 1-100 min, (you never know how long it will take). Ask your Deity a yes or no question. The GM will roll d20: On a roll of 3-20 the GM will tell you the real answer. On a roll of 2 the GM will always say No, and on a roll of 1 the GM will always say yes. (This gives the right answer 95% of the time) Repeated or excessive questions may anger your god.",
       "costPerRank": 10,
-      "maxRank": "1-100 min",
-      "mcl": "Self",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "self",
       "maintenancePerRank": 0.0
     },
     {
@@ -820,8 +865,9 @@
       "prereq": "Mark of Light or Passion or Wisdom",
       "description": "Instigate a test of wills with target item or spellcaster using an unholy power. Roll a Willpower check and add your Arcane Power once for each action you spend focusing on this attempt in the turn. The Target does as well, if able. If successful an item is cleansed of all unholy power. An evil priest or spellcaster  is cut off from their unholy powers for a duration of 1 action per point they lost the contest by. Failure has no consequences for the caster. Curses are removed on a roll of 40 or higher.",
       "costPerRank": 20,
-      "maxRank": "Special",
-      "mcl": "50",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "50",
       "maintenancePerRank": 0.0
     },
     {
@@ -830,8 +876,9 @@
       "prereq": "Mark of Death, Iron, Light, or Wisdom",
       "description": "Instigate a test of wills with target magical item or spellcaster. Roll a Willpower check and add your Arcane Power once for each action you spend focusing on this attempt in the turn. The Target does as well, if able. Success ends the effect or removes all magic from the item. Very powerful items will only be temporarily suppressed.",
       "costPerRank": 20,
-      "maxRank": "Special",
-      "mcl": "51",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "50",
       "maintenancePerRank": 0.0
     },
     {
@@ -840,8 +887,9 @@
       "prereq": "Marks Death, Storms, War or Wisdom",
       "description": "Instigate a test of wills with a creature native to the following Planes: Astral,  Elemental, Outer or any Divine. Roll a Willpower check and add your Arcane Power once for each action you spend focusing on this attempt in the turn. The Target does as well, if able. The difference accrues as expulsion points. If the total expulsion points ever drops below zero the Banishment has failed. If they exceed the current total hit points from all body sections the Banishment suceeds and the target is returned instantly to their native plane. The contest continues until resolved, or the range is exceeded. Both paties choose each round how many actions to devote to the contest. A banished creature cannot return to the Prime Material Plane until 3 full moons have passed.",
       "costPerRank": 10,
-      "maxRank": "2 or 3",
-      "mcl": "Special",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "Self",
       "maintenancePerRank": 0.0
     },
     {
@@ -850,8 +898,9 @@
       "prereq": "Mark or Shaman Symbol of Death, Iron, Light, Mischief, Passion, Storms, War or Wisdom",
       "description": "Open yourself to Divine guidance in battle. Replace your Dexterity based Expertise bonus with your Willpower based Arcane Power in all combat situations. Also replace your Strength damage bonus with half of your Arcane Power.",
       "costPerRank": 15,
-      "maxRank": "Passive",
-      "mcl": "Self",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "Self",
       "maintenancePerRank": 1.0
     },
     {
@@ -860,8 +909,9 @@
       "prereq": "Any Mark",
       "description": "Meditate for 15 minutes. Restore all your daily divine ability uses. 1/week.",
       "costPerRank": 10,
-      "maxRank": "15 minutes",
-      "mcl": "Self",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "Self",
       "maintenancePerRank": 0.0
     },
     {
@@ -871,7 +921,8 @@
       "description": "Tracing this glyph with the fresh blood of a living creature will heal 1 HP/round to the affected body section, and deal 2 Torso damage/round to the source of the blood.",
       "costPerRank": 30,
       "maxRank": "1",
-      "mcl": "Touch",
+      "mcl": "1",
+      "range": "Touch",
       "maintenancePerRank": 0.0
     },
     {
@@ -881,7 +932,8 @@
       "description": "Tracing the Glyph on the skin of a creature with devotion will cause that Body section to Heal 1 HP/hour until it is fully healed. You lose 1d4 Torso HP when drawing the glyph. No creature can have more than one such Glyph at a time.",
       "costPerRank": 30,
       "maxRank": "1",
-      "mcl": "Touch",
+      "mcl": "1",
+      "range": "Touch",
       "maintenancePerRank": 0.0
     },
     {
@@ -890,8 +942,9 @@
       "prereq": "Mark of Life, Light, Passion,Storms or Wisdom",
       "description": "Gentle Rain falls in a 10 Foot radius circle around the caster, healing 1 hit point to all body section. Critical injuries are not affected. Can be used twice per day, at least two hours apart.",
       "costPerRank": 30,
-      "maxRank": "2",
-      "mcl": "10",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "10",
       "maintenancePerRank": 0.0
     },
     {
@@ -900,8 +953,9 @@
       "prereq": "Mark of Death, Iron,Mischief, War or Wisdom",
       "description": "A smoky melee weapon of whatever type the caster chooses appears and strikes a chosen target. Ranged Attack, roll to hit (2d10+your Dex based Expertise bonus). No penalties of any kind apply. Damage is 1d6+Dex based Ranged bonus.",
       "costPerRank": 30,
-      "maxRank": "2",
-      "mcl": "50",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "50",
       "maintenancePerRank": 1.0
     },
     {
@@ -910,8 +964,9 @@
       "prereq": "Mark of Blood, Death, Life, Light or Passion",
       "description": "Target Creature suffers 1d10 Torso Damage, bypassing artificial armor and shields. No bonuses apply, ever.",
       "costPerRank": 30,
-      "maxRank": "2",
-      "mcl": "50",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "50",
       "maintenancePerRank": 1.0
     },
     {
@@ -921,7 +976,8 @@
       "description": "You appear to be two feet to the left, right, forward or rear of your actual position. The illusion is potent and will defeat most methods of detection, but not physical contact. Small differences such as footing on unlevel terrain are seamlessly corrected. Once established the direction does not change until concentration is released.",
       "costPerRank": 25,
       "maxRank": "1",
-      "mcl": "2",
+      "mcl": "1",
+      "range": "2",
       "maintenancePerRank": 1.0
     },
     {
@@ -930,8 +986,9 @@
       "prereq": "Mark of Iron, Mischief, Passion or Wisdom.",
       "description": "You and target creature within 40 feet each roll a strength check, modified by relative size, elevation and anchorage. The loser is pulled to the winner provided there is a reasonably clear path.",
       "costPerRank": 30,
-      "maxRank": "2",
-      "mcl": "40",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "40",
       "maintenancePerRank": 1.0
     },
     {
@@ -940,8 +997,9 @@
       "prereq": "Mark of Life or Mischief",
       "description": "A nettlevine grows out of the ground and attempts to ensnare a chosen target. The creature must pass an awareness check 25 or be ensnared. Once ensnared a creature that attempts to move more than 3 feet must pass a Strength check 25 to break free.",
       "costPerRank": 30,
-      "maxRank": "2",
-      "mcl": "50",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "50",
       "maintenancePerRank": 1.0
     },
     {
@@ -950,8 +1008,9 @@
       "prereq": "Mark of Iron, Light, Storms, War or Wisdom",
       "description": "Creates a translucent melee weapon of whatever type the caster chooses streaks towards the chosen target. Ranged Attack, roll do hit (2d10+your Arcane Power). No penalties of any kind apply and your Ranged Precision is 20. Damage is 1d6+your Arcane Power /2.",
       "costPerRank": 30,
-      "maxRank": "2",
-      "mcl": "50",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "50",
       "maintenancePerRank": 1.0
     },
     {
@@ -960,8 +1019,9 @@
       "prereq": "Mark of Light, Mischief or Storms",
       "description": "You and your gear transform into a bolt of lightning and , move to a visible location with a direct open path at least 1 foot diameter, within 200 feet. The actual arrival location will scatter 10% of distance moved. If you would appear in solid matter the effect may fail, or scatter again.",
       "costPerRank": 30,
-      "maxRank": "2",
-      "mcl": "200",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "200",
       "maintenancePerRank": 1.0
     },
     {
@@ -970,8 +1030,9 @@
       "prereq": "Mark of Mischief or Passion",
       "description": "Place a 3 word compulsion upon a creature whose lips you touch with your own, such as \"you love me\", which colours all of their thinking for the duration unless they pass a Willpower check equal to double your charisma. Receptive or tempted creatures have disadvantage on the check",
       "costPerRank": 30,
-      "maxRank": "2",
-      "mcl": "1 sentient creature",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "0",
       "maintenancePerRank": 1.0
     },
     {
@@ -980,8 +1041,8 @@
       "prereq": "Mark of War",
       "description": "A pillar of bright light appears around target creature. All ranged attacks against that creature ignore all penalties. Cooldown: 4 hours.",
       "costPerRank": 30,
-      "maxRank": "1 each round",
-      "mcl": "Self",
+      "maxRank": "1",
+      "mcl": "1",
       "maintenancePerRank": 1.0
     },
     {
@@ -990,8 +1051,9 @@
       "prereq": "Blade of Shadow, Blight/Smite, Glyph of Union, Kettle Vine or Spiritual Hammer",
       "description": "Your Divine Offense gains 50% more range and +3 To Hit, Damage, and Ability checks, as applicable.",
       "costPerRank": 20,
-      "maxRank": "Passive",
-      "mcl": "75",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "75",
       "maintenancePerRank": 0.0
     },
     {
@@ -1000,8 +1062,9 @@
       "prereq": "Mark of Blood, Death, Life, Light, Passion, Storms or War.",
       "description": "Cure disease, curse, blindness or even some corruption by taking it upon yourself.",
       "costPerRank": 5,
-      "maxRank": "2",
-      "mcl": "Touch",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "Touch",
       "maintenancePerRank": 0.0
     },
     {
@@ -1010,8 +1073,9 @@
       "prereq": "Project",
       "description": "Your Projection range is increased to 15 feet, and you may stop it's movement while you move, at the cost of increased concentration. i.e: (2). Once you reduce back to cencentration (1) the project will maintain its distance and direction from you. If you exceed the range the projection will move with you, at max range.",
       "costPerRank": 15,
-      "maxRank": "2",
-      "mcl": "50",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "50",
       "maintenancePerRank": 0.0
     },
     {
@@ -1021,7 +1085,8 @@
       "description": "Must be granted by your Patron, usually after a vision quest. This unlocks skills below and also allows you to learn one more Aura.",
       "costPerRank": 1,
       "maxRank": "1",
-      "mcl": "Self",
+      "mcl": "1",
+      "range": "Self",
       "maintenancePerRank": 0.0
     },
     {
@@ -1030,8 +1095,9 @@
       "prereq": "Mark of Favour\nExalted Auras\nMark of Death, Iron, Light, War or Wisdom",
       "description": "Prevents all active magic within range. The range is 50% of other auras and costs 1 more action /round than other auras.",
       "costPerRank": 10,
-      "maxRank": "2,3 or 4 each round",
-      "mcl": "15, 50 or 150",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "15,50 or 150",
       "maintenancePerRank": 0.0
     },
     {
@@ -1040,8 +1106,9 @@
       "prereq": "Mark of Favour",
       "description": "Gain the power to bestow your Patron's Mark. You and the willing target must pray for at least 3 hours in a place of importance to you Deity. Both You and the target must pass a Willpower Check 25 or the ritual fails. That target may not attempt the ritual again for one year.",
       "costPerRank": 1,
-      "maxRank": "Special",
-      "mcl": "Special",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "Special",
       "maintenancePerRank": 0.0
     },
     {
@@ -1050,8 +1117,9 @@
       "prereq": "Mark of Favour Exalted Auras Extended Auras",
       "description": "Choose one of the Auras you already know to designate as Favoured. That Aura no longer costs any actions. You may combine it with any other Aura you know. This does not alter the action cost of the other Aura.",
       "costPerRank": 10,
-      "maxRank": "1,2 or 3 each round",
-      "mcl": "30,100 or 300",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "30,100 or 300",
       "maintenancePerRank": 0.0
     },
     {
@@ -1060,8 +1128,9 @@
       "prereq": "Mark of Favour. Exalted Hammer",
       "description": "Your Spiritual Hammer range is increased to 125 Feet and the damage increased to 1d8+ your Arcane Power.",
       "costPerRank": 25,
-      "maxRank": "3",
-      "mcl": "150",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "150",
       "maintenancePerRank": 0.0
     },
     {
@@ -1070,8 +1139,9 @@
       "prereq": "Mark of favour Exalted blessings",
       "description": "Your blessings now grant +1d4 instead of +1, and heals them for 3 hit points instead of 1.",
       "costPerRank": 25,
-      "maxRank": "Passive",
-      "mcl": "Self",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "Self",
       "maintenancePerRank": 0.0
     },
     {
@@ -1080,8 +1150,9 @@
       "prereq": "Mark of Favour",
       "description": "You may learn a second Divine Offence, or Divine Benediction, or Divine Defence.",
       "costPerRank": 25,
-      "maxRank": "Passive",
-      "mcl": "Self",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "Self",
       "maintenancePerRank": 0.0
     },
     {
@@ -1090,8 +1161,9 @@
       "prereq": "Mark of Favour",
       "description": "Your melee is resolved first in the combat round. If you end that melee out of combat you may move to join another within half of your maximum movement. You may participate in the second melee, with 2 free actions as well as any saved. Under no circumstances can you join a third melee.",
       "costPerRank": 25,
-      "maxRank": "Passive",
-      "mcl": "Self",
+      "maxRank": "1",
+      "mcl": "1",
+      "range": "Self",
       "maintenancePerRank": 0.0
     }
   ],

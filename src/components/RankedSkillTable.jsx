@@ -83,10 +83,6 @@ function calcGeneralScore(skillName, char, attrs) {
 function checkUnfettered(uc) {
   // uc = stats.unfetteredConditions — already computed by the calculator
   if (!uc) return { met: true }  // stats not available, don't block
-  if (!uc.weightOk)        return { met: false, reason: 'Not Unfettered: over half carry weight' }
-  if (!uc.noShield)        return { met: false, reason: 'Not Unfettered: shield equipped' }
-  if (!uc.plateOk)         return { met: false, reason: 'Not Unfettered: too much plate armor' }
-  if (!uc.armorPenaltyOk)  return { met: false, reason: 'Not Unfettered: armor evasion penalty too high' }
   return { met: true }
 }
 
@@ -294,7 +290,9 @@ function EditablePoints({ value, onCommit, theme, isActive, locked }) {
   )
 }
 
-function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onUpdate, skillSource, theme, level, char, stats, gmMode, unspentPoints, tourLeftId, tourRightId, tourPtsId }) {
+export { checkPrereq }
+
+export function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onUpdate, skillSource, theme, level, char, stats, gmMode, unspentPoints, tourLeftId, tourRightId, tourPtsId, forcePtsReadOnly }) {
   const [expanded, setExpanded] = useState(false)
   const T = theme || THEMES.selfImprovement
   const costPerRank = parseInt(skill.costPerRank) || 1
@@ -356,7 +354,7 @@ const handleCommit = (newPoints) => {
         </div>
 
         <div data-tour={tourPtsId || undefined} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '6px 4px', gap: 2 }}>
-          <EditablePoints value={pointsInvested} onCommit={handleCommit} theme={T} isActive={isActive} locked={editLocked} />
+          <EditablePoints value={pointsInvested} onCommit={handleCommit} theme={T} isActive={isActive} locked={editLocked || !!forcePtsReadOnly} />
           <div style={{ width: 36, height: 1, background: isActive ? T.border : 'var(--border)' }} />
           <div style={{ fontSize: '.75rem', color: 'var(--text3)', fontFamily: 'Georgia, serif' }}>{costPerRank}</div>
         </div>

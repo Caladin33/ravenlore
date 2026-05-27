@@ -171,13 +171,6 @@ function getIssues(stats, character) {
     const def = martialSkillsData.find(s => s.name === name)
     return def?.category === 'Unfettered' && (parseInt(character.martialSkills[name].pointsInvested) || 0) > 0
   })
-  if (hasUnfettered && stats.unfetteredConditions) {
-    console.log('hasUnfettered:', hasUnfettered, 'martialSkills keys:', Object.keys(character.martialSkills || {}))
-    const uc = stats.unfetteredConditions
-    if (!uc.weightOk)       issues.push('Not Unfettered: over half carry weight')
-    else if (!uc.plateOk)   issues.push('Not Unfettered: too much plate armor')
-    else if (!uc.armorPenaltyOk) issues.push('Not Unfettered: armor evasion penalty too high')
-  }
 
   // 4. Weight over carry limit
   const carried = character.carryingWeight??0

@@ -4,7 +4,7 @@ import generalSkillsData from '../data/generalSkills.json'
 import arcaneSkillsData from '../data/arcaneSkills.json'
 import racesData from '../data/races.json'
 import { GeneralSkillCard } from './GeneralSkillCard'
-import { RankedSkillTable, THEMES } from './RankedSkillTable'
+import { RankedSkillTable, SkillTableRow, THEMES, checkPrereq } from './RankedSkillTable'
 import SaveConfirmModal from './SaveConfirmModal'
 import ConfirmModal from './ConfirmModal'
 import selfImprovementData from '../data/selfImprovementSkills.json'
@@ -260,6 +260,162 @@ const addSymbol = () => {
   )
 }
 
+// ── PICK-1 GROUP MODAL ────────────────────────────────────────────────────────
+function Pick1GroupModal({ group, char, stats, arcaneSkillDefs, unspentPoints, onConfirm, onClose }) {
+  const T = THEMES.divine
+  const [selected, setSelected] = useState(null)
+  const [confirmModal, setConfirmModal] = useState(null)
+
+  const skillDef = (name) => arcaneSkillDefs.find(s => s.name === name) || { name, prereq: 'none', costPerRank: 10, description: '' }
+
+  const handleConfirm = () => {
+    if (!selected) return
+    const def = skillDef(selected)
+    const cost = parseInt(def.costPerRank) || 10
+    if (cost > unspentPoints) {
+      setConfirmModal({ message: `Not enough points. Need ${cost}, have ${unspentPoints}.`, onConfirm: () => setConfirmModal(null), cancelLabel: null })
+      return
+    }
+    setConfirmModal({
+      message: `Purchase ${selected} for ${cost} points? This cannot be undone without GM mode.`,
+      onConfirm: () => { onConfirm(selected, cost); setConfirmModal(null) },
+    })
+  }
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.78)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1100, padding: 16 }}>
+      <div style={{ background: 'var(--surface)', border: `1px solid ${T.primary}`, borderRadius: 10, padding: 22, maxWidth: 520, width: '100%', maxHeight: '85vh', overflowY: 'auto', boxShadow: '0 8px 40px rgba(0,0,0,.7)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+          <h3 style={{ color: T.primary2, fontFamily: 'Georgia, serif', margin: 0, fontSize: '1.1rem' }}>{group.label} — Choose One</h3>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--text3)', cursor: 'pointer', fontSize: '1.2rem', padding: '0 4px' }}>✕</button>
+        </div>
+        <div style={{ fontSize: '.75rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', fontStyle: 'italic', marginBottom: 14 }}>
+          You may only ever learn one skill from this group. Choose carefully.
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
+          {group.skills.map(name => {
+            const def = skillDef(name)
+            const prereq = checkPrereq(def.prereq, char, stats)
+            const cost = parseInt(def.costPerRank) || 10
+            const canAfford = cost <= unspentPoints
+            const isSelected = selected === name
+            const dimmed = !prereq.met
+            return (
+              <div key={name}
+                onClick={() => setSelected(isSelected ? null : name)}
+                style={{
+                  padding: '10px 14px', borderRadius: 7, cursor: 'pointer',
+                  border: `2px solid ${isSelected ? T.primary : dimmed ? 'var(--border)' : 'var(--border2)'}`,
+                  background: isSelected ? T.dim : dimmed ? 'rgba(0,0,0,.15)' : 'var(--bg)',
+                  opacity: dimmed ? 0.6 : 1,
+                  transition: 'all .15s',
+                }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                  <span style={{ fontSize: '.95rem', color: isSelected ? T.primary2 : dimmed ? 'var(--text3)' : 'var(--text)', fontFamily: 'Georgia, serif', fontWeight: isSelected ? 600 : 400 }}>
+                    {name}
+                  </span>
+                  <span style={{ fontSize: '.75rem', color: canAfford ? T.primary : '#c94a4a', fontFamily: 'Georgia, serif', fontWeight: 600 }}>
+                    {cost} pts
+                  </span>
+                </div>
+                {!prereq.met && (
+                  <div style={{ fontSize: '.68rem', color: '#c94a4a', fontFamily: 'Georgia, serif', fontStyle: 'italic', marginBottom: 3 }}>
+                    {prereq.reason}
+                  </div>
+                )}
+                {def.description && (
+                  <div style={{ fontSize: '.75rem', color: 'var(--text2)', fontFamily: 'Georgia, serif', lineHeight: 1.45 }}>
+                    {def.description.length > 180 ? def.description.slice(0, 180) + '…' : def.description}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+        <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
+          <button onClick={onClose} style={{ padding: '8px 16px', background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif' }}>
+            Cancel
+          </button>
+          <button onClick={handleConfirm} disabled={!selected}
+            style={{ padding: '8px 20px', background: selected ? T.dim : 'var(--bg2)', border: `1px solid ${selected ? T.primary : 'var(--border)'}`, color: selected ? T.primary2 : 'var(--text3)', borderRadius: 5, cursor: selected ? 'pointer' : 'not-allowed', fontFamily: 'Georgia, serif', fontWeight: 600 }}>
+            Confirm Purchase
+          </button>
+        </div>
+      </div>
+      {confirmModal && (
+        <ConfirmModal
+          message={confirmModal.message}
+          onConfirm={confirmModal.onConfirm}
+          onCancel={confirmModal.cancelLabel === null ? undefined : () => setConfirmModal(null)}
+        />
+      )}
+    </div>
+  )
+}
+
+function ChampionChoiceModal({ onConfirm, onClose }) {
+  const T = THEMES.divine
+  const [selected, setSelected] = useState(null)
+  const [confirmModal, setConfirmModal] = useState(null)
+
+  const options = [
+    { key: 'offence',      label: 'Divine Offence',   desc: 'Learn a second Divine Offence skill.' },
+    { key: 'benedictions', label: 'Benedictions',      desc: 'Learn a second Benediction.' },
+    { key: 'defence',      label: 'Divine Defence',    desc: 'Learn a second Divine Defence skill.' },
+  ]
+
+  const handleConfirm = () => {
+    if (!selected) return
+    const label = options.find(o => o.key === selected).label
+    setConfirmModal({
+      message: `Lock in ${label} as your Champion's Choice? This cannot be changed without GM mode.`,
+      onConfirm: () => { onConfirm(selected); setConfirmModal(null) },
+    })
+  }
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.78)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1200, padding: 16 }}>
+      <div style={{ background: 'var(--surface)', border: `1px solid ${T.primary}`, borderRadius: 10, padding: 22, maxWidth: 440, width: '100%', boxShadow: '0 8px 40px rgba(0,0,0,.7)' }}>
+        <h3 style={{ color: T.primary2, fontFamily: 'Georgia, serif', margin: '0 0 8px', fontSize: '1.1rem' }}>Champion's Choice</h3>
+        <div style={{ fontSize: '.8rem', color: 'var(--text2)', fontFamily: 'Georgia, serif', marginBottom: 16, lineHeight: 1.5 }}>
+          Your divine favour allows you to learn a second skill from one group. Choose which group now — this choice is permanent.
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
+          {options.map(opt => (
+            <div key={opt.key} onClick={() => setSelected(opt.key)} style={{
+              padding: '10px 14px', borderRadius: 7, cursor: 'pointer',
+              border: `2px solid ${selected === opt.key ? T.primary : 'var(--border)'}`,
+              background: selected === opt.key ? T.dim : 'var(--bg)',
+              transition: 'all .15s',
+            }}>
+              <div style={{ fontSize: '.95rem', color: selected === opt.key ? T.primary2 : 'var(--text)', fontFamily: 'Georgia, serif', fontWeight: selected === opt.key ? 600 : 400, marginBottom: 3 }}>
+                {opt.label}
+              </div>
+              <div style={{ fontSize: '.75rem', color: 'var(--text2)', fontFamily: 'Georgia, serif' }}>{opt.desc}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
+          <button onClick={onClose} style={{ padding: '8px 16px', background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif' }}>
+            Decide Later
+          </button>
+          <button onClick={handleConfirm} disabled={!selected}
+            style={{ padding: '8px 20px', background: selected ? T.dim : 'var(--bg2)', border: `1px solid ${selected ? T.primary : 'var(--border)'}`, color: selected ? T.primary2 : 'var(--text3)', borderRadius: 5, cursor: selected ? 'pointer' : 'not-allowed', fontFamily: 'Georgia, serif', fontWeight: 600 }}>
+            Confirm &amp; Lock
+          </button>
+        </div>
+      </div>
+      {confirmModal && (
+        <ConfirmModal
+          message={confirmModal.message}
+          onConfirm={confirmModal.onConfirm}
+          onCancel={() => setConfirmModal(null)}
+        />
+      )}
+    </div>
+  )
+}
+
 // ── HELPERS ───────────────────────────────────────────────────────────────────
 function getEffectiveAttributes(char) {
   const race = racesData[char.race?.charAt(0).toLowerCase() + char.race?.slice(1).replace(/\s+/g, '') || 'human'] || {}
@@ -315,6 +471,60 @@ function getPointsInvested(char, skillName) {
 
 const TABS = ['General', 'Martial', 'Spiritual', 'Obscure']
 
+// ── DIVINE PICK-1 GROUPS ──────────────────────────────────────────────────────
+const DIVINE_GROUPS = [
+  {
+    key: 'defence',
+    label: 'Divine Defence',
+    skills: [
+      'Divine Affinity', 'Divine Armor', 'Divine Guard', 'Divine Protection',
+      'Divine resilience', 'Divine Transfer', 'Divine Repose', 'Divine Appeal',
+    ],
+  },
+  {
+    key: 'benedictions',
+    label: 'Benedictions',
+    skills: ['Bless', 'Curse', 'Exhort', 'Hallow', 'Becalm'],
+  },
+  {
+    key: 'healing',
+    label: 'Divine Healing',
+    skills: ['Blood Rune', 'Grafting Glyph', 'Rain of Renewal'],
+  },
+  {
+    key: 'offence',
+    label: 'Divine Offence',
+    skills: [
+      'Blade of shadow', 'Blight/Smite', 'Project', 'Glyph of Union',
+      'Kettle Vine', 'Spiritual Hammer', 'Flash', 'Consuming Kiss', 'Highlight',
+    ],
+  },
+]
+
+// Groups that Champion's Choice can grant a second pick for
+const CHAMPIONS_CHOICE_GROUPS = ['offence', 'benedictions', 'defence']
+
+function getDivineGroupKey(skillName) {
+  for (const g of DIVINE_GROUPS) {
+    if (g.skills.includes(skillName)) return g.key
+  }
+  return null
+}
+
+function groupPickLimit(groupKey, char) {
+  const hasChampion = parseInt(char.arcaneSkills?.["Champion's Choice"]?.rank) || 0
+  if (hasChampion >= 1 && CHAMPIONS_CHOICE_GROUPS.includes(groupKey)) {
+    return char.championChoiceGroup === groupKey ? 2 : 1
+  }
+  return 1
+}
+
+function groupPickCount(groupKey, char) {
+  const group = DIVINE_GROUPS.find(g => g.key === groupKey)
+  if (!group) return 0
+  return group.skills.filter(name => (parseInt(char.arcaneSkills?.[name]?.rank) || 0) > 0).length
+}
+
 // ── MAIN COMPONENT ────────────────────────────────────────────────────────────
 export default function SkillEditor({ character, onSave, onBack, gmModeActive, stats }) {
   const [activeTab, setActiveTab] = useState('General')
@@ -330,6 +540,8 @@ export default function SkillEditor({ character, onSave, onBack, gmModeActive, s
   })
   const [search, setSearch] = useState('')
   const [showActiveOnly, setShowActiveOnly] = useState(false)
+  const [activeBuyGroup, setActiveBuyGroup] = useState(null)       // group object for Pick1GroupModal
+  const [championChoiceModalOpen, setChampionChoiceModalOpen] = useState(false)
 
   const arcaneSkills = useMemo(() => getAllArcaneSkills(arcaneSkillsData), [])
   const effectiveAttrs = useMemo(() => getEffectiveAttributes(char), [char])
@@ -473,6 +685,210 @@ const handleSave = () => {
     }
   }
 
+  // Champion's Choice handler — fires when Champion's Choice skill is purchased
+  const handleChampionChoiceGroupSelect = (groupKey) => {
+    setChar(prev => {
+      const updated = { ...prev, championChoiceGroup: groupKey }
+      return updated
+    })
+    setChampionChoiceModalOpen(false)
+  }
+
+  // Handle buying a pick-1 group skill from the modal
+  const handleGroupSkillBuy = (skillName, cost) => {
+    setChar(prev => {
+      const next = JSON.parse(JSON.stringify(prev))
+      if (!next.arcaneSkills) next.arcaneSkills = {}
+      const skillDef = arcaneSkills.find(s => s.name === skillName)
+      const costPerRank = parseInt(skillDef?.costPerRank) || cost
+      const maint = skillDef?.maintenancePerRank || 0
+      next.arcaneSkills[skillName] = { pointsInvested: costPerRank, rank: 1, maintenanceCost: maint }
+      return next
+    })
+    setActiveBuyGroup(null)
+  }
+
+  // Render the full divine section with pick-1 group headers
+  const renderDivineSection = (categorySkills) => {
+    const T = THEMES.divine
+    const allDivineGroupSkillNames = new Set(DIVINE_GROUPS.flatMap(g => g.skills))
+
+    // Collect skills NOT in any group (rendered normally via RankedSkillTable-style rows)
+    // Group skills are rendered inside their group blocks
+    const rows = []
+    let i = 0
+
+    while (i < categorySkills.length) {
+      const skill = categorySkills[i]
+      const groupKey = getDivineGroupKey(skill.name)
+
+      if (groupKey) {
+        // Find the full group definition
+        const group = DIVINE_GROUPS.find(g => g.key === groupKey)
+        // Collect all group member skills that appear in categorySkills
+        const groupSkillsInList = categorySkills.filter(s => group.skills.includes(s.name))
+        const pickLimit = groupPickLimit(groupKey, char)
+        const pickCount = groupPickCount(groupKey, char)
+        const atLimit = pickCount >= pickLimit
+        const pickedNames = group.skills.filter(n => (parseInt(char.arcaneSkills?.[n]?.rank) || 0) > 0)
+
+        // Determine second-slot eligibility
+        const isChampionGroup = char.championChoiceGroup === groupKey
+        const showSecondSlot = isChampionGroup && pickLimit === 2
+
+        rows.push(
+          <div key={`group-header-${groupKey}`}>
+            {/* Group header row */}
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '7px 12px', background: T.dim,
+              borderBottom: `1px solid ${T.border}`, borderTop: `2px solid ${T.primary}`,
+              gap: 8,
+            }}>
+              <div>
+                <span style={{ fontSize: '.8rem', letterSpacing: '.15em', color: T.primary2, textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 600 }}>
+                  {group.label}
+                </span>
+                {pickedNames.length > 0 && (
+                  <span style={{ fontSize: '.75rem', color: T.primary, fontFamily: 'Georgia, serif', marginLeft: 10, fontStyle: 'italic' }}>
+                    — {pickedNames.join(', ')}
+                    {showSecondSlot && pickCount < 2 && ' (1st choice)'}
+                  </span>
+                )}
+                {pickedNames.length === 0 && (
+                  <span style={{ fontSize: '.7rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', marginLeft: 8, fontStyle: 'italic' }}>
+                    Pick one
+                  </span>
+                )}
+              </div>
+              <div style={{ display: 'flex', gap: 6 }}>
+                {/* First buy button — shown if no pick yet, or if champion group allows second */}
+                {(!atLimit) && (
+                  <button
+                    onClick={() => setActiveBuyGroup(group)}
+                    style={{
+                      padding: '4px 14px', background: 'rgba(201,168,76,.12)',
+                      border: `1px solid ${T.primary}`, color: T.primary2,
+                      borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.8rem', fontWeight: 600,
+                    }}>
+                    Buy
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Group skill rows — pts box is always read-only */}
+            {groupSkillsInList.map(s => {
+              const pts = parseInt(char.arcaneSkills?.[s.name]?.pointsInvested) || 0
+              const rank = parseInt(char.arcaneSkills?.[s.name]?.rank) || 0
+              const isOwned = rank > 0
+              const isGroupLocked = !isOwned  // non-owned group members are locked from direct edit
+              return (
+                <div key={s.name} style={{ opacity: (!isOwned && atLimit) ? 0.45 : 1 }}>
+                  <SkillTableRow
+                    skill={s}
+                    rank={rank}
+                    pointsInvested={pts}
+                    lockedPoints={lockedPoints}
+                    theme={T}
+                    level={char.level || 1}
+                    char={char}
+                    stats={stats}
+                    gmMode={gmMode}
+                    onUpdate={gmMode ? (name, newPts) => handleUpdate(name, newPts, 'arcane') : undefined}
+                    skillSource="arcane"
+                    unspentPoints={pointTotals.unspent}
+                    forcePtsReadOnly={!gmMode}
+                  />
+                </div>
+              )
+            })}
+
+            {/* Patron's Mark special row if it's in this section */}
+          </div>
+        )
+
+        // Skip past all group members in the loop
+        while (i < categorySkills.length && group.skills.includes(categorySkills[i].name)) {
+          i++
+        }
+        continue
+      }
+
+      // Non-group skill — render normally
+      const pts = parseInt(char.arcaneSkills?.[skill.name]?.pointsInvested) || 0
+      const rank = parseInt(char.arcaneSkills?.[skill.name]?.rank) || 0
+      rows.push(
+        <div key={skill.name}>
+          <SkillTableRow
+            skill={skill}
+            rank={rank}
+            pointsInvested={pts}
+            lockedPoints={lockedPoints}
+            theme={T}
+            level={char.level || 1}
+            char={char}
+            stats={stats}
+            gmMode={gmMode}
+            onUpdate={(name, newPts) => handleUpdate(name, newPts, 'arcane')}
+            skillSource="arcane"
+            unspentPoints={pointTotals.unspent}
+          />
+          {/* Patron's Mark special panel */}
+          {skill.name === "Patron's Mark" && rank >= 1 && (
+            <PatronMarkPanel char={char} onUpdate={handlePatronMarkUpdate} gmMode={gmMode} />
+          )}
+          {/* Champion's Choice: open group picker when purchased */}
+          {skill.name === "Champion's Choice" && rank >= 1 && !char.championChoiceGroup && (
+            <div style={{ padding: '8px 12px', background: T.dim, borderBottom: `1px solid ${T.border}` }}>
+              <button
+                onClick={() => setChampionChoiceModalOpen(true)}
+                style={{ padding: '5px 14px', background: 'rgba(201,168,76,.12)', border: `1px solid ${T.primary}`, color: T.primary2, borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.82rem' }}>
+                Choose Group (Champion's Choice)
+              </button>
+            </div>
+          )}
+          {skill.name === "Champion's Choice" && char.championChoiceGroup && (
+            <div style={{ padding: '6px 12px', background: T.dim, borderBottom: `1px solid ${T.border}`, fontSize: '.75rem', color: T.primary, fontFamily: 'Georgia, serif', fontStyle: 'italic' }}>
+              Champion's Choice: {DIVINE_GROUPS.find(g => g.key === char.championChoiceGroup)?.label}
+              {gmMode && (
+                <button onClick={() => setChar(prev => ({ ...prev, championChoiceGroup: null }))}
+                  style={{ marginLeft: 10, padding: '2px 8px', background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 3, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.7rem' }}>
+                  Reset (GM)
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      )
+      i++
+    }
+
+    return (
+      <div>
+        <div data-tour="skills-divine-header" style={{ padding: '10px 12px', background: 'var(--bg)', borderBottom: `2px solid ${T.primary}`, fontSize: '1rem', letterSpacing: '.25em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 600, textAlign: 'center' }}>
+          Divine
+        </div>
+        {/* Column headers */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 72px 52px', background: 'var(--bg2)', borderBottom: `1px solid ${T.border}`, minHeight: 44, alignItems: 'center' }}>
+          <div style={{ padding: '0 12px', fontSize: '.85rem', letterSpacing: '.12em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Skill</div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2, padding: '4px' }}>
+            <div style={{ fontSize: '.7rem', letterSpacing: '.08em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Pts</div>
+            <div style={{ width: 36, height: 1, background: T.border }} />
+            <div style={{ fontSize: '.7rem', letterSpacing: '.08em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Cost</div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2, padding: '4px' }}>
+            <div style={{ fontSize: '.7rem', letterSpacing: '.08em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Rnk</div>
+            <div style={{ width: 28, height: 1, background: T.border }} />
+            <div style={{ fontSize: '.7rem', letterSpacing: '.08em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Max</div>
+          </div>
+        </div>
+        {rows}
+      </div>
+    )
+  }
+
+
   // Build specialRows for Guild — Shaman's Symbol panel appears below that skill row
   const buildGuildSpecialRows = () => {
     const shamanRank = parseInt(char.arcaneSkills?.["Shaman's Symbol"]?.rank) || 0
@@ -604,7 +1020,13 @@ const handleSave = () => {
           return categories.map(category => {
             const categorySkills = filterSkills((arcaneSkillsData[category] || []).map(s => ({ ...s, category })))
             if (categorySkills.length === 0) return null
-            const specialRows = category === 'divine' ? buildDivineSpecialRows() : category === 'guild' ? buildGuildSpecialRows() : undefined
+
+            // Divine uses a custom renderer for pick-1 group headers
+            if (category === 'divine') {
+              return <div key="divine">{renderDivineSection(categorySkills)}</div>
+            }
+
+            const specialRows = category === 'guild' ? buildGuildSpecialRows() : undefined
             return (
               <RankedSkillTable
                 key={category}
@@ -621,7 +1043,6 @@ const handleSave = () => {
                 specialRows={specialRows}
                 unspentPoints={pointTotals.unspent}
                 sectionHeaderTourId={
-                  category === 'divine' ? 'skills-divine-header' :
                   category === 'balance' ? 'skills-balance-header' :
                   category === 'spellcaster' ? 'skills-arcane-header' : undefined
                 }
@@ -647,6 +1068,23 @@ const handleSave = () => {
     onCancel={() => setConfirmModal(null)}
   />
 )}
+      {activeBuyGroup && (
+        <Pick1GroupModal
+          group={activeBuyGroup}
+          char={char}
+          stats={stats}
+          arcaneSkillDefs={arcaneSkills}
+          unspentPoints={pointTotals.unspent}
+          onConfirm={handleGroupSkillBuy}
+          onClose={() => setActiveBuyGroup(null)}
+        />
+      )}
+      {championChoiceModalOpen && (
+        <ChampionChoiceModal
+          onConfirm={handleChampionChoiceGroupSelect}
+          onClose={() => setChampionChoiceModalOpen(false)}
+        />
+      )}
     </div>
   )
 }
