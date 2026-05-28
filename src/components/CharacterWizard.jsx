@@ -120,7 +120,7 @@ function StepIndicator({ current, total }) {
 }
 
 // ── STEP 1: NAME & PLAYER ─────────────────────────────────────────────────────
-function StepNamePlayer({ data, onChange }) {
+function StepNamePlayer({ data, onChange, existingNames }) {
   const [campaigns, setCampaigns] = useState([])
   useEffect(() => { loadAllCampaigns().then(setCampaigns) }, [])
 
@@ -130,6 +130,11 @@ function StepNamePlayer({ data, onChange }) {
       <div>
         <span style={lbl}>Character Name</span>
         <input style={inputStyle} value={data.name} onChange={e => onChange({ ...data, name: e.target.value })} placeholder="Can be changed later in Bio..." />
+        {existingNames.includes(data.name.trim()) && data.name.trim() && (
+  <div style={{ marginTop: 6, color: '#c94a4a', fontSize: '.8rem', fontFamily: 'Georgia, serif' }}>
+    ⚠ A character named "{data.name.trim()}" already exists.
+  </div>
+)}
       </div>
       <div>
         <span style={lbl}>Player Name</span>
@@ -434,7 +439,7 @@ function StepRace({ data, onChange }) {
 // ── MAIN WIZARD ───────────────────────────────────────────────────────────────
 const STEPS = ['Name', 'Roll', 'Assign', 'Race']
 
-export default function CharacterWizard({ userId, onComplete, onCancel }) {
+export default function CharacterWizard({ userId, existingNames, onComplete, onCancel }) {
   const [step, setStep] = useState(0)
   const [data, setData] = useState({
     name: '', player: '', raceKey: '',
@@ -443,7 +448,7 @@ export default function CharacterWizard({ userId, onComplete, onCancel }) {
   })
 
   const canAdvance = useMemo(() => {
-    if (step === 0) return data.name.trim() && data.player.trim()
+    if (step === 0) return data.name.trim() && data.player.trim() && !existingNames.includes(data.name.trim())
     if (step === 1) return data.rolledValues !== null
     if (step === 2) return Object.keys(data.assignedMap || {}).length === 6
     if (step === 3) return !!data.raceKey
@@ -496,7 +501,7 @@ export default function CharacterWizard({ userId, onComplete, onCancel }) {
       <StepIndicator current={step} total={STEPS.length} />
 
       <div style={surface}>
-        {step === 0 && <StepNamePlayer data={data} onChange={setData} />}
+        {step === 0 && <StepNamePlayer data={data} onChange={setData} existingNames={existingNames} />}
         {step === 1 && <StepRoll data={data} onChange={setData} />}
         {step === 2 && <StepAssign data={data} onChange={setData} />}
         {step === 3 && <StepRace data={data} onChange={setData} />}

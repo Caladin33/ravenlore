@@ -396,8 +396,7 @@ function App() {
           />
         )}
         {currentPage === 'wizard' && (
-          <CharacterWizard userId={user.id} onComplete={handleWizardComplete} onCancel={() => setCurrentPage('home')} />
-        )}
+          <CharacterWizard userId={user.id} existingNames={characters.map(c => c.name)} onComplete={handleWizardComplete} onCancel={() => setCurrentPage('home')} />        )}
         {currentPage === 'sheet' && selectedCharacter && (
           <CharacterSheet
             character={selectedCharacter}
