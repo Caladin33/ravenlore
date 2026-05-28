@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { supabase } from './supabase'
 import Auth from './components/Auth'
+import CharacterImport from './components/CharacterImport'
 import ArcaneCompendium from './components/ArcaneCompendium'
 import CharacterSheet from './components/CharacterSheet'
 import SkillEditor from './components/SkillEditor'
@@ -160,7 +161,7 @@ function CharacterHeader({ character, currentTab, onNavigate, onHome, gmModeActi
 }
 
 // ── HOME PAGE ─────────────────────────────────────────────────────────────────
-function HomePage({ characters, onSelectCharacter, onDelete, onLogout, onNewCharacter, isGM, onGMView }) {
+function HomePage({ characters, onSelectCharacter, onDelete, onLogout, onNewCharacter, onImport, isGM, onGMView }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 40, padding: '40px 0' }}>
       <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
@@ -180,6 +181,9 @@ function HomePage({ characters, onSelectCharacter, onDelete, onLogout, onNewChar
             )}
             <button onClick={onNewCharacter} style={{ background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 4, padding: '5px 12px', fontFamily: 'Georgia, serif', fontSize: '.8rem', cursor: 'pointer' }}>
               + New Character
+            </button>
+            <button onClick={onImport} style={{ background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 4, padding: '5px 12px', fontFamily: 'Georgia, serif', fontSize: '.8rem', cursor: 'pointer' }}>
+             ↓ Import
             </button>
           </div>
         </div>
@@ -310,7 +314,16 @@ function App() {
       advanceTour(0)
     })
   }
-
+  const handleImport = async (importedChar) => {
+  await saveCharacter({ ...importedChar, createdBy: user.id }, user.id)
+  loadCharacters(user.id).then(({ characters }) => {
+    setCharacters(characters || [])
+    const created = characters?.find(c => c.name === importedChar.name) || importedChar
+    setSelectedCharacter(created)
+    setGmModeActive(false)
+    setCurrentPage('bio')
+  })
+}
   const handleUpdateCharacter = (updated) => {
     setSelectedCharacter(updated)
     // If GM is editing someone else's character, save by owner
@@ -383,6 +396,7 @@ function App() {
             onDelete={handleDelete}
             onLogout={handleLogout}
             onNewCharacter={handleNewCharacter}
+             onImport={() => navigate('import')} 
             isGM={isGM}
             onGMView={() => navigate('gm')}
           />
@@ -397,6 +411,13 @@ function App() {
         )}
         {currentPage === 'wizard' && (
           <CharacterWizard userId={user.id} existingNames={characters.map(c => c.name)} onComplete={handleWizardComplete} onCancel={() => setCurrentPage('home')} />        )}
+            {currentPage === 'import' && (    // ← add this block
+          <CharacterImport
+           existingNames={characters.map(c => c.name)}
+            onImport={handleImport}
+            onCancel={() => navigate('home')}
+            />
+          )}
         {currentPage === 'sheet' && selectedCharacter && (
           <CharacterSheet
             character={selectedCharacter}

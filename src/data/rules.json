@@ -1,0 +1,74 @@
+{
+  "Arcane": [
+    {
+      "title": "Weaving Spells",
+      "text": "Spells are cast by weaving two different powers together. For each of the powers being used (always 2) Roll one die for every two actions used, and then keep the best die, then repeat for the other colour. Both results must be above the Spell Level."
+    },
+    {
+      "title": "Hanging Spells",
+      "text": "Upon successfully weaving a spell you may choose to Hang the spell instead of casting it, if you have an available spell hook. Hanging spells are nearly completed, requiring only one gesture and word to trigger. Hanging spells only cost 1 action to trigger, and always succeed."
+    }
+  ],
+  "Divine": [
+    {
+      "title": "Divine Gifts",
+      "text": "Prove your devotion through a personal sacrifice and receive the power of your Deity. Gain a Mark appropriate to your chosen patron. This Mark will appear as a birthmark somewhere on your body, usually on your face. Each Mark unlocks different Skill choices, but also gives a unique benefit."
+    }
+  ],
+  "Melee": [
+    {
+      "title": "Margin of Victory",
+      "text": "The Margin of Victory (MoV) is the winning combat roll minus the highest opposing combat roll. It is not necessarily the same for all damage rolls in the same combat. For example: Sue and Sally fight Tommy. Their combat rolls are Sue-17, Sally-21 and Tommy-10. Sue's Margin of Victory is 7 while Sally's is 11, unless one of them has a relevant skill such as tactical teamwork."
+    },
+    {
+      "title": "Precision",
+      "text": "+1 on targeting rolls per point. Total Precision can never exceed 25."
+    },
+    {
+      "title": "Evasion",
+      "text": "-1 on targeting rolls against you per point. Total Evasion can never exceed 20."
+    },
+    {
+      "title": "Shields",
+      "text": "Shields grant a large amount of Evasion. That's all they do. Any targeting rolls between 0 and -10 (inclusive) will hit the shield instead of miss, and damage is applied to the shield. Targeting rolls above 0 are considered to have avoided the shield. If a shield's HP are reduced to zero any remaining damage carries through to the Torso."
+    },
+    {
+      "title": "Critical Hits",
+      "text": "A critical hit adds the maximum damage die roll, without modifiers, in extra damage. If you crit by multiple methods this amount is added for each. Example: an armed martial artist with the leverage skill rolls combat on 3 actions. She rolls 12,7,12 with her left hand and 12,7,8 with her right. The 7s are discarded resulting in 24 and 20. The 24 is a crit, and leverage adds two more, so her left hand damage is 1d4+her unarmed damage bonus+12. Her right hand is a crit from leverage, but her Ruthless Tempo skill is not high enough rank to make 20 a crit. So her right hand damage would be 1d4+her unarmed damage bonus+4."
+    },
+    {
+      "title": "Rear Damage",
+      "text": "Any damage dealt from behind a creature adds 1 CRIT, undefended or not, melee or ranged."
+    },
+    {
+      "title": "Rear Evasion",
+      "text": "Attacks from behind or rounding weapons use the rear EV, which does not include the shield and only half of other sources."
+    },
+    {
+      "title": "Undefended",
+      "text": "When attacking an undefended side of an opponent: you win combat with a Margin of Victory equal to half of your Combat roll, and use their Rear Evasion. A side of a creature is considered undefended if it cannot or does not pay the action penalty for flanking or surrounded, or it is unaware of or ignores an attacker."
+    }
+  ],
+  "Unfettered": [
+    {
+      "title": "Unfettered Conditions",
+      "text": "To qualify as Unfettered: Less than half your carrying weight allowance. No dangling or awkward gear. No Shield. Plate in no more than 1 location, and your total Evasion Penalty from Armor cannot exceed 1."
+    }
+  ],
+  "Ranged": [
+    {
+      "title": "Hit Surplus",
+      "text": "Hit Surplus is your to hit roll after all penalties and bonuses minus the number needed to score a hit (15). A Hit Surplus of zero is still a hit, barely."
+    }
+  ],
+  "Infernal": [
+    {
+      "title": "Demonic Contracts",
+      "text": "Demonic Contracts are binding and a very, very bad idea. You must sign one to gain access to these abilities. The abilities describe the risk of gaining 'corruption' when you use them."
+    },
+    {
+      "title": "Effects of Corruption",
+      "text": "5p: improved freedom from piety\n10p: improved freedom from inhibition\n15p: improved freedom from piety\n20p: WP Checks vs your skills are 1 harder.\n25p: improved freedom from piety\n30p: Odoriferous enhancement and Access to Personal Development Specialist\n35p: improved freedom from inhibition\n40p: improved freedom from piety\n45p: WP Checks vs your skills are 2 harder.\n50p: Personal Development Specialist follow-up\n60p: Membership privileges acquired and contagious energy\n75p: Individualised Development Plan engagement.\n90p: Manifest Feculence\n100p: Initiation into inner circle."
+    }
+  ]
+}

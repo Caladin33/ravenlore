@@ -9,6 +9,69 @@ import { RankedSkillTable, SkillTableRow, THEMES, checkPrereq } from './RankedSk
 import SaveConfirmModal from './SaveConfirmModal'
 import ConfirmModal from './ConfirmModal'
 import selfImprovementData from '../data/selfImprovementSkills.json'
+import rulesData from '../data/rules.json'
+
+// ── RULE MODAL ────────────────────────────────────────────────────────────────
+function RuleModal({ rule, color, onClose }) {
+  return (
+    <div
+      onClick={onClose}
+      style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.72)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1300, padding: 20 }}
+    >
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{ background: 'var(--surface)', border: `1px solid ${color.primary}`, borderRadius: 10, padding: '22px 24px', maxWidth: 520, width: '100%', boxShadow: '0 8px 40px rgba(0,0,0,.7)' }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+          <div style={{ fontSize: '1rem', fontFamily: 'Georgia, serif', fontWeight: 600, color: color.primary2, letterSpacing: '.04em' }}>
+            {rule.title}
+          </div>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--text3)', cursor: 'pointer', fontSize: '1.2rem', padding: '0 4px', lineHeight: 1 }}>✕</button>
+        </div>
+        <div style={{ fontSize: '.88rem', fontFamily: 'Georgia, serif', color: 'var(--text2)', lineHeight: 1.65, whiteSpace: 'pre-line' }}>
+          {rule.text}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ── RULES BAR ─────────────────────────────────────────────────────────────────
+function RulesBar({ activeSubTab }) {
+  const [activeRule, setActiveRule] = useState(null)
+  const rules = rulesData[activeSubTab]
+  if (!rules || rules.length === 0) return null
+  const color = SUB_TAB_COLORS[activeSubTab] || { primary: 'var(--gold)', primary2: 'var(--gold2)' }
+  return (
+    <>
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', padding: '6px 2px' }}>
+        <span style={{ fontSize: '.6rem', letterSpacing: '.14em', color: 'var(--text3)', textTransform: 'uppercase', fontFamily: 'Georgia, serif', alignSelf: 'center', marginRight: 4 }}>Rules</span>
+        {rules.map(rule => (
+          <button
+            key={rule.title}
+            onClick={() => setActiveRule(rule)}
+            style={{
+              padding: '4px 12px',
+              background: `${color.primary}12`,
+              border: `1px solid ${color.primary}66`,
+              color: color.primary2,
+              borderRadius: 20,
+              cursor: 'pointer',
+              fontFamily: 'Georgia, serif',
+              fontSize: '.78rem',
+              transition: 'all .15s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = `${color.primary}28`; e.currentTarget.style.borderColor = color.primary }}
+            onMouseLeave={e => { e.currentTarget.style.background = `${color.primary}12`; e.currentTarget.style.borderColor = `${color.primary}66` }}
+          >
+            {rule.title}
+          </button>
+        ))}
+      </div>
+      {activeRule && <RuleModal rule={activeRule} color={color} onClose={() => setActiveRule(null)} />}
+    </>
+  )
+}
 
 const OBSCURE_CATEGORIES = ['infernal', 'lycanthropy', 'animal']
 const SPIRITUAL_CATEGORIES = ['spellcaster', 'guild', 'divine', 'balance']
@@ -1062,7 +1125,7 @@ const divineBuyBtn = (disabled = false) => ({
         const GT = group.accent ? makeAccentTheme(T, group.accent) : T
 
         rows.push(
-         <div key={`group-header-${groupKey}`} data-tour={groupKey === 'defence' ? 'skills-divine-defence-header' : undefined} style={{ marginTop: 8, margin: '8px 8px 0' }}>
+          <div key={`group-header-${groupKey}`} style={{ marginTop: 8, margin: '8px 8px 0' }}>
             {/* Accordion header — click to collapse/expand */}
             <div onClick={() => toggleGroup(groupKey)} style={{
   background: 'linear-gradient(180deg, #18130d 0%, #100d09 100%)',
@@ -1502,22 +1565,25 @@ const divineBuyBtn = (disabled = false) => ({
       </div>
 
       {/* Sub-tab bar */}
-      <div data-tour="skills-subtab-bar" style={{ display: 'flex', gap: 4, padding: '0 16px 8px', borderBottom: '1px solid var(--border)' }}>
+      <div style={{ display: 'flex', gap: 4, padding: '0 16px 8px', borderBottom: '1px solid var(--border)' }}>
         {SUB_TABS[activeTab].map(sub => {
           const c = SUB_TAB_COLORS[sub] || { primary: 'var(--gold)', primary2: 'var(--gold2)' }
           const isActive = activeSubTab === sub
           return (
-           <button key={sub} data-tour={`skills-subtab-${sub.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`} onClick={() => handleSubTabChange(sub)} style={{
-  padding: '6px 14px',
-  background: isActive ? `${c.primary}22` : `${c.primary}0a`,
-  border: `1px solid ${isActive ? c.primary : `${c.primary}55`}`,
-  color: isActive ? c.primary2 : `${c.primary}99`,
-  borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.82rem',
-  transition: 'all .15s',
-}}>{sub}</button>
+            <button key={sub} onClick={() => handleSubTabChange(sub)} style={{
+              padding: '6px 14px',
+              background: isActive ? `${c.primary}22` : `${c.primary}0a`,
+              border: `1px solid ${isActive ? c.primary : `${c.primary}55`}`,
+              color: isActive ? c.primary2 : `${c.primary}99`,
+              borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.82rem',
+              transition: 'all .15s',
+            }}>{sub}</button>
           )
         })}
       </div>
+
+      {/* Rules bar — only renders when the active subtab has rules */}
+      <RulesBar activeSubTab={activeSubTab} />
 
       {/* Search + filter */}
       <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
