@@ -2,7 +2,11 @@ import { useState, useEffect, useMemo } from 'react'
 import { supabase } from './supabase'
 import Auth from './components/Auth'
 import CharacterImport from './components/CharacterImport'
+import racesData from './data/races.json'
+import selfImprovementData from './data/selfImprovementSkills.json'
 import ArcaneCompendium from './components/ArcaneCompendium'
+import martialSkillsData from './data/martialSkills.json'
+import arcaneSkillsData from './data/arcaneSkills.json'
 import CharacterSheet from './components/CharacterSheet'
 import SkillEditor from './components/SkillEditor'
 import StuffPage from './components/StuffPage'
@@ -37,14 +41,7 @@ function CharacterToken({ imageUrl, name, size = 36, onClick, isActive, 'data-to
         transition: 'border-color .2s',
       }}
     >
-      {imageUrl ? (
-        <img src={imageUrl} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-      ) : (
-        <svg viewBox="0 0 36 36" width={size} height={size} xmlns="http://www.w3.org/2000/svg">
-          <circle cx="18" cy="13" r="7" fill="var(--text3)" opacity="0.5" />
-          <ellipse cx="18" cy="32" rx="11" ry="8" fill="var(--text3)" opacity="0.5" />
-        </svg>
-      )}
+      <img src={imageUrl || '/default-token.png'} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
     </button>
   )
 }
@@ -182,9 +179,11 @@ function HomePage({ characters, onSelectCharacter, onDelete, onLogout, onNewChar
             <button onClick={onNewCharacter} style={{ background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 4, padding: '5px 12px', fontFamily: 'Georgia, serif', fontSize: '.8rem', cursor: 'pointer' }}>
               + New Character
             </button>
-            <button onClick={onImport} style={{ background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 4, padding: '5px 12px', fontFamily: 'Georgia, serif', fontSize: '.8rem', cursor: 'pointer' }}>
-             ↓ Import
-            </button>
+            {isGM && (
+  <button onClick={onImport} style={{ background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 4, padding: '5px 12px', fontFamily: 'Georgia, serif', fontSize: '.8rem', cursor: 'pointer' }}>
+    ↓ Import
+  </button>
+)}
           </div>
         </div>
 
@@ -303,27 +302,59 @@ function App() {
 
   const handleNewCharacter = () => setCurrentPage('wizard')
 
-  const handleWizardComplete = async (newChar) => {
-    await saveCharacter({ ...newChar, status: 'active' }, user.id)
+  const deriveRank = (points, def) => {
+    const costPerRank = def?.costPerRank || 1
+    const raw = def?.maxRank
+    const maxRank = (raw === 'any' || !raw || isNaN(parseInt(raw))) ? 999 : parseInt(raw)
+    const rank = Math.min(Math.floor((points || 0) / costPerRank), maxRank)
+    const maint = def?.maintenancePerRank || 0
+    return { pointsInvested: points, rank, maintenanceCost: maint * rank }
+  }
+
+  const handleImport = async (importedChar) => {
+    const raceKey = Object.entries(racesData).find(([, r]) => r.name === importedChar.race)?.[0] || ''
+
+    const arcaneDefs = ['spellcaster', 'guild', 'divine', 'balance', 'infernal', 'lycanthropy']
+      .flatMap(cat => arcaneSkillsData[cat] || [])
+    const siNames = new Set(selfImprovementData.map(s => s.name))
+
+    const martialSkills = {}
+    const selfImprovementSkills = {}
+    Object.entries(importedChar.martialSkills || {}).forEach(([name, data]) => {
+      const pts = parseInt(data.pointsInvested) || 0
+      if (siNames.has(name)) {
+        selfImprovementSkills[name] = deriveRank(pts, selfImprovementData.find(s => s.name === name))
+      } else {
+        martialSkills[name] = deriveRank(pts, martialSkillsData.find(s => s.name === name))
+      }
+    })
+
+    const arcaneSkills = {}
+    Object.entries(importedChar.arcaneSkills || {}).forEach(([name, data]) => {
+      const pts = parseInt(data.pointsInvested) || 0
+      arcaneSkills[name] = deriveRank(pts, arcaneDefs.find(s => s.name === name))
+    })
+
+    const generalSkills = {}
+    Object.entries(importedChar.generalSkills || {}).forEach(([name, data]) => {
+      generalSkills[name] = { pointsInvested: parseInt(data.pointsInvested) || 0 }
+    })
+
+    const cleaned = {
+      ...importedChar, raceKey, raceLocked: true,
+      martialSkills, arcaneSkills, selfImprovementSkills, generalSkills,
+      status: 'active', levelUpAuthorized: false, createdBy: user.id,
+    }
+
+    await saveCharacter(cleaned, user.id)
     loadCharacters(user.id).then(({ characters }) => {
       setCharacters(characters || [])
-      const created = characters?.find(c => c.name === newChar.name) || newChar
+      const created = characters?.find(c => c.name === cleaned.name) || cleaned
       setSelectedCharacter(created)
       setGmModeActive(false)
       setCurrentPage('bio')
-      advanceTour(0)
     })
   }
-  const handleImport = async (importedChar) => {
-  await saveCharacter({ ...importedChar, createdBy: user.id }, user.id)
-  loadCharacters(user.id).then(({ characters }) => {
-    setCharacters(characters || [])
-    const created = characters?.find(c => c.name === importedChar.name) || importedChar
-    setSelectedCharacter(created)
-    setGmModeActive(false)
-    setCurrentPage('bio')
-  })
-}
   const handleUpdateCharacter = (updated) => {
     setSelectedCharacter(updated)
     // If GM is editing someone else's character, save by owner
@@ -411,7 +442,7 @@ function App() {
         )}
         {currentPage === 'wizard' && (
           <CharacterWizard userId={user.id} existingNames={characters.map(c => c.name)} onComplete={handleWizardComplete} onCancel={() => setCurrentPage('home')} />        )}
-            {currentPage === 'import' && (    // ← add this block
+            {currentPage === 'import' && ( 
           <CharacterImport
            existingNames={characters.map(c => c.name)}
             onImport={handleImport}

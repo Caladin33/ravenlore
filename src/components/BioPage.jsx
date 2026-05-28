@@ -418,11 +418,11 @@ export default function BioPage({ character, onUpdateCharacter, stats, gmModeAct
   }, [character])
 
   // Skill points display
-  const totalEarned = sp.totalEarned ?? 0
-  const bonusGiven = sp.bonusGiven ?? 0
-  const maintenancePaid = sp.maintenancePaid ?? 0
+ const totalEarned = stats?.skillPoints?.totalEarned ?? 0
+  const bonusGiven = stats?.skillPoints?.bonusGiven ?? 0
+  const maintenancePaid = stats?.skillPoints?.maintenancePaid ?? 0
   const totalSpent = stats?.skillPoints?.totalSpent ?? 0
-  const available = totalEarned + bonusGiven - totalSpent - maintenancePaid
+  const available = stats?.skillPoints?.unspent ?? (totalEarned - totalSpent - maintenancePaid)
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16, maxWidth: 700 }}>
@@ -565,10 +565,7 @@ export default function BioPage({ character, onUpdateCharacter, stats, gmModeAct
             overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center',
             flexShrink: 0,
           }}>
-            {character.imageUrl
-              ? <img src={character.imageUrl} alt={character.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              : <span style={{ fontSize: '.7rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', textAlign: 'center', padding: 8 }}>No image</span>
-            }
+            <img src={character.imageUrl || '/default-token.png'} alt={character.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
 
           {/* Upload button — available to all players */}
@@ -653,7 +650,11 @@ export default function BioPage({ character, onUpdateCharacter, stats, gmModeAct
   raceLocked && !gmMode
     ?         <div style={{ fontSize: '1rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600, padding: '6px 0' }}>{character.race}</div>
     :           <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-                  <select value={character.race || ''} onChange={e => updateChar('race', e.target.value)} style={selectStyle}>
+                 <select value={character.race || ''} onChange={e => {
+                    const name = e.target.value
+                    const key = RACE_OPTIONS.find(r => r.name === name)?.key || ''
+                    onUpdateCharacter({ ...character, race: name, raceKey: key })
+                  }} style={selectStyle}>
                   <option value="">— Choose Race —</option>
                   {RACE_OPTIONS.map(r => <option key={r.key} value={r.name}>{r.name}</option>)}
                   </select>

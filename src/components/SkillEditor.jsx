@@ -885,9 +885,9 @@ export default function SkillEditor({ character, onSave, onBack, gmModeActive, s
     })
 
    const totalSpent = generalSpent + martialSpent + spiritualSpent + obscureSpent
-    const totalEarned = (char.skillPoints?.totalEarned || 0) + (char.skillPoints?.bonusGiven || 0)
+    const totalEarned = stats?.skillPoints?.totalEarned || 0
     const maintenancePaid = char.skillPoints?.maintenancePaid || 0
-    return { generalSpent, martialSpent, spiritualSpent, obscureSpent, totalSpent, totalEarned, unspent: totalEarned - totalSpent - maintenancePaid }
+   return { generalSpent, martialSpent, spiritualSpent, obscureSpent, totalSpent, totalEarned, unspent: stats?.skillPoints?.unspent ?? (totalEarned - totalSpent - maintenancePaid) }
   }, [char])
   const handleUpdate = (skillName, newPoints, source) => {
     setChar(prev => {
@@ -1539,7 +1539,7 @@ const divineBuyBtn = (disabled = false) => ({
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '12px 16px', alignItems: 'center' }}>
         <div data-tour="skills-points-bar" style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
         {[
-          ['Unspent', pointTotals.unspent],
+          ['Available', pointTotals.unspent],
           ['General', pointTotals.generalSpent],
           ['Martial', pointTotals.martialSpent],
           ['Spiritual', pointTotals.spiritualSpent],
@@ -1547,7 +1547,7 @@ const divineBuyBtn = (disabled = false) => ({
         ].map(([l, val]) => (
           <div key={l} style={{ textAlign: 'center', minWidth: 60 }}>
             <div style={{ fontSize: '.55rem', letterSpacing: '.15em', color: 'var(--text3)', textTransform: 'uppercase', marginBottom: 2 }}>{l}</div>
-            <div style={{ fontSize: '1.1rem', fontWeight: 600, fontFamily: 'Georgia, serif', color: l === 'Unspent' && val < 0 ? '#c94a4a' : 'var(--gold2)' }}>{val}</div>
+            <div style={{ fontSize: '1.1rem', fontWeight: 600, fontFamily: 'Georgia, serif', color: l === 'Available' && val < 0 ? '#c94a4a' : 'var(--gold2)' }}>{val}</div>
           </div>
         ))}
         </div>

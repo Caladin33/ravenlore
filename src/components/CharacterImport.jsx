@@ -1,29 +1,65 @@
 import { useState } from 'react'
+import generalSkillsData from '../data/generalSkills.json'
+import martialSkillsData from '../data/martialSkills.json'
+import arcaneSkillsData from '../data/arcaneSkills.json'
+import selfImprovementData from '../data/selfImprovementSkills.json'
 
-export default function CharacterImport({ onImport }) {
+const ARCANE_CATS = ['spellcaster', 'guild', 'divine', 'balance', 'infernal', 'lycanthropy']
+const KNOWN = {
+  general: new Set(generalSkillsData.map(s => s.name)),
+  // martial bucket holds both martial and self-improvement skills before re-bucketing
+  martial: new Set([...martialSkillsData.map(s => s.name), ...selfImprovementData.map(s => s.name)]),
+  arcane: new Set(ARCANE_CATS.flatMap(c => (arcaneSkillsData[c] || []).map(s => s.name))),
+}
+
+export default function CharacterImport({ onImport, existingNames = [], onCancel }) {
   const [json, setJson] = useState('')
   const [error, setError] = useState('')
   const [preview, setPreview] = useState(null)
+  const [unmatched, setUnmatched] = useState([])
+  const [confirmOverwrite, setConfirmOverwrite] = useState(false)
+
+  const resetResults = () => {
+    setPreview(null)
+    setUnmatched([])
+    setConfirmOverwrite(false)
+  }
 
   const handleParse = () => {
     setError('')
-    setPreview(null)
+    resetResults()
     try {
       const data = JSON.parse(json)
       if (!data.name || !data.race) {
         setError('This does not look like a valid RavenLore character export.')
         return
       }
+
+      const misses = []
+      const scan = (obj, knownSet, bucketLabel) => {
+        Object.keys(obj || {}).forEach(name => {
+          if (!knownSet.has(name)) misses.push(`${bucketLabel}: "${name}"`)
+        })
+      }
+      scan(data.generalSkills, KNOWN.general, 'General')
+      scan(data.martialSkills, KNOWN.martial, 'Martial / Self-Improvement')
+      scan(data.arcaneSkills, KNOWN.arcane, 'Arcane')
+      setUnmatched(misses)
+
       setPreview(data)
     } catch (e) {
       setError('Invalid JSON — make sure you copied the full contents of the Export tab.')
     }
   }
 
-const handleImport = () => {
-  if (!preview) return
-  onImport(preview)
-}
+  const handleImport = () => {
+    if (!preview) return
+    if (existingNames.includes(preview.name) && !confirmOverwrite) {
+      setConfirmOverwrite(true)
+      return
+    }
+    onImport(preview)
+  }
 
   const box = {
     background: 'var(--surface)',
@@ -40,6 +76,17 @@ const handleImport = () => {
 
   return (
     <div style={{ maxWidth: 680, display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <button
+        onClick={onCancel}
+        style={{
+          background: 'none', border: 'none', color: 'var(--text3)',
+          fontFamily: 'Georgia, serif', fontSize: '.85rem', cursor: 'pointer',
+          padding: 0, textAlign: 'left', alignSelf: 'flex-start',
+        }}
+      >
+        ← Back to characters
+      </button>
+
       <div>
         <h2 style={{ color: 'var(--gold2)', marginBottom: 4 }}>Import Character</h2>
         <p style={{ color: 'var(--text3)', fontSize: '.9rem', lineHeight: 1.6 }}>
@@ -52,7 +99,7 @@ const handleImport = () => {
         <label style={label}>Paste Character JSON</label>
         <textarea
           value={json}
-          onChange={e => { setJson(e.target.value); setError(''); setPreview(null) }}
+          onChange={e => { setJson(e.target.value); setError(''); resetResults() }}
           placeholder='Paste the contents of the "RavenLore Export" tab here...'
           style={{
             width: '100%', height: 200, resize: 'vertical',
@@ -118,17 +165,59 @@ const handleImport = () => {
             <span>📋 {Object.keys(preview.generalSkills || {}).length} general skills</span>
           </div>
 
-          <button
-            onClick={handleImport}
-            style={{
-              width: '100%', padding: '10px 0',
-              background: 'rgba(74,158,74,.15)', border: '1px solid #4a9e4a',
-              color: '#4a9e4a', borderRadius: 5, fontSize: '1rem',
-              fontFamily: 'Georgia, serif', cursor: 'pointer', letterSpacing: '.04em',
-            }}
-          >
-            ✓ Import {preview.name} into RavenLore
-          </button>
+          {unmatched.length > 0 && (
+            <div style={{ background: 'rgba(201,168,76,.1)', border: '1px solid var(--gold)', borderRadius: 5, padding: '12px 16px', marginBottom: 16 }}>
+              <div style={{ color: 'var(--gold2)', fontSize: '.8rem', marginBottom: 8, lineHeight: 1.5 }}>
+                ⚠ {unmatched.length} skill name{unmatched.length > 1 ? 's' : ''} didn't match a known definition.
+                These will import with an incorrect rank. Check spelling against the sheet:
+              </div>
+              <ul style={{ margin: 0, paddingLeft: 18, color: 'var(--text2)', fontSize: '.78rem', lineHeight: 1.7 }}>
+                {unmatched.map(m => <li key={m}>{m}</li>)}
+              </ul>
+            </div>
+          )}
+
+          {confirmOverwrite ? (
+            <div style={{ background: 'rgba(201,74,74,.1)', border: '1px solid #c94a4a', borderRadius: 5, padding: '12px 16px' }}>
+              <div style={{ color: '#c94a4a', fontSize: '.85rem', marginBottom: 10, lineHeight: 1.5 }}>
+                ⚠ A character named "{preview.name}" already exists. Importing will overwrite them permanently.
+              </div>
+              <div style={{ display: 'flex', gap: 10 }}>
+                <button
+                  onClick={handleImport}
+                  style={{
+                    flex: 1, padding: '9px 0', background: 'rgba(201,74,74,.2)',
+                    border: '1px solid #c94a4a', color: '#c94a4a', borderRadius: 5,
+                    fontFamily: 'Georgia, serif', fontSize: '.9rem', cursor: 'pointer',
+                  }}
+                >
+                  Overwrite
+                </button>
+                <button
+                  onClick={() => setConfirmOverwrite(false)}
+                  style={{
+                    flex: 1, padding: '9px 0', background: 'none',
+                    border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 5,
+                    fontFamily: 'Georgia, serif', fontSize: '.9rem', cursor: 'pointer',
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={handleImport}
+              style={{
+                width: '100%', padding: '10px 0',
+                background: 'rgba(74,158,74,.15)', border: '1px solid #4a9e4a',
+                color: '#4a9e4a', borderRadius: 5, fontSize: '1rem',
+                fontFamily: 'Georgia, serif', cursor: 'pointer', letterSpacing: '.04em',
+              }}
+            >
+              ✓ Import {preview.name} into RavenLore
+            </button>
+          )}
         </div>
       )}
 
