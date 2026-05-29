@@ -94,18 +94,43 @@ select option {
   font-weight: 600;
   font-family: 'Georgia', serif;
 }
-/* Skills tabs — desktop default */
+/* Skills tabs */
 .skills-tabs-row {
   display: flex;
   gap: 6px;
 }
-.skills-tab-btn {
-  /* natural size on desktop */
-}
 .skills-subtabs-row {
   display: flex;
   gap: 4px;
-  padding: 0 0 8px;
+}
+.subtab-label-mobile {
+  display: none;
+}
+.subtab-label-desktop {
+  display: inline;
+}
+.skills-tabs-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.skills-save-desktop {
+  margin-left: auto;
+}
+.skills-save-mobile {
+  display: none;
+}
+.skills-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.skills-search-input {
+  flex: 1;
+}
+.skills-filter-row {
+  display: flex;
+  gap: 8px;
 }
 @media (max-width: 600px) {
   .app-main {
@@ -120,14 +145,18 @@ select option {
   .skills-tabs-row {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
   }
   .skills-tab-btn {
     width: 100%;
+    padding: 7px 4px;
+    font-size: .78rem;
   }
-  .skills-subtabs-row {
-    display: grid;
-    grid-template-columns: repeat(var(--subtab-count, 4), 1fr);
-    padding: 0 0 8px;
+  .subtab-label-mobile {
+    display: inline;
+  }
+  .subtab-label-desktop {
+    display: none;
   }
   /* Skills editor — hide rules bar, shrink point typography */
   .skills-rules-bar {
@@ -139,5 +168,27 @@ select option {
   }
   .skills-pts-value {
     font-size: .95rem;
+  }
+  .skills-tabs-wrap {
+    display: block;
+  }
+  .skills-save-desktop {
+    display: none;
+  }
+  .skills-search-wrap {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .skills-search-input {
+    width: 100%;
+  }
+  .skills-filter-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .skills-save-mobile {
+    display: block;
+    width: 100%;
   }
 }

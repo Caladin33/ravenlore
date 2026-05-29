@@ -1521,7 +1521,6 @@ const divineBuyBtn = (disabled = false) => ({
         </div>
       )
       : null
-
     return {
       detailRows: {
         "Shaman's Symbol": <ShamanSymbolsPanel char={char} onUpdate={handleShamanSymbolsUpdate} gmMode={gmMode} />
@@ -1531,7 +1530,7 @@ const divineBuyBtn = (disabled = false) => ({
       },
     }
   }
-
+const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 600px)').matches
  return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14, maxWidth: 900 }}>
 
@@ -1557,27 +1556,33 @@ const divineBuyBtn = (disabled = false) => ({
         </div>
       </div>
 
-      {/* Tabs */}
-      <div data-tour="skills-tabs" className="skills-tabs-row">
-        {TABS.map(tab => (
-          <button key={tab} data-skills-tab={tab} className="skills-tab-btn" style={tabBtn(tab)} onClick={() => handleTabChange(tab)}>{tab}</button>
-        ))}
+     {/* Tabs + desktop Save */}
+      <div className="skills-tabs-wrap">
+        <div data-tour="skills-tabs" className="skills-tabs-row">
+          {TABS.map(tab => (
+            <button key={tab} data-skills-tab={tab} className="skills-tab-btn" style={tabBtn(tab)} onClick={() => handleTabChange(tab)}>{tab}</button>
+          ))}
+        </div>
+        <button data-tour={!isMobile ? 'skills-save-btn' : undefined} className="skills-save-desktop" onClick={() => setShowConfirm(true)} style={{ padding: '7px 18px', background: 'rgba(74,158,74,.15)', border: '1px solid #4a9e4a', color: '#4a9e4a', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.85rem', whiteSpace: 'nowrap' }}>
+          Save Changes
+        </button>
       </div>
 
       {/* Sub-tab bar */}
-      <div className="skills-subtabs-row" style={{ borderBottom: '1px solid var(--border)' }}>
+      <div className="skills-subtabs-row" style={{ padding: '0 0 8px', borderBottom: '1px solid var(--border)' }}>
         {SUB_TABS[activeTab].map(sub => {
           const c = SUB_TAB_COLORS[sub] || { primary: 'var(--gold)', primary2: 'var(--gold2)' }
           const isActive = activeSubTab === sub
+          const label = sub === 'Self-Improvement' ? <><span className="subtab-label-desktop">Self-Improvement</span><span className="subtab-label-mobile">Self-Help</span></> : sub
           return (
             <button key={sub} onClick={() => handleSubTabChange(sub)} style={{
-              padding: '6px 4px',
+              padding: '6px 14px',
               background: isActive ? `${c.primary}22` : `${c.primary}0a`,
               border: `1px solid ${isActive ? c.primary : `${c.primary}55`}`,
               color: isActive ? c.primary2 : `${c.primary}99`,
               borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.82rem',
-              transition: 'all .15s', width: '100%',
-            }}>{sub}</button>
+              transition: 'all .15s',
+            }}>{label}</button>
           )
         })}
       </div>
@@ -1587,20 +1592,19 @@ const divineBuyBtn = (disabled = false) => ({
         <RulesBar activeSubTab={activeSubTab} />
       </div>
 
-      {/* Search */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-        <input placeholder="Search skills..." value={search} onChange={e => setSearch(e.target.value)}
-          style={{ width: '100%', padding: '7px 12px', background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)', borderRadius: 4, fontFamily: 'Georgia, serif', fontSize: '.9rem' }}
+      {/* Search + filters */}
+      <div className="skills-search-wrap">
+        <input className="skills-search-input" placeholder="Search skills..." value={search} onChange={e => setSearch(e.target.value)}
+          style={{ padding: '7px 12px', background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)', borderRadius: 4, fontFamily: 'Georgia, serif', fontSize: '.9rem' }}
         />
-        {/* Save + filters row */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 }}>
-          <button data-tour="skills-save-btn" onClick={() => setShowConfirm(true)} style={{ padding: '7px 4px', background: 'rgba(74,158,74,.15)', border: '1px solid #4a9e4a', color: '#4a9e4a', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.82rem', width: '100%' }}>
+        <div className="skills-filter-row">
+          <button data-tour={isMobile ? 'skills-save-btn' : undefined} className="skills-save-mobile" onClick={() => setShowConfirm(true)} style={{ padding: '7px 4px', background: 'rgba(74,158,74,.15)', border: '1px solid #4a9e4a', color: '#4a9e4a', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.82rem' }}>
             Save Changes
           </button>
-          <button onClick={() => setShowActiveOnly(!showActiveOnly)} style={{ padding: '7px 4px', background: showActiveOnly ? 'rgba(201,168,76,.15)' : 'var(--surface)', border: `1px solid ${showActiveOnly ? 'var(--gold)' : 'var(--border)'}`, color: showActiveOnly ? 'var(--gold2)' : 'var(--text3)', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.82rem', width: '100%' }}>
+          <button onClick={() => setShowActiveOnly(!showActiveOnly)} className="skills-filter-btn" style={{ padding: '7px 4px', background: showActiveOnly ? 'rgba(201,168,76,.15)' : 'var(--surface)', border: `1px solid ${showActiveOnly ? 'var(--gold)' : 'var(--border)'}`, color: showActiveOnly ? 'var(--gold2)' : 'var(--text3)', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.82rem' }}>
             Active Only
           </button>
-          <button onClick={() => setShowUnlockedOnly(!showUnlockedOnly)} style={{ padding: '7px 4px', background: showUnlockedOnly ? 'rgba(201,168,76,.15)' : 'var(--surface)', border: `1px solid ${showUnlockedOnly ? 'var(--gold)' : 'var(--border)'}`, color: showUnlockedOnly ? 'var(--gold2)' : 'var(--text3)', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.82rem', width: '100%' }}>
+          <button onClick={() => setShowUnlockedOnly(!showUnlockedOnly)} className="skills-filter-btn" style={{ padding: '7px 4px', background: showUnlockedOnly ? 'rgba(201,168,76,.15)' : 'var(--surface)', border: `1px solid ${showUnlockedOnly ? 'var(--gold)' : 'var(--border)'}`, color: showUnlockedOnly ? 'var(--gold2)' : 'var(--text3)', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.82rem' }}>
             Unlocked Only
           </button>
         </div>
