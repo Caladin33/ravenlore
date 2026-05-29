@@ -80,6 +80,21 @@ select option {
   background: var(--surface);
 }
 
+/* Skills editor — points bar typography */
+.skills-pts-label {
+  font-size: .55rem;
+  letter-spacing: .15em;
+  color: var(--text3);
+  text-transform: uppercase;
+  margin-bottom: 2px;
+  font-family: 'Georgia', serif;
+}
+.skills-pts-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+  font-family: 'Georgia', serif;
+}
+
 @media (max-width: 600px) {
   .app-main {
     padding: 12px 6px;
@@ -89,5 +104,17 @@ select option {
   }
   .header-mobile {
     display: flex !important;
+  }
+
+  /* Skills editor — hide rules bar, shrink point typography */
+  .skills-rules-bar {
+    display: none;
+  }
+  .skills-pts-label {
+    font-size: .48rem;
+    letter-spacing: .1em;
+  }
+  .skills-pts-value {
+    font-size: .95rem;
   }
 }

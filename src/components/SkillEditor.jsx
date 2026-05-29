@@ -1532,70 +1532,82 @@ const divineBuyBtn = (disabled = false) => ({
     }
   }
 
-  return (
+ return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14, maxWidth: 900 }}>
 
-      {/* Points + GM Mode + Save */}
-      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '12px 16px', alignItems: 'center' }}>
-        <div data-tour="skills-points-bar" style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-        {[
-          ['Available', pointTotals.unspent],
-          ['General', pointTotals.generalSpent],
-          ['Martial', pointTotals.martialSpent],
-          ['Spiritual', pointTotals.spiritualSpent],
-          ['Obscure', pointTotals.obscureSpent],
-        ].map(([l, val]) => (
-          <div key={l} style={{ textAlign: 'center', minWidth: 60 }}>
-            <div style={{ fontSize: '.55rem', letterSpacing: '.15em', color: 'var(--text3)', textTransform: 'uppercase', marginBottom: 2 }}>{l}</div>
-            <div style={{ fontSize: '1.1rem', fontWeight: 600, fontFamily: 'Georgia, serif', color: l === 'Available' && val < 0 ? '#c94a4a' : 'var(--gold2)' }}>{val}</div>
-          </div>
+      {/* Points bar */}
+      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '12px 16px' }}>
+        <div data-tour="skills-points-bar" style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(5, 1fr)',
+          gap: 4,
+        }}>
+          {[
+            ['Available', pointTotals.unspent],
+            ['General',   pointTotals.generalSpent],
+            ['Martial',   pointTotals.martialSpent],
+            ['Spiritual', pointTotals.spiritualSpent],
+            ['Obscure',   pointTotals.obscureSpent],
+          ].map(([l, val]) => (
+            <div key={l} style={{ textAlign: 'center' }}>
+              <div className="skills-pts-label">{l}</div>
+              <div className="skills-pts-value" style={{ color: l === 'Available' && val < 0 ? '#c94a4a' : 'var(--gold2)' }}>{val}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Tabs — always one row via equal-width grid */}
+      <div data-tour="skills-tabs" style={{
+        display: 'grid',
+        gridTemplateColumns: `repeat(${TABS.length}, 1fr)`,
+        gap: 6,
+      }}>
+        {TABS.map(tab => (
+          <button key={tab} data-skills-tab={tab} style={{ ...tabBtn(tab), width: '100%' }} onClick={() => handleTabChange(tab)}>{tab}</button>
         ))}
-        </div>
-        <div style={{ marginLeft: 'auto', display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-
-          <button data-tour="skills-save-btn" onClick={() => setShowConfirm(true)} style={{ padding: '8px 20px', background: 'rgba(74,158,74,.15)', border: '1px solid #4a9e4a', color: '#4a9e4a', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.9rem' }}>
-            Save Changes
-          </button>
-        </div>
       </div>
 
-      {/* Tabs */}
-      <div data-tour="skills-tabs" style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-        {TABS.map(tab => <button key={tab} data-skills-tab={tab} style={tabBtn(tab)} onClick={() => handleTabChange(tab)}>{tab}</button>)}
-      </div>
-
-      {/* Sub-tab bar */}
-      <div style={{ display: 'flex', gap: 4, padding: '0 16px 8px', borderBottom: '1px solid var(--border)' }}>
+      {/* Sub-tab bar — equal-width grid, no wrap */}
+      <div style={{ display: 'grid', gridTemplateColumns: `repeat(${SUB_TABS[activeTab].length}, 1fr)`, gap: 4, padding: '0 0 8px', borderBottom: '1px solid var(--border)' }}>
         {SUB_TABS[activeTab].map(sub => {
           const c = SUB_TAB_COLORS[sub] || { primary: 'var(--gold)', primary2: 'var(--gold2)' }
           const isActive = activeSubTab === sub
           return (
             <button key={sub} onClick={() => handleSubTabChange(sub)} style={{
-              padding: '6px 14px',
+              padding: '6px 4px',
               background: isActive ? `${c.primary}22` : `${c.primary}0a`,
               border: `1px solid ${isActive ? c.primary : `${c.primary}55`}`,
               color: isActive ? c.primary2 : `${c.primary}99`,
               borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.82rem',
-              transition: 'all .15s',
+              transition: 'all .15s', width: '100%',
             }}>{sub}</button>
           )
         })}
       </div>
 
-      {/* Rules bar — only renders when the active subtab has rules */}
-      <RulesBar activeSubTab={activeSubTab} />
+      {/* Rules bar — hidden on mobile */}
+      <div className="skills-rules-bar">
+        <RulesBar activeSubTab={activeSubTab} />
+      </div>
 
-      {/* Search + filter */}
-      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+      {/* Search */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
         <input placeholder="Search skills..." value={search} onChange={e => setSearch(e.target.value)}
-          style={{ flex: 1, padding: '7px 12px', background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)', borderRadius: 4, fontFamily: 'Georgia, serif', fontSize: '.9rem' }}
+          style={{ width: '100%', padding: '7px 12px', background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)', borderRadius: 4, fontFamily: 'Georgia, serif', fontSize: '.9rem' }}
         />
-        <button onClick={() => setShowActiveOnly(!showActiveOnly)} style={{ padding: '7px 14px', background: showActiveOnly ? 'rgba(201,168,76,.15)' : 'var(--surface)', border: `1px solid ${showActiveOnly ? 'var(--gold)' : 'var(--border)'}`, color: showActiveOnly ? 'var(--gold2)' : 'var(--text3)', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.82rem' }}>
-          Active Only
-        </button>
-        <button onClick={() => setShowUnlockedOnly(!showUnlockedOnly)} style={{ padding: '7px 14px', background: showUnlockedOnly ? 'rgba(201,168,76,.15)' : 'var(--surface)', border: `1px solid ${showUnlockedOnly ? 'var(--gold)' : 'var(--border)'}`, color: showUnlockedOnly ? 'var(--gold2)' : 'var(--text3)', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.82rem' }}>
-          Unlocked Only
-        </button>
+        {/* Save + filters row */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 }}>
+          <button data-tour="skills-save-btn" onClick={() => setShowConfirm(true)} style={{ padding: '7px 4px', background: 'rgba(74,158,74,.15)', border: '1px solid #4a9e4a', color: '#4a9e4a', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.82rem', width: '100%' }}>
+            Save Changes
+          </button>
+          <button onClick={() => setShowActiveOnly(!showActiveOnly)} style={{ padding: '7px 4px', background: showActiveOnly ? 'rgba(201,168,76,.15)' : 'var(--surface)', border: `1px solid ${showActiveOnly ? 'var(--gold)' : 'var(--border)'}`, color: showActiveOnly ? 'var(--gold2)' : 'var(--text3)', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.82rem', width: '100%' }}>
+            Active Only
+          </button>
+          <button onClick={() => setShowUnlockedOnly(!showUnlockedOnly)} style={{ padding: '7px 4px', background: showUnlockedOnly ? 'rgba(201,168,76,.15)' : 'var(--surface)', border: `1px solid ${showUnlockedOnly ? 'var(--gold)' : 'var(--border)'}`, color: showUnlockedOnly ? 'var(--gold2)' : 'var(--text3)', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.82rem', width: '100%' }}>
+            Unlocked Only
+          </button>
+        </div>
       </div>
 
       {/* Skill list */}
