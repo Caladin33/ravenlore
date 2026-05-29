@@ -1,5 +1,6 @@
 // RankedSkillTable.jsx
 import { useState } from 'react'
+import rulesData from '../data/rules.json'
 import { FormattedSkillDescription } from '../utils/skillFormatting.jsx'
 import generalSkillsData from '../data/generalSkills.json'
 import racesData from '../data/races.json'
@@ -407,7 +408,72 @@ const handleCommit = (newPoints) => {
     </>
   )
 }
+const RULE_SHORT = {
+  'Margin of Victory': 'MoV',
+  'Critical Hits': 'Crits',
+  'Rear Damage': 'Rear Dam',
+  'Rear Evasion': 'Rear Ev',
+}
 
+function RuleModal({ rule, color, onClose }) {
+  return (
+    <div style={{ position: 'fixed', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1300, padding: 20, pointerEvents: 'none' }}>
+      <div style={{ pointerEvents: 'auto', background: 'var(--surface)', border: `1px solid ${color.primary}`, borderRadius: 10, padding: '22px 24px', maxWidth: 520, width: '100%', boxShadow: '0 8px 40px rgba(0,0,0,.7)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+          <div style={{ fontSize: '1rem', fontFamily: 'Georgia, serif', fontWeight: 600, color: color.primary2, letterSpacing: '.04em' }}>
+            {rule.title}
+          </div>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--text3)', cursor: 'pointer', fontSize: '1.2rem', padding: '0 4px', lineHeight: 1 }}>✕</button>
+        </div>
+        <div style={{ fontSize: '.88rem', fontFamily: 'Georgia, serif', color: 'var(--text2)', lineHeight: 1.65, whiteSpace: 'pre-line' }}>
+          {rule.text}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function RulesHeader({ label, ruleKey, color, tourId }) {
+  const [activeRule, setActiveRule] = useState(null)
+  const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 600px)').matches
+  const rules = rulesData[ruleKey ?? label] || []
+  const showPills = rules.length > 0 && !(isMobile && rules.length > 3)
+  const splitAt = Math.ceil(rules.length / 2)
+  const left = showPills ? rules.slice(0, splitAt) : []
+  const right = showPills ? rules.slice(splitAt) : []
+
+  const pill = (rule) => (
+    <button
+      key={rule.title}
+      onClick={() => setActiveRule(rule)}
+      style={{
+        padding: '3px 9px',
+        background: `${color.primary}12`,
+        border: `1px solid ${color.primary}66`,
+        color: color.primary2,
+        borderRadius: 20,
+        cursor: 'pointer',
+        fontFamily: 'Georgia, serif',
+        fontSize: '.7rem',
+        whiteSpace: 'nowrap',
+        transition: 'all .15s',
+      }}
+      onMouseEnter={e => { e.currentTarget.style.background = `${color.primary}28`; e.currentTarget.style.borderColor = color.primary }}
+      onMouseLeave={e => { e.currentTarget.style.background = `${color.primary}12`; e.currentTarget.style.borderColor = `${color.primary}66` }}
+    >
+      {RULE_SHORT[rule.title] || rule.title}
+    </button>
+  )
+
+  return (
+    <div data-tour={tourId || undefined} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', background: 'var(--bg)', borderBottom: `2px solid ${color.primary}` }}>
+      <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap', gap: 4, justifyContent: 'flex-start' }}>{left.map(pill)}</div>
+      <div style={{ flexShrink: 0, fontSize: '1rem', letterSpacing: '.25em', color: color.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 600, textAlign: 'center' }}>{label}</div>
+      <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap', gap: 4, justifyContent: 'flex-end' }}>{right.map(pill)}</div>
+      {activeRule && <RuleModal rule={activeRule} color={color} onClose={() => setActiveRule(null)} />}
+    </div>
+  )
+}
 // specialRows: { [skillName]: ReactNode } — rendered below that skill's row
 // detailRows:  { [skillName]: ReactNode } — rendered inside the expanded detail view
 // inlineRows:  { [skillName]: ReactNode } — rendered inline in the skill row header (below prereq)
@@ -425,9 +491,7 @@ export function RankedSkillTable({ skills, char, stats, onUpdate, theme, section
   return (
     <div>
       {sectionLabel ? (
-        <div data-tour={sectionHeaderTourId || undefined} style={{ padding: '10px 12px', background: 'var(--bg)', borderBottom: `2px solid ${T.primary}`, fontSize: '1rem', letterSpacing: '.25em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 600, textAlign: 'center' }}>
-          {sectionLabel}
-        </div>
+        <RulesHeader label={sectionLabel} ruleKey={sectionLabel} color={T} tourId={sectionHeaderTourId} />
       ) : null}
       <div style={{ display: 'grid', gridTemplateColumns: GRID, background: 'var(--bg2)', borderBottom: `1px solid ${T.border}`, minHeight: 44, alignItems: 'center' }}>
         <div style={{ padding: '0 12px', fontSize: '.85rem', letterSpacing: '.12em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Skill</div>

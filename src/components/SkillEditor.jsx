@@ -5,73 +5,10 @@ import generalSkillsData from '../data/generalSkills.json'
 import arcaneSkillsData from '../data/arcaneSkills.json'
 import racesData from '../data/races.json'
 import { GeneralSkillCard } from './GeneralSkillCard'
-import { RankedSkillTable, SkillTableRow, THEMES, checkPrereq } from './RankedSkillTable'
+import { RankedSkillTable, SkillTableRow, THEMES, checkPrereq, RulesHeader } from './RankedSkillTable'
 import SaveConfirmModal from './SaveConfirmModal'
 import ConfirmModal from './ConfirmModal'
 import selfImprovementData from '../data/selfImprovementSkills.json'
-import rulesData from '../data/rules.json'
-
-// ── RULE MODAL ────────────────────────────────────────────────────────────────
-function RuleModal({ rule, color, onClose }) {
-  return (
-    <div
-      onClick={onClose}
-      style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.72)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1300, padding: 20 }}
-    >
-      <div
-        onClick={e => e.stopPropagation()}
-        style={{ background: 'var(--surface)', border: `1px solid ${color.primary}`, borderRadius: 10, padding: '22px 24px', maxWidth: 520, width: '100%', boxShadow: '0 8px 40px rgba(0,0,0,.7)' }}
-      >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-          <div style={{ fontSize: '1rem', fontFamily: 'Georgia, serif', fontWeight: 600, color: color.primary2, letterSpacing: '.04em' }}>
-            {rule.title}
-          </div>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--text3)', cursor: 'pointer', fontSize: '1.2rem', padding: '0 4px', lineHeight: 1 }}>✕</button>
-        </div>
-        <div style={{ fontSize: '.88rem', fontFamily: 'Georgia, serif', color: 'var(--text2)', lineHeight: 1.65, whiteSpace: 'pre-line' }}>
-          {rule.text}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// ── RULES BAR ─────────────────────────────────────────────────────────────────
-function RulesBar({ activeSubTab }) {
-  const [activeRule, setActiveRule] = useState(null)
-  const rules = rulesData[activeSubTab]
-  if (!rules || rules.length === 0) return null
-  const color = SUB_TAB_COLORS[activeSubTab] || { primary: 'var(--gold)', primary2: 'var(--gold2)' }
-  return (
-    <>
-      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', padding: '6px 2px' }}>
-        <span style={{ fontSize: '.6rem', letterSpacing: '.14em', color: 'var(--text3)', textTransform: 'uppercase', fontFamily: 'Georgia, serif', alignSelf: 'center', marginRight: 4 }}>Rules</span>
-        {rules.map(rule => (
-          <button
-            key={rule.title}
-            onClick={() => setActiveRule(rule)}
-            style={{
-              padding: '4px 12px',
-              background: `${color.primary}12`,
-              border: `1px solid ${color.primary}66`,
-              color: color.primary2,
-              borderRadius: 20,
-              cursor: 'pointer',
-              fontFamily: 'Georgia, serif',
-              fontSize: '.78rem',
-              transition: 'all .15s',
-            }}
-            onMouseEnter={e => { e.currentTarget.style.background = `${color.primary}28`; e.currentTarget.style.borderColor = color.primary }}
-            onMouseLeave={e => { e.currentTarget.style.background = `${color.primary}12`; e.currentTarget.style.borderColor = `${color.primary}66` }}
-          >
-            {rule.title}
-          </button>
-        ))}
-      </div>
-      {activeRule && <RuleModal rule={activeRule} color={color} onClose={() => setActiveRule(null)} />}
-    </>
-  )
-}
 
 const OBSCURE_CATEGORIES = ['infernal', 'lycanthropy', 'animal']
 const SPIRITUAL_CATEGORIES = ['spellcaster', 'guild', 'divine', 'balance']
@@ -1487,9 +1424,7 @@ const divineBuyBtn = (disabled = false) => ({
 
     return (
       <div style={{ border: `3px solid ${T.primary}` }}>
-        <div data-tour="skills-divine-header" style={{ padding: '10px 12px', background: 'var(--bg)', borderBottom: `2px solid ${T.primary}`, fontSize: '1rem', letterSpacing: '.25em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 600, textAlign: 'center' }}>
-          Divine
-        </div>
+        <RulesHeader label="Divine" color={T} tourId="skills-divine-header" />
         {/* Column headers */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 72px 52px', background: 'var(--bg2)', borderBottom: `1px solid ${T.border}`, minHeight: 44, alignItems: 'center' }}>
           <div style={{ padding: '0 12px', fontSize: '.85rem', letterSpacing: '.12em', color: T.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Skill</div>
@@ -1592,12 +1527,7 @@ const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width:
         })}
       </div>
 
-      {/* Rules bar — hidden on mobile */}
-      <div className="skills-rules-bar">
-        <RulesBar activeSubTab={activeSubTab} />
-      </div>
-
-      {/* Search + filters */}
+            {/* Search + filters */}
       <div className="skills-search-wrap">
         <input className="skills-search-input" placeholder="Search skills..." value={search} onChange={e => setSearch(e.target.value)}
           style={{ padding: '7px 12px', background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)', borderRadius: 4, fontFamily: 'Georgia, serif', fontSize: '.9rem' }}

@@ -158,10 +158,8 @@ select option {
   .subtab-label-desktop {
     display: none;
   }
-  /* Skills editor — hide rules bar, shrink point typography */
-  .skills-rules-bar {
-    display: none;
-  }
+  /* Skills editor — shrink point typography */
+  
   .skills-pts-label {
     font-size: .48rem;
     letter-spacing: .1em;
