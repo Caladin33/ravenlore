@@ -1565,7 +1565,7 @@ const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width:
       <div className="skills-tabs-wrap">
         <div data-tour="skills-tabs" className="skills-tabs-row">
           {TABS.map(tab => (
-            <button key={tab} data-skills-tab={tab} className="skills-tab-btn" style={tabBtn(tab)} onClick={() => handleTabChange(tab)}>{tab}</button>
+          <button key={tab} data-skills-tab={tab} className="skills-tab-btn" style={{ ...tabBtn(tab), ...(isMobile ? { padding: '7px 2px', fontSize: '.72rem' } : {}) }} onClick={() => handleTabChange(tab)}>{tab}</button>
           ))}
         </div>
         <button data-tour={!isMobile ? 'skills-save-btn' : undefined} className="skills-save-desktop" onClick={() => setShowConfirm(true)} style={{ padding: '7px 18px', background: 'rgba(74,158,74,.15)', border: '1px solid #4a9e4a', color: '#4a9e4a', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.85rem', whiteSpace: 'nowrap' }}>

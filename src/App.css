@@ -144,13 +144,13 @@ select option {
   }
   .skills-tabs-row {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
   }
   .skills-tab-btn {
     width: 100%;
-    padding: 7px 4px;
-    font-size: .78rem;
+    white-space: nowrap;
+    text-align: center;
   }
   .subtab-label-mobile {
     display: inline;
