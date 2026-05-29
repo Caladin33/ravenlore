@@ -1557,19 +1557,15 @@ const divineBuyBtn = (disabled = false) => ({
         </div>
       </div>
 
-      {/* Tabs — always one row via equal-width grid */}
-      <div data-tour="skills-tabs" style={{
-        display: 'grid',
-        gridTemplateColumns: `repeat(${TABS.length}, 1fr)`,
-        gap: 6,
-      }}>
+      {/* Tabs */}
+      <div data-tour="skills-tabs" className="skills-tabs-row">
         {TABS.map(tab => (
-          <button key={tab} data-skills-tab={tab} style={{ ...tabBtn(tab), width: '100%' }} onClick={() => handleTabChange(tab)}>{tab}</button>
+          <button key={tab} data-skills-tab={tab} className="skills-tab-btn" style={tabBtn(tab)} onClick={() => handleTabChange(tab)}>{tab}</button>
         ))}
       </div>
 
-      {/* Sub-tab bar — equal-width grid, no wrap */}
-      <div style={{ display: 'grid', gridTemplateColumns: `repeat(${SUB_TABS[activeTab].length}, 1fr)`, gap: 4, padding: '0 0 8px', borderBottom: '1px solid var(--border)' }}>
+      {/* Sub-tab bar */}
+      <div className="skills-subtabs-row" style={{ borderBottom: '1px solid var(--border)' }}>
         {SUB_TABS[activeTab].map(sub => {
           const c = SUB_TAB_COLORS[sub] || { primary: 'var(--gold)', primary2: 'var(--gold2)' }
           const isActive = activeSubTab === sub
