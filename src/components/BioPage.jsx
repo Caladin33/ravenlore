@@ -493,7 +493,7 @@ export default function BioPage({ character, onUpdateCharacter, stats, gmModeAct
         <div style={sectionTitle}>Skill Points</div>
         <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
           {[
-            ['Available', available, available < 0 ? '#c94a4a' : 'var(--gold2)'],
+            ['Unspent', available, available < 0 ? '#c94a4a' : 'var(--gold2)'],
             ['Earned', totalEarned, 'var(--gold2)'],
             ['Spent', totalSpent, 'var(--text2)'],
             ['Maint. Paid', maintenancePaid, 'var(--text2)'],

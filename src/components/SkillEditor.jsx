@@ -885,10 +885,14 @@ export default function SkillEditor({ character, onSave, onBack, gmModeActive, s
     })
 
    const totalSpent = generalSpent + martialSpent + spiritualSpent + obscureSpent
-    const totalEarned = stats?.skillPoints?.totalEarned || 0
+   const totalEarned = stats?.skillPoints?.totalEarned || 0
     const maintenancePaid = char.skillPoints?.maintenancePaid || 0
-   return { generalSpent, martialSpent, spiritualSpent, obscureSpent, totalSpent, totalEarned, unspent: stats?.skillPoints?.unspent ?? (totalEarned - totalSpent - maintenancePaid) }
-  }, [char])
+    const approvedSpent = stats?.skillPoints?.totalSpent || 0
+    const available = stats?.skillPoints?.unspent ?? (totalEarned - approvedSpent - maintenancePaid)
+    const pending = totalSpent - approvedSpent
+    const unspent = available - pending
+    return { generalSpent, martialSpent, spiritualSpent, obscureSpent, totalSpent, totalEarned, available, pending, unspent }
+  }, [char, stats])
   const handleUpdate = (skillName, newPoints, source) => {
     setChar(prev => {
       const next = JSON.parse(JSON.stringify(prev))
@@ -1538,15 +1542,16 @@ const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width:
       <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '12px 16px' }}>
         <div data-tour="skills-points-bar" style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(5, 1fr)',
+          gridTemplateColumns: 'repeat(6, 1fr)',
           gap: 4,
-        }}>
+          }}>
           {[
-            ['Available', pointTotals.unspent],
-            ['General',   pointTotals.generalSpent],
-            ['Martial',   pointTotals.martialSpent],
-            ['Spiritual', pointTotals.spiritualSpent],
-            ['Obscure',   pointTotals.obscureSpent],
+          ['Available', pointTotals.unspent],
+          ['Pending', pointTotals.pending],
+          ['General', pointTotals.generalSpent],
+          ['Martial', pointTotals.martialSpent],
+          ['Spiritual', pointTotals.spiritualSpent],
+          ['Obscure', pointTotals.obscureSpent],
           ].map(([l, val]) => (
             <div key={l} style={{ textAlign: 'center' }}>
               <div className="skills-pts-label">{l}</div>

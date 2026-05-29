@@ -469,7 +469,7 @@ export default function CharacterSheet({ character, onBack, onEditSkills, onUpda
       <Section title="Skill Points">
         <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'flex-end' }}>
           {[
-            ['Available', stats.skillPoints.unspent, stats.skillPoints.unspent < 0 ? '#c94a4a' : 'var(--gold2)'],
+            ['Unspent', stats.skillPoints.unspent, stats.skillPoints.unspent < 0 ? '#c94a4a' : 'var(--gold2)'],
             ['Earned', stats.skillPoints.totalEarned, 'var(--gold2)'],
             ['Spent', stats.skillPoints.totalSpent, 'var(--text2)'],
             ['Maint. Paid', stats.skillPoints.maintenancePaid, 'var(--text2)'],
