@@ -33,7 +33,7 @@
     {
       "name": "Arcane Mindset",
       "category": "spellcaster",
-      "prereq": "14+ Awareness",
+      "prereq": "none",
       "description": "You can relearn any spell you have previously known in one minute of study with your notes.",
       "costPerRank": 15,
       "maxRank": "1",
@@ -173,7 +173,7 @@
     {
       "name": "Re-Weaving",
       "category": "spellcaster",
-      "prereq": "Sewing 70+",
+      "prereq": "none",
       "description": "You gain +1 on both weaving dice if you are attempting a spell you failed to cast in the last minute.",
       "costPerRank": 20,
       "maxRank": "1",
@@ -534,7 +534,7 @@
     {
       "name": "Aura of Ardour",
       "category": "divine",
-      "prereq": "Divine Auras\nMark of Mischief or Passion",
+      "prereq": "Divine Auras\nMark of Blood, Life, Mischief or Passion",
       "description": "An invisible, subtle effect that enhances any and all emotions present in affected creatures. This effect tends to accumulate.",
       "costPerRank": 10,
       "maxRank": "1",
@@ -545,7 +545,7 @@
     {
       "name": "Aura of Blood",
       "category": "divine",
-      "prereq": "Divine Auras or Shaman's Symbol\nMark or Shaman Symbol of Blood",
+      "prereq": "Divine Auras or Shaman's Symbol\nMark or Shaman Symbol of Blood, Death or Mischief",
       "description": "A pulsating, scarlet light. All wounded allies (less than full HP), gain +1 Crit on all melee attacks.",
       "costPerRank": 10,
       "maxRank": "1",
@@ -567,7 +567,7 @@
     {
       "name": "Aura of Damping",
       "category": "divine",
-      "prereq": "Divine Auras or Shaman's Symbol\nMark or Shaman Symbol of Iron, Life, or Wisdom",
+      "prereq": "Divine Auras or Shaman's Symbol\nMark or Shaman Symbol of Iron, Life, Mischiefor Wisdom",
       "description": "An invisible, subtle effect. All concentration costs by affected creatures are increased by (1).",
       "costPerRank": 10,
       "maxRank": "1",
@@ -578,7 +578,7 @@
     {
       "name": "Aura of Death",
       "category": "divine",
-      "prereq": "Divine Auras or Shaman's Symbol\nMark or Shaman Symbol of Death or War",
+      "prereq": "Divine Auras or Shaman's Symbol\nMark or Shaman Symbol of Death, Mischief or War",
       "description": "No healing can occur within the Aura.",
       "costPerRank": 10,
       "maxRank": "1",
@@ -600,7 +600,7 @@
     {
       "name": "Aura of Empathy",
       "category": "divine",
-      "prereq": "Divine Auras\nMark of Life, Passion or Wisdom",
+      "prereq": "Divine Auras\nMark of Life, Mischief, Passion or Wisdom",
       "description": "A warm, orange tinted light emanates from you. You become aware of the the strongest emotion in every affected person, and how strong it is.",
       "costPerRank": 10,
       "maxRank": "1",
@@ -666,7 +666,7 @@
     {
       "name": "Aura of Growth",
       "category": "divine",
-      "prereq": "Divine Auras\nMark of Life",
+      "prereq": "Divine Auras\nMark of Blood or Life",
       "description": "One random affected ally gains 1 hit point each melee round and all (other) healing is increased by 1.",
       "costPerRank": 10,
       "maxRank": "1",
@@ -721,7 +721,7 @@
     {
       "name": "Aura of Rest",
       "category": "divine",
-      "prereq": "Divine Auras\nMark of Blood,Death, Life Mischief or Wisdom",
+      "prereq": "Divine Auras\nMark of Blood,Death, Life, Mischief, Storms or Wisdom",
       "description": "An invisible, subtle effect that completes erases all fatigue from all effected creatures. Fatigue will begin to accrue normally when leaving the effect. Note that going without sleep will eventually have consequences other than fatigue.",
       "costPerRank": 10,
       "maxRank": "1",
@@ -743,7 +743,7 @@
     {
       "name": "Aura of Silence",
       "category": "divine",
-      "prereq": "Divine Auras or Shaman's Symbol\nMark or Shaman Symbol of Iron, Light, Mischief, Shadow or Wisdom",
+      "prereq": "Divine Auras or Shaman's Symbol\nMark or Shaman Symbol of Death,Iron, Light, Mischief, Shadow or Wisdom",
       "description": "All sound is prevented within the aura.",
       "costPerRank": 10,
       "maxRank": "1",
@@ -776,7 +776,7 @@
     {
       "name": "Aura of Vigilance",
       "category": "divine",
-      "prereq": "Divine Auras\nMark of Death, War or Wisdom",
+      "prereq": "Divine Auras\nMark of Death, Storms,War or Wisdom",
       "description": "An invisible, subtle effect. All affected allies cannot be surprised or flanked.",
       "costPerRank": 10,
       "maxRank": "1",
@@ -787,7 +787,7 @@
     {
       "name": "Aura of Winds",
       "category": "divine",
-      "prereq": "Divine Auras or Shaman's Symbol\nMark or Shaman Symbol of Storms",
+      "prereq": "Divine Auras or Shaman's Symbol\nMark or Shaman Symbol of Mischief or Storms",
       "description": "Wind is created or increased gradually over time, adding 1 mph every melee round, up to a maximum of one hundred mph. The size of aura chosen determines the type of effect. 1 action version moves air around the perimeter of the aura. The 2 action version moves air in the direction you are facing across the width of the aura. The three action version moves air at a steady 10mph upward in the whole area. Outdoors this will affect the weather for miles around. It takes 1 minute to change each category above the aura: Clear, some clouds,overcast,dark clouds, rain,rainstorm,thunderstorm. The surrounding area will be slower depending on distance. How quickly the new weather dissipates is situational and hard to predict.",
       "costPerRank": 10,
       "maxRank": "1",
@@ -952,7 +952,7 @@
     {
       "name": "Rain of Renewal",
       "category": "divine",
-      "prereq": "Mark of Life, Light, Passion,Storms or Wisdom",
+      "prereq": "Mark of Life, Light, Passion, Storms or Wisdom",
       "description": "Gentle Rain falls in a 10 Foot radius circle around the caster, healing 1 hit point to all body section. Critical injuries are not affected. Can be used twice per day, at least two hours apart.",
       "costPerRank": 30,
       "maxRank": "1",

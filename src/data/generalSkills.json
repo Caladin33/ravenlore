@@ -127,7 +127,7 @@
   },
   {
     "name": "Carcass Dressing",
-    "prereq": "< Hunting  or\n< Leatherworking",
+    "prereq": "< Leatherworking",
     "description": "Skinning, dressing and otherwise harvesting the useful parts of a carcass.",
     "freeBase": "Dex+Aw",
     "costMultiplier": 4,
@@ -190,7 +190,7 @@
   },
   {
     "name": "Disguise",
-    "prereq": "Etiquette for some.",
+    "prereq": "none",
     "description": "Base chance to disguise yourself or others.",
     "freeBase": "Chr+Aw",
     "costMultiplier": 3,
@@ -208,7 +208,7 @@
   },
   {
     "name": "Drinking",
-    "prereq": "A broken home?",
+    "prereq": "none",
     "description": "Reports very widely. Your mother told you it would be the death of you. Your uncle told you it would save your life, or did he say something about savoring life? Whatever.",
     "freeBase": "2Con",
     "costMultiplier": 10,
@@ -235,7 +235,7 @@
   },
   {
     "name": "Etiquette",
-    "prereq": "Read at least 1 language\n or exposure",
+    "prereq": "none",
     "description": "Base roll to know the proper behavior, honorific, colours etc. for a given situation.",
     "freeBase": "2Aw",
     "costMultiplier": 4,
@@ -280,7 +280,7 @@
   },
   {
     "name": "Fletching",
-    "prereq": "30+ Bower",
+    "prereq": "none",
     "description": "Base chance to make perfect (no penalty) shortbow arrows. perfect longbow arrows require  130 points below your skill. Perfect Greatbow arrows require 160",
     "freeBase": "none",
     "costMultiplier": 5,
@@ -343,7 +343,7 @@
   },
   {
     "name": "Intimidation",
-    "prereq": "Level 5",
+    "prereq": "none",
     "description": "Base chance to intimidate someone with your power or importance.",
     "freeBase": "Chr+WP",
     "costMultiplier": 2,
@@ -442,7 +442,7 @@
   },
   {
     "name": "Mathematics",
-    "prereq": "Read & Write",
+    "prereq": "none",
     "description": "Find a use if you can!",
     "freeBase": "none",
     "costMultiplier": 2,
@@ -460,7 +460,7 @@
   },
   {
     "name": "Monster Lore",
-    "prereq": "Read 1 language\n or exposure",
+    "prereq": "none",
     "description": "Base chance for a species to be known, rolled when first encountered. Know attacks/defences/weaknesses and approximate power level of the species.",
     "freeBase": "none",
     "costMultiplier": 2,
@@ -550,7 +550,7 @@
   },
   {
     "name": "Realm Lore",
-    "prereq": "Read & Write",
+    "prereq": "none",
     "description": "Base chance to know about a given place. Know the main language, famous landmarks, history, government, ruler, famous foods or goods etc.",
     "freeBase": "none",
     "costMultiplier": 4,
@@ -595,7 +595,7 @@
   },
   {
     "name": "Sculpting",
-    "prereq": "< Wood Carving\nor\n< Masonry",
+    "prereq": "none",
     "description": "Your skill as a sculptor.",
     "freeBase": "Con+Aw",
     "costMultiplier": 4,
@@ -685,7 +685,7 @@
   },
   {
     "name": "Tactical Appraisal",
-    "prereq": "Well Trained 2",
+    "prereq": "none",
     "description": "Base chance to know the approximate Expertise, Evasion and Damage of a humanoid.",
     "freeBase": "2Aw",
     "costMultiplier": 3,
@@ -712,7 +712,7 @@
   },
   {
     "name": "Tracking",
-    "prereq": "< Wood lore",
+    "prereq": "< none",
     "description": "Base chance to track and follow through wilderness. Greatly improves ability to cover your own tracks, (and to a lesser extent your party\u2019s).",
     "freeBase": "2Aw",
     "costMultiplier": 3,
@@ -775,7 +775,7 @@
   },
   {
     "name": "Distillation",
-    "prereq": "special",
+    "prereq": "none",
     "description": "Making alchohol in myriad ways.",
     "freeBase": "2Aw",
     "costMultiplier": 3,
@@ -784,7 +784,7 @@
   },
   {
     "name": "transformed acrobatics",
-    "prereq": "special",
+    "prereq": "none",
     "description": "",
     "freeBase": "none",
     "costMultiplier": 1,

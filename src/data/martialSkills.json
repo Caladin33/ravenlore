@@ -57,7 +57,7 @@
   {
     "name": "Blind Fighting",
     "category": "Melee",
-    "prereq": "Melee only\n15+Awareness",
+    "prereq": "15+Awareness",
     "description": "Reduces the expertise penalty for blindness or invisible opponents from -15 to -4.",
     "costPerRank": 25,
     "maxRank": 1,
@@ -145,7 +145,7 @@
   {
     "name": "Dual Wielding",
     "category": "Melee",
-    "prereq": "Melee only",
+    "prereq": "none",
     "description": "Allows you to attack with two weapons, each action applying fully to both combat rolls.",
     "costPerRank": 20,
     "maxRank": 1,
@@ -267,7 +267,7 @@
     "name": "Killer Instinct",
     "category": "Melee",
     "prereq": "Well Trained 2\nOpportunistic",
-    "description": "Your Attacks of Opportunity have a Margin of Victory of 5",
+    "description": "Your Attacks of Opportunity have a Margin of Victory of 6",
     "costPerRank": 20,
     "maxRank": 1,
     "mcl": "any",
@@ -321,7 +321,7 @@
   {
     "name": "Offensive Shielding",
     "category": "Melee",
-    "prereq": "< Melee Mastery",
+    "prereq": "none",
     "description": "+1 Expertise /rank with a shield equipped.",
     "costPerRank": 10,
     "maxRank": 5,
@@ -365,7 +365,7 @@
   {
     "name": "Precise Strikes",
     "category": "Melee",
-    "prereq": "Melee only",
+    "prereq": "none",
     "description": "+1 Precision  /rank. Total Precision can never exceed 25.",
     "costPerRank": 10,
     "maxRank": 10,
@@ -376,7 +376,7 @@
   {
     "name": "Punishing Blows",
     "category": "Melee",
-    "prereq": "Melee only",
+    "prereq": "none",
     "description": "Increase your damage bonus with all weapons by +1 /rank. Note that some weapons do not benefit from damage bonus.",
     "costPerRank": 30,
     "maxRank": 5,
@@ -420,7 +420,7 @@
   {
     "name": "Ruthless Tempo",
     "category": "Melee",
-    "prereq": "Melee only",
+    "prereq": "none",
     "description": "Improve your chance to roll a critical with melee attacks. Below is the total natural roll needed depending on the combat die type and Ruthless Tempo rank.\nRank               D12's           D10's        D8's        D6's      \n   0                     23               20             16           12         \n   1                     22               19             16           12\n   2                     21               18             15           11\n   3                     20               17             14           11\n   4                     19               16             13           10",
     "costPerRank": 20,
     "maxRank": 4,
@@ -453,7 +453,7 @@
   {
     "name": "Shield Deflection",
     "category": "Melee",
-    "prereq": "< Melee Mastery",
+    "prereq": "none",
     "description": "Learn to deflect some of the force of  blows on your shield, incresing its durability. +1 Shield AR /rank.",
     "costPerRank": 5,
     "maxRank": 5,
@@ -464,7 +464,7 @@
   {
     "name": "Shield Punch",
     "category": "Melee",
-    "prereq": "Special Attack\n Shield rank 4",
+    "prereq": "Special Attack",
     "description": "Costs 1 action. Make a surprise attack with the edge of the shield at the end of your movement phase. Unless your target passes an Awareness Check 25. 1d6 +damage bonus.",
     "costPerRank": 10,
     "maxRank": 1,
@@ -508,7 +508,7 @@
   {
     "name": "Sweeping Blow",
     "category": "Melee",
-    "prereq": "Well Trained 4",
+    "prereq": "Well Trained 2",
     "description": "Special Melee Attack which costs 1 action that does not count towards combat. Apply one damage roll to two targets in range, Dex Check 25 for half damage.  The targets must be within a 90 degree arc and cannot be separated by another creature or solid thing.",
     "costPerRank": 15,
     "maxRank": 1,
@@ -519,7 +519,7 @@
   {
     "name": "Subdue Opponent",
     "category": "Melee",
-    "prereq": "Special Attack\nWrestling",
+    "prereq": "Special Attack",
     "description": "Pass a Strength Check to take the fight to the ground instead of doing damage after winning the combat roll. Not always possible especially on larger opponents.",
     "costPerRank": 10,
     "maxRank": 1,
@@ -574,7 +574,7 @@
   {
     "name": "Victorious Damage",
     "category": "Melee",
-    "prereq": "< Well Trained",
+    "prereq": "none",
     "description": "Exploit your Margin of Victory more fully.  +0.1 Damage/Margin of Victory/Rank up to a maximum of +15 .",
     "costPerRank": 25,
     "maxRank": 5,
@@ -607,7 +607,7 @@
   {
     "name": "Weapon Mark Fox",
     "category": "Melee",
-    "prereq": "Melee Mastery 4",
+    "prereq": "Melee Mastery 3",
     "description": "Specialize in one specific weapon type/rank. Gain +1 Expertise with the chosen weapon type(s).",
     "costPerRank": 10,
     "maxRank": 3,
@@ -618,7 +618,7 @@
   {
     "name": "Weapon Mark Serpent",
     "category": "Melee",
-    "prereq": "Melee Mastery 6",
+    "prereq": "Melee Mastery 5",
     "description": "Specialize in one specific weapon type/rank. Gain +2 Precision with the chosen weapon type(s). Total Precision can never exceed 25.",
     "costPerRank": 15,
     "maxRank": 3,
@@ -629,7 +629,7 @@
   {
     "name": "Weapon Mark Tiger",
     "category": "Melee",
-    "prereq": "Melee Mastery 8",
+    "prereq": "Melee Mastery 7",
     "description": "Specialize in one specific weapon type/rank. Gain +1 Expertise and +1 Damage with the chosen weapon type(s).",
     "costPerRank": 20,
     "maxRank": 3,
@@ -673,7 +673,7 @@
   {
     "name": "Whirling Dervish",
     "category": "Melee",
-    "prereq": "Reckless Rage\nDual wielding only\nWell Trained 5",
+    "prereq": "Reckless Rage\nDual wielding only\nWell Trained 3",
     "description": "Reckless attack which costs 1 action that does not count towards combat. Roll damage on each creature (friend or foe) within 10 Feet, without any Location Control.  Note that Reckless Attacks occur at the end of the movement phase.",
     "costPerRank": 15,
     "maxRank": 1,
@@ -684,7 +684,7 @@
   {
     "name": "Whirlwind",
     "category": "Melee",
-    "prereq": "Reckless Rage\n2-Handed only\nWell Trained 5",
+    "prereq": "Reckless Rage\n2-Handed only\nWell Trained 3",
     "description": "Reckless attack which costs 1 action that does not count towards combat. Apply one damage roll to all creatures (friend or foe) within 10 Feet, Dex Check 25 for half damage. In the combat phase proceed as normal for reckless attacks but you may not roll damage. Note that reckless attacks occur at the end of the movement phase.",
     "costPerRank": 15,
     "maxRank": 1,
@@ -707,7 +707,7 @@
     "name": "A Leaf on the Wind",
     "category": "Unfettered",
     "prereq": "Roll With the Punches 3",
-    "description": "YourEvasive Motion and Wind's Whisper skills are not reduced for rear evasion.",
+    "description": "Your Rear Evasion is never used. Your normal Evasion is used instead.",
     "costPerRank": 25,
     "maxRank": 1,
     "mcl": "any",
@@ -915,7 +915,7 @@
   {
     "name": "Aimed Shot",
     "category": "Ranged",
-    "prereq": "Target Practise 2. Special Attack",
+    "prereq": "Special Attack",
     "description": "You may save at least two actions from this turn to be added to a single special shot next turn. The aimed shot keeps the best three dice instead of two. A crit requires all three dice be 10s, but very large Hit Surpluses are possible. The aimed shot may not exceed 8 actions.",
     "costPerRank": 20,
     "maxRank": 1,
@@ -926,7 +926,7 @@
   {
     "name": "Anti Armor Archery",
     "category": "Ranged",
-    "prereq": "Ranged only",
+    "prereq": "none",
     "description": "You  bypass 0.25 armor/Hit Surplus with piercing ranged weapons/rank",
     "costPerRank": 20,
     "maxRank": 4,
@@ -981,7 +981,7 @@
   {
     "name": "Killer Aim",
     "category": "Ranged",
-    "prereq": "Ranged only",
+    "prereq": "none",
     "description": "You gain +0.34 Damage/rank for each point of Hit Surplus, round down./rank",
     "costPerRank": 45,
     "maxRank": 6,
@@ -992,7 +992,7 @@
   {
     "name": "Lethal Precision",
     "category": "Ranged",
-    "prereq": "Ranged only",
+    "prereq": "none",
     "description": "You gain +0.5 Ranged Precision/rank for each point of Hit Surplus/rank. Total Ranged Precision can never exceed 25.",
     "costPerRank": 25,
     "maxRank": 4,
@@ -1025,7 +1025,7 @@
   {
     "name": "Overdraw",
     "category": "Ranged",
-    "prereq": "Ranged only\nArchery 8\nBow only",
+    "prereq": "Archery 6\nBow only",
     "description": "Risk damaging your bow to do more damage. +1 Damage/Hit Surplus. If the final hit roll dice include a 7 the bowstring snaps or stretches. If it includes two 7s the bow cracks.",
     "costPerRank": 10,
     "maxRank": 1,
@@ -1036,7 +1036,7 @@
   {
     "name": "Precise Shots",
     "category": "Ranged",
-    "prereq": "Ranged only",
+    "prereq": "none",
     "description": "Increase your Ranged Precision +/- 1/rank. Total Ranged Precision can never exceed 25.",
     "costPerRank": 10,
     "maxRank": 10,
@@ -1047,7 +1047,7 @@
   {
     "name": "Punishing Shots",
     "category": "Ranged",
-    "prereq": "Ranged only",
+    "prereq": "none",
     "description": "Deal 1 extra damage on every bow or crossbow shot/rank.",
     "costPerRank": 30,
     "maxRank": 5,
@@ -1058,7 +1058,7 @@
   {
     "name": "Rapid Fire",
     "category": "Ranged",
-    "prereq": "Ranged only\n Special Attack",
+    "prereq": "Special Attack",
     "description": "Shoot with one action, (1 die) with +1 to hit/rank.",
     "costPerRank": 10,
     "maxRank": 4,
@@ -1069,7 +1069,7 @@
   {
     "name": "Target Practice",
     "category": "Ranged",
-    "prereq": "Ranged only",
+    "prereq": "none",
     "description": ".+1 to hit and Precision with all ranged attacks /rank. Total Ranged Precision can never exceed 25.",
     "costPerRank": 25,
     "maxRank": 5,
@@ -1080,7 +1080,7 @@
   {
     "name": "Targeting: Combat",
     "category": "Ranged",
-    "prereq": "Ranged only",
+    "prereq": "none",
     "description": "Reduce the penalty for shooting into combat by 1/rank (default penalty is 3 to hit.)",
     "costPerRank": 10,
     "maxRank": 2,
@@ -1091,7 +1091,7 @@
   {
     "name": "Targeting: Cover",
     "category": "Ranged",
-    "prereq": "Ranged only",
+    "prereq": "none",
     "description": "Reduce the penalty for shooting into cover by 1/rank (default penalty is 1-4 to hit.)",
     "costPerRank": 10,
     "maxRank": 2,
@@ -1102,7 +1102,7 @@
   {
     "name": "Targeting: Long Range",
     "category": "Ranged",
-    "prereq": "Ranged only",
+    "prereq": "none",
     "description": "Reduce the long range penalty from by 1/rank. (default penalty is 6 to hit.)",
     "costPerRank": 15,
     "maxRank": 4,
@@ -1113,7 +1113,7 @@
   {
     "name": "Targeting: Medium Range",
     "category": "Ranged",
-    "prereq": "Ranged only",
+    "prereq": "none",
     "description": "Reduce the medium range penalty by 1/rank (default penalty is 3 to hit.)",
     "costPerRank": 15,
     "maxRank": 2,
@@ -1124,7 +1124,7 @@
   {
     "name": "Targeting: Motion",
     "category": "Ranged",
-    "prereq": "Ranged only",
+    "prereq": "none",
     "description": "Reduce the penalty for moving targets by 1/rank (default penalty is 2-5 to hit.)",
     "costPerRank": 10,
     "maxRank": 3,
@@ -1135,7 +1135,7 @@
   {
     "name": "Targeting: Obstructed",
     "category": "Ranged",
-    "prereq": "Ranged only",
+    "prereq": "none",
     "description": "Reduce the penalty for shooting past a creature or obstruction by 1/rank (default penalty is 1-3 to hit.)",
     "costPerRank": 10,
     "maxRank": 2,
@@ -1157,7 +1157,7 @@
   {
     "name": "Very Long Range",
     "category": "Ranged",
-    "prereq": "Ranged only\nTarget Practise 3",
+    "prereq": "Target Practise 2",
     "description": "Add a fourth range category: Very Long range with double your net long range penalty, and all Precision penalties are doubled.",
     "costPerRank": 20,
     "maxRank": 1,
@@ -1168,7 +1168,7 @@
   {
     "name": "Weapon Mark Sparrow",
     "category": "Ranged",
-    "prereq": "Target Practise 2",
+    "prereq": "Target Practise 1",
     "description": "Specialize in one specific weapon type/rank. Gain +1 to hit with the chosen weapon type(s).",
     "costPerRank": 10,
     "maxRank": 1,
@@ -1179,7 +1179,7 @@
   {
     "name": "Weapon Mark Falcon",
     "category": "Ranged",
-    "prereq": "Target Practise 3\nSparrow Mark",
+    "prereq": "Target Practise 2\nSparrow Mark",
     "description": "Specialize in one specific weapon type/rank. Gain +1 Damage with the chosen weapon type(s).",
     "costPerRank": 15,
     "maxRank": 1,
@@ -1190,7 +1190,7 @@
   {
     "name": "Weapon Mark Raven",
     "category": "Ranged",
-    "prereq": "Target Practise 4\nFalcon Mark",
+    "prereq": "Target Practise 3\nFalcon Mark",
     "description": "Specialize in one specific weapon type/rank. Gain +2 Precision with the chosen weapon type(s).",
     "costPerRank": 20,
     "maxRank": 1,
@@ -1201,7 +1201,7 @@
   {
     "name": "Weapon Mark Eagle",
     "category": "Ranged",
-    "prereq": "Target Practise 5\nRaven Mark",
+    "prereq": "Target Practise 4\nRaven Mark",
     "description": "Specialize in one specific weapon type/rank. Gain +1 to hit and +1 Precision and +1 Damage with the chosen weapon type(s).",
     "costPerRank": 25,
     "maxRank": 1,
@@ -1212,7 +1212,7 @@
   {
     "name": "Zero-in",
     "category": "Ranged",
-    "prereq": "Ranged only",
+    "prereq": "none",
     "description": "penalties are reduced by 1 when making a ranged attack at the same spot as your previous shot. This bonus is cumulative up to a total of -6. The effect is lost after 10 seconds, but renewed with each ranged attack. The minimum penalty is 0",
     "costPerRank": 25,
     "maxRank": 1,
@@ -1234,7 +1234,7 @@
   {
     "name": "Bellowing",
     "category": "Leadership",
-    "prereq": "Singing 60",
+    "prereq": "none",
     "description": "Learn to control and project your voice to make it heard more widely and clearly. Doubles your leadership skill ranges.",
     "costPerRank": 15,
     "maxRank": 1,
@@ -1278,7 +1278,7 @@
   {
     "name": "Lead from the Front",
     "category": "Leadership",
-    "prereq": "Leadership 60\nFox Mark",
+    "prereq": "Leadership 60",
     "description": "Add 10% of your combat roll (round down) to all allies within 50 Feet who accept your leadership. (affects Margin of Victory)",
     "costPerRank": 25,
     "maxRank": 1,
@@ -1289,7 +1289,7 @@
   {
     "name": "Paragon",
     "category": "Leadership",
-    "prereq": "Leadership 50\n and 14 Chr",
+    "prereq": "Leadership 50\n and 13 Chr",
     "description": ".+1/Rank on any Willpower Checks by you and your allies within 50 Feet.",
     "costPerRank": 15,
     "maxRank": 4,
@@ -1344,7 +1344,7 @@
   {
     "name": "Anticipation",
     "category": "Miscellaneous",
-    "prereq": "Initiative 2",
+    "prereq": "none",
     "description": "Attempt to Jump to the top of the initiative order at the cost of 1 action. Awareness Check 25 required. The action is spent even if the attempt is failed.",
     "costPerRank": 10,
     "maxRank": 1,
@@ -1421,7 +1421,7 @@
   {
     "name": "Fend Off",
     "category": "Miscellaneous",
-    "prereq": "Melee only\nLong weapon, or shield.",
+    "prereq": "Long weapon, or shield.",
     "description": "Special attack. Give up any chance of a damage roll to try and keep yourself safe.  +8 on the combat roll and +8 Evasion. Total Evasion can never exceed 20. If you lose the Margin of Victory is reduced by 50%.",
     "costPerRank": 15,
     "maxRank": 1,
@@ -1465,7 +1465,7 @@
   {
     "name": "Languages",
     "category": "Miscellaneous",
-    "prereq": "exposure",
+    "prereq": "none",
     "description": "Speak another language. (first is free)",
     "costPerRank": 10,
     "maxRank": "any",
@@ -1531,7 +1531,7 @@
   {
     "name": "Reading & Writing",
     "category": "Miscellaneous",
-    "prereq": "opportunity",
+    "prereq": "none",
     "description": "Read and Write one language/rank",
     "costPerRank": 10,
     "maxRank": "any",
