@@ -26,7 +26,7 @@
     },
     {
       "title": "Evasion",
-      "text": "-1 on targeting rolls against you per point. Total Evasion can never exceed 20."
+      "text": "-1 on targeting rolls against you per point. Total Evasion can never exceed 20. A negative Evasion makes you Hampered."
     },
     {
       "title": "Shields",
@@ -38,15 +38,15 @@
     },
     {
       "title": "Rear Damage",
-      "text": "Any damage dealt from behind a creature adds 1 CRIT, undefended or not, melee or ranged."
+      "text": "Any damage dealt from behind a creature adds 1 CRIT, Unguarded or not, melee or ranged."
     },
     {
       "title": "Rear Evasion",
       "text": "Attacks from behind or rounding weapons use the rear EV, which does not include the shield and only half of other sources."
     },
     {
-      "title": "Undefended",
-      "text": "When attacking an undefended side of an opponent: you win combat with a Margin of Victory equal to half of your Combat roll, and use their Rear Evasion. A side of a creature is considered undefended if it cannot or does not pay the action penalty for flanking or surrounded, or it is unaware of or ignores an attacker."
+      "title": "Unguarded",
+      "text": "When attacking an Unguarded side of an opponent: you win combat with a Margin of Victory equal to half of your Combat roll, and use their Rear Evasion. A side of a creature is considered Unguarded if it cannot or does not pay the action penalty for flanking or surrounded, or it is unaware of or ignores an attacker."
     }
   ],
   "Unfettered": [

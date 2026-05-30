@@ -79,7 +79,7 @@
   {
     "name": "Fend Off",
     "category": "Self Improvement",
-    "prereq": "Melee only\nLong weapon, or shield.",
+    "prereq": "Long weapon, or shield.",
     "description": "Special attack. Give up any chance of a damage roll to try and keep yourself safe.  +8 on the combat roll and +8 Evasion. Total Evasion can never exceed 20. If you lose the Margin of Victory is reduced by 50%.",
     "costPerRank": 15,
     "maxRank": 1,

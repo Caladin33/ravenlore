@@ -3,9 +3,9 @@
     "name": "Aimed Blow",
     "category": "Melee",
     "prereq": "Special Attack\nSerpent Mark",
-    "description": "Special Attack. +1 Precision /rank. Costs 1 action that does not count towards the combat roll. Total Precision can never exceed 25.",
-    "costPerRank": 6,
-    "maxRank": 10,
+    "description": "Special Attack. +2 Precision /rank. Costs 1 action that does not count towards the combat roll. Total Precision can never exceed 25.",
+    "costPerRank": 8,
+    "maxRank": 8,
     "mcl": "any",
     "maintenancePerRank": 0.0,
     "strictMCL": false

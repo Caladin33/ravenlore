@@ -27,6 +27,7 @@ const FLAG_PATTERNS = [
   /^special attack/i, /^melee only/i, /^2-handed only/i, /^2-handed slashing only/i,
   /^blunt$/i, /^piercing weapon$/i, /^passive$/i, /^active$/i,
   /^no awkward weapons/i, /^can not be a quick or light weapon/i, /^quick and light weapons only/i,
+  /^long weapon/i, /^short weapon/i, /^shield\b/i,
 ]
 
 const IGNORE_PATTERNS = [
