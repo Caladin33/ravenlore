@@ -1,4 +1,7 @@
-import skills from "../data/arcaneSkills.json";
+import martialSkillsData from '../data/martialSkills.json'
+import generalSkillsData from '../data/generalSkills.json'
+import arcaneSkillsData from '../data/arcaneSkills.json'
+import racesData from '../data/races.json'
 import SkillTable from "../components/SkillTable";
 
 export default function Handbook() {
@@ -15,4 +18,4 @@ export default function Handbook() {
 
     </div>
   );
-}
+} 

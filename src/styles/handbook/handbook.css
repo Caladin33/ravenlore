@@ -1,0 +1,71 @@
+.handbook {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 40px 32px;
+  font-family: 'Georgia', serif;
+}
+
+/* ── Chapter and section headings ── */
+.handbook-content h1 {
+  font-size: 2rem;
+  color: var(--gold2);
+  border-bottom: 2px solid var(--border2);
+  padding-bottom: 12px;
+  margin: 48px 0 24px;
+  letter-spacing: 0.04em;
+}
+
+.handbook-content h1:first-child {
+  margin-top: 0;
+}
+
+.handbook-content h2 {
+  font-size: 1.4rem;
+  color: var(--gold2);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 6px;
+  margin: 40px 0 14px;
+  letter-spacing: 0.02em;
+}
+
+.handbook-content h3 {
+  font-size: 1.1rem;
+  color: var(--gold);
+  margin: 28px 0 10px;
+}
+
+/* ── Body prose ── */
+.handbook-content p {
+  color: var(--text);
+  line-height: 1.75;
+  margin-bottom: 14px;
+}
+
+/* ── Stat block ── */
+.race-stat-block {
+  background: var(--surface);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 4px 4px 0;
+  padding: 12px 16px;
+  margin: 16px 0 28px;
+}
+
+.race-stat-block p {
+  color: var(--text2);
+  line-height: 1.6;
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+}
+
+.race-stat-block p:last-child {
+  margin-bottom: 0;
+}
+
+.race-stat-block strong {
+  color: var(--gold2);
+}
+
+.race-special-rules {
+  color: var(--text3) !important;
+  font-style: italic;
+}
