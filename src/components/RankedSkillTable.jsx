@@ -5,6 +5,7 @@ import { FormattedSkillDescription } from '../utils/skillFormatting.jsx'
 import generalSkillsData from '../data/generalSkills.json'
 import racesData from '../data/races.json'
 import armorData from '../data/armor.json'
+import { getRace } from '../utils/raceUtils'
 
 export const THEMES = {
   selfImprovement: { primary: '#c9a84c', primary2: '#e8c96a', dim: 'rgba(201,168,76,.1)',  border: 'rgba(201,168,76,.25)' },
@@ -38,8 +39,8 @@ const MARTIAL_MARKS = ['Fox Mark', 'Serpent Mark', 'Tiger Mark', 'Heron Mark']
 
 
 function getEffectiveAttrs(char) {
-  const raceKey = char.race ? char.race.charAt(0).toLowerCase() + char.race.slice(1).replace(/\s+/g, '') : 'human'
-  const race = racesData[raceKey] || {}
+ const race = getRace(char.race)
+
   const attrs = char.attributes || {}
   const ms = char.martialSkills || {}
   const si = char.selfImprovementSkills || {}
@@ -67,8 +68,7 @@ function calcGeneralScore(skillName, char, attrs) {
   const formula = (skill.freeBase || '').toUpperCase().replace(/\s+/g, '')
   const pts = parseInt(char.generalSkills?.[skillName]?.pointsInvested) || 0
   const mult = parseInt(skill.costMultiplier) || 1
-  const raceKey = char.race ? char.race.charAt(0).toLowerCase() + char.race.slice(1).replace(/\s+/g, '') : 'human'
-  const race = racesData[raceKey] || {}
+  const race = getRace(char.race)
   const racialBonus = race.generalSkillBonus || 0
   let freeBase = 0
   if (formula && formula !== 'NONE' && formula !== '') {

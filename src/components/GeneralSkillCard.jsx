@@ -134,7 +134,7 @@ export function GeneralSkillCard({ skill, score, pointsInvested, onAdd, onRemove
   const isBlocked = prereq.type === 'min' && !minResult.met
   const locked = lockedPoints?.[skill.name] || 0
 
-  const isOgier = character?.raceKey === 'ogier' || character?.race === 'Ogier'
+  const isOgier = character?.race === 'Ogier'
 
   const effectiveAttrs = {
     str: stats?.attributes?.str?.effective ?? (typeof character?.attributes?.str === 'object' ? character.attributes.str.base : character?.attributes?.str) ?? 10,

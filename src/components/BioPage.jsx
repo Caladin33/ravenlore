@@ -180,7 +180,7 @@ function buildSetAttr(character, stats) {
     `!setattr --name ${name}`,
     `--Strength|${v(stats.attributes?.str?.effective)} --Dexterity|${v(stats.attributes?.dex?.effective)} --Constitution|${v(stats.attributes?.con?.effective)} --Awareness|${v(stats.attributes?.aw?.effective)} --Charisma|${v(stats.attributes?.chr?.effective)} --Willpower|${v(stats.attributes?.wp?.effective)}`,
     `--StrcheckBonus|${checkFormula('str')} --DexcheckBonus|${checkFormula('dex')} --ConcheckBonus|${checkFormula('con')} --AwcheckBonus|${checkFormula('aw')} --ChrcheckBonus|${checkFormula('chr')} --WPcheckBonus|${checkFormula('wp')}`,
-    `--Evasion|${v(stats.evasionNoShield)} --Evasion_Shield|${v(stats.evasion)} --RearEV|${v(stats.rearEvasion)} --initiative_bonus|${v(stats.initiative)} --Damage_Bonus|${v(stats.damageBonus)} --Committed_Strikes|${v(stats.committedStrikesRank)} --MoV_Damage_Rate|${v(stats.movDamageRate)} --MoV_PR_Rate|${v(stats.movPrecisionRate)} --Move|${v(stats.movement)}`,
+    `--Evasion|${v(stats.evasionNoShield)} --Evasion_Shield|${v(stats.evasion)} --RearEV|${v(stats.rearEvasion)} --initiative_bonus|${v(stats.initiative)} --Damage_Bonus|${v(stats.damageBonus)} --Committed_Strikes|${v(stats.committedStrikesRank)} --Parry_rank|${v(stats.parryRank)} --MoV_Damage_Rate|${v(stats.movDamageRate)} --MoV_PR_Rate|${v(stats.movPrecisionRate)} --Move|${v(stats.movement)}`,
     `--BonusAR|${v(stats.bonusAR)} --NaturalArmor|${v(stats.naturalArmor)} --ShieldAR|${v(stats.shieldAR)} --ShieldHP|${shieldHP}`,
     `--BS1AR|${BS1AR} --BS2AR|${BS2AR} --BS3AR|${BS3AR} --BS4AR|${BS4AR} --BS5AR|${BS5AR} --BS6AR|${BS6AR}`,
     `--BS1HP|${v(stats.hp?.torso)} --BS2HP|${v(stats.hp?.leg)} --BS3HP|${v(stats.hp?.leg)} --BS4HP|${v(stats.hp?.arm)} --BS5HP|${v(stats.hp?.arm)} --BS6HP|${v(stats.hp?.head)}`,
@@ -290,10 +290,7 @@ function LevelUpWizard({ character, stats, onUpdate, onClose }) {
   const currentMaint = stats?.skillPoints?.currentMaintenance ?? 0
 
   // Calculate default points for next level
-  const raceKey = character.race
-    ? Object.keys(racesData).find(k => racesData[k].name === character.race) || 'human'
-    : 'human'
-  const race = racesData[raceKey] || racesData.human
+ const race = getRace(character.race)
   const basePoints = 65 + (race.skillPointsPerLevelModifier || 0)
   const ironBonus = character.patronMark?.mark === 'Iron' ? 2 : 0
 
@@ -652,8 +649,6 @@ export default function BioPage({ character, onUpdateCharacter, stats, gmModeAct
     :           <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
                  <select value={character.race || ''} onChange={e => {
                     const name = e.target.value
-                    const key = RACE_OPTIONS.find(r => r.name === name)?.key || ''
-                    onUpdateCharacter({ ...character, race: name, raceKey: key })
                   }} style={selectStyle}>
                   <option value="">— Choose Race —</option>
                   {RACE_OPTIONS.map(r => <option key={r.key} value={r.name}>{r.name}</option>)}

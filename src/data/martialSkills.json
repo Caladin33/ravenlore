@@ -344,7 +344,7 @@
     "name": "Parry",
     "category": "Melee",
     "prereq": "Well Trained 1",
-    "description": "Permanent passive melee ability: SKILL UNDER REVIEW Cannot be used with Awkward weapons.",
+    "description": "Permanent passive melee ability: Add your active precision to your evasion. Total Evasion can never exceed 20. Cannot be used with Awkward weapons.",
     "costPerRank": 25,
     "maxRank": 1,
     "mcl": "any",

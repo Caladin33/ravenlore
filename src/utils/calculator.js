@@ -7,7 +7,7 @@ import weaponsData from '../data/weapons.json'
 import armorData from '../data/armor.json'
 import druidFormsData from '../data/druidForms.json'
 import generalSkillsData from '../data/generalSkills.json'
-
+import { getRace } from '../utils/raceUtils'
 // ─────────────────────────────────────────────
 // LOOKUP TABLES
 // ─────────────────────────────────────────────
@@ -187,12 +187,9 @@ export function calculate(char, session = {}) {
 
   const unfettered = session.unfettered || false
 
-  // Use raceKey if stored, otherwise derive from race name
-  const raceKey = char.raceKey ||
-    (char.race ? char.race.charAt(0).toLowerCase() + char.race.slice(1).replace(/\s+/g, '') : 'human')
-  const race = racesData[raceKey] || racesData.human || {}
-  const items = char.itemBonuses || {}
-
+  // Race derived from race name
+  const race = getRace(char.race)
+const items = char.itemBonuses || {}
   // Active druid form
   const form = getActiveForm(char)
 
@@ -249,27 +246,20 @@ export function calculate(char, session = {}) {
   const helmCode = char.armor?.head?.type || 'None'
   const helm = getHelm(helmCode)
   const helmAwPenalty = -(helm?.awPenalty || 0)
-  const gnomeAwBonus = (raceKey === 'gnome') ? 1 : 0
+ const racialAwBonus = race.awModifier || 0
 
   const strCheck = bbRank - Math.floor(bbRank / 3)
   const dexCheck = rtData.checkMod
   const conCheck = condRank - Math.floor(condRank / 3)
-  const awCheck  = otData.checkMod + helmAwPenalty + gnomeAwBonus
+  const awCheck  = otData.checkMod + helmAwPenalty + racialAwBonus
   const chrCheck = persuRank - Math.floor(persuRank / 3)
   const wpCheck  = hrRank - Math.floor(hrRank / 3)
 
   // ── ADVANTAGE / DISADVANTAGE FLAGS ────────
-  const advantageFlags = {
-    str: raceKey === 'halfling',
-    dex: raceKey === 'halfling',
-    con: raceKey === 'halfling' || raceKey === 'dwarf',
-    aw:  ['halfling','elfHigh','elfWood','elfDark','halfElf'].includes(raceKey),
-    chr: raceKey === 'halfling',
-    wp:  raceKey === 'halfling' || raceKey === 'dwarf',
-  }
-  const disadvantageFlags = {
-    con: raceKey === 'gnome' || raceKey === 'elderling',
-  }
+ const adv = race.advantages || []
+     const dis = race.disadvantages || []
+     const advantageFlags = { str: adv.includes('str'), dex: adv.includes('dex'), con: adv.includes('con'), aw: adv.includes('aw'), chr: adv.includes('chr'), wp: adv.includes('wp') }
+     const disadvantageFlags = { str: dis.includes('str'), dex: dis.includes('dex'), con: dis.includes('con'), aw: dis.includes('aw'), chr: dis.includes('chr'), wp: dis.includes('wp') }
 
   // ── ARCANE POWER ───────────────────────────
   const AP = wpArcane(WP) + (race.apModifier || 0) + (items.ap || 0)
@@ -439,6 +429,7 @@ export function calculate(char, session = {}) {
 
   // ── WEAPON SLOTS ──────────────────────────
   const guidedWrath          = skillKnown(char, 'Guided Wrath')
+  const parryRank            = skillRank(char, 'Parry')
   const wellTrainedRank      = skillRank(char, 'Well Trained')
   const meleeMasteryRank     = skillRank(char, 'Melee Mastery')
   const hardHitting          = skillKnown(char, 'Hard Hitting')
@@ -458,7 +449,7 @@ export function calculate(char, session = {}) {
   const antiArmoredBlunt     = skillRank(char, 'Anti-Armored Combat: Blunt')
   const cursedBladeRank      = skillRank(char, 'Cursed Blade')
 
-  const racialPrecision      = (raceKey === 'elfWood' || raceKey === 'lizardfolk') ? 3 : 0
+  const racialPrecision = race.precisionModifier || 0
   const mischievousPrecision = hasSymbol(char, 'Mischief') ? 3 : 0
 
   const dexExp  = guidedWrath ? AP : dexExpertise(DEX)
@@ -523,7 +514,7 @@ export function calculate(char, session = {}) {
     // Precision — add form PR bonus to unarmed (natural attack) slot
     let precision = dexPrec + preciseStrikesRank + wellTrainedRank + mark.precision
       + mischievousPrecision + windsWhisperRank
-      + racialPrecision + (slot.itemPrecisionBonus || 0) + (items.precision || 0)
+      + racialPrecision + (slot.itemPrecisionBonus || 0) + (items.precision || 0) + (weapon.precisionMod || 0)
     if (isQuickLight && isUnfettered) precision += duelingRank
     // Apply form PR bonus to unarmed slot when transformed
     if (isUnarmed && form) precision += formPRBonus
@@ -575,7 +566,7 @@ export function calculate(char, session = {}) {
     const totalDamage = mark.damage + (slot.itemDamageBonus || 0)
 
     const precision = dexPrec + preciseShotsRank + targetPracticeRank + mark.precision
-      + mischievousPrecision + windsWhisperRank + racialPrecision + (slot.itemPrecisionBonus || 0)
+      + mischievousPrecision + windsWhisperRank + racialPrecision + (weapon.precisionMod || 0) +(slot.itemPrecisionBonus || 0)
 
     const hsPrecisionRate = Math.round(lethalPrecisionRank * 0.5 * 10) / 10
 
@@ -672,7 +663,7 @@ export function calculate(char, session = {}) {
     weightAllowance,
     damageBonus,
     committedStrikesRank: committedStrikes,
-
+    parryRank,
     arcanePower: AP,
     arcaneMentality: skillKnown(char, 'Arcane Mentality') ? 1 : 0,
     spellHooks,
