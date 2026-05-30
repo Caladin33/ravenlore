@@ -18,6 +18,7 @@ import { loadCharacters, saveCharacter, deleteCharacter, getUserRole } from './c
 import ConfirmModal from './components/ConfirmModal'
 import NewPlayerTour from './components/NewPlayerTour'
 import './App.css'
+import HandBook from './pages/HandBook'
 
 function RavenLogo({ size = 48 }) {
   return (
@@ -432,6 +433,7 @@ function App() {
             onGMView={() => navigate('gm')}
           />
         )}
+        {currentPage === 'handbook' && <HandBook />}
         {currentPage === 'gm' && (
           <GMView
             userId={user.id}
@@ -480,6 +482,7 @@ function App() {
             stats={selectedCharacterStats}
             gmModeActive={gmModeActive}
             onRestartTour={() => advanceTour(0)}
+            onNavigate={setCurrentPage}
           />
         )}
       </main>

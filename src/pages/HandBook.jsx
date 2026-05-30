@@ -1,21 +1,11 @@
-import martialSkillsData from '../data/martialSkills.json'
-import generalSkillsData from '../data/generalSkills.json'
-import arcaneSkillsData from '../data/arcaneSkills.json'
-import racesData from '../data/races.json'
-import SkillTable from "../components/SkillTable";
+import MarkdownRenderer from '../components/handbook/MarkdownRenderer'
+import racesContent from '../content/handbook/races.md?raw'
+import '../styles/handbook.css'
 
-export default function Handbook() {
+export default function HandBook() {
   return (
     <div className="handbook">
-
-      <h1>RavenLore Player's Handbook</h1>
-
-      <h2>Melee Skills</h2>
-
-      <SkillTable
-        skills={skills.filter(s => s.category === "Melee")}
-      />
-
+      <MarkdownRenderer content={racesContent} />
     </div>
-  );
-} 
+  )
+}

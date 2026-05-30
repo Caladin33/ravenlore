@@ -383,7 +383,7 @@ function LevelUpWizard({ character, stats, onUpdate, onClose }) {
 }
 
 // ── MAIN BIO PAGE ─────────────────────────────────────────────────────────────
-export default function BioPage({ character, onUpdateCharacter, stats, gmModeActive, onRestartTour }) {
+export default function BioPage({ character, onUpdateCharacter, stats, gmModeActive, onRestartTour, onNavigate }) {
   const gmMode = !!gmModeActive
   const [showLevelUp, setShowLevelUp] = useState(false)
   const [showExport, setShowExport] = useState(false)
@@ -462,7 +462,7 @@ export default function BioPage({ character, onUpdateCharacter, stats, gmModeAct
         )}
         <button
   data-tour="bio-handbook-btn"
-  onClick={() => window.open('https://docs.google.com/document/d/1qD5UADHYXfC_W0bHLyy_Z_ZEkz_gZi8IgBeZMPLBnKI/edit?tab=t.0', '_blank')}
+  onClick={() => onNavigate('handbook')}
   style={{
     marginLeft: 'auto', padding: '7px 12px',
     background: 'none', border: '1px solid var(--border)',
