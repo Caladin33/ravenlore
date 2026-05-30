@@ -132,6 +132,7 @@ select option {
   display: flex;
   gap: 8px;
 }
+.mcl-chip { display: inline-block; }
 @media (max-width: 600px) {
   .app-main {
     padding: 12px 6px;
@@ -189,4 +190,5 @@ select option {
     display: block;
     width: 100%;
   }
+  .mcl-chip { display: none; }
 }

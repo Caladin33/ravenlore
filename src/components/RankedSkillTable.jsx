@@ -318,7 +318,8 @@ export function SkillTableRow({ skill, rank, pointsInvested, lockedPoints, onUpd
 const handleCommit = (newPoints) => {
   if (!gmMode && newPoints < locked) return { error: `Cannot go below ${locked} (locked from last save)` }
   if (!gmMode && !prereqResult.met && newPoints > 0) return { error: prereqResult.reason }
-  if (!gmMode && mclLimit !== null && newPoints > mclLimit) return { error: `MC/L limit: max ${mclLimit} pts at level ${level}` }
+ if (!gmMode && mclLimit !== null && newPoints > mclLimit) return { error: `MC/L limit: max ${mclLimit} pts at level ${level}` }
+  if (!gmMode && isFinite(maxRankNum) && newPoints > maxRankNum * costPerRank) return { error: `Max rank is ${maxRankRaw} (${maxRankNum * costPerRank} pts)` }
   const newRank = Math.min(Math.floor(newPoints / costPerRank), isFinite(maxRankNum) ? maxRankNum : 999)
   if (!gmMode && isFinite(maxRankNum) && newRank > maxRankNum) return { error: `Max rank is ${maxRankRaw}` }
   if (!gmMode && prereqResult.capRequirements?.length > 0) {
@@ -341,9 +342,12 @@ const handleCommit = (newPoints) => {
           <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexWrap: 'wrap', fontSize: '.92rem', fontFamily: 'Georgia, serif', color: isActive ? T.primary2 : (editLocked ? 'var(--text3)' : 'var(--text)'), fontWeight: isActive ? 600 : 400 }}>
             <span style={{ fontSize: '.58rem', color: 'var(--text3)', opacity: .5, flexShrink: 0 }}>{expanded ? '▲' : '▼'}</span>
             <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{skill.name}</span>
-            {prereqResult.tags?.map(tag => (
+           {prereqResult.tags?.map(tag => (
               <span key={tag} style={{ fontSize: '.6rem', color: 'rgba(255,255,255,.6)', background: 'rgba(255,255,255,.08)', borderRadius: 3, padding: '1px 5px', whiteSpace: 'nowrap', flexShrink: 0 }}>{tag}</span>
             ))}
+            {mclRaw !== null && (
+              <span className="mcl-chip" style={{ fontSize: '.6rem', color: T.primary2, background: `${T.primary}1a`, border: `1px solid ${T.primary}44`, borderRadius: 3, padding: '1px 5px', whiteSpace: 'nowrap', flexShrink: 0 }}>MC/L {mclRaw}</span>
+            )}
           </div>
           {!prereqResult.met && (
             <div style={{ fontSize: '.65rem', color: '#c94a4a', marginTop: 2, fontStyle: 'italic' }}>
@@ -447,15 +451,18 @@ export function RulesHeader({ label, ruleKey, color, tourId }) {
       key={rule.title}
       onClick={() => setActiveRule(rule)}
       style={{
-        padding: '3px 9px',
+        padding: isMobile ? '3px 8px' : '3px 9px',
         background: `${color.primary}12`,
         border: `1px solid ${color.primary}66`,
         color: color.primary2,
-        borderRadius: 20,
+        borderRadius: 14,
         cursor: 'pointer',
         fontFamily: 'Georgia, serif',
         fontSize: '.7rem',
-        whiteSpace: 'nowrap',
+        lineHeight: 1.15,
+        textAlign: 'center',
+        whiteSpace: isMobile ? 'normal' : 'nowrap',
+        maxWidth: isMobile ? 84 : 'none',
         transition: 'all .15s',
       }}
       onMouseEnter={e => { e.currentTarget.style.background = `${color.primary}28`; e.currentTarget.style.borderColor = color.primary }}
@@ -468,7 +475,7 @@ export function RulesHeader({ label, ruleKey, color, tourId }) {
   return (
     <div data-tour={tourId || undefined} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', background: 'var(--bg)', borderBottom: `2px solid ${color.primary}` }}>
       <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap', gap: 4, justifyContent: 'flex-start' }}>{left.map(pill)}</div>
-      <div style={{ flexShrink: 0, fontSize: '1rem', letterSpacing: '.25em', color: color.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 600, textAlign: 'center' }}>{label}</div>
+     <div style={{ flexShrink: 0, fontSize: '1rem', letterSpacing: isMobile ? '.12em' : '.25em', color: color.primary, textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 600, textAlign: 'center' }}>{label}</div>
       <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap', gap: 4, justifyContent: 'flex-end' }}>{right.map(pill)}</div>
       {activeRule && <RuleModal rule={activeRule} color={color} onClose={() => setActiveRule(null)} />}
     </div>
@@ -488,8 +495,8 @@ export function RankedSkillTable({ skills, char, stats, onUpdate, theme, section
     return { rank: parseInt(data.rank) || 0, pointsInvested: parseInt(data.pointsInvested) || 0 }
   }
 
-  return (
-    <div>
+ return (
+    <div style={{ border: `3px solid ${T.primary}` }}>
       {sectionLabel ? (
         <RulesHeader label={sectionLabel} ruleKey={sectionLabel} color={T} tourId={sectionHeaderTourId} />
       ) : null}
