@@ -58,7 +58,7 @@ export function RankedSkillCard({ skill, rank, pointsInvested, onAdd, onRemove, 
             <span>·</span>
             <span>Max: {maxRank}</span>
             {mcl !== 'any' && mcl !== 'Any' && <><span>·</span><span>MC/L: {mcl}</span></>}
-            {maint > 0 && isActive && <><span>·</span><span style={{ color: '#c94a4a' }}>{(maint * rank).toFixed(2)}/lvl maint</span></>}
+            {maint > 0 && isActive && <><span>·</span><span style={{ color: '#c94a4a' }}>{(maint * rank).toFixed(2)} maint</span></>}
           </div>
           {prereq && prereq !== 'none' && (
             <div style={{ fontSize: '.65rem', color: 'var(--text3)', marginTop: 2, fontStyle: 'italic' }}>

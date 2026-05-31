@@ -148,9 +148,6 @@ function ClickEdit({ value, onChange, max, color, fontSize='1rem' }) {
   )
 }
 
-function EditableMana({ value, onChange }) {
-  return <ClickEdit value={value} onChange={onChange} />
-}
 
 // ── COMPLIANCE ────────────────────────────────────────────────────────────────
 function getIssues(stats, character) {
@@ -336,9 +333,7 @@ export function AttributeBlock({ stats, character, onUpdateCharacter }) {
   }
 
   const getBase = a => { const v=character.attributes?.[a]; return typeof v==='object'?(v.base??0):(v??0) }
-  const currentMana = character.currentMana??0
-  const setMana = v => onUpdateCharacter({...character, currentMana:v})
-  const carriedLbs = Math.floor(character.carryingWeight??0)
+   const carriedLbs = Math.floor(character.carryingWeight??0)
   const maxWeight = stats.weightAllowance??0
   const issues = getIssues(stats, character)
   const ok = issues.length === 0
@@ -417,8 +412,8 @@ export function AttributeBlock({ stats, character, onUpdateCharacter }) {
         tourLeftId="sheet-attr-left" tourRightId="sheet-attr-chr" />
 
       <AttrRow abbr="WP" current={attrs.wp.effective} checkMod={attrs.wp.checkMod}
-        derivedLabel="Mana" derivedValue={<EditableMana value={currentMana} onChange={setMana} />}
-        detailContent={<><DI label="Rolled WP" value={getBase('wp')} /><DI label="Arc. Power" value={stats.arcanePower} /><DI label="Mana Mean" value={stats.manaMean} /></>}
+       derivedLabel="Mana Mean" derivedValue={stats.manaMean}
+        detailContent={<><DI label="Rolled WP" value={getBase('wp')} /><DI label="Arc. Power" value={stats.arcanePower} /></>}
         tourLeftId="sheet-attr-left" tourRightId="sheet-attr-mana" />
       <MagicRows ranks={ranks} weavingDice={stats.weavingDice} />
 

@@ -6,6 +6,7 @@ import ConfirmModal from './ConfirmModal'
 import { supabase } from '../supabase'
 import { loadAllCampaigns } from '../characterDB'
 import armorData from '../data/armor.json'
+import { getRace } from '../utils/raceUtils'
 
 // ── RACES LIST ────────────────────────────────────────────────────────────────
 const RACE_OPTIONS = Object.entries(racesData).map(([key, r]) => ({ key, name: r.name })).sort((a, b) => a.name.localeCompare(b.name))
@@ -185,6 +186,7 @@ function buildSetAttr(character, stats) {
     `--BS1AR|${BS1AR} --BS2AR|${BS2AR} --BS3AR|${BS3AR} --BS4AR|${BS4AR} --BS5AR|${BS5AR} --BS6AR|${BS6AR}`,
     `--BS1HP|${v(stats.hp?.torso)} --BS2HP|${v(stats.hp?.leg)} --BS3HP|${v(stats.hp?.leg)} --BS4HP|${v(stats.hp?.arm)} --BS5HP|${v(stats.hp?.arm)} --BS6HP|${v(stats.hp?.head)}`,
     `--Char_Level|${character.level || 1}`,
+    `--Race|${character.race || ''}`,
     `--Arcane_Power|${v(stats.arcanePower)} --ArcaneMentalityRank|${v(stats.arcaneMentality)} --Mana_mean|${v(stats.manaMean)}`,
     ...weavingParts,
     ...slotParts,
@@ -503,7 +505,7 @@ export default function BioPage({ character, onUpdateCharacter, stats, gmModeAct
 
           {/* Cur. Maint with breakdown tooltip */}
           <div style={{ textAlign: 'center', minWidth: 70, position: 'relative' }}>
-            <div style={{ ...lbl, marginBottom: 2 }}>Cur. Maint.</div>
+            <div style={{ ...lbl, marginBottom: 2 }}>Maint next lvl</div>
             <div
               onClick={() => setShowMaintBreakdown(!showMaintBreakdown)}
               style={{ fontSize: '1.1rem', fontWeight: 600, fontFamily: 'Georgia, serif', color: currentMaintenance > 0 ? '#c94a4a' : 'var(--text3)', cursor: 'pointer', borderBottom: '1px dotted currentColor' }}
@@ -524,7 +526,7 @@ export default function BioPage({ character, onUpdateCharacter, stats, gmModeAct
                   <div key={name} style={{ display: 'flex', justifyContent: 'space-between', gap: 16, marginBottom: 4 }}>
                     <span style={{ fontSize: '.8rem', color: 'var(--text2)', fontFamily: 'Georgia, serif' }}>{name}</span>
                     <span style={{ fontSize: '.8rem', color: '#c94a4a', fontFamily: 'Georgia, serif', fontWeight: 600 }}>
-                      {Math.floor(parseFloat(data.maintenanceCost) || 0)}/lvl
+                     {Math.floor(parseFloat(data.maintenanceCost) || 0)}
                     </span>
                   </div>
                 ))}
@@ -648,8 +650,9 @@ export default function BioPage({ character, onUpdateCharacter, stats, gmModeAct
     ?         <div style={{ fontSize: '1rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600, padding: '6px 0' }}>{character.race}</div>
     :           <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
                  <select value={character.race || ''} onChange={e => {
-                    const name = e.target.value
-                  }} style={selectStyle}>
+  const name = e.target.value
+  onUpdateCharacter({ ...character, race: name })
+}} style={selectStyle}>
                   <option value="">— Choose Race —</option>
                   {RACE_OPTIONS.map(r => <option key={r.key} value={r.name}>{r.name}</option>)}
                   </select>

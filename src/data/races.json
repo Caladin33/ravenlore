@@ -90,9 +90,9 @@
     "hpModifier": -1, "skillPointsPerLevelModifier": 0, "firstLevelBonus": true,
     "strModifier": 0, "conModifier": 0, "apModifier": 0, "precisionModifier": 0, "awModifier": 1,
     "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 0,
-    "chrModifier": 1, "manaModifier": 15,
+    "chrModifier": 1, "manaPerDieBonus": 1,
     "advantages": [], "disadvantages": ["con"],
-    "specialRules": "Disadvantage on Constitution checks, +1 Charisma, 15% more mana",
+    "specialRules": "Disadvantage on Constitution checks, +1 Charisma, +1 mana /die",
     "attrMin": { "aw": 12, "chr": 12 }, "attrMax": { "str": 14 }
   },
   "orc": {

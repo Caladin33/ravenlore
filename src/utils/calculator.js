@@ -189,7 +189,7 @@ export function calculate(char, session = {}) {
 
   // Race derived from race name
   const race = getRace(char.race)
-const items = char.itemBonuses || {}
+  const items = char.itemBonuses || {}
   // Active druid form
   const form = getActiveForm(char)
 
@@ -399,7 +399,7 @@ const items = char.itemBonuses || {}
     if (masterWeaverKnown) die = DIE_UPGRADE[die] || die
     weavingDice[color] = die
     const mean = (MANA_MEANS[die] || MANA_MEANS['d3'])[manaMasteryRank]
-    manaMean += mean
+    manaMean += mean + (race.manaPerDieBonus || 0)
   }
   manaMean += manaFontRank
   manaMean = Math.round(manaMean * 10) / 10

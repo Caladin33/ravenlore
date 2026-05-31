@@ -377,7 +377,7 @@ const handleCommit = (newPoints) => {
           </div>
           <div style={{ width: 28, height: 1, background: isActive ? T.border : 'var(--border)' }} />
           <div style={{ fontSize: '.75rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', textAlign: 'center' }}>{maxDisplay}</div>
-          {isActive && actualMaint > 0 && <div style={{ fontSize: '.52rem', color: '#c94a4a', marginTop: 1 }}>{actualMaint}/lvl</div>}
+          {isActive && actualMaint > 0 && <div style={{ fontSize: '.52rem', color: '#c94a4a', marginTop: 1 }}>{actualMaint} maint</div>}
         </div>
       </div>
 
