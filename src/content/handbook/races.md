@@ -8,17 +8,24 @@ Humans are the most populous race, and are the most varied. Any rolled combinati
 
 {{raceStats:human}}
 
+{{raceStart:dwarf left}}
 ## Dwarf
 
 Dwarves are a proud and ancient folk, and their numbers are dwindling. Secure in their mountain strongholds, most dwarves have little sympathy for the troubles of the fools living on the open surface.
 
 {{raceStats:dwarf}}
 
+{{raceEnd}}
+
+{{raceStart:halfling right}}
+
 ## Halfling
 
 Halflings are not widely known, preferring the peace of their hidden home. Warm, friendly and so often underestimated, Halflings occasionally venture forth in search of fortune, or adventure.
 
 {{raceStats:halfling}}
+
+{{raceEnd}}
 
 ## Elves
 
@@ -72,7 +79,7 @@ Orcs of mixed race that are raised by Orcs are considered Orcs. Half Orcs refers
 
 ## Goblin
 
-Goblins are, as a group, cunning and reckless. Endlessly creative and easily distracted, their short life span contributes to their general impatience. They learn very quickly, not bothering with the unimportant details, as they see it.
+Goblins are, as a group, cunning and reckless. Endlessly creative and easily distracted, their short life span contributes to their general impatience. They learn very quickly, not bothering with the unimportant details, as they see it. [[Impulsive Education]].
 
 {{raceStats:goblin}}
 
@@ -101,6 +108,8 @@ LizardFolk originated in the great southern jungle, but now have spread into sur
 Cold Blooded: Immune to fear, charm, agony and many potions. 2 actions/turn. In conditions above 85*f (30c) they gain a third action. In conditions below 40*f (5c) they have only 1 action. Clothing is only effective in reducing wind chill during the first few minutes, as there is very little body heat to insulate.
 
 ## Elderling
+
+ {{raceImage:elderling left}} 
 
 Elderlings are tall, willowy and scaled in Brilliantly colored patterns. Altered forever by their bond with vain and fickle dragons, they remain a proud and resourceful people. 
 
@@ -138,3 +147,7 @@ Zombies are generally mindless creatures, but there is a lot of magic out there 
 
 Rotting: Undead do not heal normally. In addition, they lose 1 hit point from each body section every sunrise. They can restore hit points by spending 1 action and 1 mana per hit point. All fire damage they take is doubled. Fire Damage, and damage below 0 in any body action costs 4 actions and 4 mana per hit point. Severed limbs can be reattached but not regrown. If the Torso is ever reduced to 0 hit points, or the Head to -5, the undead dies permanently.
 Sleepless: Undead do not need sleep, nor can they. 
+
+## Self Improvement Skills
+
+{{skillTable:selfImprovement}}

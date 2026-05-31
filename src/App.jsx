@@ -433,7 +433,7 @@ function App() {
             onGMView={() => navigate('gm')}
           />
         )}
-        {currentPage === 'handbook' && <HandBook />}
+       {currentPage === 'handbook' && <HandBook onBack={() => setCurrentPage('home')} />}
         {currentPage === 'gm' && (
           <GMView
             userId={user.id}

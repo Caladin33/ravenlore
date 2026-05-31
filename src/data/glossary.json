@@ -1,0 +1,263 @@
+[
+  {
+    "id": "action",
+    "term": "Action",
+    "body": "Everything you do during combat costs actions. The more actions you dedicate to tasks like shooting, fighting, and casting, the better your chance of success. There is only one kind of action, and you normally get three per round. A normal human moves about 10 feet per action spent. Even quick things like closing a door or picking up a weapon count as one action."
+  },
+  {
+    "id": "advantage",
+    "term": "Advantage",
+    "body": "You may roll twice and keep the better result."
+  },
+  {
+    "id": "armorRating",
+    "term": "Armor Rating",
+    "aliases": ["AR"],
+    "body": "The measure of a piece of armor's protective value. Reduced by Breeches until repaired."
+  },
+  {
+    "id": "attribute",
+    "term": "Attribute",
+    "body": "One of the six numbers used to describe the relative strengths of your character: Strength, Dexterity, Constitution, Awareness, Charisma, and Willpower."
+  },
+  {
+    "id": "attributeCheck",
+    "term": "Attribute Check",
+    "aliases": ["Attribute Checks"],
+    "body": "Add a d20 roll to your attribute — if the total meets or exceeds the check number, it succeeds. For example: if you have to roll a Dexterity Check 25 and your Dexterity is 10, you will need to roll 15 or better."
+  },
+  {
+    "id": "awareness",
+    "term": "Awareness",
+    "aliases": ["Aw"],
+    "body": "One of the six core attributes. Governs perception and reaction. Abbreviated Aw."
+  },
+  {
+    "id": "breeches",
+    "term": "Breeches",
+    "body": "A measure of the damage done to armour by weapons that have pierced it. Each breech reduces the Armor Rating of the armour by one until repaired. Breeches are not tracked for Natural Armor."
+  },
+  {
+    "id": "charisma",
+    "term": "Charisma",
+    "aliases": ["Chr"],
+    "body": "One of the six core attributes. Governs force of personality and social interaction. Abbreviated Chr."
+  },
+  {
+    "id": "coldBlooded",
+    "term": "Cold Blooded",
+    "body": "Immune to fear, charm, agony, and many potions. 2 actions/turn. In conditions above 85°F (30°C) they gain a third action. In conditions below 40°F (5°C) they have only 1 action. Clothing is only effective in reducing wind chill during the first few minutes, as there is very little body heat to insulate."
+  },
+  {
+    "id": "constitution",
+    "term": "Constitution",
+    "aliases": ["Con"],
+    "body": "One of the six core attributes. Governs health, endurance, and physical resilience. Abbreviated Con."
+  },
+  {
+    "id": "corruption",
+    "term": "Corruption",
+    "body": "A measure of the hidden control a Demon or Devil has accumulated within you. The consequences are severe and specific. See your contract for details."
+  },
+  {
+    "id": "crit",
+    "term": "CRIT",
+    "aliases": ["Crit", "Critical"],
+    "body": "Each CRIT adds damage to your Damage Roll equal to the highest number your damage die itself could roll — 4 for a dagger, 8 for a longsword."
+  },
+  {
+    "id": "damage",
+    "term": "Damage",
+    "aliases": ["Dam"],
+    "body": "The harm dealt to a target after a successful hit. See Damage Roll."
+  },
+  {
+    "id": "damageBonus",
+    "term": "Damage Bonus",
+    "body": "A fixed value added to your damage die in every Damage Roll."
+  },
+  {
+    "id": "damageRoll",
+    "term": "Damage Roll",
+    "body": "Your damage die + your fixed Damage Bonus + your Margin of Victory × your MoV Damage Rate + the number of CRITs × the crit damage of your weapon (the maximum the damage die can roll)."
+  },
+  {
+    "id": "dexterity",
+    "term": "Dexterity",
+    "aliases": ["Dex"],
+    "body": "One of the six core attributes. Governs speed, agility, and fine motor control. Abbreviated Dex."
+  },
+  {
+    "id": "disadvantage",
+    "term": "Disadvantage",
+    "body": "You must roll twice and keep the worse result."
+  },
+  {
+    "id": "disengaging",
+    "term": "Disengaging",
+    "body": "Panicky flight from combat allows anyone adjacent with the Opportunistic skill a free Damage Roll. Backing away carefully gives your opponent the choice to follow or disengage — if they disengage, no opportunity attacks occur. Once out of combat you are free to re-engage by spending an action."
+  },
+  {
+    "id": "encumbered",
+    "term": "Encumbered",
+    "body": "If you exceed your carrying capacity (shown in the Constitution row of your character sheet) you become encumbered and lose 1 action per round."
+  },
+  {
+    "id": "evasion",
+    "term": "Evasion",
+    "body": "Subtracted from Targeting Rolls made against you."
+  },
+  {
+    "id": "expertise",
+    "term": "Expertise",
+    "aliases": ["Exp"],
+    "body": "Your skill in combat. Added to your combat roll. Abbreviated Exp."
+  },
+  {
+    "id": "flanking",
+    "term": "Flanking",
+    "body": "If a creature has opponents on opposite sides (180 degrees) it is flanked. A flanked creature has Disadvantage on its combat roll."
+  },
+  {
+    "id": "givingGround",
+    "term": "Giving Ground",
+    "body": "Reckless attacks are not effective if the opponent is determined to fight carefully, has the appropriate skill, and is willing to give ground. See the Give Ground skill."
+  },
+  {
+    "id": "hangingSpells",
+    "term": "Hanging Spells",
+    "aliases": ["Hanging Spell", "Hang", "Hung"],
+    "body": "You can omit one key word and gesture to hang a spell for later, if you have an available Spell Hook. Hanging a spell costs 2 actions and always succeeds — no roll required. Hanging Spells do not cost mana until they are activated."
+  },
+  {
+    "id": "hitSurplus",
+    "term": "Hit Surplus",
+    "body": "Your to-hit roll, including all bonuses and penalties, minus 15."
+  },
+  {
+    "id": "impulsiveEducation",
+    "term": "Impulsive Education",
+    "body": "Goblins receive +6 skill points per level but do not get the bonus 65 points at first level. -5 Free Base on all Trades & Talents."
+  },
+  {
+    "id": "initiative",
+    "term": "Initiative",
+    "body": "Determines who acts first in the Movement Phase. Rolled as 1d20 + your Initiative bonus. Highest goes first."
+  },
+  {
+    "id": "knownSpells",
+    "term": "Known Spells",
+    "body": "Spells you are eligible to learn and have chosen to learn. There is a limit: your Arcane Power + the sum of all your magic mastery ranks + your Order Mastery rank + your Expanded Horizons rank."
+  },
+  {
+    "id": "mana",
+    "term": "Mana",
+    "body": "Magical fuel that replenishes with time. Everyone has mana equal to their Arcane Power, but spellcasters learn to greatly increase their supply. You regain 1 mana every 10 minutes, or faster with the Arcane Focus skill. It costs 1 mana per spell level to cast a spell."
+  },
+  {
+    "id": "marginOfVictory",
+    "term": "Margin of Victory",
+    "aliases": ["MoV"],
+    "body": "Your Combat Roll minus the highest opposing Combat Roll."
+  },
+  {
+    "id": "melee",
+    "term": "Melee",
+    "body": "1. Hand to hand fighting in general. 2. A particular hand to hand combat with specific participants. 3. A class of weapons: standard close combat weapons with normal range and speed."
+  },
+  {
+    "id": "naturalArmor",
+    "term": "Natural Armor",
+    "body": "The Armor Rating of hides, scales, and other natural resistance to physical damage. Applied after regular Armor and before Hit Points. Breeches are not tracked for Natural Armor."
+  },
+  {
+    "id": "pacifist",
+    "term": "Pacifist",
+    "body": "Ogier may not spend any skill points on weapon skills except for staff, great axe, or shield. Every point of damage directly caused by an Ogier, or its bonded animals, gives it a point of Heartache."
+  },
+  {
+    "id": "pierce",
+    "term": "Pierce",
+    "body": "A blow is considered to have pierced if it deals at least 1 HP of damage. This is important for poisons, among other things."
+  },
+  {
+    "id": "precision",
+    "term": "Precision",
+    "body": "Your control over where you hit people. Comes primarily from experience and skill, but a high Dexterity helps a little."
+  },
+  {
+    "id": "recklessAttacks",
+    "term": "Reckless Attacks",
+    "aliases": ["Reckless Attack"],
+    "body": "Made at the end of your movement phase. Requires entering a Reckless Rage (see Martial Skills). These attacks have a Margin of Victory of zero."
+  },
+  {
+    "id": "rotting",
+    "term": "Rotting",
+    "body": "Undead do not heal normally. They lose 1 hit point from each body section every sunrise. Hit points can be restored by spending 1 action and 1 mana per hit point. All fire damage is doubled. Fire damage, and damage below 0 in any body section, costs 4 actions and 4 mana per hit point to restore. Severed limbs can be reattached but not regrown. If the Torso reaches 0 hit points, or the Head reaches -5, the undead dies permanently."
+  },
+  {
+    "id": "semiSimplistic",
+    "term": "Semi-Simplistic",
+    "body": "-5 skill points per level."
+  },
+  {
+    "id": "shootingIntoCombat",
+    "term": "Shooting into Combat",
+    "body": "As a general rule, a Hit Surplus of -5 or worse hits the wrong person. In all situations shooting into combat is difficult and a penalty will apply, usually 3. The GM will tell you the penalties before you commit to shooting."
+  },
+  {
+    "id": "simplistic",
+    "term": "Simplistic",
+    "body": "-5 skill points per level, and no bonus 65 points at first level."
+  },
+  {
+    "id": "skillCap",
+    "term": "Skill Cap",
+    "aliases": ["SC"],
+    "body": "In the General Skill table, the maximum of many skills is listed as SC. This is your maximum base percentage chance to succeed with those skills."
+  },
+  {
+    "id": "sleepless",
+    "term": "Sleepless",
+    "body": "Undead do not need sleep, nor are they able to."
+  },
+  {
+    "id": "spellweaving",
+    "term": "Spellweaving",
+    "body": "To cast spells you must weave two powers together into intricate patterns. For each power involved, you roll 1 die for every two actions used, keep the best one, and add any bonuses. Both results must exceed the level of the spell. Successful weaves cost 1 mana per spell level."
+  },
+  {
+    "id": "steddingLinked",
+    "term": "Stedding-Linked",
+    "body": "Stedding are rare places where magic does not function and most are home to a tribe of Ogier. Ogier gain a point of Heartache every sunset spent outside a Stedding. Above 50 points: a strong longing to find a Stedding. Above 100: may not spend acquired skill points. Above 150: must pass a Willpower Check 20 each week or immediately seek a Stedding. Above 200: must pass a Willpower Check 25 each day or die. Inside a Stedding, Ogier lose 10–20 points of Heartache per day depending on their wellbeing."
+  },
+  {
+    "id": "strength",
+    "term": "Strength",
+    "aliases": ["Str"],
+    "body": "One of the six core attributes. Governs physical power and carrying capacity. Abbreviated Str."
+  },
+  {
+    "id": "targetingRoll",
+    "term": "Targeting Roll",
+    "body": "1d20 + your Precision - the target's Evasion."
+  },
+  {
+    "id": "weaponClasses",
+    "term": "Weapon Classes",
+    "body": "Melee: Standard close combat weapon. Light: Can be used in the off hand, or in any skill requiring light weapons. Quick: Can be used in the off hand, or in any skill requiring quick weapons. Awkward: Incompatible with some martial skills. Long: Has a 10-foot reach, usable in any skill requiring long weapons."
+  },
+  {
+    "id": "willpower",
+    "term": "Willpower",
+    "aliases": ["WP"],
+    "body": "One of the six core attributes. Governs mental fortitude and resistance to fear, charm, and corruption. Abbreviated WP."
+  },
+  {
+    "id": "wordsOfPower",
+    "term": "Words of Power",
+    "aliases": ["Word of Power"],
+    "body": "Require a single action to cast and always succeed. They are not woven."
+  }
+]

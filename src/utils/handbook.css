@@ -221,51 +221,41 @@
 .skill-table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 0.85rem;
   font-family: 'Georgia', serif;
-  table-layout: fixed;
 }
 
 .skill-table th {
   background: #1a1a1a;
   color: #e8c96a;
-  text-align: center;
-  padding: 4px 4px;
+  text-align: left;
+  padding: 5px 8px;
   border-bottom: 2px solid #444;
+  white-space: nowrap;
   font-weight: normal;
-  font-size: 0.65rem;
+  letter-spacing: 0.04em;
+  font-size: 0.75rem;
   text-transform: uppercase;
-  white-space: normal;
-  line-height: 1.2;
-  vertical-align: bottom;
 }
 
 .skill-table td {
-  padding: 4px 6px;
+  padding: 4px 8px;
   color: #e0e0e0;
   border-bottom: 1px solid #1a1a1a;
   vertical-align: top;
   font-size: 0.82rem;
-  overflow: hidden;
 }
 
 .skill-table .row-even td { background: #0a0a0a; }
 .skill-table .row-odd  td { background: #111; }
-.skill-table tr:hover  td { background: #1a1a1a; }
 
-/* Widths set on th — enforced by table-layout: fixed */
-.skill-table th:nth-child(1) { width: 9%;   text-align: left; } /* prereq      */
-.skill-table th:nth-child(2) { width: 11%;  text-align: left; } /* name        */
-.skill-table th:nth-child(3) { width: auto; text-align: left; } /* description */
-.skill-table th:nth-child(4) { width: 5%;   }                   /* cost/rank   */
-.skill-table th:nth-child(5) { width: 4%;   }                   /* max         */
-.skill-table th:nth-child(6) { width: 4%;   }                   /* mcl         */
-.skill-table th:nth-child(7) { width: 5%;   }                   /* maint/rank  */
+.skill-table tr:hover td { background: #1a1a1a; }
 
-/* Cell text styles */
-.skill-table .col-prereq             { color: #aaa; }
-.skill-table .col-name               { color: #fff; font-style: italic; }
+/* Column widths — description gets whatever space is left */
+.skill-table .col-prereq             { width: 20px;  white-space: nowrap; color: #aaa; }
+.skill-table .col-name               { width: 25px;  white-space: nowrap; color: #fff; font-style: italic; }
 .skill-table .col-description        { line-height: 1.45; }
-.skill-table .col-costPerRank        { text-align: center; }
-.skill-table .col-maxRank            { text-align: center; }
-.skill-table .col-mcl                { text-align: center; color: #aaa; }
-.skill-table .col-maintenancePerRank { text-align: center; color: #aaa; }
+.skill-table .col-costPerRank        { width: 18px;  text-align: center; white-space: nowrap; }
+.skill-table .col-maxRank            { width: 40px;  text-align: center; }
+.skill-table .col-mcl                { width: 20px;  text-align: center; color: #aaa; }
+.skill-table .col-maintenancePerRank { width: 100px;  text-align: center; color: #aaa; }
