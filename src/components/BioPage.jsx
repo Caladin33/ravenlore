@@ -114,15 +114,13 @@ const stanceRank = (n) => parseInt(character.arcaneSkills?.[n]?.rank) || 0
   // Combat die: strip leading 'd' to get plain number
   const cd = (dieStr) => parseInt(String(dieStr ?? '0').replace(/\D/g, '')) || 0
 
-  // Check formula strings
-  function checkFormula(attr) {
-    const { checkMod, advantage, disadvantage } = stats.attributes[attr]
-    const die = (advantage && !disadvantage) ? '2d20kh1'
-              : (!advantage && disadvantage)  ? '2d20kl1'
-              : '1d20'
-    const mod = checkMod >= 0 ? `+${checkMod}` : `${checkMod}`
-    return `${die}${mod}`
-  }
+  function checkAdv(attr) {
+  const { advantage, disadvantage } = stats.attributes[attr]
+  if (advantage && disadvantage) return 1
+  if (advantage) return 2
+  if (disadvantage) return 0
+  return 1
+}
 
   // Weaving dice — export as plain number (e.g. 6 for d6, 0 if none)
   const dieMap = {
@@ -180,7 +178,7 @@ const stanceRank = (n) => parseInt(character.arcaneSkills?.[n]?.rank) || 0
   const parts = [
     `!setattr --name ${name}`,
     `--Strength|${v(stats.attributes?.str?.effective)} --Dexterity|${v(stats.attributes?.dex?.effective)} --Constitution|${v(stats.attributes?.con?.effective)} --Awareness|${v(stats.attributes?.aw?.effective)} --Charisma|${v(stats.attributes?.chr?.effective)} --Willpower|${v(stats.attributes?.wp?.effective)}`,
-    `--StrcheckBonus|${checkFormula('str')} --DexcheckBonus|${checkFormula('dex')} --ConcheckBonus|${checkFormula('con')} --AwcheckBonus|${checkFormula('aw')} --ChrcheckBonus|${checkFormula('chr')} --WPcheckBonus|${checkFormula('wp')}`,
+    `--Str_adv|${checkAdv('str')} --Str_mod|${v(stats.attributes.str.checkMod)} --Dex_adv|${checkAdv('dex')} --Dex_mod|${v(stats.attributes.dex.checkMod)} --Con_adv|${checkAdv('con')} --Con_mod|${v(stats.attributes.con.checkMod)} --Aw_adv|${checkAdv('aw')} --Aw_mod|${v(stats.attributes.aw.checkMod)} --Chr_adv|${checkAdv('chr')} --Chr_mod|${v(stats.attributes.chr.checkMod)} --WP_adv|${checkAdv('wp')} --WP_mod|${v(stats.attributes.wp.checkMod)}`,
     `--Evasion|${v(stats.evasionNoShield)} --Evasion_Shield|${v(stats.evasion)} --RearEV|${v(stats.rearEvasion)} --initiative_bonus|${v(stats.initiative)} --Damage_Bonus|${v(stats.damageBonus)} --Committed_Strikes|${v(stats.committedStrikesRank)} --Parry_rank|${v(stats.parryRank)} --MoV_Damage_Rate|${v(stats.movDamageRate)} --MoV_PR_Rate|${v(stats.movPrecisionRate)} --Move|${v(stats.movement)}`,
     `--BonusAR|${v(stats.bonusAR)} --NaturalArmor|${v(stats.naturalArmor)} --ShieldAR|${v(stats.shieldAR)} --ShieldHP|${shieldHP}`,
     `--BS1AR|${BS1AR} --BS2AR|${BS2AR} --BS3AR|${BS3AR} --BS4AR|${BS4AR} --BS5AR|${BS5AR} --BS6AR|${BS6AR}`,
