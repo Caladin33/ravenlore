@@ -110,7 +110,7 @@ function buildSetAttr(character, stats) {
 
   // Helper: coerce undefined/null to 0
   const v = (x) => x ?? 0
-
+const stanceRank = (n) => parseInt(character.arcaneSkills?.[n]?.rank) || 0
   // Combat die: strip leading 'd' to get plain number
   const cd = (dieStr) => parseInt(String(dieStr ?? '0').replace(/\D/g, '')) || 0
 
@@ -188,6 +188,7 @@ function buildSetAttr(character, stats) {
     `--Char_Level|${character.level || 1}`,
     `--Race|${character.race || ''}`,
     `--Arcane_Power|${v(stats.arcanePower)} --ArcaneMentalityRank|${v(stats.arcaneMentality)} --Mana_mean|${v(stats.manaMean)}`,
+    `--Wind_Stance_Rank|${stanceRank('Wind Stance')} --Wave_Stance_Rank|${stanceRank('Wave Stance')} --Stone_Stance_Rank|${stanceRank('Stone Stance')} --Flame_Stance_Rank|${stanceRank('Flame Stance')}`,
     ...weavingParts,
     ...slotParts,
     ...skillParts,

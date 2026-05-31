@@ -787,7 +787,7 @@ export default function SkillEditor({ character, onSave, onBack, gmModeActive, s
   const [confirmModal, setConfirmModal] = useState(null)
   const [lockedPoints, setLockedPoints] = useState(() => {
     const locked = {}
-    const allSkills = { ...character.martialSkills, ...character.arcaneSkills, ...character.selfImprovementSkills }
+   const allSkills = { ...character.martialSkills, ...character.arcaneSkills, ...character.selfImprovementSkills, ...character.generalSkills }
     Object.entries(allSkills).forEach(([name, data]) => { locked[name] = parseInt(data.pointsInvested) || 0 })
     return locked
   })
