@@ -90,7 +90,7 @@
   {
     "name": "Combat Intensity",
     "category": "Melee",
-    "prereq": "Well trained 2",
+    "prereq": "Well Trained 2",
     "description": "+1 Expertise /action spent.",
     "costPerRank": 40,
     "maxRank": 1,
@@ -596,7 +596,7 @@
   {
     "name": "Wardancing",
     "category": "Melee",
-    "prereq": "< Melee Mastery\nDual Wielding",
+    "prereq": "< Melee Mastery",
     "description": "+1 Expertise/Rank when dual wielding or unarmed.",
     "costPerRank": 15,
     "maxRank": 5,
@@ -795,7 +795,7 @@
     "name": "Martial Artist",
     "category": "Unfettered",
     "prereq": "none",
-    "description": "When fighting unarmed you use d12 instead of d10 for combat and d4 instead of d3 for damage.",
+    "description": "When fighting unarmed you use d12 instead of d10 for combat and d4 instead of d3 for damage, and you may use the better combat roll for both hands",
     "costPerRank": 15,
     "maxRank": 1,
     "mcl": "any",

@@ -173,7 +173,7 @@
   {
     "id": "pacifist",
     "term": "Pacifist",
-    "body": "Ogier may not spend any skill points on weapon skills except for staff, great axe, or shield. Every point of damage directly caused by an Ogier, or its bonded animals, gives it a point of Heartache."
+    "body": "Every point of damage directly caused by an Ogier, or its bonded animals, gives it a point of Heartache."
   },
   {
     "id": "pierce",

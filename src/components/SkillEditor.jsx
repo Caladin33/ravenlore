@@ -1536,10 +1536,10 @@ const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width:
           <button data-tour={isMobile ? 'skills-save-btn' : undefined} className="skills-save-mobile" onClick={() => setShowConfirm(true)} style={{ padding: '7px 4px', background: 'rgba(74,158,74,.15)', border: '1px solid #4a9e4a', color: '#4a9e4a', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.82rem' }}>
             Save Changes
           </button>
-          <button onClick={() => setShowActiveOnly(!showActiveOnly)} className="skills-filter-btn" style={{ padding: '7px 4px', background: showActiveOnly ? 'rgba(201,168,76,.15)' : 'var(--surface)', border: `1px solid ${showActiveOnly ? 'var(--gold)' : 'var(--border)'}`, color: showActiveOnly ? 'var(--gold2)' : 'var(--text3)', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.82rem' }}>
+          <button onClick={() => { setShowActiveOnly(!showActiveOnly); setShowUnlockedOnly(false) }} className="skills-filter-btn" style={{ padding: '7px 4px', background: showActiveOnly ? 'rgba(201,168,76,.15)' : 'var(--surface)', border: `1px solid ${showActiveOnly ? 'var(--gold)' : 'var(--border)'}`, color: showActiveOnly ? 'var(--gold2)' : 'var(--text3)', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.82rem' }}>
             Active Only
           </button>
-          <button onClick={() => setShowUnlockedOnly(!showUnlockedOnly)} className="skills-filter-btn" style={{ padding: '7px 4px', background: showUnlockedOnly ? 'rgba(201,168,76,.15)' : 'var(--surface)', border: `1px solid ${showUnlockedOnly ? 'var(--gold)' : 'var(--border)'}`, color: showUnlockedOnly ? 'var(--gold2)' : 'var(--text3)', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.82rem' }}>
+          <button onClick={() => { setShowUnlockedOnly(!showUnlockedOnly); setShowActiveOnly(false) }} className="skills-filter-btn" style={{ padding: '7px 4px', background: showUnlockedOnly ? 'rgba(201,168,76,.15)' : 'var(--surface)', border: `1px solid ${showUnlockedOnly ? 'var(--gold)' : 'var(--border)'}`, color: showUnlockedOnly ? 'var(--gold2)' : 'var(--text3)', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.82rem' }}>
             Unlocked Only
           </button>
         </div>
