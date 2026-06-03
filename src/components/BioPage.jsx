@@ -98,12 +98,13 @@ function buildSetAttr(character, stats) {
   const lLegCode  = armor.lLeg?.type  || 'None'
   const shieldCode = armor.shield?.type || 'None'
 
-  const BS6AR = getHelm(helmCode)?.arHead ?? 0
-  const BS1AR = getBodyArmor(torsoCode)?.arTorso ?? 0
-  const BS4AR = getBodyArmor(rArmCode)?.arArms ?? 0
-  const BS5AR = getBodyArmor(lArmCode)?.arArms ?? 0
-  const BS2AR = getBodyArmor(rLegCode)?.arArms ?? 0
-  const BS3AR = getBodyArmor(lLegCode)?.arArms ?? 0
+ // Blow Deflection: +rank AR on each plate location, and on head if metal helm
+  const BS6AR = (getHelm(helmCode)?.arHead ?? 0)        + (stats.deflectionAR?.head  ?? 0)
+  const BS1AR = (getBodyArmor(torsoCode)?.arTorso ?? 0) + (stats.deflectionAR?.torso ?? 0)
+  const BS4AR = (getBodyArmor(rArmCode)?.arArms ?? 0)   + (stats.deflectionAR?.rArm  ?? 0)
+  const BS5AR = (getBodyArmor(lArmCode)?.arArms ?? 0)   + (stats.deflectionAR?.lArm  ?? 0)
+  const BS2AR = (getBodyArmor(rLegCode)?.arArms ?? 0)   + (stats.deflectionAR?.rLeg  ?? 0)
+  const BS3AR = (getBodyArmor(lLegCode)?.arArms ?? 0)   + (stats.deflectionAR?.lLeg  ?? 0)
 
   const shieldMat = getShieldMat(shieldCode)
   const shieldHP  = shieldMat?.hp ?? 0

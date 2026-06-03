@@ -368,8 +368,8 @@ function buildSteps(character) {
       page: 'sheet',
       navigateTo: null,
       target: 'sheet-attr-mana',
-      title: 'Mana',
-      body: "This is your current mana. You update this yourself.",
+      title: 'Mana Mean',
+      body: "This shows the average amount of mana you will generate, factoring in all of your skills and items.",
       cta: 'Next →',
     },
     {
@@ -395,7 +395,7 @@ function buildSteps(character) {
       navigateTo: null,
       target: 'sheet-hptable',
       title: 'HP & Armor',
-      body: "This is your HP and Armor table. Each row is a body location. Damage is tracked per location. Click or tap Current HP and Breaches to change them.",
+      body: "This is your HP and Armor table. Each row is a body location. Damage is tracked per location. Click or tap Current HP and Breaches to change them, or use the sheet in Roll20.",
       cta: 'Next →',
     },
     {
@@ -411,7 +411,7 @@ function buildSteps(character) {
       navigateTo: null,
       target: 'sheet-global-row',
       title: 'Bonus HP & AR',
-      body: "Barrier HP, Temp HP, and bonus AR go here. The note shows the order damage is applied.",
+      body: "Barrier HP, Temp HP, and Global AR go here. The note shows the order damage is applied.",
       cta: 'Next →',
     },
 
@@ -554,7 +554,7 @@ function buildSteps(character) {
       page: 'skillEditor',
       navigateTo: null,
       tab: 'General',
-      subtab: 'trades-talents',
+      subtab: 'trades&talents',
       target: 'skills-subtab-trades-talents',
       title: 'Trades & Talents',
       body: "Trades & Talents work differently. Each skill shows your current score over the maximum, based on your attributes, and your points invested over the multiple. Each point you spend in Acting raises your score by 4, the skill's multiple.",

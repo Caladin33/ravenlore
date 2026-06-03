@@ -493,7 +493,7 @@ const DCOLS = '56px 70px 60px 50px 70px minmax(100px, 180px) 56px 1fr'
       ? Math.max(baseMaxHP, formData.naturalMaxHP)
       : baseMaxHP
     const curHPVal = curHP[loc] ?? effectiveMaxHP
-    const arVal    = getARForLoc(code, loc, helmCode) + (formData?.naturalArmor || 0)
+   const arVal = getARForLoc(code, loc, helmCode) + (formData?.naturalArmor || 0) + (stats.deflectionAR?.[loc] ?? 0)
     const evPen    = getEvPenForLoc(code, loc, helmCode)
     const breaches = armor[loc]?.breaches ?? 0
     const immune   = !isHelm && isImmuneToBreach(code)

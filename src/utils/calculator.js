@@ -128,6 +128,11 @@ function critDamageFor(damageDie) {
   const count = m[1] === '' ? 1 : parseInt(m[1])
   return count * parseInt(m[2])
 }
+
+// Ranged crit number = highest possible roll = combat die x2 (no Ruthless Tempo)
+function rangedCritNumberFor(combatDie) {
+  return (parseInt(String(combatDie ?? '').replace(/\D/g, '')) || 0) * 2
+}
 // ─────────────────────────────────────────────
 // HELPER FUNCTIONS
 // ─────────────────────────────────────────────
@@ -211,8 +216,7 @@ function getActiveForm(char) {
 
 export function calculate(char, session = {}) {
 
-  const unfettered = session.unfettered || false
-
+  
   // Race derived from race name
   const race = getRace(char.race)
   const items = char.itemBonuses || {}
@@ -273,7 +277,6 @@ export function calculate(char, session = {}) {
   const helm = getHelm(helmCode)
   const helmAwPenalty = -(helm?.awPenalty || 0)
  const racialAwBonus = race.awModifier || 0
-
   const strCheck = bbRank - Math.floor(bbRank / 3)
   const dexCheck = rtData.checkMod
   const conCheck = condRank - Math.floor(condRank / 3)
@@ -289,21 +292,36 @@ export function calculate(char, session = {}) {
 
   // ── ARCANE POWER ───────────────────────────
   const AP = wpArcane(WP) + (race.apModifier || 0) + (items.ap || 0)
-
+const platePerLoc = {}
   // ── ARMOR EVASION PENALTY ──────────────────
   const armorLocations = ['rArm', 'lArm', 'torso', 'lLeg', 'rLeg']
   let totalArmorEvasionPenalty = 0
   let plateCount = 0
+  
 
   for (const loc of armorLocations) {
     const armorCode = char.armor?.[loc]?.type || 'None'
     const a = getArmor(armorCode)
     totalArmorEvasionPenalty += (a?.evasionPenaltyPerLocation || 0)
-    if (armorCode.startsWith('P')) plateCount++
+    const plate = armorCode.startsWith('P')
+    platePerLoc[loc] = plate
+    if (plate) plateCount++
   }
   totalArmorEvasionPenalty += (helm?.evasionPenalty || 0)
   const armoredCombatRank = skillRank(char, 'Armored Combat')
   totalArmorEvasionPenalty = Math.max(0, totalArmorEvasionPenalty - armoredCombatRank)
+
+  // ── BLOW DEFLECTION (per-section AR) ──────
+  const blowDeflectionRank = skillRank(char, 'Blow Deflection')
+  const metalHelm = helmCode !== 'None' && helmCode[1] === 'M'
+  const deflectionAR = {
+    torso: platePerLoc.torso ? blowDeflectionRank : 0,
+    rArm:  platePerLoc.rArm  ? blowDeflectionRank : 0,
+    lArm:  platePerLoc.lArm  ? blowDeflectionRank : 0,
+    rLeg:  platePerLoc.rLeg  ? blowDeflectionRank : 0,
+    lLeg:  platePerLoc.lLeg  ? blowDeflectionRank : 0,
+    head:  metalHelm ? blowDeflectionRank : 0,
+  }
 
   // ── SHIELD ────────────────────────────────
   const shieldCode     = char.armor?.shield?.type || 'None'
@@ -312,7 +330,7 @@ export function calculate(char, session = {}) {
   const shieldMatData  = getShieldMaterial(shieldCode)
   const shieldMinSTR   = shieldMatData?.minStr?.[shieldSizeData?.size] || 0
   const shieldSTRWarning = shieldCode !== 'None' && STR < shieldMinSTR
-
+  const shieldDeflectionRank = skillRank(char, 'Shield Deflection')
   // ── UNFETTERED ────────────────────────────
  const weightAllowance = (conWeight(CON) + STR) * (tirelessRank > 0 ? 1.5 : 1)
   const carryingWeight  = char.carryingWeight || 0
@@ -322,7 +340,7 @@ export function calculate(char, session = {}) {
     armorPenaltyOk:   totalArmorEvasionPenalty <= 1,
   }
   const canBeUnfettered = Object.values(unfetteredConditions).every(Boolean)
-  const isUnfettered    = canBeUnfettered && unfettered
+  const isUnfettered = canBeUnfettered
 
   // ── HIT POINTS ────────────────────────────
   const chiRank        = skillRank(char, 'Chi Mastery')
@@ -474,6 +492,8 @@ export function calculate(char, session = {}) {
   const rendArmor            = skillKnown(char, 'Rend Armor')
   const antiArmoredBlunt     = skillRank(char, 'Anti-Armored Combat: Blunt')
   const cursedBladeRank      = skillRank(char, 'Cursed Blade')
+  // ── DEFLECTION / AR SKILLS ────────────────
+   const rollWithPunchesRank  = skillRank(char, 'Roll with the Punches')
   const ruthlessTempoRank    = skillRank(char, 'Ruthless Tempo')
   const racialPrecision = race.precisionModifier || 0
   const mischievousPrecision = hasSymbol(char, 'Mischief') ? 3 : 0
@@ -619,7 +639,7 @@ export function calculate(char, session = {}) {
       marksmanship,
       damage: totalDamage,
       precision,
-      critNumber: critNumberFor(weapon.combatDie),
+      critNumber: rangedCritNumberFor(weapon.combatDie),
       critDamage: critDamageFor(damageDie),
       hsPrecisionRate,
       slotLabel: slot.slotLabel || weapon.name,
@@ -730,10 +750,10 @@ export function calculate(char, session = {}) {
     totalArmorEvasionPenalty,
 
     // Armor / natural armor
-    bonusAR:      (items.ar || 0),
-    shieldAR:     (shieldMatData?.ar || 0) + (items.shieldAr || 0),
+    bonusAR:      (items.ar || 0) + (isUnfettered ? rollWithPunchesRank : 0),
+    shieldAR:     (shieldMatData?.ar || 0) + (items.shieldAr || 0) + (shieldEquipped ? shieldDeflectionRank : 0),
     naturalArmor: (form?.naturalArmor || 0) + (items.naturalAr || 0) + (skillKnown(char, 'Divine Guard') ? 5 : 0),
-
+    deflectionAR,
     // Form info for UI
     activeForm: form ? form.name : null,
   }
