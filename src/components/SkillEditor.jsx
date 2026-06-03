@@ -768,7 +768,7 @@ function calcAuraCap(char) {
 function getOwnedAuras(char) {
   return AURA_SKILLS.filter(name => (parseInt(char.arcaneSkills?.[name]?.rank) || 0) > 0)
 }
-export default function SkillEditor({ character, onSave, onBack, gmModeActive, stats }) {
+export default function SkillEditor({ character, onSave, onSubmitPending, onBack, gmModeActive, stats }) {
   const lsKey = `skillEditor_tabs_${character?.id || 'default'}`
 
   const [activeTab, setActiveTab] = useState(() => {
@@ -865,19 +865,13 @@ export default function SkillEditor({ character, onSave, onBack, gmModeActive, s
     })
   }
 
- const handlePatronMarkUpdate = (markData) => {
-  setChar(prev => {
-    const updated = { ...prev, patronMark: markData }
-    onSave(updated)
-    return updated
-  })
+const handlePatronMarkUpdate = (markData) => {
+  setChar(prev => ({ ...prev, patronMark: markData }))
+  onSave({ ...character, patronMark: markData })
 }
 const handleShamanSymbolsUpdate = (symbols) => {
-  setChar(prev => {
-    const updated = { ...prev, shamanSymbols: symbols }
-    onSave(updated)
-    return updated
-  })
+  setChar(prev => ({ ...prev, shamanSymbols: symbols }))
+  onSave({ ...character, shamanSymbols: symbols })
 }
 
   const filterSkills = (skills) => {
@@ -895,6 +889,9 @@ const handleShamanSymbolsUpdate = (symbols) => {
       return true
     })
   }
+  const hasPendingApproval = !gmModeActive
+    && character.pendingSkillChanges
+    && Object.keys(character.pendingSkillChanges).length > 0
 const handleSave = () => {
     const newLocked = {}
     Object.entries({ ...char.martialSkills, ...char.arcaneSkills, ...char.selfImprovementSkills }).forEach(([name, data]) => {
@@ -925,13 +922,8 @@ const handleSave = () => {
       })
     })
 
-    const withPending = {
-      ...character,        // approved base state untouched
-      patronMark: char.patronMark,
-      shamanSymbols: char.shamanSymbols,
-      pendingSkillChanges: pending,
-    }
-    onSave(withPending)
+   if (hasPendingApproval) { setShowConfirm(false); return }
+    onSubmitPending(pending)
     setShowConfirm(false)
   }
 
@@ -1500,11 +1492,28 @@ const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width:
       <div className="skills-tabs-wrap">
         <div data-tour="skills-tabs" className="skills-tabs-row">
           {TABS.map(tab => (
-          <button key={tab} data-skills-tab={tab} className="skills-tab-btn" style={{ ...tabBtn(tab), ...(isMobile ? { padding: '7px 2px', fontSize: '.72rem' } : {}) }} onClick={() => handleTabChange(tab)}>{tab}</button>
+            <button key={tab} data-skills-tab={tab} className="skills-tab-btn" style={{ ...tabBtn(tab), ...(isMobile ? { padding: '7px 2px', fontSize: '.72rem' } : {}) }} onClick={() => handleTabChange(tab)}>{tab}</button>
           ))}
         </div>
-        <button data-tour={!isMobile ? 'skills-save-btn' : undefined} className="skills-save-desktop" onClick={() => setShowConfirm(true)} style={{ padding: '7px 18px', background: 'rgba(74,158,74,.15)', border: '1px solid #4a9e4a', color: '#4a9e4a', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.85rem', whiteSpace: 'nowrap' }}>
-          Save Changes
+        <button
+          data-tour={!isMobile ? 'skills-save-btn' : undefined}
+          className="skills-save-desktop"
+          disabled={hasPendingApproval}
+          title={hasPendingApproval ? 'Changes are awaiting GM approval' : undefined}
+          onClick={() => { if (!hasPendingApproval) setShowConfirm(true) }}
+          style={{
+            padding: '7px 18px',
+            background: hasPendingApproval ? 'rgba(120,120,120,.12)' : 'rgba(74,158,74,.15)',
+            border: hasPendingApproval ? '1px solid #6b6b6b' : '1px solid #4a9e4a',
+            color: hasPendingApproval ? '#8a8a8a' : '#4a9e4a',
+            borderRadius: 4,
+            cursor: hasPendingApproval ? 'not-allowed' : 'pointer',
+            fontFamily: 'Georgia, serif',
+            fontSize: '.85rem',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {hasPendingApproval ? 'Pending Approval' : 'Save Changes'}
         </button>
       </div>
 
@@ -1533,8 +1542,24 @@ const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width:
           style={{ padding: '7px 12px', background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)', borderRadius: 4, fontFamily: 'Georgia, serif', fontSize: '.9rem' }}
         />
         <div className="skills-filter-row">
-          <button data-tour={isMobile ? 'skills-save-btn' : undefined} className="skills-save-mobile" onClick={() => setShowConfirm(true)} style={{ padding: '7px 4px', background: 'rgba(74,158,74,.15)', border: '1px solid #4a9e4a', color: '#4a9e4a', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.82rem' }}>
-            Save Changes
+          <button
+            data-tour={isMobile ? 'skills-save-btn' : undefined}
+            className="skills-save-mobile"
+            disabled={hasPendingApproval}
+            title={hasPendingApproval ? 'Changes are awaiting GM approval' : undefined}
+            onClick={() => { if (!hasPendingApproval) setShowConfirm(true) }}
+            style={{
+              padding: '7px 4px',
+              background: hasPendingApproval ? 'rgba(120,120,120,.12)' : 'rgba(74,158,74,.15)',
+              border: hasPendingApproval ? '1px solid #6b6b6b' : '1px solid #4a9e4a',
+              color: hasPendingApproval ? '#8a8a8a' : '#4a9e4a',
+              borderRadius: 4,
+              cursor: hasPendingApproval ? 'not-allowed' : 'pointer',
+              fontFamily: 'Georgia, serif',
+              fontSize: '.82rem',
+            }}
+          >
+            {hasPendingApproval ? 'Pending' : 'Save Changes'}
           </button>
           <button onClick={() => { setShowActiveOnly(!showActiveOnly); setShowUnlockedOnly(false) }} className="skills-filter-btn" style={{ padding: '7px 4px', background: showActiveOnly ? 'rgba(201,168,76,.15)' : 'var(--surface)', border: `1px solid ${showActiveOnly ? 'var(--gold)' : 'var(--border)'}`, color: showActiveOnly ? 'var(--gold2)' : 'var(--text3)', borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.82rem' }}>
             Active Only

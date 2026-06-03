@@ -4,12 +4,13 @@ import { supabase } from './supabase'
 
 // Save or update a character
 export async function saveCharacter(character, userId) {
+  const { pendingSkillChanges, ...cleanData } = character   // pending lives in its own column now
   const { data, error } = await supabase
     .from('characters')
     .upsert({
       owner_id: userId,
       name: character.name,
-      data: character,
+      data: cleanData,
       campaign_id: character.campaignId || null,
       updated_at: new Date().toISOString(),
     }, {
@@ -23,7 +24,28 @@ export async function saveCharacter(character, userId) {
   }
   return { data }
 }
+// Player submit — writes ONLY the pending column, never the character blob
+export async function savePendingChanges(name, ownerId, pending) {
+  const { error } = await supabase
+    .from('characters')
+    .update({ pending_changes: pending, updated_at: new Date().toISOString() })
+    .eq('owner_id', ownerId)
+    .eq('name', name)
+  if (error) { console.error('Error saving pending changes:', error); return { error } }
+  return { success: true }
+}
 
+// GM approve/reject — applies data (already point-adjusted by caller) and clears pending atomically
+export async function resolvePending(character, ownerId) {
+  const { _ownerId, _rowId, pendingSkillChanges, ...cleanChar } = character
+  const { error } = await supabase.rpc('gm_resolve_pending', {
+    p_owner_id: ownerId,
+    p_name: cleanChar.name,
+    p_data: cleanChar,
+  })
+  if (error) { console.error('Error resolving pending:', error); return { error } }
+  return { success: true }
+}
 // Load all characters for a user
 export async function loadCharacters(userId) {
   const { data, error } = await supabase
@@ -37,13 +59,13 @@ export async function loadCharacters(userId) {
     return { error, characters: [] }
   }
 
-  return { characters: data.map(row => row.data) }
+return { characters: data.map(row => ({ ...row.data, pendingSkillChanges: row.pending_changes || null })) }
 }
 
 // Save a character by owner (GM saving on behalf of player)
 export async function saveCharacterByOwner(character, ownerId) {
   // Strip internal GM-view tracking fields before saving to DB
-  const { _ownerId, _rowId, ...cleanChar } = character
+  const { _ownerId, _rowId, pendingSkillChanges, ...cleanChar } = character
 
   const { error } = await supabase.rpc('gm_save_character', {
     p_owner_id:    ownerId,
@@ -124,7 +146,7 @@ export async function loadCampaignCharacters(userId) {
   const charactersByCampaign = {}
   campaigns.forEach(c => { charactersByCampaign[c.id] = [] })
   chars.forEach(row => {
-    const char = { ...row.data, _ownerId: row.owner_id, _rowId: row.id }
+    const char = { ...row.data, pendingSkillChanges: row.pending_changes || null, _ownerId: row.owner_id, _rowId: row.id }
     if (charactersByCampaign[row.campaign_id]) {
       charactersByCampaign[row.campaign_id].push(char)
     }
@@ -166,7 +188,7 @@ export async function loadAllCampaignCharacters(userId) {
   const noCampaignChars = []
 
   allChars.forEach(row => {
-    const char = { ...row.data, _ownerId: row.owner_id, _rowId: row.id }
+   const char = { ...row.data, pendingSkillChanges: row.pending_changes || null, _ownerId: row.owner_id, _rowId: row.id }
     if (row.campaign_id && campaignMap[row.campaign_id]) {
       campaignMap[row.campaign_id].characters.push(char)
     } else {

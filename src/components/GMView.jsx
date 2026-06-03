@@ -1,6 +1,6 @@
 // GMView.jsx
 import { useState, useEffect } from 'react'
-import { loadCampaignCharacters, loadAllCampaignCharacters, saveCharacterByOwner } from '../characterDB'
+import { loadCampaignCharacters, loadAllCampaignCharacters, saveCharacterByOwner, resolvePending } from '../characterDB'
 
 // ── STYLES ────────────────────────────────────────────────────────────────────
 const surface = { background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '14px 18px' }
@@ -104,7 +104,7 @@ function CharacterCard({ char, onUpdate, onOpen }) {
   const [expanded, setExpanded] = useState(false)
   const [showDiff, setShowDiff] = useState(false)
 
-  const hasPending = !!char.pendingSkillChanges
+ const hasPending = !!char.pendingSkillChanges && Object.keys(char.pendingSkillChanges).length > 0
   const isLevelUpAuth = !!char.levelUpAuthorized
   const status = char.status || 'active'
 
@@ -123,12 +123,12 @@ function CharacterCard({ char, onUpdate, onOpen }) {
       }
     })
 
-    onUpdate(updated)   // _ownerId is still on updated, handleUpdate uses it then strips it
+   onUpdate({ ...updated, __resolvePending: true })   // line 126
     setShowDiff(false)
   }
 
   const handleReject = () => {
-    onUpdate({ ...char, pendingSkillChanges: null })
+    onUpdate({ ...char, pendingSkillChanges: null, __resolvePending: true })   // line 131
     setShowDiff(false)
   }
 
@@ -375,7 +375,12 @@ export default function GMView({ userId, isSuperuser, onBack, onOpenAsGM }) {
 
   const handleUpdate = async (char) => {
     const ownerId = char._ownerId
-    await saveCharacterByOwner(char, ownerId)
+    if (char.__resolvePending) {
+      const { __resolvePending, ...rest } = char
+      await resolvePending(rest, ownerId)
+    } else {
+      await saveCharacterByOwner(char, ownerId)
+    }
     await load()
   }
 

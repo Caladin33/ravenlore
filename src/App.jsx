@@ -14,7 +14,7 @@ import BioPage from './components/BioPage'
 import CharacterWizard from './components/CharacterWizard'
 import GMView from './components/GMView'
 import { calculate } from './utils/calculator'
-import { loadCharacters, saveCharacter, deleteCharacter, getUserRole } from './characterDB'
+import { loadCharacters, saveCharacter, savePendingChanges, deleteCharacter, getUserRole } from './characterDB'
 import ConfirmModal from './components/ConfirmModal'
 import NewPlayerTour from './components/NewPlayerTour'
 import './App.css'
@@ -371,6 +371,13 @@ function App() {
       })
     }
   }
+  const handleSubmitPending = async (pending) => {
+    if (!selectedCharacter) return
+    await savePendingChanges(selectedCharacter.name, user.id, pending)
+    setSelectedCharacter({ ...selectedCharacter, pendingSkillChanges: pending })
+    loadCharacters(user.id).then(({ characters }) => setCharacters(characters || []))
+    navigate('sheet')
+  }
 
   const refreshSelectedCharacter = () => {
     loadCharacters(user.id).then(({ characters }) => {
@@ -465,6 +472,7 @@ function App() {
             character={selectedCharacter}
             onBack={() => navigate('sheet')}
             onSave={(updated) => { handleUpdateCharacter(updated); navigate('sheet') }}
+            onSubmitPending={handleSubmitPending}
             gmModeActive={gmModeActive}
             stats={selectedCharacterStats}
           />
