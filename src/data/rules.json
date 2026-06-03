@@ -55,6 +55,16 @@
       "text": "To qualify as Unfettered: Less than half your carrying weight allowance. No dangling or awkward gear. No Shield. Plate in no more than 1 location, and your total Evasion Penalty from Armor cannot exceed 1."
     }
   ],
+  "Trades & Talents": [
+    {
+      "title": "Skill Checks",
+      "text": "Your score in a skill is added +1d100. A modest difficulty needs a total of 100 to pass."
+    },
+    {
+      "title": "Free Base",
+      "text": "Many of these skills do not start at zero. Your attributes determine your base score, and also the maximum score. Each point you add increase your score by the multiple. So adding 5 points to acting raises you score 20, but adding 5 points to Animal Bond only raises you score by 5."
+    }
+  ],
   "Ranged": [
     {
       "title": "Hit Surplus",
@@ -70,5 +80,5 @@
       "title": "Effects of Corruption",
       "text": "5p: improved freedom from piety\n10p: improved freedom from inhibition\n15p: improved freedom from piety\n20p: WP Checks vs your skills are 1 harder.\n25p: improved freedom from piety\n30p: Odoriferous enhancement and Access to Personal Development Specialist\n35p: improved freedom from inhibition\n40p: improved freedom from piety\n45p: WP Checks vs your skills are 2 harder.\n50p: Personal Development Specialist follow-up\n60p: Membership privileges acquired and contagious energy\n75p: Individualised Development Plan engagement.\n90p: Manifest Feculence\n100p: Initiation into inner circle."
     }
-  ]
+    ]
 }

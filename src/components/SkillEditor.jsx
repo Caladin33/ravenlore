@@ -928,6 +928,7 @@ const handleSave = () => {
   }
 
   const handleTabChange = (tab) => {
+    if (tab === activeTab) return
     const subTab = SUB_TABS[tab][0]
     setActiveTab(tab)
     setActiveSubTab(subTab)
@@ -1058,7 +1059,7 @@ const divineBuyBtn = (disabled = false) => ({
         const GT = group.accent ? makeAccentTheme(T, group.accent) : T
 
         rows.push(
-          <div key={`group-header-${groupKey}`} style={{ marginTop: 8, margin: '8px 8px 0' }}>
+          <div key={`group-header-${groupKey}`} data-tour={groupKey === 'defence' ? 'skills-divine-defence-header' : undefined} style={{ marginTop: 8, margin: '8px 8px 0' }}>
             {/* Accordion header — click to collapse/expand */}
             <div onClick={() => toggleGroup(groupKey)} style={{
   background: 'linear-gradient(180deg, #18130d 0%, #100d09 100%)',
@@ -1520,11 +1521,12 @@ const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width:
       {/* Sub-tab bar */}
       <div className="skills-subtabs-row" style={{ padding: '0 0 8px', borderBottom: '1px solid var(--border)' }}>
         {SUB_TABS[activeTab].map(sub => {
-          const c = SUB_TAB_COLORS[sub] || { primary: 'var(--gold)', primary2: 'var(--gold2)' }
+         const c = SUB_TAB_COLORS[sub] || { primary: 'var(--gold)', primary2: 'var(--gold2)' }
           const isActive = activeSubTab === sub
+          const subSlug = sub.toLowerCase().replace(/&/g, '').replace(/\s+/g, '-')
           const label = sub === 'Self-Improvement' ? <><span className="subtab-label-desktop">Self-Improvement</span><span className="subtab-label-mobile">Self-Help</span></> : sub
           return (
-            <button key={sub} onClick={() => handleSubTabChange(sub)} style={{
+            <button key={sub} data-tour={`skills-subtab-${subSlug}`} onClick={() => handleSubTabChange(sub)} style={{
               padding: '6px 14px',
               background: isActive ? `${c.primary}22` : `${c.primary}0a`,
               border: `1px solid ${isActive ? c.primary : `${c.primary}55`}`,
@@ -1585,7 +1587,7 @@ const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width:
 
         {activeTab === 'General' && activeSubTab === 'Trades & Talents' && (
           <div>
-            <div style={{ padding: '10px 12px', background: 'var(--bg)', borderBottom: '2px solid #4a9e4a', fontSize: '1rem', letterSpacing: '.25em', color: '#4a9e4a', textTransform: 'uppercase', fontFamily: 'Georgia, serif', fontWeight: 600, textAlign: 'center' }}>Trades &amp; Talents</div>
+            <RulesHeader label="Trades & Talents" color={SUB_TAB_COLORS['Trades & Talents']} />
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 52px 72px', background: 'var(--bg2)', borderBottom: '1px solid rgba(74,158,74,.25)', minHeight: 44, alignItems: 'center' }}>
               <div style={{ padding: '0 12px', fontSize: '.85rem', letterSpacing: '.12em', color: '#4a9e4a', textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Skill</div>
               <div style={{ textAlign: 'center', fontSize: '.7rem', letterSpacing: '.08em', color: '#4a9e4a', textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Score</div>
