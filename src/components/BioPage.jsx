@@ -464,7 +464,7 @@ export default function BioPage({ character, onUpdateCharacter, stats, gmModeAct
         )}
         <button
   data-tour="bio-handbook-btn"
-  onClick={() => setCurrentPage('handbook')}
+  onClick={() => window.open('https://docs.google.com/document/d/1qD5UADHYXfC_W0bHLyy_Z_ZEkz_gZi8IgBeZMPLBnKI/edit?tab=t.0', '_blank')}
   style={{
     marginLeft: 'auto', padding: '7px 12px',
     background: 'none', border: '1px solid var(--border)',

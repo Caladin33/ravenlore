@@ -101,7 +101,33 @@ const MANA_MEANS = {
 
 const DIE_UPGRADE = { d3: 'd4', d4: 'd6', d6: 'd8', d8: 'd10', d10: 'd12', d12: 'd12' }
 const MASTERY_TO_DIE = [null, 'd3', 'd4', 'd4', 'd6', 'd6', 'd8', 'd8', 'd10', 'd10']
+// ─────────────────────────────────────────────
+// CRITICAL HIT TABLE (Ruthless Tempo, melee only)
+// Minimum natural roll to crit, by combat die size and RT rank (0–4)
+// ─────────────────────────────────────────────
 
+const CRIT_NUMBER_TABLE = {
+  12: [24, 22, 21, 20, 19],
+  10: [20, 19, 18, 17, 16],
+  8:  [16, 16, 15, 14, 13],
+  6:  [12, 12, 11, 11, 10],
+}
+
+function critNumberFor(combatDie, rtRank) {
+  const size = parseInt(String(combatDie ?? '').replace(/\D/g, '')) || 0
+  const row = CRIT_NUMBER_TABLE[size]
+  if (!row) return 0
+  const rank = Math.max(0, Math.min(4, rtRank || 0))
+  return row[rank]
+}
+
+// Max of an NdM die string: "2d8" -> 16, "1d4" -> 4, "d6" -> 6
+function critDamageFor(damageDie) {
+  const m = String(damageDie ?? '').match(/(\d*)d(\d+)/i)
+  if (!m) return 0
+  const count = m[1] === '' ? 1 : parseInt(m[1])
+  return count * parseInt(m[2])
+}
 // ─────────────────────────────────────────────
 // HELPER FUNCTIONS
 // ─────────────────────────────────────────────
@@ -448,7 +474,7 @@ export function calculate(char, session = {}) {
   const rendArmor            = skillKnown(char, 'Rend Armor')
   const antiArmoredBlunt     = skillRank(char, 'Anti-Armored Combat: Blunt')
   const cursedBladeRank      = skillRank(char, 'Cursed Blade')
-
+  const ruthlessTempoRank    = skillRank(char, 'Ruthless Tempo')
   const racialPrecision = race.precisionModifier || 0
   const mischievousPrecision = hasSymbol(char, 'Mischief') ? 3 : 0
 
@@ -539,6 +565,8 @@ export function calculate(char, session = {}) {
       expertise,
       damage: totalDamage,
       precision,
+      critNumber: critNumberFor(weapon.combatDie, ruthlessTempoRank),
+      critDamage: critDamageFor(damageDie),
       armorBypass,
       movBypassRate,
       slotLabel: slot.slotLabel || weapon.name,
@@ -591,6 +619,8 @@ export function calculate(char, session = {}) {
       marksmanship,
       damage: totalDamage,
       precision,
+      critNumber: critNumberFor(weapon.combatDie),
+      critDamage: critDamageFor(damageDie),
       hsPrecisionRate,
       slotLabel: slot.slotLabel || weapon.name,
       hsArmorBypassRate,
