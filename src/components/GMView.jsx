@@ -340,7 +340,7 @@ function BucketSection({ title, color, campaigns, noCampaignChars, onUpdate, onO
 }
 
 // ── MAIN GM VIEW ──────────────────────────────────────────────────────────────
-export default function GMView({ userId, isSuperuser, onBack, onOpenAsGM }) {
+export default function GMView({ userId, isSuperuser, onBack, onOpenAsGM, onOpenHandbook }) {
   const [loading, setLoading] = useState(true)
 
   // Regular GM state
@@ -411,11 +411,15 @@ export default function GMView({ userId, isSuperuser, onBack, onOpenAsGM }) {
               </div>
             )}
           </div>
-          <button onClick={onBack} style={{ padding: '7px 16px', background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.85rem' }}>
-            ← Back
-          </button>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button onClick={onOpenHandbook} style={{ padding: '7px 16px', background: 'none', border: '1px solid var(--border)', color: 'var(--gold2)', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.85rem' }}>
+              📖 Handbook
+            </button>
+            <button onClick={onBack} style={{ padding: '7px 16px', background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.85rem' }}>
+              ← Back
+            </button>
+          </div>
         </div>
-
         <BucketSection
           title="My Campaigns"
           color="var(--gold)"
@@ -458,11 +462,15 @@ export default function GMView({ userId, isSuperuser, onBack, onOpenAsGM }) {
             </div>
           )}
         </div>
-        <button onClick={onBack} style={{ padding: '7px 16px', background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.85rem' }}>
-          ← Back
-        </button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button onClick={onOpenHandbook} style={{ padding: '7px 16px', background: 'none', border: '1px solid var(--border)', color: 'var(--gold2)', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.85rem' }}>
+            📖 Handbook
+          </button>
+          <button onClick={onBack} style={{ padding: '7px 16px', background: 'none', border: '1px solid var(--border)', color: 'var(--text3)', borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.85rem' }}>
+            ← Back
+          </button>
+        </div>
       </div>
-
       {/* Campaign tabs */}
       {campaigns.length > 1 && (
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>

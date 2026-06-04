@@ -2,7 +2,7 @@
 
 What races are available is up to the GM, and depends on the campaign setting. Each race lists minimums and maximums for some attributes. If your attributes do not fall within the specified range you may not choose that race. Those scores can be exceeded later if the attribute is improved.
 
-{{raceStart:humans right}}
+{{raceStart:human right}}
 ## Human
 
 Humans are the most populous race, and are the most varied. Any rolled combination of attributes is allowed. Humans are also large and hale, in general, compared to the other races.
@@ -169,17 +169,9 @@ Designed creature: pesky concerns like longevity and reliable organ function are
 
 ## Ogier
 
-Ogiers are enormous, with broad noses, wide mouths, tufted ears and very large eyes. Dedicated to peace, renowned for their craftsmanship, Ogier are tied to the Steddings, where magic does not function.
+Ogiers are enormous, with broad noses, wide mouths, tufted ears and very large eyes. Dedicated to peace, renowned for their craftsmanship, Ogier are tied to the Steddings, where magic does not function. [[Pacifist]]  [[Heartache]]  [[Stedding-Linked]]
 
 {{raceStats:ogier}}
-
-[[Pacifist]] Every point of damage directly caused by an Ogier, or its bonded animals, gives it a point of [[Heartache]].
-[[Stedding-Linked]] Stedding are rare, special places where magic does not function. Most of them are home to a tribe of Ogier. Ogier gain a point of heartache every sunset spent outside of a Stedding. 
-Above 50 points of Heartache, Ogier feel a strong and constant longing to find a Stedding.
-Above 100 points of Heartache Ogier may not spend any skill points they acquire.
-Above 150 points of Heartache an Ogier must pass a Willpower check 20 every week or immediately seek a stedding.
-Above 200 points of Heartache an Ogier must pass a Willpower check 25, every day, or die.
-Inside a Stedding Ogier are immediately protected from the effects of Heartache, and lose 10-20 points of Heartache per day, depending on their well being.
 
 {{raceEnd}}
 

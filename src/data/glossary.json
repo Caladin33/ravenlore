@@ -228,9 +228,14 @@
     "body": "To cast spells you must weave two powers together into intricate patterns. For each power involved, you roll 1 die for every two actions used, keep the best one, and add any bonuses. Both results must exceed the level of the spell. Successful weaves cost 1 mana per spell level."
   },
   {
+    "id": "heartache",
+    "term": "Heartache",
+    "body": "Ogier gain a point of Heartache every sunset spent outside a Stedding. Above 50 points: a strong longing to find a Stedding. Above 100: may not spend acquired skill points. Above 150: must pass a Willpower Check 20 each week or immediately seek a Stedding. Above 200: must pass a Willpower Check 25 each day or die."
+  },
+  {
     "id": "steddingLinked",
     "term": "Stedding-Linked",
-    "body": "Stedding are rare places where magic does not function and most are home to a tribe of Ogier. Ogier gain a point of Heartache every sunset spent outside a Stedding. Above 50 points: a strong longing to find a Stedding. Above 100: may not spend acquired skill points. Above 150: must pass a Willpower Check 20 each week or immediately seek a Stedding. Above 200: must pass a Willpower Check 25 each day or die. Inside a Stedding, Ogier lose 10–20 points of Heartache per day depending on their wellbeing."
+    "body": "Stedding are rare places where magic does not function and most are home to a tribe of Ogier.  Inside a Stedding, Ogier lose 10 to 20 points of Heartache per day depending on their wellbeing."
   },
   {
     "id": "strength",

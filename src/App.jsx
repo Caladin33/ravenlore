@@ -340,8 +340,7 @@ function App() {
     Object.entries(importedChar.generalSkills || {}).forEach(([name, data]) => {
       generalSkills[name] = { pointsInvested: parseInt(data.pointsInvested) || 0 }
     })
-
-    const cleaned = {
+        const cleaned = {
       ...importedChar, raceKey, raceLocked: true,
       martialSkills, arcaneSkills, selfImprovementSkills, generalSkills,
       status: 'active', levelUpAuthorized: false, createdBy: user.id,
@@ -447,6 +446,7 @@ function App() {
             isSuperuser={isSuperuser}
             onBack={() => navigate('home')}
             onOpenAsGM={handleOpenAsGM}
+            onOpenHandbook={() => navigate('handbook')}
           />
         )}
         {currentPage === 'wizard' && (
