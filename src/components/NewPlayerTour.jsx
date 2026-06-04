@@ -553,10 +553,10 @@ function buildSteps(character) {
     {
       page: 'skillEditor',
       navigateTo: null,
-      subtab: 'trades-talents',
-      target: 'skills-subtab-trades-talents',
-      title: 'Trades & Talents',
-      body: "Trades & Talents work differently. Each skill shows your current score over the maximum, based on your attributes, and your points invested over the multiple. Each point you spend in Acting raises your score by 4, the skill's multiple.",
+      subtab: 'trades',
+      target: 'skills-subtab-trades',
+      title: 'Trades',
+      body: "Trades work differently. Each skill shows your current score over the maximum, based on your attributes, and your points invested over the multiple. Each point you spend in Acting raises your score by 4, the skill's multiple.",
       cta: 'Next →',
     },
     {
@@ -589,7 +589,8 @@ function buildSteps(character) {
     },
     {
       page: 'skillEditor',
-      navigateTo: null,      
+      navigateTo: null,
+      tab: 'Spiritual',
       subtab: 'divine',
       target: 'skills-divine-defence-header',
       title: 'Divine Defence',
@@ -612,7 +613,7 @@ function buildSteps(character) {
       tab: 'Obscure',
       target: 'skills-tabs',
       title: 'Obscure Tab',
-      body: "The Obscure tab is for those unfortunate enough to have been tainted by a demon or worse, and some special skills animals can acquire through the Animal Bond Talent.",
+      body: "The Obscure tab is for those unfortunate enough to have been tainted by a demon or worse, and some special skills animals can acquire through Animal Bond.",
       cta: 'Next →',
     },
 

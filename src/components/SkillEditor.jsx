@@ -604,7 +604,7 @@ const TABS = ['General', 'Martial', 'Spiritual', 'Obscure']
 
 // Sub-tab definitions per main tab
 const SUB_TABS = {
-  General:   ['Self-Improvement', 'Trades & Talents'],
+  General:   ['Self-Improvement', 'Trades'],
   Martial:   ['Melee', 'Unfettered', 'Ranged', 'Leadership'],
   Spiritual: ['Arcane', 'Divine', 'Balance'],
   Obscure:   ['Infernal', 'Lycanthropy'], // Animal added when ready
@@ -613,7 +613,7 @@ const SUB_TABS = {
 // Colors per sub-tab — matches the section's THEMES primary/primary2
 const SUB_TAB_COLORS = {
   'Self-Improvement': { primary: '#c9a84c', primary2: '#e8c96a' },
-  'Trades & Talents': { primary: '#4a9e4a', primary2: '#6acc6a' },
+  'Trades': { primary: '#4a9e4a', primary2: '#6acc6a' },
   'Melee':            { primary: '#8a8a9a', primary2: '#c0c0d0' },
   'Unfettered':       { primary: '#9a7a5a', primary2: '#c8a07a' },
   'Ranged':           { primary: '#5a8a5a', primary2: '#7acc7a' },
@@ -628,7 +628,7 @@ const SUB_TAB_COLORS = {
 // Map sub-tab label → data category/key
 const SUB_TAB_CATEGORY = {
   'Self-Improvement': 'selfImprovement',
-  'Trades & Talents': 'general',
+  'Trades': 'general',
   'Melee':            'Melee',
   'Unfettered':       'Unfettered',
   'Ranged':           'Ranged',
@@ -1585,9 +1585,9 @@ const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width:
           />
         )}
 
-        {activeTab === 'General' && activeSubTab === 'Trades & Talents' && (
+        {activeTab === 'General' && activeSubTab === 'Trades' && (
           <div>
-            <RulesHeader label="Trades & Talents" color={SUB_TAB_COLORS['Trades & Talents']} />
+            <RulesHeader label="Trades" color={SUB_TAB_COLORS['Trades']} />
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 52px 72px', background: 'var(--bg2)', borderBottom: '1px solid rgba(74,158,74,.25)', minHeight: 44, alignItems: 'center' }}>
               <div style={{ padding: '0 12px', fontSize: '.85rem', letterSpacing: '.12em', color: '#4a9e4a', textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Skill</div>
               <div style={{ textAlign: 'center', fontSize: '.7rem', letterSpacing: '.08em', color: '#4a9e4a', textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>Score</div>
