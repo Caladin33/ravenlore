@@ -170,7 +170,7 @@
     "strModifier": 0, "conModifier": -1, "apModifier": 1, "precisionModifier": 0, "awModifier": 0,
     "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 0,
     "chrModifier": 1,
-    "advantages": [], "disadvantages": ["con"],
+    "advantages": [], "disadvantages": ["con","wp"],
     "specialRules": "Disadvantage on Constitution checks, +1 Charisma, +1 Arcane Power, Ultravision 60ft",
     "attrMin": { "chr": 10, "wp": 10 }, "attrMax": { "con": 16 }
   },

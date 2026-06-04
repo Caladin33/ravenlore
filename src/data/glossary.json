@@ -98,6 +98,26 @@
     "body": "Panicky flight from combat allows anyone adjacent with the Opportunistic skill a free Damage Roll. Backing away carefully gives your opponent the choice to follow or disengage — if they disengage, no opportunity attacks occur. Once out of combat you are free to re-engage by spending an action."
   },
   {
+    "id": "elvishEducation",
+    "term": "Elvish Education",
+    "body": "Elves receive a very thorough, wide ranging education in their first hundred years of life, before they are considered adults. They learn things slowly, carefully, and deeply. When you can live for 1,000 years or more, it’s worth the time. As a consequence, Elvish players get +10 to their free base in all Trades, and can speak and read one extra language for free."
+  },
+  {
+    "id": "elvishTraining",
+    "term": "Elvish Training",
+    "body": "Half-Elves are educated hastily, by elvish standards, but are taught the way of deep learning.  Half-Elves get +5 to their free base in all Trades, and recieve 1 fewer skill point per level."
+  },
+  {
+    "id": "deliberation",
+    "term": "Deliberation",
+    "body": "Elves advance more slowly than shorter-lived races, gaining 2 fewer skill point per level. However, the maintenance cost of their skills is reduced by 10%, reflecting their habit of learning and building for centuries rather than years."
+  },
+   {
+    "id": "elvishSenses",
+    "term": "Elvish Senses",
+    "body": "Why it is so hard to surprise an elf is not clear. Perhaps it is the endless years of practice, perhaps a sixth sense. Elves have advantage on all Awareness checks."
+  },
+  {
     "id": "encumbered",
     "term": "Encumbered",
     "body": "If you exceed your carrying capacity (shown in the Constitution row of your character sheet) you become encumbered and lose 1 action per round."
@@ -231,6 +251,15 @@
     "id": "heartache",
     "term": "Heartache",
     "body": "Ogier gain a point of Heartache every sunset spent outside a Stedding. Above 50 points: a strong longing to find a Stedding. Above 100: may not spend acquired skill points. Above 150: must pass a Willpower Check 20 each week or immediately seek a Stedding. Above 200: must pass a Willpower Check 25 each day or die."
+  },
+   {
+    "id": "conditioned",
+    "term": "Conditioned",
+    "body": "The dragons like obedient servants. Elderlings have disadvantage on all defensive Willpower checks."
+  }, {
+    "id": "designedCreature",
+    "term": "Designed Creature",
+    "body": " Pesky concerns like longevity and reliable organ function are less important to the dragons than magical ability and Elegance. They have disadvantage on all Constitution checks. "
   },
   {
     "id": "steddingLinked",
