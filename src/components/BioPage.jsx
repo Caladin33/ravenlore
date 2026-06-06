@@ -113,6 +113,8 @@ function buildSetAttr(character, stats) {
   const v = (x) => x ?? 0
 const stanceRank = (n) => parseInt(character.arcaneSkills?.[n]?.rank) || 0
 const martialRank = (n) => parseInt(character.martialSkills?.[n]?.rank) || 0
+const manaMasteryRank = Math.min(parseInt(character.arcaneSkills?.['Mana Mastery']?.rank) || 0, 4)
+const manaItemBonus = character.stuff?.magicBonuses?.mana ?? 0
   // Combat die: strip leading 'd' to get plain number
   const cd = (dieStr) => parseInt(String(dieStr ?? '0').replace(/\D/g, '')) || 0
 
@@ -187,7 +189,7 @@ const martialRank = (n) => parseInt(character.martialSkills?.[n]?.rank) || 0
     `--BS1HP|${v(stats.hp?.torso)} --BS2HP|${v(stats.hp?.leg)} --BS3HP|${v(stats.hp?.leg)} --BS4HP|${v(stats.hp?.arm)} --BS5HP|${v(stats.hp?.arm)} --BS6HP|${v(stats.hp?.head)}`,
     `--Char_Level|${character.level || 1}`,
     `--Race|${character.race || ''}`,
-    `--Arcane_Power|${v(stats.arcanePower)} --ArcaneMentalityRank|${v(stats.arcaneMentality)} --Mana_mean|${v(stats.manaMean)}`,
+    `--Arcane_Power|${v(stats.arcanePower)} --ArcaneMentalityRank|${v(stats.arcaneMentality)} --Mana_mastery_rank|${manaMasteryRank} --Mana_bonus|${v(manaItemBonus)} --Yellow_Die|0`,
     `--Wind_Stance_Rank|${stanceRank('Wind Stance')} --Wave_Stance_Rank|${stanceRank('Wave Stance')} --Stone_Stance_Rank|${stanceRank('Stone Stance')} --Flame_Stance_Rank|${stanceRank('Flame Stance')}`,
     ...weavingParts,
     ...slotParts,
