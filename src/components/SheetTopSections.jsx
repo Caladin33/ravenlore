@@ -4,7 +4,7 @@ import attributeData from '../data/attributes.json'
 import armorData from '../data/armor.json'
 import martialSkillsData from '../data/martialSkills.json'
 import druidFormsData from '../data/druidForms.json'
-
+import spellsData from '../data/spells.json'
 // ── MAGIC COLORS ──────────────────────────────────────────────────────────────
 const MAGIC_COLORS = {
   order:     { bg: '#0d0d0d', accent: '#888888', border: '#444444' },
@@ -158,7 +158,8 @@ function getIssues(stats, character) {
     issues.push(`Over budget by ${Math.abs(stats.skillPoints.unspent)} skill pts`)
 
   // 2. Known spells over limit
-  const known = character.knownSpells?.length??0
+ const knownSpellIds = new Set((character.knownSpells || []).map(s => s.id))
+  const known = spellsData.filter(s => knownSpellIds.has(s.id)).length
   if (known > (stats.maxSpellsKnown??0))
     issues.push(`${known - stats.maxSpellsKnown} spell(s) over max`)
 

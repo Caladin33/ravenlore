@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import spells from '../data/spells.json'
 import magicData from '../data/magic.json'
 import ConfirmModal from './ConfirmModal'
@@ -206,7 +206,17 @@ export default function ArcaneCompendium({ character, onUpdateCharacter, stats }
   }, [character?.knownSpells])
 
   const knownIds = useMemo(() => new Set(knownSpells.map(s => s.id)), [knownSpells])
-
+// Self-heal: drop stale (not in spells.json) and duplicate known ids,
+  // then persist so saved data stays accurate.
+  useEffect(() => {
+    const raw = character?.knownSpells || []
+    const valid = new Set(spells.map(s => s.id))
+    const seen = new Set()
+    const cleaned = raw.filter(s => valid.has(s.id) && !seen.has(s.id) && seen.add(s.id))
+    if (cleaned.length !== raw.length) {
+      onUpdateCharacter({ ...character, knownSpells: cleaned })
+    }
+  }, [character?.knownSpells])
   // Druid form selection state
   const [pendingFormCategory, setPendingFormCategory] = useState(null)
 

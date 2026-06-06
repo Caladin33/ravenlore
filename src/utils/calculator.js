@@ -405,7 +405,7 @@ const platePerLoc = {}
 
   const rearEvasionRaw = Math.floor(
     (windsWhisperRank + evasiveMotionRank) * leafMult
-    + (awEvasion(AW) + otData.evasionBonus + formEVBonus + (items.evasion || 0) - Math.floor(totalArmorEvasionPenalty)) / 2
+    + (awEvasion(AW) + otData.evasionBonus + formEVBonus + (items.evasion || 0) + (race.evModifier || 0) - Math.floor(totalArmorEvasionPenalty)) / 2
   )
   const rearEvasion = Math.max(0, Math.min(20, rearEvasionRaw))
 
