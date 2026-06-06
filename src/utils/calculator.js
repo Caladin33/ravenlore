@@ -393,6 +393,7 @@ const platePerLoc = {}
     + symbolWisdomBonus
     + formEVBonus
     + (items.evasion || 0)
+    + (race.evModifier || 0)
     - Math.floor(totalArmorEvasionPenalty)
 
   const evasion = Math.max(0, Math.min(20, evasionRaw))

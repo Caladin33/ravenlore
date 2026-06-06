@@ -6,7 +6,7 @@
     "heightRange": "4'5\" to 7'",
     "hpModifier": 0, "skillPointsPerLevelModifier": 0, "firstLevelBonus": true,
     "strModifier": 0, "conModifier": 1, "apModifier": 0, "precisionModifier": 0, "awModifier": 0,
-    "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 0,
+    "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 0, "evModifier": 0,
     "advantages": [], "specialRules": "None",
     "attrMin": {}, "attrMax": {}
   },
@@ -17,7 +17,7 @@
     "heightRange": "4' to 5'5\"",
     "hpModifier": 1, "skillPointsPerLevelModifier": 0, "firstLevelBonus": true,
     "strModifier": 0, "conModifier": 0, "apModifier": 0, "precisionModifier": 0, "awModifier": 0,
-    "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 0,
+    "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 0, "evModifier": 0,
     "advantages": ["con", "wp"],
     "specialRules": "Advantage on all Constitution and Willpower checks",
     "attrMin": { "str": 8, "con": 12 }, "attrMax": { "dex": 16 }
@@ -29,7 +29,7 @@
     "heightRange": "3'6\" to 4'6\"",
     "hpModifier": 0, "skillPointsPerLevelModifier": 0, "firstLevelBonus": true,
     "strModifier": 0, "conModifier": 0, "apModifier": 0, "precisionModifier": 0, "awModifier": 0,
-    "maintenanceModifier": -20, "generalSkillBonus": 0, "naturalArmor": 0,
+    "maintenanceModifier": -20, "generalSkillBonus": 0, "naturalArmor": 0, "evModifier": 3,
     "advantages": ["str", "dex", "con", "aw", "chr", "wp"],
     "specialRules": "Advantage on all attribute checks, 20% off maintenance costs",
     "attrMin": { "wp": 11 }, "attrMax": { "str": 15, "con": 15 }
@@ -41,7 +41,7 @@
     "heightRange": "5' to 5'10\"",
     "hpModifier": 0, "skillPointsPerLevelModifier": -2, "firstLevelBonus": true,
     "strModifier": 0, "conModifier": -1, "apModifier": -1, "precisionModifier": 3, "awModifier": 0,
-    "maintenanceModifier": -10, "generalSkillBonus": 10, "naturalArmor": 0,
+    "maintenanceModifier": -10, "generalSkillBonus": 10, "naturalArmor": 0, "evModifier": 0,
     "advantages": ["aw"],
     "specialRules": "Elvish Education, Advantage on all Awareness checks, +3 Precision, -1 Arcane Power, 10% off maintenance costs",
     "attrMin": { "aw": 11, "dex": 11, "chr": 11 }, "attrMax": { "str": 16, "con": 16 }
@@ -53,7 +53,7 @@
     "heightRange": "5' to 6'",
     "hpModifier": 0, "skillPointsPerLevelModifier": -2, "firstLevelBonus": true,
     "strModifier": 0, "conModifier": -1, "apModifier": 0, "precisionModifier": 0, "awModifier": 0,
-    "maintenanceModifier": -10, "generalSkillBonus": 10, "naturalArmor": 0,
+    "maintenanceModifier": -10, "generalSkillBonus": 10, "naturalArmor": 0, "evModifier": 0,
     "advantages": ["aw"],
     "specialRules": "Elvish Education, Advantage on all Awareness checks, 10% off maintenance costs",
     "attrMin": { "aw": 11, "dex": 11, "chr": 11 }, "attrMax": { "str": 16, "con": 16 }
@@ -65,7 +65,7 @@
     "heightRange": "5' to 5'8\"",
     "hpModifier": 0, "skillPointsPerLevelModifier": -2, "firstLevelBonus": true,
     "strModifier": 0, "conModifier": -1, "apModifier": 0, "precisionModifier": 0, "awModifier": 0,
-    "maintenanceModifier": -10, "generalSkillBonus": 10, "naturalArmor": 0,
+    "maintenanceModifier": -10, "generalSkillBonus": 10, "naturalArmor": 0, "evModifier": 0,
     "advantages": ["aw"],
     "specialRules": "Elvish Education, Advantage on all Awareness checks, 10% off maintenance costs",
     "attrMin": { "aw": 11, "dex": 11, "chr": 11 }, "attrMax": { "str": 16, "con": 16 }
@@ -77,7 +77,7 @@
     "heightRange": "4'9\" to 6'2\"",
     "hpModifier": 0, "skillPointsPerLevelModifier": -1, "firstLevelBonus": true,
     "strModifier": 0, "conModifier": 0, "apModifier": 0, "precisionModifier": 0, "awModifier": 0,
-    "maintenanceModifier": 0, "generalSkillBonus": 5, "naturalArmor": 0,
+    "maintenanceModifier": 0, "generalSkillBonus": 5, "naturalArmor": 0, "evModifier": 0,
     "advantages": ["aw"],
     "specialRules": "Elvish Education, Advantage on all Awareness checks",
     "attrMin": { "aw": 9, "dex": 9, "chr": 9 }, "attrMax": { "con": 16 }
@@ -89,7 +89,7 @@
     "heightRange": "3' to 4'",
     "hpModifier": -1, "skillPointsPerLevelModifier": 0, "firstLevelBonus": true,
     "strModifier": 0, "conModifier": 0, "apModifier": 0, "precisionModifier": 0, "awModifier": 1,
-    "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 0,
+    "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 0, "evModifier": 2,
     "chrModifier": 1, "manaPerDieBonus": 1,
     "advantages": [], "disadvantages": ["con"],
     "specialRules": "Disadvantage on Constitution checks, +1 Charisma, +1 mana /die",
@@ -102,7 +102,7 @@
     "heightRange": "5' to 6'",
     "hpModifier": 0, "skillPointsPerLevelModifier": 0, "firstLevelBonus": true,
     "strModifier": 1, "conModifier": 0, "apModifier": 0, "precisionModifier": 0, "awModifier": 0,
-    "maintenanceModifier": 0, "generalSkillBonus": -10, "naturalArmor": 0,
+    "maintenanceModifier": 0, "generalSkillBonus": -10, "naturalArmor": 0, "evModifier": 0,
     "advantages": [], "specialRules": "Shamanic Education, +1 Strength, -10% General skill cap",
     "attrMin": { "str": 13, "con": 9 }, "attrMax": { "chr": 16 }
   },
@@ -113,7 +113,7 @@
     "heightRange": "5'5\" to 7'",
     "hpModifier": 0, "skillPointsPerLevelModifier": 0, "firstLevelBonus": true,
     "strModifier": 0, "conModifier": 0, "apModifier": 0, "precisionModifier": 0, "awModifier": 0,
-    "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 0,
+    "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 0, "evModifier": 0,
     "advantages": [], "specialRules": "None",
     "attrMin": { "str": 9, "con": 9 }, "attrMax": { "chr": 15 }
   },
@@ -124,7 +124,7 @@
     "heightRange": "4' to 5'",
     "hpModifier": -1, "skillPointsPerLevelModifier": 6, "firstLevelBonus": false,
     "strModifier": 0, "conModifier": 0, "apModifier": 0, "precisionModifier": 0, "awModifier": 0,
-    "maintenanceModifier": 0, "generalSkillBonus": -10, "naturalArmor": 0,
+    "maintenanceModifier": 0, "generalSkillBonus": -10, "naturalArmor": 0, "evModifier": 3,
     "advantages": [], "specialRules": "Impulsive Education, no first level skill point bonus, -10% General skill cap",
     "attrMin": { "aw": 12 }, "attrMax": { "str": 15, "con": 15 }
   },
@@ -135,7 +135,7 @@
     "heightRange": "7' to 8'",
     "hpModifier": 0, "skillPointsPerLevelModifier": -5, "firstLevelBonus": false,
     "strModifier": 3, "conModifier": 3, "apModifier": 0, "precisionModifier": 0, "awModifier": 0,
-    "maintenanceModifier": 0, "generalSkillBonus": -5, "naturalArmor": 2,
+    "maintenanceModifier": 0, "generalSkillBonus": -5, "naturalArmor": 2, "evModifier": -3,
     "advantages": [], "specialRules": "Natural Armor 2, Huge, Simplistic, no first level skill point bonus",
     "attrMin": { "con": 11 }, "attrMax": {}
   },
@@ -146,7 +146,7 @@
     "heightRange": "6'5\" to 7'5\"",
     "hpModifier": 0, "skillPointsPerLevelModifier": -5, "firstLevelBonus": true,
     "strModifier": 2, "conModifier": 2, "apModifier": 0, "precisionModifier": 0, "awModifier": 0,
-    "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 1,
+    "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 1, "evModifier": -1,
     "advantages": [], "specialRules": "Natural Armor 1, Oversize",
     "attrMin": { "con": 9 }, "attrMax": {}
   },
@@ -157,7 +157,7 @@
     "heightRange": "5'4\" to 5'10\"",
     "hpModifier": 0, "skillPointsPerLevelModifier": 0, "firstLevelBonus": true,
     "strModifier": 1, "conModifier": 0, "apModifier": 0, "precisionModifier": 3, "awModifier": 0,
-    "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 4,
+    "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 4, "evModifier": 0,
     "advantages": [], "specialRules": "Natural Armor 4, Cold Blooded, +1 Strength, +3 Precision",
     "attrMin": { "con": 9 }, "attrMax": { "chr": 16 }
   },
@@ -168,7 +168,7 @@
     "heightRange": "6' to 7'",
     "hpModifier": 0, "skillPointsPerLevelModifier": 0, "firstLevelBonus": true,
     "strModifier": 0, "conModifier": -1, "apModifier": 1, "precisionModifier": 0, "awModifier": 0,
-    "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 0,
+    "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 0, "evModifier": 0,
     "chrModifier": 1,
     "advantages": [], "disadvantages": ["con","wp"],
     "specialRules": "Disadvantage on Constitution checks, +1 Charisma, +1 Arcane Power, Ultravision 60ft",
@@ -181,7 +181,7 @@
     "heightRange": "7'4\" to 8'",
     "hpModifier": 0, "skillPointsPerLevelModifier": 0, "firstLevelBonus": true,
     "strModifier": 4, "conModifier": 4, "apModifier": 0, "precisionModifier": 0, "awModifier": 0,
-    "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 0,
+    "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 0, "evModifier": -3,
     "advantages": [], "specialRules": "Huge, Pacifist, Steading-Linked, +4 STR, +4 CON, +10 General skill maximums",
     "attrMin": { "str": 12, "con": 14 }, "attrMax": {}
   },
@@ -192,7 +192,7 @@
      "heightRange": "3' to 5'",
     "hpModifier": 0, "skillPointsPerLevelModifier": 0, "firstLevelBonus": true,
     "strModifier": 3, "conModifier": 3, "apModifier": 0, "precisionModifier": 0, "awModifier": 0,
-    "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 0,
+    "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 0, "evModifier": 0,
     "advantages": [], "specialRules": "Small, Pacifist, Father Tree-Linked, +3 STR, +3 CON, Cant wear metal armor",
     "attrMin": { "str": 12, "con": 14 }, "attrMax": {}
   }, 
@@ -203,7 +203,7 @@
     "heightRange": "4'5\" to 7'",
     "hpModifier": 0, "skillPointsPerLevelModifier": 0, "firstLevelBonus": true,
     "strModifier": 0, "conModifier": 0, "apModifier": 0, "precisionModifier": 0, "awModifier": 0,
-    "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 0,
+    "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 0, "evModifier": -1,
     "advantages": [], "specialRules": "Rotting, Sleepless",
     "attrMin": { "wp": 12 }, "attrMax": {}
   }
