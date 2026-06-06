@@ -454,8 +454,8 @@ const platePerLoc = {}
   const spellPrecision     = arcaneAimRank + mischief + windsWhisperRank
 
   // ── SKILL POINTS ──────────────────────────
-  const basePointsPerLevel = 65 + (race.skillPointsPerLevelModifier || 0)
-  const firstLevelBonus    = race.firstLevelBonus !== false ? 65 : 0
+  const basePointsPerLevel = 70 + (race.skillPointsPerLevelModifier || 0)
+  const firstLevelBonus    = race.firstLevelBonus !== false ? 70 : 0
   const markIronBonus      = hasMarkOrSymbol(char, 'Iron') ? 2 * (char.level || 1) : 0
   const gmBonus            = char.skillPoints?.bonusGiven || 0
   const totalPointsEarned  = (basePointsPerLevel * (char.level || 1)) + firstLevelBonus + markIronBonus + gmBonus
