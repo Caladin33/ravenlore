@@ -6655,7 +6655,7 @@
     "is_ars_mortis": false,
     "id": 511
   },
-  {
+   {
     "school": "Augmentation",
     "name": "Re-Form",
     "description": "This spell can only be cast while transformed with a Nature school Form spell such as Mammalian Form.\nHeal yourself 1d4+1 hit points, distributed as you please, up to your max hit points or the creature type of your form's max hit points, which ever is higher. Any excess hit points after transformat",
@@ -6732,5 +6732,18 @@
     "guild": "Druid",
     "is_ars_mortis": false,
     "id": 517
+  },
+   {
+    "school": "Augmentation",
+    "name": "Ferocity",
+    "description": "This spell can be cast at any spell level. You gain Damage while transformed equal to the spell level/3 (round up), and your expertise becomes: (spell level*3)+5 regardless of what relevant skills you have or bonuses that might otherwise apply. Word of Power.",
+    "level": 1,
+    "range": "Self",
+    "duration": "Concentration (0)",
+    "area": "The Caster",
+    "is_guild": true,
+    "guild": "Druid",
+    "is_ars_mortis": false,
+    "id": 518
   }
 ]
