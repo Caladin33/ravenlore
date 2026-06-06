@@ -145,7 +145,10 @@ const manaItemBonus = character.stuff?.magicBonuses?.mana ?? 0
     const n = i + 1
     const slot = meleeSlots[i]
     if (slot) {
-      slotParts.push(`--S${n}_name|${slot.slotLabel || slot.name} --S${n}_combat_die|${cd(slot.combatDie)} --S${n}_expertise|${v(slot.expertise)} --S${n}_damage_die|${slot.damageDie || '-'} --S${n}_totalDamage|${v(slot.damage)} --S${n}_precision|${v(slot.precision)} --S${n}_crit_number|${v(slot.critNumber)} --S${n}_crit_damage|${v(slot.critDamage)} --S${n}_Breeches|${v(slot.breaches)} --S${n}_ar_bypass|${v(slot.armorBypass)} --S${n}_mov_ap|${v(slot.movBypassRate)}`)
+      const slotName = slot.formAttack ? `${slot.slotLabel || slot.name} (${slot.formAttack})` : (slot.slotLabel || slot.name)
+      const dmgDie = slot.formDamage != null ? slot.formDamage : (slot.damageDie || '-')
+      const dmgTotal = slot.formDamage != null ? 0 : v(slot.damage)
+      slotParts.push(`--S${n}_name|${slotName} --S${n}_combat_die|${cd(slot.combatDie)} --S${n}_expertise|${v(slot.expertise)} --S${n}_damage_die|${dmgDie} --S${n}_totalDamage|${dmgTotal} --S${n}_precision|${v(slot.precision)} --S${n}_crit_number|${v(slot.critNumber)} --S${n}_crit_damage|${v(slot.critDamage)} --S${n}_Breeches|${v(slot.breaches)} --S${n}_ar_bypass|${v(slot.armorBypass)} --S${n}_mov_ap|${v(slot.movBypassRate)}`)
     } else {
       slotParts.push(`--S${n}_name| --S${n}_combat_die|0 --S${n}_expertise|0 --S${n}_damage_die|- --S${n}_totalDamage|0 --S${n}_precision|0 --S${n}_crit_number|0 --S${n}_crit_damage|0 --S${n}_Breeches|0 --S${n}_ar_bypass|0 --S${n}_mov_ap|0`)
     }

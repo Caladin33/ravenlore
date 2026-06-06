@@ -1,6 +1,6 @@
 [
   {
-    "name": "M: Wolf",
+    "name": "Wolf",
     "category": "mammal",
     "movement": "12 / Burst 30",
     "specialAbilities": "Canine Olfaction, Call Wolves. Burst 12a then Con 23 to sustain.",
@@ -16,7 +16,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "M: Jaguar",
+    "name": "Jaguar",
     "category": "mammal",
     "movement": "15 / Burst 45",
     "specialAbilities": "Speed burst up to 6 actions then Con 23 to sustain.",
@@ -32,7 +32,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "M: Black Bear",
+    "name": "Black Bear",
     "category": "mammal",
     "movement": "13 / Burst 30",
     "specialAbilities": "Natural Armor 4. Burst 9a then Con 23 to sustain.",
@@ -48,7 +48,7 @@
     "naturalArmor": 4
   },
   {
-    "name": "M: Cheetah",
+    "name": "Cheetah",
     "category": "mammal",
     "movement": "20 / Burst 70",
     "specialAbilities": "Speed burst up to 6 actions duration then Con 23 to sustain.",
@@ -64,7 +64,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "M: Panda",
+    "name": "Panda",
     "category": "mammal",
     "movement": "9 / Burst 20",
     "specialAbilities": "Natural Armor 3, Grasp. Burst 9a then Con 23 to sustain.",
@@ -80,7 +80,7 @@
     "naturalArmor": 3
   },
   {
-    "name": "M: Puma",
+    "name": "Puma",
     "category": "mammal",
     "movement": "15 / Burst 40",
     "specialAbilities": "Speed burst up to 6 actions then Con 23 to sustain.",
@@ -96,7 +96,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "M: Wolverine",
+    "name": "Wolverine",
     "category": "mammal",
     "movement": "10 / Burst 25",
     "specialAbilities": "3 Armor Piercing. 1 extra action in melee combat. Burst 9a then Con 23 to sustain.",
@@ -112,7 +112,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "M: Bat",
+    "name": "Bat",
     "category": "mammal",
     "movement": "Fly 10",
     "specialAbilities": "Darkvision 60, echolocation, bright light sensitivity. Agile.",
@@ -128,7 +128,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "A: Falcon",
+    "name": "Falcon",
     "category": "avian",
     "movement": "Fly 25 / Dive 90",
     "specialAbilities": "Farsight.",
@@ -144,7 +144,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "A: Hawk",
+    "name": "Hawk",
     "category": "avian",
     "movement": "Fly 25 / Dive 60",
     "specialAbilities": "Farsight.",
@@ -160,7 +160,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "A: Owl",
+    "name": "Owl",
     "category": "avian",
     "movement": "Fly 20 / Dive 40",
     "specialAbilities": "Stealth, Darkvision 70.",
@@ -176,7 +176,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "A: Raven",
+    "name": "Raven",
     "category": "avian",
     "movement": "Fly 20 / Dive 40",
     "specialAbilities": "None.",
@@ -192,7 +192,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "A: Sparrow",
+    "name": "Sparrow",
     "category": "avian",
     "movement": "Fly 15 / Dive 30",
     "specialAbilities": "None.",
@@ -208,7 +208,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "A: Eagle",
+    "name": "Eagle",
     "category": "avian",
     "movement": "Fly 20 / Dive 50",
     "specialAbilities": "Farsight.",
@@ -224,7 +224,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "A: Ostrich",
+    "name": "Ostrich",
     "category": "avian",
     "movement": "12 / Burst 36",
     "specialAbilities": "Speed Burst 15 actions then Con 23 to sustain.",
@@ -240,7 +240,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "A: Hummingbird",
+    "name": "Hummingbird",
     "category": "avian",
     "movement": "Fly 5 / Burst 10",
     "specialAbilities": "Hummingbird mobility. Burst 9 actions then Con 23 to sustain.",
@@ -256,7 +256,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "W: Salmon",
+    "name": "Salmon",
     "category": "aquatic",
     "movement": "Swim 15 / Burst 30",
     "specialAbilities": "Direction sense. Speed Burst 12a then Con 23 to sustain.",
@@ -272,7 +272,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "W: Octopus",
+    "name": "Octopus",
     "category": "aquatic",
     "movement": "Swim 5 / Jet 15",
     "specialAbilities": "Ink, camouflage, grasp. Jet 9a then Con 23 to sustain.",
@@ -288,7 +288,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "W: Mako Shark",
+    "name": "Mako Shark",
     "category": "aquatic",
     "movement": "Swim 25 / Burst 50",
     "specialAbilities": "Burst 9a then Con 23 to sustain.",
@@ -304,7 +304,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "W: Minnow",
+    "name": "Minnow",
     "category": "aquatic",
     "movement": "Swim 10 / Burst 30",
     "specialAbilities": "Stealth, agile. Burst 3a then Con 23 to sustain.",
@@ -320,7 +320,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "W: Harbor Seal",
+    "name": "Harbor Seal",
     "category": "aquatic",
     "movement": "Swim 12 / Burst 30",
     "specialAbilities": "Agile. Burst 9a then Con 23 to sustain.",
@@ -336,7 +336,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "R: Python",
+    "name": "Python",
     "category": "reptilian",
     "movement": "3",
     "specialAbilities": "Stealth, Constriction, cold blooded.",
@@ -352,7 +352,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "R: Chamaeleon",
+    "name": "Chamaeleon",
     "category": "reptilian",
     "movement": "2",
     "specialAbilities": "Camouflage, stealth, cold blooded.",
@@ -368,7 +368,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "R: Cobra",
+    "name": "Cobra",
     "category": "reptilian",
     "movement": "5",
     "specialAbilities": "3d6 Poison, cold blooded.",
@@ -384,7 +384,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "R: Perentie",
+    "name": "Perentie",
     "category": "reptilian",
     "movement": "15 / Burst 40",
     "specialAbilities": "Cold blooded. Burst 12a then Con 23 to sustain.",
@@ -400,7 +400,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "R: Crocodile",
+    "name": "Crocodile",
     "category": "reptilian",
     "movement": "5 / Burst 30",
     "specialAbilities": "Speed Burst 3 actions then Con 23 to sustain. Lock Jaws, situational stealth, cold blooded.",
@@ -416,7 +416,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "E: Elephant",
+    "name": "Elephant",
     "category": "exotic",
     "movement": "13 / Charge 20",
     "specialAbilities": "Grasp, Charge up to 60 feet.",
@@ -432,7 +432,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "E: Lion/Tiger",
+    "name": "Lion/Tiger",
     "category": "exotic",
     "movement": "15 / Burst 45",
     "specialAbilities": "Stealth, burst up to 6 actions then Con 23 to sustain.",
@@ -448,7 +448,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "E: Orca",
+    "name": "Orca",
     "category": "exotic",
     "movement": "Swim 20 / Burst 40",
     "specialAbilities": "Swallow whole. Burst 12a then Con 23 to sustain.",
@@ -464,7 +464,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "E: Giant Eagle",
+    "name": "Giant Eagle",
     "category": "exotic",
     "movement": "Fly 30 / Dive 60",
     "specialAbilities": "Carry 400 lbs, Farsight.",
@@ -480,7 +480,7 @@
     "naturalArmor": 0
   },
   {
-    "name": "E: Owl Bear",
+    "name": "Owl Bear",
     "category": "exotic",
     "movement": "15 / Burst 40",
     "specialAbilities": "Natural Armor 4, Stealth. Burst 9a then Con 23 to sustain.",

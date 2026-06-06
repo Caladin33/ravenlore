@@ -173,7 +173,7 @@ function WeaponSlotEditor({ slot, onSave, onClose, char, isRanged, isShield }) {
 function WeaponSlotRow({ slot, calcSlot, onEdit, onRemove, isRanged, activeFormData }) {
   const [expanded, setExpanded] = useState(false)
 
-  const isUnarmedWithForm = !isRanged && slot?.name === 'Unarmed' && activeFormData
+  const isUnarmedWithForm = !isRanged && calcSlot?.formAttack != null
 
   if (!slot || !slot.name) {
     return (
@@ -199,7 +199,7 @@ function WeaponSlotRow({ slot, calcSlot, onEdit, onRemove, isRanged, activeFormD
   const movLabel = isRanged ? 'HS' : 'MoV'
   const dmgFixed = isUnarmedWithForm ? 0 : calcSlot.damage
   const dmgMoV = calcSlot.movDamageRate
-  const dmgMain = isUnarmedWithForm ? activeFormData.damage : `${calcSlot.damageDie}${dmgFixed >= 0 ? '+' : ''}${dmgFixed}`
+  const dmgMain = isUnarmedWithForm ? calcSlot.formDamage : `${calcSlot.damageDie}${dmgFixed >= 0 ? '+' : ''}${dmgFixed}`
   const dmgSuffix = (!isUnarmedWithForm && dmgMoV > 0) ? { num: `+${dmgMoV}/`, lbl: movLabel } : null
 
   const prFixed = calcSlot.precision
@@ -213,7 +213,7 @@ function WeaponSlotRow({ slot, calcSlot, onEdit, onRemove, isRanged, activeFormD
   const apSuffix = (apMoV > 0 && apMain !== '—') ? { num: `+${apMoV}/`, lbl: movLabel } : null
 
   const markLabel = slot.mark && slot.mark !== 'none' ? MARK_LABELS[slot.mark] : null
-  const displayName = isUnarmedWithForm ? `${slot.slotLabel || slot.name} (${activeFormData.attack})` : (slot.slotLabel || slot.name)
+  const displayName = isUnarmedWithForm ? `${slot.slotLabel || slot.name} (${calcSlot.formAttack})` : (slot.slotLabel || slot.name)
 
   return (
     <>

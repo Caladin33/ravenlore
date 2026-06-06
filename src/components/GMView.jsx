@@ -1,7 +1,7 @@
 // GMView.jsx
 import { useState, useEffect } from 'react'
 import { loadCampaignCharacters, loadAllCampaignCharacters, saveCharacterByOwner, resolvePending } from '../characterDB'
-
+import druidFormsData from '../data/druidForms.json'
 // ── STYLES ────────────────────────────────────────────────────────────────────
 const surface = { background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '14px 18px' }
 const lbl = { fontSize: '.58rem', letterSpacing: '.16em', color: 'var(--text3)', textTransform: 'uppercase', fontFamily: 'Georgia, serif', display: 'block', marginBottom: 3 }
@@ -98,7 +98,77 @@ function InlineDiff({ original, onApprove, onReject }) {
     </div>
   )
 }
+// ── DRUID FORM OVERRIDE (GM) ──────────────────────────────────────────────────
+const FORM_CATEGORIES = [
+  ['mammal', 'Mammalian'], ['avian', 'Avian'], ['aquatic', 'Aquatic'],
+  ['reptilian', 'Reptilian'], ['exotic', 'Exotic'],
+]
 
+function DruidFormControl({ char, onUpdate }) {
+  const forms = char.druidForms || {}
+  const entries = FORM_CATEGORIES.filter(([cat]) => forms[cat]?.form)
+
+  // Reassign or clear a category, keeping activeForm consistent
+  const setForm = (cat, formName) => {
+    const next = { ...forms }
+    const oldName = forms[cat]?.form
+    if (!formName || formName === 'None') delete next[cat]
+    else next[cat] = { form: formName, locked: forms[cat]?.locked ?? true }
+    // if the active transform pointed at the old name, follow it (or clear)
+    let activeForm = char.activeForm
+    if (activeForm && activeForm === oldName) {
+      activeForm = (formName && formName !== 'None') ? formName : null
+    }
+    onUpdate({ ...char, druidForms: next, activeForm })
+  }
+
+  const toggleLock = (cat) =>
+    onUpdate({ ...char, druidForms: { ...forms, [cat]: { ...forms[cat], locked: !forms[cat]?.locked } } })
+
+  if (entries.length === 0) {
+    return (
+      <div style={{ padding: '10px 12px', background: 'var(--bg2)', borderRadius: 6, border: '1px solid var(--border)' }}>
+        <span style={{ fontSize: '.85rem', color: 'var(--text)', fontFamily: 'Georgia, serif' }}>Druid Forms</span>
+        <div style={{ fontSize: '.7rem', color: 'var(--text3)', fontFamily: 'Georgia, serif', marginTop: 2 }}>No forms chosen.</div>
+      </div>
+    )
+  }
+
+  return (
+    <div style={{ padding: '10px 12px', background: 'var(--bg2)', borderRadius: 6, border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <span style={{ fontSize: '.85rem', color: 'var(--text)', fontFamily: 'Georgia, serif' }}>Druid Forms</span>
+      {entries.map(([cat, label]) => {
+        const cur = forms[cat]?.form
+        const locked = !!forms[cat]?.locked
+        const catForms = druidFormsData.filter(f => f.category === cat)
+        const orphaned = cur && !catForms.some(f => f.name === cur)
+        return (
+          <div key={cat} style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+            <span style={{ ...lbl, marginBottom: 0, minWidth: 70 }}>{label}</span>
+            <select value={orphaned ? '' : (cur || 'None')} onChange={e => setForm(cat, e.target.value)}
+              style={{ background: 'var(--surface2)', border: `1px solid ${orphaned ? '#c94a4a' : 'var(--border2)'}`, color: 'var(--text)', borderRadius: 4, padding: '4px 8px', fontFamily: 'Georgia, serif', fontSize: '.82rem', cursor: 'pointer' }}>
+              {orphaned && <option value="" disabled>{cur} (missing)</option>}
+              <option value="None">None (clear)</option>
+              {catForms.map(f => <option key={f.name} value={f.name}>{f.name}</option>)}
+            </select>
+            <button onClick={() => toggleLock(cat)} style={{
+              padding: '4px 10px',
+              background: locked ? 'rgba(201,74,74,.12)' : 'rgba(74,158,74,.12)',
+              border: `1px solid ${locked ? '#c94a4a' : '#4a9e4a'}`,
+              color: locked ? '#c94a4a' : '#4a9e4a',
+              borderRadius: 4, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.72rem',
+            }}>
+              {locked ? '🔒 Locked' : '🔓 Unlocked'}
+            </button>
+            {cur && char.activeForm === cur && (
+              <span style={{ fontSize: '.65rem', color: '#4a9e4a', fontFamily: 'Georgia, serif' }}>● active</span>
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
 // ── CHARACTER CARD ────────────────────────────────────────────────────────────
 function CharacterCard({ char, onUpdate, onOpen }) {
   const [expanded, setExpanded] = useState(false)
@@ -229,9 +299,12 @@ function CharacterCard({ char, onUpdate, onOpen }) {
               color: isLevelUpAuth ? '#c94a4a' : '#4a9e4a',
               borderRadius: 5, cursor: 'pointer', fontFamily: 'Georgia, serif', fontSize: '.85rem',
             }}>
-              {isLevelUpAuth ? 'Revoke' : 'Authorize'}
+             {isLevelUpAuth ? 'Revoke' : 'Authorize'}
             </button>
           </div>
+
+          {/* Druid Form Override */}
+          <DruidFormControl char={char} onUpdate={onUpdate} />
         </div>
       )}
     </div>

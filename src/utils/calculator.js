@@ -553,8 +553,11 @@ const platePerLoc = {}
 
     // Damage die
     let damageDie = weapon.damage
-    if (isUnarmed && martialArtist) damageDie = '1d4'
-
+    if (isUnarmed && martialArtist && !form) damageDie = '1d4'
+// Combat die: any druid form is always d10; unarmed martial artist (out of form) is d12
+    const combatDie = (isUnarmed && form) ? 'd10'
+      : (isUnarmed && martialArtist) ? 'd12'
+      : weapon.combatDie
     // Total fixed damage
     const totalDamage = applicableDB + mark.damage + (slot.itemDamageBonus || 0)
 
@@ -581,19 +584,20 @@ const platePerLoc = {}
     return {
       name: weapon.name,
       weaponClass: weapon.weaponClass,
-      combatDie: weapon.combatDie,
+      combatDie,
       damageDie,
       expertise,
       damage: totalDamage,
       precision,
-      critNumber: critNumberFor(weapon.combatDie, ruthlessTempoRank),
-      critDamage: critDamageFor(damageDie),
+      critNumber: critNumberFor(combatDie, ruthlessTempoRank),
+      critDamage: critDamageFor((isUnarmed && form) ? form.damage : damageDie),
       armorBypass,
       movBypassRate,
       slotLabel: slot.slotLabel || weapon.name,
-      breaches,
+     breaches,
       movDamageRate,
       movPrecisionRate,
+      ...(isUnarmed && form ? { formAttack: form.attack, formDamage: form.damage } : {}),
     }
   }
 
