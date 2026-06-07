@@ -6,24 +6,36 @@ const normalizePending = (p) => (p && Object.keys(p).length > 0 ? p : null)
 
 // Save or update a character
 export async function saveCharacter(character, userId) {
-  const { pendingSkillChanges, ...cleanData } = character   // pending lives in its own column now
+  // Strip internal fields so they don't get written into the data blob
+  const { pendingSkillChanges, _rowId, _ownerId, ...cleanData } = character
+  const trimmedName = (character.name || '').trim()
+  const payload = {
+    owner_id: userId,
+    name: trimmedName,
+    data: { ...cleanData, name: trimmedName },
+    campaign_id: character.campaignId || null,
+    updated_at: new Date().toISOString(),
+  }
+
+  // Existing character (we know its row id): update that SAME row, so renaming
+  // edits in place instead of creating a new one.
+  if (_rowId) {
+    const { data, error } = await supabase
+      .from('characters')
+      .update(payload)
+      .eq('id', _rowId)
+      .select()
+    if (error) { console.error('Error saving character:', error); return { error } }
+    return { data }
+  }
+
+  // Brand-new character: insert. The (owner_id, name) unique constraint still
+  // blocks accidental duplicate names.
   const { data, error } = await supabase
     .from('characters')
-    .upsert({
-      owner_id: userId,
-      name: character.name,
-      data: cleanData,
-      campaign_id: character.campaignId || null,
-      updated_at: new Date().toISOString(),
-    }, {
-      onConflict: 'owner_id,name'
-    })
+    .insert(payload)
     .select()
-
-  if (error) {
-    console.error('Error saving character:', error)
-    return { error }
-  }
+  if (error) { console.error('Error saving character:', error); return { error } }
   return { data }
 }
 // Player submit — writes ONLY the pending column, never the character blob
@@ -61,7 +73,7 @@ export async function loadCharacters(userId) {
     return { error, characters: [] }
   }
 
-return { characters: data.map(row => ({ ...row.data, pendingSkillChanges: normalizePending(row.pending_changes) })) }
+return { characters: data.map(row => ({ ...row.data, _rowId: row.id, pendingSkillChanges: normalizePending(row.pending_changes) })) }
 }
 
 // Save a character by owner (GM saving on behalf of player)
@@ -148,7 +160,7 @@ export async function loadCampaignCharacters(userId) {
   const charactersByCampaign = {}
   campaigns.forEach(c => { charactersByCampaign[c.id] = [] })
   chars.forEach(row => {
-    const char = { ...row.data, pendingSkillChanges: row.pending_changes || null, _ownerId: row.owner_id, _rowId: row.id }
+    const char = { ...row.data, pendingSkillChanges: normalizePending(row.pending_changes), _ownerId: row.owner_id, _rowId: row.id }
     if (charactersByCampaign[row.campaign_id]) {
       charactersByCampaign[row.campaign_id].push(char)
     }
@@ -190,7 +202,7 @@ export async function loadAllCampaignCharacters(userId) {
   const noCampaignChars = []
 
   allChars.forEach(row => {
-   const char = { ...row.data, pendingSkillChanges: row.pending_changes || null, _ownerId: row.owner_id, _rowId: row.id }
+   const char = { ...row.data, pendingSkillChanges: normalizePending(row.pending_changes), _ownerId: row.owner_id, _rowId: row.id }
     if (row.campaign_id && campaignMap[row.campaign_id]) {
       campaignMap[row.campaign_id].characters.push(char)
     } else {

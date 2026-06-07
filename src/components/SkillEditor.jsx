@@ -897,7 +897,14 @@ const handleSave = () => {
     Object.entries({ ...char.martialSkills, ...char.arcaneSkills, ...char.selfImprovementSkills }).forEach(([name, data]) => {
       newLocked[name] = parseInt(data.pointsInvested) || 0
     })
-    setLockedPoints(newLocked)
+   setLockedPoints(newLocked)
+
+    // GM has approval authority — apply edits directly to the player's character, skip the pending queue
+    if (gmMode) {
+      onSave(char)
+      setShowConfirm(false)
+      return
+    }
 
     // Build pending changes — only skills that actually changed
     const pending = {}
