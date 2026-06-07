@@ -923,6 +923,7 @@ const handleSave = () => {
     })
 
    if (hasPendingApproval) { setShowConfirm(false); return }
+    if (Object.keys(pending).length === 0) { setShowConfirm(false); return }
     onSubmitPending(pending)
     setShowConfirm(false)
   }

@@ -6,6 +6,8 @@ import druidFormsData from '../data/druidForms.json'
 const surface = { background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '14px 18px' }
 const lbl = { fontSize: '.58rem', letterSpacing: '.16em', color: 'var(--text3)', textTransform: 'uppercase', fontFamily: 'Georgia, serif', display: 'block', marginBottom: 3 }
 const val = { fontSize: '1rem', color: 'var(--gold2)', fontFamily: 'Georgia, serif', fontWeight: 600 }
+// True only when a character has at least one real pending change (ignores empty {} )
+const isPending = (c) => !!c?.pendingSkillChanges && Object.keys(c.pendingSkillChanges).length > 0
 
 // ── INLINE DIFF (skill change review) ────────────────────────────────────────
 function InlineDiff({ original, onApprove, onReject }) {

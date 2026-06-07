@@ -1,4 +1,6 @@
 import { supabase } from './supabase'
+// Treat an empty {} pending object as "no pending" so phantom banners/counters don't show
+const normalizePending = (p) => (p && Object.keys(p).length > 0 ? p : null)
 
 // ── CHARACTERS ────────────────────────────────────────────────────────────────
 
@@ -59,7 +61,7 @@ export async function loadCharacters(userId) {
     return { error, characters: [] }
   }
 
-return { characters: data.map(row => ({ ...row.data, pendingSkillChanges: row.pending_changes || null })) }
+return { characters: data.map(row => ({ ...row.data, pendingSkillChanges: normalizePending(row.pending_changes) })) }
 }
 
 // Save a character by owner (GM saving on behalf of player)

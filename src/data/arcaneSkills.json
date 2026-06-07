@@ -1018,7 +1018,7 @@
     {
       "name": "Spiritual Hammer",
       "category": "divine",
-      "prereq": "Mark of Iron, Light, Storms, War or Wisdom",
+      "prereq": "Mark of Iron, Light, Passion, Storms, War or Wisdom",
       "description": "Creates a translucent melee weapon of whatever type the caster chooses streaks towards the chosen target. Ranged Attack, roll do hit (2d10+your Arcane Power). No penalties of any kind apply and your Ranged Precision is 20. Damage is 1d6+your Arcane Power /2.",
       "costPerRank": 30,
       "maxRank": "1",

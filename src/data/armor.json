@@ -5,7 +5,7 @@
     { "code": "LF",   "name": "Leather Fair",     "arArms": 2,  "arTorso": 2,  "arLegs": 2,  "evasionPenaltyPerLocation": 0.5,  "special": [] },
     { "code": "LG",   "name": "Leather Good",     "arArms": 2,  "arTorso": 3,  "arLegs": 2,  "evasionPenaltyPerLocation": 0.25, "special": [] },
     { "code": "LS",   "name": "Leather Superior", "arArms": 3,  "arTorso": 4,  "arLegs": 3,  "evasionPenaltyPerLocation": 0.25, "special": [] },
-    { "code": "LE",   "name": "Leather Elvish",   "arArms": 3,  "arTorso": 4,  "arLegs": 3,  "evasionPenaltyPerLocation": 0,    "special": ["Stealth +15"] },
+    { "code": "LE",   "name": "Leather Elvish",   "arArms": 3,  "arTorso": 4,  "arLegs": 3,  "evasionPenaltyPerLocation": 0,    "special": ["Stealth +5"] },
     { "code": "SP",   "name": "Scale Poor",       "arArms": 4,  "arTorso": 5,  "arLegs": 4,  "evasionPenaltyPerLocation": 2,    "special": ["Breaches doubled"] },
     { "code": "SF",   "name": "Scale Fair",       "arArms": 4,  "arTorso": 5,  "arLegs": 4,  "evasionPenaltyPerLocation": 1.5,  "special": ["Breaches doubled"] },
     { "code": "SG",   "name": "Scale Good",       "arArms": 5,  "arTorso": 6,  "arLegs": 5,  "evasionPenaltyPerLocation": 1.5,  "special": ["Breaches doubled"] },

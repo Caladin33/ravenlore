@@ -712,7 +712,7 @@
   },
   {
     "name": "Tracking",
-    "prereq": "< none",
+    "prereq": "none",
     "description": "Base chance to track and follow through wilderness. Greatly improves ability to cover your own tracks, (and to a lesser extent your party\u2019s).",
     "freeBase": "2Aw",
     "costMultiplier": 3,
