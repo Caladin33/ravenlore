@@ -297,6 +297,38 @@
   max-width: 45%;
   margin: 6px 0 12px 16px;
 }
+/* two-column layout */
+.handbook-content .hb-cols {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+.handbook-content .hb-col {
+  flex: 1;
+  min-width: 0;
+}
+@media (max-width: 768px) {
+  .handbook-content .hb-cols { flex-direction: column; gap: 0; }
+}
+
+/* attribute tables */
+.handbook-content .attr-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0 20px;
+  font-family: Georgia, serif;
+  font-size: 0.9rem;
+}
+.handbook-content .attr-table th,
+.handbook-content .attr-table td {
+  border: 1px solid var(--border, #333);
+  padding: 6px 10px;
+  text-align: center;
+}
+.handbook-content .attr-table th {
+  color: var(--gold, #c9a84c);
+  font-weight: 600;
+}
 
 .skill-table .row-even td { background: #0a0a0a; }
 .skill-table .row-odd  td { background: #111; }

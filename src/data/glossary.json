@@ -49,6 +49,11 @@
     "body": "Immune to fear, charm, agony, and many potions. 2 actions/turn. In conditions above 85°F (30°C) they gain a third action. In conditions below 40°F (5°C) they have only 1 action. Clothing is only effective in reducing wind chill during the first few minutes, as there is very little body heat to insulate."
   },
   {
+    "id": "combatRoll",
+    "term": "Combat Roll",
+    "aliases": ["combat rolls"],
+    "body": "1 combat die per action, keeping the best two, plus your expertise and any bonuses."},
+  {
     "id": "constitution",
     "term": "Constitution",
     "aliases": ["Con"],
