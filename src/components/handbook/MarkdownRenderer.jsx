@@ -18,8 +18,14 @@ const RACE_IMAGE_RE   = /^\{\{raceImage:(\w+)(?:\s+(left|right))?\}\}$/
 const RACE_START_RE   = /^\{\{raceStart:(\w+)(?:\s+(left|right))?\}\}$/
 const RACE_END_RE     = /^\{\{raceEnd\}\}$/
 const SKILL_TABLE_RE  = /^\{\{skillTable:(\w+)\}\}$/
+const POV_START_RE    = /^\{\{pov\}\}$/
+const POV_END_RE      = /^\{\{povEnd\}\}$/
+const PLAY_START_RE   = /^\{\{play\}\}$/
+const PLAY_END_RE     = /^\{\{playEnd\}\}$/
+const GAP_RE          = /^\{\{gap\}\}$/
+const IMG_RE          = /^\{\{img:(\S+?)(?:\s+(left|right|center))?\}\}$/
 
-const DIRECTIVE_SPLIT = /({{raceStats:\w+}}|{{raceImage:\w+(?:\s+(?:left|right))?}}|{{raceStart:\w+(?:\s+(?:left|right))?}}|{{raceEnd}}|{{skillTable:\w+}})/
+const DIRECTIVE_SPLIT = /({{raceStats:\w+}}|{{raceImage:\w+(?:\s+(?:left|right))?}}|{{raceStart:\w+(?:\s+(?:left|right))?}}|{{raceEnd}}|{{skillTable:\w+}}|{{pov}}|{{povEnd}}|{{play}}|{{playEnd}}|{{gap}}|{{img:[^}]+}})/
 
 function parseInline(text, glossary, onOpen) {
   const parts = text.split(/(\[\[.*?\]\])/g)
@@ -83,6 +89,9 @@ export default function MarkdownRenderer({ content }) {
   let raceSectionSide = 'right'
   let raceSectionContent = []
 
+  let styleBlock = null        // 'pov' | 'play' | null
+  let styleContent = []
+
   const flushRaceSection = (i) => {
     const imgCol = (
       <div key={`race-img-col-${raceSectionKey}`} className="race-section__image">
@@ -107,8 +116,50 @@ export default function MarkdownRenderer({ content }) {
     raceSectionContent = []
   }
 
+  const flushStyleBlock = (i) => {
+    elements.push(
+      <div key={`style-${styleBlock}-${i}`} className={styleBlock === 'pov' ? 'hb-pov' : 'hb-play'}>
+        {styleContent}
+      </div>
+    )
+    styleBlock = null
+    styleContent = []
+  }
+
+  // Helper: route a rendered element into whichever container is currently open
+  const pushEl = (el) => {
+    if (styleBlock) styleContent.push(el)
+    else if (inRaceSection) raceSectionContent.push(el)
+    else elements.push(el)
+  }
+
   segments.forEach((seg, i) => {
     const trimmed = seg.trim()
+
+    // {{pov}} / {{play}} — open a styled prose block
+    if (POV_START_RE.test(trimmed))  { styleBlock = 'pov';  styleContent = []; return }
+    if (PLAY_START_RE.test(trimmed)) { styleBlock = 'play'; styleContent = []; return }
+
+    // {{povEnd}} / {{playEnd}} — close it
+    if (POV_END_RE.test(trimmed) || PLAY_END_RE.test(trimmed)) {
+      if (styleBlock) flushStyleBlock(i)
+      return
+    }
+
+    // {{gap}} — vertical spacer
+    if (GAP_RE.test(trimmed)) {
+      pushEl(<div key={`gap-${i}`} className="hb-gap" />)
+      return
+    }
+
+    // {{img:path side}} — general image (path is root-relative, e.g. /layout/scene.jpg)
+    const imgMatch = trimmed.match(IMG_RE)
+    if (imgMatch) {
+      const src = imgMatch[1]
+      const align = imgMatch[2] || 'center'
+      pushEl(<img key={`img-${i}`} src={src} alt="" className={`hb-img hb-img--${align}`} />)
+      return
+    }
 
     // {{raceStart:key side}}
     const startMatch = trimmed.match(RACE_START_RE)
@@ -132,18 +183,14 @@ export default function MarkdownRenderer({ content }) {
       const key = statsMatch[1]
       const race = racesData[key]
       if (!race) { console.warn(`MarkdownRenderer: no race "${key}"`); return }
-      const el = <RaceStatBlock key={`stats-${key}-${i}`} race={race} />
-      if (inRaceSection) raceSectionContent.push(el)
-      else elements.push(el)
+      pushEl(<RaceStatBlock key={`stats-${key}-${i}`} race={race} />)
       return
     }
 
     // {{raceImage:key side}}
     const imageMatch = trimmed.match(RACE_IMAGE_RE)
     if (imageMatch) {
-      const el = <RaceImage key={`img-${imageMatch[1]}-${i}`} raceKey={imageMatch[1]} />
-      if (inRaceSection) raceSectionContent.push(el)
-      else elements.push(el)
+      pushEl(<RaceImage key={`raceimg-${imageMatch[1]}-${i}`} raceKey={imageMatch[1]} />)
       return
     }
 
@@ -153,15 +200,14 @@ export default function MarkdownRenderer({ content }) {
       const key = tableMatch[1]
       const skills = SKILL_TABLES[key]
       if (!skills) { console.warn(`MarkdownRenderer: no skill table "${key}"`); return }
-      const el = <SkillTable key={`table-${key}-${i}`} skills={skills} />
-      if (inRaceSection) raceSectionContent.push(el)
-      else elements.push(el)
+      pushEl(<SkillTable key={`table-${key}-${i}`} skills={skills} />)
       return
     }
 
     // Plain markdown
     const parsed = parseMarkdown(seg, `seg-${i}`, glossaryData, setOpenEntry)
-    if (inRaceSection) raceSectionContent.push(...parsed)
+    if (styleBlock) styleContent.push(...parsed)
+    else if (inRaceSection) raceSectionContent.push(...parsed)
     else elements.push(...parsed)
   })
 
