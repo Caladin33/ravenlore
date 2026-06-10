@@ -19,7 +19,7 @@
     "strModifier": 0, "conModifier": 0, "apModifier": 0, "precisionModifier": 0, "awModifier": 0,
     "maintenanceModifier": 0, "generalSkillBonus": 0, "naturalArmor": 0, "evModifier": 0,
     "advantages": ["con", "wp"],
-    "specialRules": "Advantage on all Constitution and Willpower checks",
+    "specialRules": "Stonekin",
     "attrMin": { "str": 8, "con": 12 }, "attrMax": { "dex": 16 }
   },
   "halfling": {

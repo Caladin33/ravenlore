@@ -248,6 +248,17 @@
   overflow: hidden;
 }
 
+.handbook-content .hb-pov {
+  color: #3a4fb8;
+  font-style: italic;
+}
+.handbook-content .hb-play {
+  color: #3a4fb8;
+}
+.handbook-content .hb-play p {
+  margin: 0.12em 0;   /* tightens dialogue lines so they sit close, like the image */
+}
+
 .skill-table .row-even td { background: #0a0a0a; }
 .skill-table .row-odd  td { background: #111; }
 .skill-table tr:hover  td { background: #1a1a1a; }
