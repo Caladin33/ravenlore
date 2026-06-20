@@ -219,7 +219,7 @@ export function calculate(char, session = {}) {
   
   // Race derived from race name
   const race = getRace(char.race)
-  const items = char.itemBonuses || {}
+  const items = char.itemBonuses || char.stuff?.magicBonuses || {}
   // Active druid form
   const form = getActiveForm(char)
 
