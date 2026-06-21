@@ -302,7 +302,15 @@ function App() {
   }
 
   const handleNewCharacter = () => setCurrentPage('wizard')
-
+const handleWizardComplete = async (newCharacter) => {
+    await saveCharacter(newCharacter, user.id)
+    const { characters } = await loadCharacters(user.id)
+    setCharacters(characters || [])
+    const created = characters?.find(c => c.name === newCharacter.name) || newCharacter
+    setSelectedCharacter(created)
+    setGmModeActive(false)
+    setCurrentPage('sheet')
+  }
   const deriveRank = (points, def) => {
     const costPerRank = def?.costPerRank || 1
     const raw = def?.maxRank
