@@ -219,7 +219,8 @@ export function calculate(char, session = {}) {
   
   // Race derived from race name
   const race = getRace(char.race)
-  const items = char.itemBonuses || char.stuff?.magicBonuses || {}
+ const items = char.stuff?.magicBonuses || {}
+  console.log('magicBonuses:', JSON.stringify(char.stuff?.magicBonuses))
   // Active druid form
   const form = getActiveForm(char)
 
@@ -250,6 +251,7 @@ export function calculate(char, session = {}) {
   let STR = strBase + (race.strModifier || 0) + (items.str || 0) + Math.floor(bbRank / 3)
   let DEX = dexBase + (items.dex || 0) + Math.floor(rtRank / 3) + rtData.attrBonus
   let CON = conBase + (race.conModifier || 0) + (items.con || 0) + Math.floor(condRank / 3)
+  console.log('CON@assign:', CON, '| items:', JSON.stringify(items), '| activeForm:', char.activeForm)
   let AW  = awBase  + (items.aw  || 0) + otData.attrBonus + markWarBonus
   const CHR = chrBase + (race.chrModifier || 0) + (items.chr || 0) + Math.floor(persuRank / 3)
   const WP  = wpBase  + (items.wp  || 0) + Math.floor(hrRank / 3)
@@ -699,6 +701,7 @@ const platePerLoc = {}
       .replace(/_+$/, '')
     generalSkillScores[key] = calcGeneralSkillScore(skill)
   })
+  console.log('RETURN → CON:', CON, '| conBase:', conBase, '| evasion:', evasion, '| weightAllowance:', weightAllowance)
   return {
     attributes: {
       str: { effective: STR, checkMod: strCheck, advantage: advantageFlags.str, disadvantage: false },
